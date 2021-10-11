@@ -33,8 +33,19 @@ function get_cycle($db, $date) {
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
-
 }
+
+function get_cycle_end($db, $date) {
+	$sql = "SELECT date_obs AS cycle_end FROM observation WHERE premier_jour=1 and date_obs>:date ORDER BY date_obs ASC LIMIT 1";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
 
 try {
 
@@ -50,50 +61,25 @@ try {
 
 	// LECTURE D'UNE DATE DE DEBUT DE CYCLE
 	if (isset($_GET['cycle'])) {
-
 		$date = date_parse($_GET['cycle']);
 		$result["date"] = format_date($date);
-		
-		$output = read_observation ($db, $date);
-		$cycle = get_cycle($db, $date);
-		
 	}
 	else {
-		print("Vous devez etre connecte pour realiser cette action.");
+		print("Date du cycle non indique.");
 		exit;
-
 	}
 
-	// CREATION ET MISE A JOUR D'UNE OBSERVATION
-	elseif(isset($_POST['date'])) {
 
-		$result["command"] = "POST";
-		
-		$date = date_parse($_POST['date']);
-		$result["date"] = format_date($date);
+//	SELECT date_obs, gommette, COALESCE(sensation,"") as sensation, COALESCE(jour_sommet, "") as j_sommet, COALESCE(union_sex, "") as "unions", commentaire FROM observation WHERE date_obs>=
+//(SELECT date_obs AS cycle_debut FROM observation WHERE premier_jour=1 and date_obs<="2021-08-01" ORDER BY date_obs DESC LIMIT 1) and
+//(date_obs < (SELECT date_obs AS cycle_fin FROM observation WHERE premier_jour=1 and date_obs>"2021-08-01" ORDER BY date_obs ASC LIMIT 1) or date_obs<CURRENT_DATE())
 
-		$output = read_observation ($db, $date);
+	$result["cycle_debut"] = get_cycle($db, $date)[0]["cycle"];
+	$cycle_end = get_cycle_end($db, $date);
+	if (isset($cycle_end[0]["cycle_end"])) $result["cycle_fin"] = $cycle_end[0]["cycle_end"];
+	else $result["cycle_fin"] = date("Y-m-d");
 
-		if(!isset($output[0])){
-			create_observation($db, $date);
-		}
-		
-		$sensation = [];
-		foreach ($_POST as $key => $p) {
-			if (!str_starts_with($key, "ob_") || $p=="") continue;
-			array_push($sensation, trim($p));
-		}
-		$sensation_db = implode(", ", $sensation);
-		if ($sensation_db == "") $sensation_db = null;
 
-		update_observation ($db, $date, $_POST["gommette"] ?? '', $sensation_db, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["commentaire"] ?? null);
-		$result["outcome"] = "ok";
-		$result["args"] = $_POST;
-	}
-
-	else {
-		$result["err"] = "missing an action and a date";
-	}
 
 	$db = null;
 }
