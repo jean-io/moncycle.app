@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+$cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
+setcookie(session_name(),session_id(),time()+$cookieLifetime);
 
 if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 	header('Location: session.php');

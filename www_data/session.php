@@ -3,6 +3,9 @@
 require_once "password.php";
 
 session_start();
+$cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
+setcookie(session_name(),session_id(),time()+$cookieLifetime);
+
 
 $login = false;
 
@@ -42,8 +45,8 @@ if ($login) {
 	<link rel="apple-touch-icon" href="/img/bill512.jpg" />
 	<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
 	<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
-	<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="default" />
-	<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="black" />
+	<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
+	<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
 	<title>Bill</title>
 	<style type="text/css">
 		html, body {
