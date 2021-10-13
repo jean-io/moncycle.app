@@ -45,6 +45,16 @@ function get_cycle_end($db, $date) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function export_cycle($db, $date_start, $date_end) {
+	$sql = "SELECT date_obs, gommette, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":date_start", format_date($date_start), PDO::PARAM_STR);
+	$statement->bindValue(":date_end", format_date($date_end), PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
 
 
 try {
@@ -69,17 +79,26 @@ try {
 		exit;
 	}
 
-
-//	SELECT date_obs, gommette, COALESCE(sensation,"") as sensation, COALESCE(jour_sommet, "") as j_sommet, COALESCE(union_sex, "") as "unions", commentaire FROM observation WHERE date_obs>=
-//(SELECT date_obs AS cycle_debut FROM observation WHERE premier_jour=1 and date_obs<="2021-08-01" ORDER BY date_obs DESC LIMIT 1) and
-//(date_obs < (SELECT date_obs AS cycle_fin FROM observation WHERE premier_jour=1 and date_obs>"2021-08-01" ORDER BY date_obs ASC LIMIT 1) or date_obs<CURRENT_DATE())
-
-	$result["cycle_debut"] = get_cycle($db, $date)[0]["cycle"];
+	$result["cycle_debut"] = date_parse(get_cycle($db, $date)[0]["cycle"]);
 	$cycle_end = get_cycle_end($db, $date);
-	if (isset($cycle_end[0]["cycle_end"])) $result["cycle_fin"] = $cycle_end[0]["cycle_end"];
-	else $result["cycle_fin"] = date("Y-m-d");
+	if (isset($cycle_end[0]["cycle_end"])) $result["cycle_fin"] = date_parse($cycle_end[0]["cycle_end"]);
+	else $result["cycle_fin"] = date_parse(date("Y-m-d"));
 
+	$data = export_cycle($db, $result["cycle_debut"],$result["cycle_fin"]);
 
+	header('Content-type: application/octet-stream');
+	header('Content-Disposition: attachment; filename="bill_cycle_'. format_date($date) .'.csv"');
+
+	$i = 1;
+	print(implode(";",["jour","date","gommette","sensation","sommet", "unions", "commentaire"]));
+	print(PHP_EOL);
+	
+	foreach ($data as $line){
+		print($i . ";");
+		print(implode(";",$line));
+		print(PHP_EOL);
+		$i += 1;
+	}
 
 	$db = null;
 }
@@ -89,5 +108,5 @@ catch (Exception $e) {
 }
 
 
-print(json_encode($result));
+#print(json_encode($result));
 
