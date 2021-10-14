@@ -153,8 +153,10 @@ try {
 		$i = 1;
 		$s = -1;
 		foreach ($cycle as $line){
+			$pdf->SetFont('Courier','',8);
 			$pdf->SetTextColor(150,150,150);
 			$pdf->Cell(8,5,$i, 0, 0, 'C');
+			$pdf->SetFont('Courier','',10);
 			$pdf->SetTextColor(0,0,0);
 			if($line["gommette"]==".")	$pdf->SetFillColor(172,36,51);
 			elseif($line["gommette"]=="I")	$pdf->SetFillColor(30,130,76);
@@ -166,6 +168,7 @@ try {
 				$pdf->Cell(5,5,$line["gommette"],0,0,'C', true);
 				$pdf->SetTextColor(0,0,0);
 			}
+			elseif ($line["gommette"]=="?") $pdf->Cell(5,5,$line["gommette"],0,0,'C', true);
 			else $pdf->Cell(5,5,"",0,0,'C', true);
 			if(intval($line["unions"])) {
 				$pdf->SetFont("ZapfDingbats");	
@@ -183,7 +186,7 @@ try {
 					$s = 1;
 				}
 				elseif ($s<=3) {
-					$pdf->Cell(3,5,chr(115)); // /\/\
+					$pdf->Cell(3,5,chr(115)); // /\
 					$pdf->SetFont('Courier','',10);
 					$pdf->Cell(5,5,"+". $s); 
 					$s += 1;
@@ -194,11 +197,11 @@ try {
 			}
 			if (!empty($line["sensation"])){
 				$pdf->SetFont('Courier','',10);
-				$w = $pdf->GetStringWidth(utf8_decode($line["sensation"]))+5;
+				$w = $pdf->GetStringWidth(utf8_decode($line["sensation"]))+1;
 				$pdf->Cell($w,5,utf8_decode($line["sensation"]));
 				$pdf->SetFont('Courier','',10);
 			}
-			$pdf->SetFont('Courier','I',8);
+			$pdf->SetFont('Courier','I',7);
 			$pdf->Cell(10,5,utf8_decode($line["commentaire"]));
 			$pdf->SetTextColor(100,100,100);
 		 	$pdf->Text($pdf->GetPageWidth()-35,$pdf->GetY()+4,human_date(date_parse($line["date_obs"])));
