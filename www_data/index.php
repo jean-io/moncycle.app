@@ -188,6 +188,26 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 				font-weight: bold;
 			}
 
+			h2 a {
+				float: right;
+				display: block;
+				margin-top: 5px;
+				background-color: black;
+				color: white;
+				font-weight: normal;
+				font-size: .5em;
+				padding: 2px;
+				border-radius: 2px;
+				text-decoration: none;
+			}
+
+			@media (prefers-color-scheme: dark) {
+				h2 a {
+					background-color: white;
+					color: black;
+				}
+			}
+
 			#charger_cycle {
 				margin-top: 20px;
 			}
@@ -328,7 +348,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 					let c_id = "c-" + c;
 					let cycle = $("<div>", {id: c_id, class: "cycle"});
 					let c_date = new Date(c);
-					cycle.append(`<h2 class='titre'>Cycle de <span class='nb_jours'>1</span> jours du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'></span></h2>`);
+					cycle.append(`<h2 class='titre'><a href='export.php?cycle=${c_date.toISOString()}&type=csv'>CSV</a>Cycle de <span class='nb_jours'>1</span>j du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'></span></h2>`);
 					cycle.append("<div class='contenu'></div>");
 					return cycle;
 				},

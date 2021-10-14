@@ -13,6 +13,7 @@ setcookie(session_name(),session_id(),time()+$cookieLifetime);
 
 
 function format_date($date) {
+	//print_r($date);
 	$d = $date['day']<10? "0" . $date['day'] : "" . $date['day'];
 	$m = $date['month']<10? "0" . $date['month'] : "" . $date['month'];
 	return "" . $date['year'] . "-" . $m . "-" . $d;
@@ -64,13 +65,11 @@ try {
 
 	$db = new PDO('mysql:host=nas_ovpn;dbname=bill_nas', 'bill', DB_PASSWORD);
 
-
 	// VERIFICATION DE LA BONNE OUVERTURE DE LA SESSION
 	if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 		print("Vous devez etre connecte pour realiser cette action.");
 		exit;
 	}
-
 
 	// LECTURE D'UNE DATE DE DEBUT DE CYCLE
 	if (isset($_GET['cycle'])) {
@@ -82,11 +81,14 @@ try {
 		exit;
 	}
 
-
 	// RECUPERATION DE LA DATE DE DEBUT ET DE FIN DU CYCLE
 	$result["cycle_debut"] = date_parse(get_cycle($db, $date)[0]["cycle"]);
 	$cycle_end = get_cycle_end($db, $date);
-	if (isset($cycle_end[0]["cycle_end"])) $result["cycle_fin"] = date_parse($cycle_end[0]["cycle_end"]);
+	if (isset($cycle_end[0]["cycle_end"])) {
+		$date_tmp = new DateTime($cycle_end[0]["cycle_end"]);
+		$date_tmp->modify('-1 day');
+		$result["cycle_fin"] = date_parse($date_tmp->format('Y-m-d'));
+	}
 	else $result["cycle_fin"] = date_parse(date("Y-m-d"));
 
 	// RECUPERATION DU CYCLE
