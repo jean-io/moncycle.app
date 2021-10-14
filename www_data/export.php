@@ -3,6 +3,7 @@
 define("CSV_SEP", ";");
 
 require_once "password.php";
+require_once "fpdf/fpdf.php";
 
 
 
@@ -13,10 +14,15 @@ setcookie(session_name(),session_id(),time()+$cookieLifetime);
 
 
 function format_date($date) {
-	//print_r($date);
 	$d = $date['day']<10? "0" . $date['day'] : "" . $date['day'];
 	$m = $date['month']<10? "0" . $date['month'] : "" . $date['month'];
 	return "" . $date['year'] . "-" . $m . "-" . $d;
+}
+
+function human_date($date) {
+	$d = $date['day'];
+	$m = $date['month'];
+	return $d . "/" . $m . "/" . $date['year'];
 }
 
 function read_observation ($db, $date) {
@@ -81,6 +87,14 @@ try {
 		exit;
 	}
 
+	// VERIFICATION DU FORMAT DE L'EXPORT
+	$available_type = ["pdf", "csv"];
+	if (!isset($_GET['type']) || !in_array($_GET['type'], $available_type)) {
+		print("Le format de l'export doit être: ");
+		print(implode(", ", $available_type));
+		exit;
+	}
+
 	// RECUPERATION DE LA DATE DE DEBUT ET DE FIN DU CYCLE
 	$result["cycle_debut"] = date_parse(get_cycle($db, $date)[0]["cycle"]);
 	$cycle_end = get_cycle_end($db, $date);
@@ -95,31 +109,108 @@ try {
 	$data = export_cycle($db, $result["cycle_debut"],$result["cycle_fin"]);
 
 	// AJOUT DES JOURS MANQUANTS DU CYCLE
+	$nb_jours = 0;
 	$cycle = [];
 	$date_cursor = new DateTime($data[0]["date_obs"]);
 	foreach ($data as $line){
 		if ($date_cursor->format('Y-m-d') != $line["date_obs"]) {
-			array_push($cycle, [$date_cursor->format('Y-m-d'), '', '', '', '', '']);
+			array_push($cycle, array("date_obs" => $date_cursor->format('Y-m-d'),"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '',"commentaire" => ''));
 			$date_cursor->modify('+1 day');
 		}
 		array_push($cycle, $line);
 		$date_cursor->modify('+1 day');
+		$nb_jours += 1;
 	}
 
+	// print_r($cycle);
+	// exit;
 
-	// ECRITURE DU CSV
-	header("content-type:application/csv;charset=UTF-8");
-	header('Content-Disposition: attachment; filename="bill_cycle_'. format_date($date) .'.csv"');
+	if ($_GET['type'] == "csv") {
 
-	$i = 1;
-	print(implode(CSV_SEP,["jour","date","gommette","sensation","sommet", "unions", "commentaires"]));
-	print(PHP_EOL);
-	
-	foreach (mb_convert_encoding($cycle, 'UTF-16LE', 'UTF-8') as $line){
-		print($i . CSV_SEP);
-		print(implode(CSV_SEP,$line));
+		// ECRITURE DU CSV
+		header("content-type:application/csv;charset=UTF-8");
+		header('Content-Disposition: attachment; filename="bill_cycle_'. format_date($date) .'.csv"');
+		$i = 1;
+		print(implode(CSV_SEP,["jour","date","gommette","sensation","sommet", "unions", "commentaires"]));
 		print(PHP_EOL);
-		$i += 1;
+		foreach (mb_convert_encoding($cycle, 'UTF-16LE', 'UTF-8') as $line){
+			print($i . CSV_SEP);
+			print(implode(CSV_SEP,$line));
+			print(PHP_EOL);
+			$i += 1;
+		}
+	}
+	elseif ($_GET['type'] == "pdf") {
+	
+		$pdf = new FPDF();
+		$pdf->AddPage();
+		$pdf->SetFont('Courier','B',16);
+		$pdf->Cell(40,10,sprintf("Cycle de %d jours du %s au %s", $nb_jours, human_date($result["cycle_debut"]), human_date($result["cycle_fin"])));
+		$pdf->Ln();
+		$pdf->Ln();
+		$pdf->SetFont('Courier','',10);
+
+		$i = 1;
+		$s = -1;
+		foreach ($cycle as $line){
+			$pdf->SetTextColor(150,150,150);
+			$pdf->Cell(8,5,$i, 0, 0, 'C');
+			$pdf->SetTextColor(0,0,0);
+			if($line["gommette"]==".")	$pdf->SetFillColor(172,36,51);
+			elseif($line["gommette"]=="I")	$pdf->SetFillColor(30,130,76);
+			elseif($line["gommette"]=="?")	$pdf->SetFillColor(220,220,220);
+			elseif($line["gommette"]=="=")	$pdf->SetFillColor(251,202,11);
+			else $pdf->SetFillColor(255,255,255);
+			if ($line["gommette"]==":)") {
+				$pdf->SetTextColor(75,119,190);
+				$pdf->Cell(5,5,$line["gommette"],0,0,'C', true);
+				$pdf->SetTextColor(0,0,0);
+			}
+			else $pdf->Cell(5,5,"",0,0,'C', true);
+			if(intval($line["unions"])) {
+				$pdf->SetFont("ZapfDingbats");	
+				$pdf->SetTextColor(172,36,51);
+				$pdf->Cell(4,5,chr(164)); // <3
+				$pdf->SetTextColor(0,0,0);
+				$pdf->SetFont('Courier','',10);
+			}
+			else $pdf->Cell(4,5,"");
+			if(intval($line["sommet"]) || $s>0) {
+				$pdf->SetFont("ZapfDingbats");	
+				$pdf->SetTextColor(139,69,19);
+				if(intval($line["sommet"])) {
+					$pdf->Cell(8,5,chr(115).chr(115)); // /\/\
+					$s = 1;
+				}
+				elseif ($s<=3) {
+					$pdf->Cell(3,5,chr(115)); // /\/\
+					$pdf->SetFont('Courier','',10);
+					$pdf->Cell(5,5,"+". $s); 
+					$s += 1;
+				}
+				else $s = -1;
+				$pdf->SetTextColor(0,0,0);
+				$pdf->SetFont('Courier','',10);
+			}
+			if (!empty($line["sensation"])){
+				$pdf->SetFont('Courier','',10);
+				$w = $pdf->GetStringWidth(utf8_decode($line["sensation"]))+5;
+				$pdf->Cell($w,5,utf8_decode($line["sensation"]));
+				$pdf->SetFont('Courier','',10);
+			}
+			$pdf->SetFont('Courier','I',8);
+			$pdf->Cell(10,5,utf8_decode($line["commentaire"]));
+			$pdf->SetTextColor(100,100,100);
+		 	$pdf->Text($pdf->GetPageWidth()-35,$pdf->GetY()+4,human_date(date_parse($line["date_obs"])));
+			$pdf->SetTextColor(0,0,0);
+			$pdf->SetFont('Courier','',10);
+			$pdf->Ln();
+			$pdf->SetY($pdf->GetY()+0.5);
+			$i += 1;
+		}
+
+		$pdf->Output();
+	
 	}
 
 	$db = null;

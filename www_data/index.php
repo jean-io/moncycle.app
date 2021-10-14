@@ -102,9 +102,9 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 			}
 
 			.day .vert {
-				background-color: #345c3c;
-				border-color: #345c3c;
-				color: #345c3c;
+				background-color: #1e824c;
+				border-color: #1e824c;
+				color: #1e824c;
 			}
 
 			.day .jaune {
@@ -199,6 +199,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 				padding: 2px;
 				border-radius: 2px;
 				text-decoration: none;
+				margin-left: 3px;
 			}
 
 			@media (prefers-color-scheme: dark) {
@@ -264,7 +265,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 					a_renseigner : "à renseigner",
 					a_aujourdhui : "à auj.",
 					union : "❤️",
-					sommet : "⛰",
+					sommet : "⛰️",
 					mois : ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "aout", "sept.", "oct.", "nov.", "déc."],
 					mois_long : ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
 					semaine : ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
@@ -348,7 +349,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 					let c_id = "c-" + c;
 					let cycle = $("<div>", {id: c_id, class: "cycle"});
 					let c_date = new Date(c);
-					cycle.append(`<h2 class='titre'><a href='export.php?cycle=${c_date.toISOString()}&type=csv'>CSV</a>Cycle de <span class='nb_jours'>1</span>j du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'></span></h2>`);
+					cycle.append(`<h2 class='titre'><a href='export.php?cycle=${c_date.toISOString()}&type=pdf'>PDF</a><a href='export.php?cycle=${c_date.toISOString()}&type=csv'>CSV</a>Cycle de <span class='nb_jours'>1</span>j du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'></span></h2>`);
 					cycle.append("<div class='contenu'></div>");
 					return cycle;
 				},
