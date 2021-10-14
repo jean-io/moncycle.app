@@ -1,8 +1,11 @@
 <?php
 
+define("CSV_SEP", ";");
+
 require_once "password.php";
 
-// header('Content-Type: application/json');
+
+
 
 session_start();
 $cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
@@ -46,7 +49,7 @@ function get_cycle_end($db, $date) {
 }
 
 function export_cycle($db, $date_start, $date_end) {
-	$sql = "SELECT date_obs, gommette, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end";
+	$sql = "SELECT date_obs, gommette, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end ORDER BY date_obs ASC";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date_start", format_date($date_start), PDO::PARAM_STR);
@@ -79,23 +82,40 @@ try {
 		exit;
 	}
 
+
+	// RECUPERATION DE LA DATE DE DEBUT ET DE FIN DU CYCLE
 	$result["cycle_debut"] = date_parse(get_cycle($db, $date)[0]["cycle"]);
 	$cycle_end = get_cycle_end($db, $date);
 	if (isset($cycle_end[0]["cycle_end"])) $result["cycle_fin"] = date_parse($cycle_end[0]["cycle_end"]);
 	else $result["cycle_fin"] = date_parse(date("Y-m-d"));
 
+	// RECUPERATION DU CYCLE
 	$data = export_cycle($db, $result["cycle_debut"],$result["cycle_fin"]);
 
-	header('Content-type: application/octet-stream');
+	// AJOUT DES JOURS MANQUANTS DU CYCLE
+	$cycle = [];
+	$date_cursor = new DateTime($data[0]["date_obs"]);
+	foreach ($data as $line){
+		if ($date_cursor->format('Y-m-d') != $line["date_obs"]) {
+			array_push($cycle, [$date_cursor->format('Y-m-d'), '', '', '', '', '']);
+			$date_cursor->modify('+1 day');
+		}
+		array_push($cycle, $line);
+		$date_cursor->modify('+1 day');
+	}
+
+
+	// ECRITURE DU CSV
+	header("content-type:application/csv;charset=UTF-8");
 	header('Content-Disposition: attachment; filename="bill_cycle_'. format_date($date) .'.csv"');
 
 	$i = 1;
-	print(implode(";",["jour","date","gommette","sensation","sommet", "unions", "commentaire"]));
+	print(implode(CSV_SEP,["jour","date","gommette","sensation","sommet", "unions", "commentaires"]));
 	print(PHP_EOL);
 	
-	foreach ($data as $line){
-		print($i . ";");
-		print(implode(";",$line));
+	foreach (mb_convert_encoding($cycle, 'UTF-16LE', 'UTF-8') as $line){
+		print($i . CSV_SEP);
+		print(implode(CSV_SEP,$line));
 		print(PHP_EOL);
 		$i += 1;
 	}
