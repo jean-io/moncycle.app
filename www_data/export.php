@@ -19,10 +19,10 @@ function format_date($date) {
 	return "" . $date['year'] . "-" . $m . "-" . $d;
 }
 
-function human_date($date) {
+function human_date($date, $sep='/') {
 	$d = $date['day'];
 	$m = $date['month'];
-	return $d . "/" . $m . "/" . $date['year'];
+	return $d . $sep . $m . $sep . $date['year'];
 }
 
 function read_observation ($db, $date) {
@@ -142,7 +142,8 @@ try {
 	}
 	elseif ($_GET['type'] == "pdf") {
 	
-		$pdf = new FPDF();
+		$pdf = new FPDF('P','mm','A4');
+		$pdf->SetTitle('bill_cycle_'. human_date($date, '_') . '.pdf');
 		$pdf->AddPage();
 		$pdf->SetFont('Courier','B',16);
 		$pdf->Cell(40,10,sprintf("Cycle de %d jours du %s au %s", $nb_jours, human_date($result["cycle_debut"]), human_date($result["cycle_fin"])));
@@ -212,7 +213,7 @@ try {
 			$i += 1;
 		}
 
-		$pdf->Output();
+		$pdf->Output('I', 'bill_cycle_'. human_date($date, '_') . '.pdf');
 	
 	}
 
