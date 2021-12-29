@@ -334,15 +334,16 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 					$(".day .s").removeClass("petit");				
 					bill.sommets.forEach(s => {
 						$(`#o-${s} .s`).html(bill.text.sommet);
-						let s_date = new Date(s);
-						for (let n=1; n<=3; n+=1) {
-							s_date.setDate(s_date.getDate()+1);		
+						let nb_j_sommet = [1, 2, 3, 15, $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 2];
+						nb_j_sommet.forEach(n => {
+							let s_date = new Date(s);
+							s_date.setDate(s_date.getDate()+n);		
 							let s_id = s_date.getFullYear() + "-";
 							s_id += (s_date.getMonth()+1).toLocaleString('fr-FR', {minimumIntegerDigits: 2, useGrouping:false}) + "-";
 							s_id += s_date.getDate().toLocaleString('fr-FR', {minimumIntegerDigits: 2, useGrouping:false});
 							$(`#o-${s_id} .s`).html(`${bill.text.sommet}+${n}`);
 							$(`#o-${s_id} .s`).addClass("petit");
-						}
+						});
 					});
 				},
 				cycle2html : function (c) {
