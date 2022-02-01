@@ -39,7 +39,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 			}
 			.gradiant_logo {
 				color: #4169E1;
-				background-image: linear-gradient(90deg, #1f5b3b, #08ae54);
+				background-image: linear-gradient(90deg, #ac2433, #fbca0b, #1e824c);
 				background-size: 100%;
 				background-repeat: repeat;
 				-webkit-background-clip: text;
@@ -254,7 +254,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom">Thérèse et Jean</div>
-			<button type="button" id="charger_cycle">Cycle précedent</button> <button type="button" id="mon_compte">Mon compte</button>
+			<button type="button" id="charger_cycle">Cycle précedent</button> <a href="compte.php"><button type="button" id="mon_compte">Mon compte</button></a>
 		</center>
 		<div id="timeline"></div>
 		<form id="jour_form" style="display:none">
