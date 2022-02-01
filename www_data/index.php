@@ -25,7 +25,30 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 		<title>Bill</title>
 		<script src="jquery.min.js"></script> 
 		<style type="text/css">
-			html, body, h2, #jour_form_titre {
+			@font-face {
+				font-family: "Montserrat";
+				src: url("/font/montserrat/Montserrat-VariableFont_wght.ttf") format("truetype");
+			}
+			h1, h2 {
+				font-family: 'Montserrat';
+			}
+			h1 {
+				font-weight: 800;
+				margin-top: 50px;
+				margin-bottom: 10px;
+			}
+			.gradiant_logo {
+				color: #4169E1;
+				background-image: linear-gradient(90deg, #1f5b3b, #08ae54);
+				background-size: 100%;
+				background-repeat: repeat;
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent; 
+				-moz-background-clip: text;
+				-moz-text-fill-color: transparent;
+				font-size: 1.1em;
+			}
+			html, body, #jour_form_titre {
 				margin: 0;
 				padding: 0;
 				font-family: Sans-serif;
@@ -46,6 +69,13 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 					border-color: white;
 				}
 			}
+
+			#nom {
+				font-family: 'Montserrat';
+				font-weight: light;
+				font-size: 1.5em;
+			}
+
 			.day {
 				padding: 1px;
 				cursor: pointer;
@@ -89,6 +119,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 				padding-top: 0px;
 				text-align: center;
 				border: 1px solid black;
+				border-radius: 2px;
 			}
 			@media (prefers-color-scheme: dark) {
 				.day .g {
@@ -120,6 +151,8 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 
 			.day .jesaispas {
 				border-style: dashed;
+				font-family: Montserrat;
+				font-weight: 600;
 			}
 
 			.day .aremplir {
@@ -168,6 +201,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 				position: sticky;
 				padding: 10px 0 5px 0;
 				top: 0;
+				font-family: 'Montserrat';
 			}
 
 			.categorie {
@@ -217,7 +251,11 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 	</head>
 
 	<body>
-		<center><button type="button" id="charger_cycle">charger le cycle précedent</button></center>
+		<center>
+			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
+			<div id="nom">Thérèse et Jean</div>
+			<button type="button" id="charger_cycle">Cycle précedent</button> <button type="button" id="mon_compte">Mon compte</button>
+		</center>
 		<div id="timeline"></div>
 		<form id="jour_form" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
