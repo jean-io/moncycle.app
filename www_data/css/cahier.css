@@ -1,0 +1,173 @@
+
+.day {
+	padding: 1px;
+	cursor: pointer;
+}
+	
+#timeline {
+	padding-bottom: 60px;
+	max-width: 550px;
+	margin: 0 auto;
+}
+
+.day span {
+	display: inline-block;
+	vertical-align: sub;
+	margin-right: 3px;
+}
+
+.day .d {
+	font-family: monospace;
+	height: 26px;
+	line-height: 26px;
+	text-align: center;
+	font-size: .7em;
+	float: right;
+	text-transform: uppercase;
+}
+
+.day .j {
+	color: gray;
+	font-family: monospace;
+	text-align: center;
+	width: 20px;
+	height: 26px;
+	line-height: 26px;
+}
+
+.day .g {
+	width: 25px;
+	height: 25px;
+	line-height: 25px;
+	padding-top: 0px;
+	text-align: center;
+	border: 1px solid black;
+	border-radius: 2px;
+}
+@media (prefers-color-scheme: dark) {
+	.day .g {
+		border-color: white;
+	}
+}
+.day .rouge {
+	background-color: #ac2433;
+	border-color: #ac2433;
+	color: #ac2433;
+}
+
+.day .vert {
+	background-color: #1e824c;
+	border-color: #1e824c;
+	color: #1e824c;
+}
+
+.day .jaune {
+	background-color: #fbca0b;
+	border-color: #fbca0b;
+	color: #fbca0b;
+}
+
+.day .bebe {
+	background-color: white;
+	border-color: black;
+}
+
+.day .jesaispas {
+	border-style: dashed;
+	font-family: Montserrat;
+	font-weight: 600;
+}
+
+.day .aremplir {
+	border: none;
+	background: linear-gradient(45deg, white 25%, black 25%, black 50%, white 50%, white 75%, black 75%);
+}
+
+.day .u {
+
+}
+.day .s {
+	font-family: monospace;
+}	
+.day .o {
+
+}	
+.day .c {
+	font-size: .7em;
+	font-style: italic;
+}
+
+.petit {
+	font-size: .8em;
+}
+.bold {
+	font-weight: bold;
+}
+
+.uppercase {
+	text-transform: uppercase;
+}
+
+#jour_form {
+	display: block;
+	position: fixed;
+	top: 50px;
+	bottom: 50px;
+	left: 25px;
+	right: 25px;
+	overflow-y: scroll;
+	padding: 10px;
+	padding-top: 0;
+}
+
+#jour_form_titre {
+	position: sticky;
+	padding: 10px 0 5px 0;
+	top: 0;
+	font-family: 'Montserrat';
+}
+
+.categorie {
+	font-size: 1.1em;
+}
+
+.err {
+	color: red;
+}
+
+h2 {
+	position: sticky;
+	top: 0px;
+	margin: 0;
+	margin-top: 30px;
+	padding: 5px 10px;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+h2 a {
+	float: right;
+	display: block;
+	margin-top: 5px;
+	background-color: black;
+	color: white;
+	font-weight: normal;
+	font-size: .5em;
+	padding: 2px;
+	border-radius: 2px;
+	text-decoration: none;
+	margin-left: 3px;
+}
+
+@media (prefers-color-scheme: dark) {
+	h2 a {
+		background-color: white;
+		color: black;
+	}
+}
+
+#charger_cycle {
+	margin-top: 20px;
+}
+
+
