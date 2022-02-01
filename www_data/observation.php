@@ -69,7 +69,7 @@ $result = [];
 
 try {
 
-	$db = new PDO('mysql:host=nas_ovpn;dbname=bill_nas', 'bill', DB_PASSWORD);
+	$db = new PDO('mysql:host=nas_ovpn;dbname=dev_moncyle_app_nas', 'jean_dev', DB_PASSWORD);
 
 
 	// VERIFICATION DE LA BONNE OUVERTURE DE LA SESSION
