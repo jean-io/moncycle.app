@@ -31,6 +31,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
+			<!--<h1>mon<span class="">c</span><span class="">y</span><span class="">cle</span>.app</h1>-->
 			<div id="nom">Thérèse et Jean</div>
 			<button type="button" id="charger_cycle" class="nav_button">Cycle précedent</button> <a href="compte.php"><button type="button" class="nav_button">Mon compte</button></a>
 		</center>

@@ -36,37 +36,43 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 		</center>
 
 		<div class="contennu" id="timeline">
-		<h2>Vos informations</h2>
+		<h2>Mofifier mes informations</h2>
 		<form><br />
-		<label>Prénom(s):</label><br />
+		<label for="i_prenom">Prénom(s):</label><br />
+		<input type="text" id="i_prenom" required /><br />
+		<br />
+		<label for="i_email1">E-mail:</label> <span class="label_info">identifiant de connexion et envoie des cycles.</span><br />
+		<input id="i_email1" type="email" readonly /><br />
+		<br />
+		<label for="i_email2">2ème e-mail:</label> <span class="label_info">permet de recevoir les cycles sur une deuxième addresse.</span><br />
+		<input id="i_email2" type="email" /><br />
+		<br />
+		<label for="i_anaissance">Année de naissance:</label><br />
+		<select id="i_anaissance" required>
+		<?php for ($i = date('Y')-(date('Y')%5)-75; $i < date('Y')-5; $i += 5) { ?>
+			<option value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>	
+		<?php } ?>
+		</select><br />
+		<br />
+		<input type="submit" value="&#x1F4BE; enregistrer" /></form>
 		<br />
 		<br />
-		<label>Email:</label> <span class="label_info">identifiant de connexion et envoie des cycles.</span><br />
+		<h2>Changer mon mot de passe</h2>
+		<span class="label_info">Le mot de passe doit contenir au moins 8 caractères dont un chiffre et une majuscule.</span><br/>
 		<br />
-		<br />
-		<label>2ème Email:</label> <span class="label_info">permet de recevoir les cycles sur une deuxième addresse.</span><br />
-		<br />
-		<br />
-		<label>Année de naissance:</label><br />
-		<br /></form>
-		<a href="#"><button>Exporter toutes vos données</button></a><br />
-		<br />
-		<br />
-		<h2>Changer de mot de passe</h2>
-		<span class="label_info">Le mot de passe doit contenir au moins 8 caractères dont un chiffre et une majuscule.</span>
 		<form><label for="mdp1">Nouveau mot de passe:</label><br />
-		<input type="password" name="mdp1" pattern="^(?=.*?[a-z])(?=.*?[0-9]).{7,}$" /><br />
+		<input type="password" name="mdp1" required pattern="^(?=.*?[a-z])(?=.*?[0-9]).{7,}$" /><br />
 		<br />
 		<label for="mdp2">Confirmer mot de passe:</label><br />
-		<input type="password" name="mdp2" /><br />
+		<input type="password" name="mdp2" required /><br />
 		<br />
-		<input type="submit" value="valider" /></form><br />
+		<input type="submit" value="&#x1F4BE; enregistrer" /></form><br />
 		<br />
-		<h2>Zone de danger</h2>
-		<span class="label_info">En supprimant définitivement votre compte, totues vos données seront supprimer. Cette action est ireversible.</span><br />
+		<h2 class="rouge">Zone de danger</h2>
+		<span class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est ireversible mais vous avez la possibilité de télècharger toutes vos donné en amont de la suppression.</span><br />
 		<br />
-		<button>Supprimer definitivement le compte moncycle.app de Thérèse et Jean</button>
-
+		<a href="#"><button>Exporter toutes mes données</button></a> <button>&#x26A0; Supprimer definitivement mon compte</button>
+<br /><br /><br /><br /><br /><br />
 </div>
 
 

@@ -13,6 +13,11 @@ h1 {
 	margin-bottom: 10px;
 }
 
+h2 {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
 .gradiant_logo {
 	color: #4169E1;
 	background-image: linear-gradient(90deg, #ac2433, #fbca0b, #1e824c);
