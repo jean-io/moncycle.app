@@ -12,6 +12,8 @@ $login = false;
 if (isset($_GET["deconnexion"])) {
 	$_SESSION["connected"] = false;
 	session_destroy();
+	header('Location: /');
+	exit;
 }
 elseif (isset($_SESSION["connected"]) && $_SESSION["connected"]) {
 	$login = true;

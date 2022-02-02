@@ -32,9 +32,9 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom">Thérèse et Jean</div>
-			<button type="button" id="charger_cycle">Cycle précedent</button> <a href="compte.php"><button type="button" id="mon_compte">Mon compte</button></a>
+			<button type="button" id="charger_cycle" class="nav_button">Cycle précedent</button> <a href="compte.php"><button type="button" class="nav_button">Mon compte</button></a>
 		</center>
-		<div id="timeline"></div>
+		<div class="contennu" id="timeline"></div>
 		<form id="jour_form" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
 			<div id="jour_form_titre" class="bold uppercase"></div>

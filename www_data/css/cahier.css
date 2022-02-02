@@ -4,12 +4,6 @@
 	cursor: pointer;
 }
 	
-#timeline {
-	padding-bottom: 60px;
-	max-width: 550px;
-	margin: 0 auto;
-}
-
 .day span {
 	display: inline-block;
 	vertical-align: sub;
@@ -166,8 +160,6 @@ h2 a {
 	}
 }
 
-#charger_cycle {
-	margin-top: 20px;
-}
+
 
 
