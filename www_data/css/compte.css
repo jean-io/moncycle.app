@@ -1,0 +1,19 @@
+input[type=text],
+input[type=email],
+input[type=password] {
+	width: 90%;
+}
+
+.rouge {
+	color: #ac2433;
+}
+
+.contennu {
+	padding: 15px;
+}
+
+.label_info {
+	font-style: italic;
+	font-size: .8em;
+	color: gray;
+}
