@@ -5,7 +5,7 @@ $cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
 setcookie(session_name(),session_id(),time()+$cookieLifetime);
 
 if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
-	header('Location: session.php');
+	header('Location: connexion.php');
 	exit;
 }
 
@@ -31,8 +31,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
-			<!--<h1>mon<span class="">c</span><span class="">y</span><span class="">cle</span>.app</h1>-->
-			<div id="nom">Thérèse et Jean</div>
+			<div id="nom"><?= $_SESSION["compte"]["nom"] ?? "Mon cahier" ?></div>
 			<button type="button" id="charger_cycle" class="nav_button">Cycle précedent</button> <a href="compte.php"><button type="button" class="nav_button">Mon compte</button></a>
 		</center>
 		<div class="contennu" id="timeline"></div>

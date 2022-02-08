@@ -36,31 +36,34 @@ function read_observation ($db, $date) {
 }
 
 function get_cycle($db, $date) {
-	$sql = "SELECT date_obs AS cycle FROM observation WHERE premier_jour=1 and date_obs<=:date ORDER BY date_obs DESC LIMIT 1";
+	$sql = "SELECT date_obs AS cycle FROM observation WHERE premier_jour=1 and date_obs<=:date AND no_compte = :no_compte ORDER BY date_obs DESC LIMIT 1";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function get_cycle_end($db, $date) {
-	$sql = "SELECT date_obs AS cycle_end FROM observation WHERE premier_jour=1 and date_obs>:date ORDER BY date_obs ASC LIMIT 1";
+	$sql = "SELECT date_obs AS cycle_end FROM observation WHERE premier_jour=1 and date_obs>:date AND no_compte = :no_compte ORDER BY date_obs ASC LIMIT 1";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function export_cycle($db, $date_start, $date_end) {
-	$sql = "SELECT date_obs, gommette, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end ORDER BY date_obs ASC";
+	$sql = "SELECT date_obs, gommette, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date_start", format_date($date_start), PDO::PARAM_STR);
 	$statement->bindValue(":date_end", format_date($date_end), PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);

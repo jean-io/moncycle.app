@@ -17,27 +17,29 @@ function format_date($date) {
 }
 
 function read_observation ($db, $date) {
-	$sql = "SELECT * FROM observation WHERE date_obs = :date LIMIT 1";
+	$sql = "SELECT * FROM observation WHERE date_obs = :date AND no_compte = :no_compte LIMIT 1";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function create_observation ($db, $date) {
-	$sql = "INSERT INTO observation (date_obs, gommette) VALUES (:date, '')";
+	$sql = "INSERT INTO observation (no_compte, date_obs, gommette) VALUES (:no_compte, :date, '')";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 function update_observation ($db, $date, $gommette='', $sensation=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $commentaire=null) {
-	$sql = "UPDATE observation SET gommette = :gommette, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, commentaire = :commentaire WHERE date_obs = :date";
+	$sql = "UPDATE observation SET gommette = :gommette, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":gommette", $gommette, PDO::PARAM_STR);
@@ -47,6 +49,7 @@ function update_observation ($db, $date, $gommette='', $sensation=null, $jour_so
 	$statement->bindValue(":premier_jour", $premier_jour, PDO::PARAM_INT);
 	$statement->bindValue(":commentaire", $commentaire, PDO::PARAM_STR);
 	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
 	
 	$statement->execute();
 	//$statement->debugDumpParams();
@@ -55,10 +58,11 @@ function update_observation ($db, $date, $gommette='', $sensation=null, $jour_so
 }
 
 function get_cycle($db, $date) {
-	$sql = "SELECT date_obs AS cycle FROM observation WHERE premier_jour=1 and date_obs<=:date ORDER BY date_obs DESC LIMIT 1";
+	$sql = "SELECT date_obs AS cycle FROM observation WHERE premier_jour=1 AND date_obs<=:date AND no_compte = :no_compte ORDER BY date_obs DESC LIMIT 1";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);

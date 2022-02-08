@@ -38,11 +38,13 @@
 	border: 1px solid black;
 	border-radius: 2px;
 }
+
 @media (prefers-color-scheme: dark) {
 	.day .g {
 		border-color: white;
 	}
 }
+
 .day .rouge {
 	background-color: #ac2433;
 	border-color: #ac2433;
