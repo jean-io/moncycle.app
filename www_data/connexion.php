@@ -104,7 +104,7 @@ catch (Exception $e){
 
 		<div class="contennu" id="timeline">
 			<h2>Connexion à votre compte</h2>
-			<span class="rouge"><?= $output ?></span>
+			<span class="rouge"><?= $output? $output . "<br />" : "" ?></span>
 			<form method="post"><br />
 			<label for="i_email1">E-mail:</label><br />
 			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail"  value="<?= $_POST['email1'] ?? "" ?>" /><br />

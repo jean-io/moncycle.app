@@ -21,3 +21,7 @@ input[type=password] {
 	font-size: .8em;
 	color: gray;
 }
+
+form {
+	display: inline;
+}
