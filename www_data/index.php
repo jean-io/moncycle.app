@@ -1,5 +1,7 @@
 <?php
 
+require_once "password.php";
+
 session_start();
 $cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
 setcookie(session_name(),session_id(),time()+$cookieLifetime);
@@ -9,6 +11,16 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 	exit;
 }
 
+$db = new PDO('mysql:host=nas_ovpn;dbname=dev_moncyle_app_nas', 'jean_dev', DB_PASSWORD);
+
+$sql = "SELECT date_obs AS cycles FROM observation WHERE no_compte = :no_compte AND premier_jour = 1 ORDER BY cycles DESC";
+
+$statement = $db->prepare($sql);
+$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
+$statement->execute();
+
+$cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
+		
 ?><!doctype html>
 <html lang="fr">
 	<head>
@@ -23,7 +35,10 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
 		<title>Bill</title>
-		<script src="js/jquery.min.js"></script> 
+		<script type="text/javascript" src="js/jquery.min.js"></script> 
+		<script type="text/javascript">
+			var tous_les_cycles = <?= json_encode($cycles); ?>;
+		</script>
 		<link rel="stylesheet" href="css/commun.css">
 		<link rel="stylesheet" href="css/cahier.css">
 	</head>

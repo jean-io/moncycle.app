@@ -93,6 +93,9 @@ try {
 		$output = read_observation ($db, $date);
 		$cycle = get_cycle($db, $date);
 		
+		$interval = date_diff(date_create($cycle[0]["cycle"]), date_create($result["date"]));
+		$result["pos"] = intval($interval->format('%a'))+1;
+
 		$result = array_merge($result, $cycle[0]);
 		
 		if(isset($output[0])) $result = array_merge($result, $output[0]);
