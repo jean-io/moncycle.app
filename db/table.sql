@@ -4,10 +4,6 @@ SET foreign_key_checks = 0;
 
 SET NAMES utf8mb4;
 
-DROP DATABASE IF EXISTS `dev_moncyle_app_nas`;
-CREATE DATABASE `dev_moncyle_app_nas` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin */;
-USE `dev_moncyle_app_nas`;
-
 DROP TABLE IF EXISTS `compte`;
 CREATE TABLE `compte` (
   `no_compte` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,

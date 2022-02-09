@@ -2,7 +2,7 @@
 
 define("CSV_SEP", ";");
 
-require_once "password.php";
+require_once "config.php";
 require_once "fpdf/fpdf.php";
 
 
