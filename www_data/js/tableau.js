@@ -1,5 +1,6 @@
 bill = {
 	gommette : {
+		"_"   : ["&#x231B;", "chargement"],
 		"."  : ["•", "rouge"],
 		"I"  : ["I", "vert"],
 		"="  : ["=", "jaune"],
@@ -17,6 +18,7 @@ bill = {
 		semaine : ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
 	},
 	sommets : [],
+	page_a_recharger: false,
 	letsgo : function() {
 		console.log("Bill - cahier à gommettes pour la méthode Billings.");
 		bill.charger_cycle();
@@ -29,7 +31,7 @@ bill = {
 	cycle_curseur : 0,
 	charger_cycle : function() {
 		if (bill.cycle_curseur >= tous_les_cycles.length) {
-			alert("test");
+			bill.form_nouveau_cycle();
 			return;
 		}
 		let c = bill.cycle_curseur;
@@ -44,7 +46,7 @@ bill = {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
 			date_obs_str = date_obs.toISOString().substring(0, 10);
-			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2html({date: date_obs_str, pos: 0}));
+			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2html({date: date_obs_str, pos: pas+1, gommette: '_'}));
 			bill.charger_observation(date_obs_str);
 		}
 	},
@@ -55,6 +57,33 @@ bill = {
 			if (data.jour_sommet && !bill.sommets.includes(data.date)) bill.sommets.push(data.date);
 			else if (!data.jour_sommet && bill.sommets.includes(data.date)) bill.sommets.splice(bill.sommets.indexOf(data.date),1);
 			bill.trois_jours();
+		});
+	},
+	form_nouveau_cycle: function () {
+		let max_date = new Date().toISOString().substring(0, 10);
+		if (bill.cycle_curseur>0) {
+			max_date = tous_les_cycles[bill.cycle_curseur-1];
+			max_date = new Date(new Date(max_date) - (1000*60*60*24)).toISOString().substring(0, 10);
+		}
+		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="titre">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">Entrer la date du premier jour du cycle à créer.<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" /> <input type="button" id="but_creer_cycle" value="&#x1F449; créer" /></div></div>`;
+		$("#charger_cycle").prop("disabled", true);
+		$("#timeline").prepend(html);
+		$("#but_creer_cycle").click(function () {
+			let nouveau_cycle_date = $("#nouveau_cycle_date").val();
+			$.post("observation.php", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
+			console.log(data);
+			if (data.err){
+				console.error(data.err);
+			}
+			if (data.outcome == "ok") {
+				tous_les_cycles.push(nouveau_cycle_date);
+				$("#charger_cycle").prop("disabled", false);
+				$("#nouveau_cycle").remove();
+				bill.charger_cycle();
+			}		
+			}).fail(function (ret) {
+				console.error(ret.responseText); 
+			});
 		});
 	},
 	trois_jours : function() {
@@ -117,9 +146,24 @@ bill = {
 			else extra.push(ob);
 		});
 		if (extra.length) $("#ob_extra").val(extra.join(", "));
-		if (j.premier_jour) $("#ev_premier_jour").prop('checked', true);
+		if (j.premier_jour) {
+			$("#ev_premier_jour").prop('checked', true);
+			$("#ev_premier_jour").attr('initial', true);
+		}
+		else $("#ev_premier_jour").attr('initial', false);
 		if (j.union_sex) $("#ev_union").prop('checked', true);
 		if (j.jour_sommet) $("#ev_jour_sommet").prop('checked', true);
+		$("#ev_premier_jour").change(function () {
+			if (JSON.parse($("#ev_premier_jour").attr('initial')) && $("#ev_premier_jour").is(':checked')) {
+				bill.page_a_recharger = false;
+				return;
+			}
+			if (!JSON.parse($("#ev_premier_jour").attr('initial')) && !$("#ev_premier_jour").is(':checked')) {
+				bill.page_a_recharger = false;
+				return;
+			}
+			bill.page_a_recharger = true;
+		});
 		$("#from_com").val(j.commentaire);
 		$("#jour_form").show();
 	},
@@ -132,6 +176,7 @@ bill = {
 				console.error(data.err);
 			}
 			if (data.outcome == "ok") {
+				if (bill.page_a_recharger) location.reload();
 				bill.charger_observation(data.date);
 				$("#jour_form").hide();
 			}		

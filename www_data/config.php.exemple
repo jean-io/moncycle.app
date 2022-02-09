@@ -1,0 +1,18 @@
+<?php
+
+define("DB_HOST", "");
+define("DB_ID", "");
+define("DB_NAME", "");
+define("DB_PORT", 3306);
+define("DB_PASSWORD", "");
+
+define("SMTP_HOST", '');
+define("SMTP_PORT", 465);
+define("SMTP_MAIL", "");
+define("SMTP_PASSWORD", "");
+
+define("CREATION_COMPTE", false);
+define("CONNEXION_COMPTE", false);
+
+define("CSV_SEP", ";");
+

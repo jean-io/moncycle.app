@@ -1,6 +1,6 @@
 <?php
 
-require_once "password.php";
+require_once "config.php";
 
 header('Content-Type: application/json');
 
@@ -73,7 +73,7 @@ $result = [];
 
 try {
 
-	$db = new PDO('mysql:host=nas_ovpn;dbname=dev_moncyle_app_nas', 'jean_dev', DB_PASSWORD);
+	$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
 
 
 	// VERIFICATION DE LA BONNE OUVERTURE DE LA SESSION

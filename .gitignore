@@ -1,2 +1,2 @@
 docker-compose.yml
-www_data/password.php
+www_data/config.php

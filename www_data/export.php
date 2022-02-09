@@ -149,10 +149,17 @@ try {
 		$pdf->SetTitle('bill_cycle_'. human_date($date, '_') . '.pdf');
 		$pdf->AddPage();
 		$pdf->SetFont('Courier','B',16);
+		$pdf->Link($pdf->GetX(), $pdf->GetY(), $pdf->GetStringWidth("MONCYCLE.APP "), 10, "https://moncycle.app");
+		$pdf->Cell($pdf->GetStringWidth("MON"),10,"MON");
+		$pdf->SetTextColor(65,105,255);
+		$pdf->Cell($pdf->GetStringWidth("CYCLE"),10,"CYCLE");
+		$pdf->SetTextColor(0,0,0);
+		$pdf->Cell(0,10,sprintf(".APP %s", utf8_decode($_SESSION["compte"]["nom"])));
+		$pdf->SetFont('Courier','',10);
+		$pdf->Ln();
 		$pdf->Cell(40,10,sprintf("Cycle de %d jours du %s au %s", $nb_jours, human_date($result["cycle_debut"]), human_date($result["cycle_fin"])));
 		$pdf->Ln();
 		$pdf->Ln();
-		$pdf->SetFont('Courier','',10);
 
 		$i = 1;
 		$s = -1;
@@ -206,7 +213,7 @@ try {
 				$pdf->SetFont('Courier','',10);
 			}
 			$pdf->SetFont('Courier','I',7);
-			$pdf->Cell(10,5,utf8_decode($line["commentaire"]));
+			$pdf->Cell(10,5,utf8_decode($line["commentaire"]?? ""));
 			$pdf->SetTextColor(100,100,100);
 		 	$pdf->Text($pdf->GetPageWidth()-35,$pdf->GetY()+4,human_date(date_parse($line["date_obs"])));
 			$pdf->SetTextColor(0,0,0);

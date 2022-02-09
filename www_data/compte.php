@@ -1,8 +1,6 @@
 <?php
 
-define("CSV_SEP", ";");
-
-require_once "password.php";
+require_once "config.php";
 
 session_start();
 $cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
@@ -13,7 +11,7 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 	exit;
 }
 
-$db = new PDO('mysql:host=nas_ovpn;dbname=dev_moncyle_app_nas', 'jean_dev', DB_PASSWORD);
+$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
 
 $erreur = "";
 $succes = "";

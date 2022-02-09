@@ -3,7 +3,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once "password.php";
+require_once "config.php";
 require_once 'phpmailer/src/Exception.php';
 require_once 'phpmailer/src/PHPMailer.php';
 require_once 'phpmailer/src/SMTP.php';
@@ -23,7 +23,7 @@ $mail_mdp = false;
 
 try {
 
-	$db = new PDO('mysql:host=nas_ovpn;dbname=dev_moncyle_app_nas', 'jean_dev', DB_PASSWORD);
+	$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
 
 	$compte_existe = false;
 	if (isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
@@ -78,15 +78,15 @@ try {
 
 		//$mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
 		$mail->isSMTP();                                            //Send using SMTP
-		$mail->Host       = 'ssl0.ovh.net';                     //Set the SMTP server to send through
+		$mail->Host       = SMTP_HOST;                     //Set the SMTP server to send through
 		$mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-		$mail->Username   = 'robot@thjn.fr';                     //SMTP username
+		$mail->Username   = SMTP_MAIL;                     //SMTP username
 		$mail->Password   = SMTP_PASSWORD;                               //SMTP password
 		$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-		$mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+		$mail->Port       = SMTP_PORT;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
 		//Recipients
-		$mail->setFrom('robot@thjn.fr', 'MONCYCLE.APP');
+		$mail->setFrom(SMTP_MAIL, 'MONCYCLE.APP');
 		$mail->addAddress($_POST["email1"], $_POST["email1"]);     //Add a recipient
 		//$mail->addReplyTo('info@example.com', 'Information');
 

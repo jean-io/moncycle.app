@@ -1,6 +1,6 @@
 <?php
 
-require_once "password.php";
+require_once "config.php";
 
 session_start();
 $cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
@@ -25,7 +25,7 @@ try {
 
 	if (isset($_POST["email1"]) && isset($_POST["mdp"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 
-		$db = new PDO('mysql:host=nas_ovpn;dbname=dev_moncyle_app_nas', 'jean_dev', DB_PASSWORD);
+		$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
 
 		$sql = "select * from compte where email1 like :email1";
 		$statement = $db->prepare($sql);
