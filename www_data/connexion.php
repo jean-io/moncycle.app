@@ -80,14 +80,11 @@ catch (Exception $e){
 		<meta charset="utf-8" />
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-		<meta name="apple-mobile-web-app-title" content="Bill" />
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<link rel="apple-touch-icon" href="/img/bill512.jpg" />
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
-		<title>moncycle.app</title>
+		<title>MONCYCLE.APP</title>
 		<link rel="stylesheet" href="css/commun.css" />
 		<link rel="stylesheet" href="css/compte.css" />
 		<style>
