@@ -39,6 +39,7 @@ $cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
 		<script type="text/javascript">
 			var tous_les_cycles = <?= json_encode($cycles); ?>;
 		</script>
+		<script type="text/javascript" src="js/tableau.js"></script>
 		<link rel="stylesheet" href="css/commun.css">
 		<link rel="stylesheet" href="css/cahier.css">
 	</head>
@@ -82,7 +83,9 @@ $cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
 				<div id="form_err" class="err"></div>
 			</div>
 		</form>
-		<script type="text/javascript" src="js/tableau.js"></script>
+		<script type="text/javascript">
+			window.onload = bill.letsgo;
+		</script>
 	</body>
 
 </html>

@@ -19,13 +19,21 @@ bill = {
 	sommets : [],
 	letsgo : function() {
 		console.log("Bill - cahier à gommettes pour la méthode Billings.");
-		bill.charger_cycle(0);
+		bill.charger_cycle();
+		$("#charger_cycle").click(bill.charger_cycle);
 		$("#jour_form_close").click(function () {
 			$("#jour_form").hide();
 		});
 		$("#jour_form_submit").click(bill.submit_menu);	
 	},
-	charger_cycle : function(c) {
+	cycle_curseur : 0,
+	charger_cycle : function() {
+		if (bill.cycle_curseur >= tous_les_cycles.length) {
+			alert("test");
+			return;
+		}
+		let c = bill.cycle_curseur;
+		bill.cycle_curseur += 1;
 		let date_cycle_str = tous_les_cycles[c];
 		let date_fin = new Date();
 		if (c>0) { date_fin = new Date(new Date(tous_les_cycles[c-1]) - (1000*60*60*24)); }
@@ -39,9 +47,6 @@ bill = {
 			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2html({date: date_obs_str, pos: 0}));
 			bill.charger_observation(date_obs_str);
 		}
-		$("#charger_cycle").click(function () {
-			bill.charger_cycle(c+1);
-		});
 	},
 	charger_observation : function(o_date) {
 		$.get("observation.php", { date: o_date }).done(function(data) {
@@ -136,5 +141,4 @@ bill = {
 		});
 	}
 }
-window.onload = bill.letsgo;
 
