@@ -1,16 +1,12 @@
 <?php
 
-define("CSV_SEP", ";");
-
 require_once "config.php";
 require_once "fpdf/fpdf.php";
 
-
-
-
 session_start();
 $cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
-setcookie(session_name(),session_id(),time()+$cookieLifetime);
+$options = ['expires' => time()+$cookieLifetime, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'strict'];
+setcookie(session_name(),session_id(),$options);
 
 
 function format_date($date) {

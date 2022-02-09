@@ -4,7 +4,8 @@ require_once "config.php";
 
 session_start();
 $cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
-setcookie(session_name(),session_id(),time()+$cookieLifetime);
+$options = ['expires' => time()+$cookieLifetime, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'strict'];
+setcookie(session_name(),session_id(),$options);
 
 $output = "";
 
@@ -59,6 +60,7 @@ try {
 
 		}
 		else {
+			sleep(3);
 			$output .= "Mauvais mot de passe ou compte inexistant.";
 		}
 	
@@ -86,7 +88,6 @@ catch (Exception $e){
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
 		<title>moncycle.app</title>
-		<script src="jquery.min.js"></script> 
 		<link rel="stylesheet" href="css/commun.css" />
 		<link rel="stylesheet" href="css/compte.css" />
 		<style>

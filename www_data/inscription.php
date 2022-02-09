@@ -10,7 +10,8 @@ require_once 'phpmailer/src/SMTP.php';
 
 session_start();
 $cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
-setcookie(session_name(),session_id(),time()+$cookieLifetime);
+$options = ['expires' => time()+$cookieLifetime, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'strict'];
+setcookie(session_name(),session_id(),$options);
 
 if (isset($_SESSION["connected"]) && $_SESSION["connected"]) {
 	header('Location: /');
@@ -37,6 +38,8 @@ try {
 
 
 	if (isset($_GET["creation_compte"]) && !$compte_existe && isset($_POST["prenom"]) && isset($_POST["email1"]) && isset($_POST["age"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
+		sleep(3);
+
 		$pass_text = substr(bin2hex(random_bytes(8)), 0, 8);
 		$pass_hash = password_hash($pass_text, PASSWORD_BCRYPT);
 
@@ -54,6 +57,8 @@ try {
 		$mail_mdp = $pass_hash;
 	} 
 	elseif (isset($_GET["nouveau_motdepasse_svp"]) && $compte_existe && isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
+		sleep(3);
+
 		$pass_text = substr(bin2hex(random_bytes(8)), 0, 8);
 		$pass_hash = password_hash($pass_text, PASSWORD_BCRYPT);
 
@@ -121,7 +126,6 @@ catch (Exception $e){
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
 		<title>moncycle.app</title>
-		<script src="jquery.min.js"></script> 
 		<link rel="stylesheet" href="css/commun.css" />
 		<link rel="stylesheet" href="css/compte.css" />
 	</head>
