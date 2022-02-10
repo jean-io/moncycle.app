@@ -1,19 +1,19 @@
 bill = {
 	gommette : {
-		"_"   : ["&#x231B;", "chargement"],
-		"."  : ["•", "rouge"],
+		"_"   : ["⌛", "chargement"],
+		"."  : [".", "rouge"],
 		"I"  : ["I", "vert"],
 		"="  : ["=", "jaune"],
 		"?"  : ["?", "jesaispas"],
 		":)" : ["👶", "bebe"],
-		""   : ["👀", "aremplir"]
+		""   : ["👋", "aremplir"]
 	},
 	text : {
 		a_renseigner : "à renseigner",
 		a_aujourdhui : "à auj.",
 		union : "❤️",
 		sommet : "⛰️",
-		mois : ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "aout", "sept.", "oct.", "nov.", "déc."],
+		mois : ["jan", "fév", "mars", "avr", "mai", "juin", "juil", "août", "sep", "oct", "nov", "déc"],
 		mois_long : ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
 		semaine : ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
 	},
@@ -65,7 +65,7 @@ bill = {
 			max_date = tous_les_cycles[bill.cycle_curseur-1];
 			max_date = new Date(new Date(max_date) - (1000*60*60*24)).toISOString().substring(0, 10);
 		}
-		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="titre">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">Entrer la date du premier jour du cycle à créer.<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" /> <input type="button" id="but_creer_cycle" value="&#x1F449; créer" /></div></div>`;
+		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="titre">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">Entrer la date du premier jour du cycle à créer.<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" /> <input type="button" id="but_creer_cycle" value="✔️" /></div></div>`;
 		$("#charger_cycle").prop("disabled", true);
 		$("#timeline").prepend(html);
 		$("#but_creer_cycle").click(function () {
@@ -109,7 +109,7 @@ bill = {
 		let c_date = new Date(c);
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
-		cycle.append(`<h2 class='titre'><a href='export.php?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'>PDF</a><a href='export.php?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'>CSV</a>Cycle de <span class='nb_jours'>${nb}</span>j du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span></h2>`);
+		cycle.append(`<h2 class='titre'><a href='export.php?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'>PDF</a><a href='export.php?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'>CSV</a>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> <span class='nb_jours'>${nb}</span>j</h2>`);
 		cycle.append("<div class='contenu'></div>");
 		return cycle;
 	},

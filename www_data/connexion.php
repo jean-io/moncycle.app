@@ -105,10 +105,10 @@ catch (Exception $e){
 			<span class="rouge"><?= $output? $output . "<br />" : "" ?></span>
 			<form method="post"><br />
 			<label for="i_email1">E-mail:</label><br />
-			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail"  value="<?= $_POST['email1'] ?? "" ?>" /><br />
+			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail"  value="<?= $_REQUEST['email1'] ?? "" ?>" /><br />
 			<br />
 			<label for="i_mdp">Mot de passe:</label><br />
-			<input name="mdp" id="i_mdp" type="password" required placeholder="Votre mot de passe"  value="<?= $_POST['mdp'] ?? "" ?>" /><br />
+			<input name="mdp" id="i_mdp" type="password" required placeholder="Votre mot de passe"  value="<?= $_REQUEST['mdp'] ?? "" ?>" /><br />
 			<br />
 			<input type="submit" value="Connexion &#x1F511;" /></form>
 			<br /><br /><br />

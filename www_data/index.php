@@ -58,11 +58,11 @@ $cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
 			<div>
 				<br />
 				<span class="categorie">Gommettes:</span><br />
-				<input type="radio" name="gommette" id="go_rouge" value="." /><label for="go_rouge">🟥 menstruation (•)</label><br />
-				<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 jour infécond (I)</label><br />
-				<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 sécrétion qui ne change pas (=)</label><br />
-				<input type="radio" name="gommette" id="go_bebe" value=":)" /><label for="go_bebe">👶 jour fécond</label><br />
-				<input type="radio" name="gommette" id="go_jesaispas" value="?" /><label for="go_jesaispas">❔ jour non observé</label><br />
+				<input type="radio" name="gommette" id="go_rouge" value="." /><label for="go_rouge">🟥 menstruation <span class='note'>.</span><label><br />
+				<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 jour infécond <span class='note'>I</span></label><br />
+				<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 sécrétion qui ne change pas <span class='note'>=</span></label><br />
+				<input type="radio" name="gommette" id="go_bebe" value=":)" /><label for="go_bebe">👶 jour fécond <span class='note'>:)</span></label><br />
+				<input type="radio" name="gommette" id="go_jesaispas" value="?" /><label for="go_jesaispas">❔ jour non observé <span class='note'>?</span></span></label><br />
 				<br />
 				<span class="categorie">Observasions:</span><br />
 				<input type="checkbox" name="ob_1" id="ob_sec" value="sec" /><label for="ob_sec">sec</label><br />
@@ -73,7 +73,7 @@ $cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
 				<input type="text" name="ob_extra" id="ob_extra" style="width: 95%" placeholder="autres observations (séparées par une virgule)"/><br />
 				<br />
 				<span class="categorie">Evénements:</span><br />
-				<input type="checkbox" name="premier_jour" id="ev_premier_jour" value="1" /><label for="ev_premier_jour">1er jour du cycle</label><br />
+				<input type="checkbox" name="premier_jour" id="ev_premier_jour" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
 				<input type="checkbox" name="union_sex" id="ev_union" value="1" /><label for="ev_union">❤️ union</label><br />
 				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ jour sommet</label><br />
 				<br />

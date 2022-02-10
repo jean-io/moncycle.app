@@ -165,4 +165,8 @@ h2 a {
 	margin-left: 10px;	
 }
 
-
+.note {
+	color: gray;
+	font-size: .9em;
+	font-family: monospace;
+}

@@ -68,7 +68,7 @@ function export_cycle($db, $date_start, $date_end) {
 
 try {
 
-	$db = new PDO('mysql:host=nas_ovpn;dbname=dev_moncyle_app_nas', 'jean_dev', DB_PASSWORD);
+	$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
 
 	// VERIFICATION DE LA BONNE OUVERTURE DE LA SESSION
 	if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
@@ -128,7 +128,7 @@ try {
 
 		// ECRITURE DU CSV
 		header("content-type:application/csv;charset=UTF-8");
-		header('Content-Disposition: attachment; filename="bill_cycle_'. format_date($date) .'.csv"');
+		header('Content-Disposition: attachment; filename="moncycle_app_'. format_date($date) .'.csv"');
 		$i = 1;
 		print(implode(CSV_SEP,["jour","date","gommette","sensation","sommet", "unions", "commentaires"]));
 		print(PHP_EOL);
@@ -219,7 +219,7 @@ try {
 			$i += 1;
 		}
 
-		$pdf->Output('I', 'bill_cycle_'. human_date($date, '_') . '.pdf');
+		$pdf->Output('I', 'moncycle_app_'. human_date($date, '_') . '.pdf');
 	
 	}
 
@@ -228,8 +228,5 @@ try {
 catch (Exception $e) {
 	$result["err"] = $e->getMessage();
 	$result["line"] = $e->getLine();
+	print(json_encode($result));
 }
-
-
-#print(json_encode($result));
-
