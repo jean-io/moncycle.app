@@ -59,18 +59,18 @@ $cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
 				<br />
 				<span class="categorie">Gommettes:</span><br />
 				<input type="radio" name="gommette" id="go_rouge" value="." /><label for="go_rouge">🟥 menstruation <span class='note'>.</span><label><br />
-				<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 jour infécond <span class='note'>I</span></label><br />
-				<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 sécrétion qui ne change pas <span class='note'>=</span></label><br />
-				<input type="radio" name="gommette" id="go_bebe" value=":)" /><label for="go_bebe">👶 jour fécond <span class='note'>:)</span></label><br />
+				<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 absence de sécrétion <span class='note'>I</span></label><br />
+				<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 sécrétion inféconde <span class='note'>=</span></label><br />
+				<input type="radio" name="gommette" id="go_bebe" value=":)" /><label for="go_bebe">👶 sécrétion féconde <span class='note'>:)</span></label><br />
 				<input type="radio" name="gommette" id="go_jesaispas" value="?" /><label for="go_jesaispas">❔ jour non observé <span class='note'>?</span></span></label><br />
 				<br />
-				<span class="categorie">Observasions:</span><br />
+				<span class="categorie">Sensations et visuels:</span><br />
 				<input type="checkbox" name="ob_1" id="ob_sec" value="sec" /><label for="ob_sec">sec</label><br />
 				<input type="checkbox" name="ob_2" id="ob_humide" value="humide" /><label for="ob_humide">humide</label><br />
 				<input type="checkbox" name="ob_3" id="ob_elastique" value="elastique" /><label for="ob_elastique">elastique</label><br />
 				<input type="checkbox" name="ob_4" id="ob_filant" value="filant" /><label for="ob_filant">filant</label><br />
 				<input type="checkbox" name="ob_5" id="ob_collant" value="collant" /><label for="ob_collant">collant</label><br />
-				<input type="text" name="ob_extra" id="ob_extra" style="width: 95%" placeholder="autres observations (séparées par une virgule)"/><br />
+				<input type="text" name="ob_extra" id="ob_extra" style="width: 95%" placeholder="autres sensations/visuels (séparées par une virgule)"/><br />
 				<br />
 				<span class="categorie">Evénements:</span><br />
 				<input type="checkbox" name="premier_jour" id="ev_premier_jour" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
