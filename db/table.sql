@@ -1,10 +1,5 @@
-SET NAMES utf8;
-SET time_zone = '+00:00';
-SET foreign_key_checks = 0;
-
 SET NAMES utf8mb4;
 
-DROP TABLE IF EXISTS `compte`;
 CREATE TABLE `compte` (
   `no_compte` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `nom` varchar(255) COLLATE utf8mb4_bin NOT NULL,
@@ -12,16 +7,16 @@ CREATE TABLE `compte` (
   `email1` varchar(255) COLLATE utf8mb4_bin NOT NULL,
   `email2` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `motdepasse` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `nb_co_echoue` smallint(5) unsigned NOT NULL DEFAULT 0,
   `actif` tinyint(1) unsigned NOT NULL DEFAULT 1,
   `derniere_co_date` timestamp NULL DEFAULT NULL,
   `inscription_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `mdp_change_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`no_compte`)
+  PRIMARY KEY (`no_compte`),
+  KEY `email1` (`email1`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-ALTER TABLE `compte` AUTO_INCREMENT=5;
 
 
-DROP TABLE IF EXISTS `observation`;
 CREATE TABLE `observation` (
   `no_observation` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `no_compte` mediumint(8) unsigned NOT NULL,
@@ -35,6 +30,6 @@ CREATE TABLE `observation` (
   `dernier_modif` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`no_observation`),
   KEY `no_compte` (`no_compte`),
+  KEY `date_obs` (`date_obs`),
   CONSTRAINT `observation_ibfk_1` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-ALTER TABLE `observation` AUTO_INCREMENT=100;

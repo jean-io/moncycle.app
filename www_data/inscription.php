@@ -153,7 +153,7 @@ catch (Exception $e){
 			<input name="prenom" type="text" maxlength="255" id="i_prenom" required placeholder='ex: "Alice et Benoît" ou "Charlotte"' value="<?= $_POST['prenom'] ?? "" ?>" /><br />
 			<br />
 			<label for="i_email1">E-mail:</label><br />
-			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail."  value="<?= $_POST['email1'] ?? "" ?>" /><br />
+			<input name="email1" id="i_email1" type="email" maxlength="255" required placeholder="Votre adresse mail."  value="<?= $_POST['email1'] ?? "" ?>" /><br />
 			<br />
 			<label for="i_anaissance">Année de naissance:</label><br />
 			<select name="age" id="i_anaissance" required>

@@ -49,7 +49,7 @@ try {
 			$_SESSION["compte"] = $compte;
 			$_SESSION["no"] = intval($compte["no_compte"] ?? -1);
 
-			$sql ="update compte set derniere_co_date = now() where no_compte = :no_compte";
+			$sql ="update compte set derniere_co_date = now(), nb_co_echoue = 0 where no_compte = :no_compte";
 			
 			$statement = $db->prepare($sql);
 			$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
@@ -60,6 +60,12 @@ try {
 
 		}
 		else {
+			$sql ="update compte set nb_co_echoue = nb_co_echoue + 1 where email1 like :email1";
+			
+			$statement = $db->prepare($sql);
+			$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
+			$statement->execute();
+
 			sleep(3);
 			$output .= "Mauvais mot de passe ou compte inexistant.";
 		}
