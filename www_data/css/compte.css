@@ -1,6 +1,7 @@
 input[type=text],
 input[type=email],
-input[type=password] {
+input[type=password],
+select {
 	width: 90%;
 }
 
@@ -24,4 +25,9 @@ input[type=password] {
 
 form {
 	display: inline;
+}
+
+.captcha {
+	margin-top: 3px;
+	border-radius: 3px;
 }

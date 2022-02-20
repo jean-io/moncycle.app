@@ -40,21 +40,27 @@ try {
 
 
 	if (isset($_GET["creation_compte"]) && !$compte_existe && isset($_POST["prenom"]) && isset($_POST["email1"]) && isset($_POST["age"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
-		$pass_text = substr(bin2hex(random_bytes(8)), 0, 8);
-		$pass_hash = password_hash($pass_text, PASSWORD_BCRYPT);
 
-		$sql = "INSERT INTO compte (nom, age, email1, motdepasse) VALUES (:nom, :age, :email1, :motdepasse)";
+		if (isset($_SESSION["captcha"]) && isset($_POST["captcha"]) && strlen($_POST["captcha"])>=1 && $_POST["captcha"]==$_SESSION["captcha"]) {
+			$pass_text = substr(bin2hex(random_bytes(8)), 0, 8);
+			$pass_hash = password_hash($pass_text, PASSWORD_BCRYPT);
 
-		$statement = $db->prepare($sql);
-		$statement->bindValue(":nom", $_POST["prenom"], PDO::PARAM_STR);
-		$statement->bindValue(":age", $_POST["age"], PDO::PARAM_INT);
-		$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
-		$statement->bindValue(":motdepasse", $pass_hash, PDO::PARAM_STR);
-		$statement->execute();
+			$sql = "INSERT INTO compte (nom, age, email1, motdepasse) VALUES (:nom, :age, :email1, :motdepasse)";
 
-		//return $statement->fetchAll(PDO::FETCH_ASSOC);
-		$succes = "Votre compte a été créé. Vous allez recevoir votre mot de passe par mail. &#x1F525;";
-		$mail_mdp = $pass_hash;
+			$statement = $db->prepare($sql);
+			$statement->bindValue(":nom", $_POST["prenom"], PDO::PARAM_STR);
+			$statement->bindValue(":age", $_POST["age"], PDO::PARAM_INT);
+			$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
+			$statement->bindValue(":motdepasse", $pass_hash, PDO::PARAM_STR);
+			$statement->execute();
+
+			//return $statement->fetchAll(PDO::FETCH_ASSOC);
+			$succes = "Votre compte a été créé. Vous allez recevoir votre mot de passe par mail. &#x1F525;";
+			$mail_mdp = $pass_hash;
+		}
+		else {
+			$output .= "Erreur de captcha.";
+		}
 	} 
 	elseif (isset($_GET["nouveau_motdepasse_svp"]) && $compte_existe && isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 		sleep(3);
@@ -111,7 +117,7 @@ try {
 }
 catch (Exception $e){
 	
-	echo $e->getMessage();
+	$output .= $e->getMessage();
 
 }
 
@@ -144,7 +150,7 @@ catch (Exception $e){
 			<h2>Créer votre compte</h2>
 			<form action="?creation_compte" method="post"><br />
 			<label for="i_prenom">Prénoms:</label><br />
-			<input name="prenom" type="text" id="i_prenom" required placeholder='ex: "Alice et Benoît" ou "Charlotte"' value="<?= $_POST['prenom'] ?? "" ?>" /><br />
+			<input name="prenom" type="text" maxlength="255" id="i_prenom" required placeholder='ex: "Alice et Benoît" ou "Charlotte"' value="<?= $_POST['prenom'] ?? "" ?>" /><br />
 			<br />
 			<label for="i_email1">E-mail:</label><br />
 			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail."  value="<?= $_POST['email1'] ?? "" ?>" /><br />
@@ -155,7 +161,12 @@ catch (Exception $e){
 			<?php for ($i = date('Y')-(date('Y')%5)-75; $i < date('Y')-5; $i += 5) { ?>
 				<option <?= $i==($_POST["age"]?? -1) ? "selected" : "" ?>  value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>	
 			<?php } ?>
-			</select><br />
+			</select><br /><br />
+			<label for="i_email1">Captcha:</label><br />
+			<input name="captcha" id="i_captcha" type="text" maxlength="6" required placeholder="Entrer les six lettres ou chiffres affichés ci-dessous." /><br />
+			<img src="captcha.php" class="captcha" /><br />
+			<br />
+
 			<p>&#x1F1EB;&#x1F1F7; Ici on ne vend pas vos données. Elles sont hébergées en France et elles soumisent à la règlementation européenne.</p>
 			<br />
 			<input type="submit" value="Créer mon compte &#x1F942;&#x1F37E;" /></form>
