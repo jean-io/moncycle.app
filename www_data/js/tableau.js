@@ -70,6 +70,10 @@ bill = {
 		$("#timeline").prepend(html);
 		$("#but_creer_cycle").click(function () {
 			let nouveau_cycle_date = $("#nouveau_cycle_date").val();
+			if (new Date(nouveau_cycle_date) > new Date($("#nouveau_cycle_date").attr("max"))) {
+				alert("Erreur: la date du premier jour du cycle à créer doit être antérieur aux cycles déja existant et antérieur à auhjourd'hui.");
+				return;
+			}
 			$.post("observation.php", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
 			console.log(data);
 			if (data.err){
@@ -87,11 +91,11 @@ bill = {
 		});
 	},
 	trois_jours : function() {
-		$(".day .s").empty();				
+		$(".day .s").empty();
 		$(".day .s").removeClass("petit");				
 		bill.sommets.forEach(s => {
 			$(`#o-${s} .s`).html(bill.text.sommet);
-			let nb_j_sommet = [1, 2, 3, 15, $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1];
+			let nb_j_sommet = [1, 2, 3, $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1];
 			nb_j_sommet.forEach(n => {
 				let s_date = new Date(s);
 				s_date.setDate(s_date.getDate()+n);		
