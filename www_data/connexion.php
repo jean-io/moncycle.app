@@ -35,6 +35,9 @@ try {
 
 		$compte = $statement->fetchAll(PDO::FETCH_ASSOC)[0] ?? [];
 		
+		if (isset($compte["nb_co_echoue"]) && intval($compte["nb_co_echoue"])>=5) sleep(5);
+		elseif (!isset($compte["nb_co_echoue"]) && rand(0,5)==0) sleep(5);
+
 		if (empty($_POST["email1"]) || empty($_POST["mdp"])) {
 			$output .= "E-mail et mot de passe manquant.";
 		}
@@ -66,7 +69,6 @@ try {
 			$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
 			$statement->execute();
 
-			sleep(3);
 			$output .= "Mauvais mot de passe ou compte inexistant.";
 		}
 	

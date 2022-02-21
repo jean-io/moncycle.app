@@ -28,8 +28,6 @@ try {
 
 	$compte_existe = false;
 	if (isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
-		sleep(3);
-
 		$sql = "select count(no_compte)>0 as compte_existe from compte where email1 like :email1";
 		$statement = $db->prepare($sql);
 		$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
@@ -63,8 +61,6 @@ try {
 		}
 	} 
 	elseif (isset($_GET["nouveau_motdepasse_svp"]) && $compte_existe && isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
-		sleep(3);
-
 		$pass_text = substr(bin2hex(random_bytes(8)), 0, 8);
 		$pass_hash = password_hash($pass_text, PASSWORD_BCRYPT);
 
