@@ -9,7 +9,9 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 	exit;
 }
 
+
 $db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
+
 
 $sql = "SELECT date_obs AS cycles FROM observation WHERE no_compte = :no_compte AND premier_jour = 1 ORDER BY cycles DESC";
 
@@ -18,7 +20,28 @@ $statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
 $statement->execute();
 
 $cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
-		
+
+
+$sql = "select distinct sensation, count(sensation) as nb from observation where sensation is not null and no_compte=:no_compte group by sensation order by nb desc";
+
+$statement = $db->prepare($sql);
+$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
+$statement->execute();
+
+$sensations_brut = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+$sensations = [];
+foreach ($sensations_brut as $obj) {
+	$i = explode(',', $obj["sensation"]);
+	foreach ($i as $sens) {
+		$sens = strtolower(trim($sens));
+		if (!isset($sensations[$sens])) $sensations[$sens] = 0;
+		$sensations[$sens] += $obj["nb"];
+	}
+} 
+
+
+
 ?><!doctype html>
 <html lang="fr">
 	<head>
@@ -36,6 +59,7 @@ $cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
 		<script type="text/javascript" src="js/jquery.min.js"></script> 
 		<script type="text/javascript">
 			var tous_les_cycles = <?= json_encode($cycles); ?>;
+			var sensations = <?= json_encode($sensations); ?>;
 		</script>
 		<script type="text/javascript" src="js/tableau.js"></script>
 		<link rel="stylesheet" href="css/commun.css">
@@ -61,12 +85,8 @@ $cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
 				<input type="radio" name="gommette" id="go_bebe" value=":)" /><label for="go_bebe">👶 sécrétion féconde <span class='note'>:)</span></label><br />
 				<input type="radio" name="gommette" id="go_jesaispas" value="?" /><label for="go_jesaispas">❔ jour non observé <span class='note'>?</span></span></label><br />
 				<br />
-				<span class="categorie">Sensations et visuels:</span><br />
-				<input type="checkbox" name="ob_1" id="ob_sec" value="sec" /><label for="ob_sec">sec</label><br />
-				<input type="checkbox" name="ob_2" id="ob_humide" value="humide" /><label for="ob_humide">humide</label><br />
-				<input type="checkbox" name="ob_3" id="ob_elastique" value="elastique" /><label for="ob_elastique">elastique</label><br />
-				<input type="checkbox" name="ob_4" id="ob_filant" value="filant" /><label for="ob_filant">filant</label><br />
-				<input type="checkbox" name="ob_5" id="ob_collant" value="collant" /><label for="ob_collant">collant</label><br />
+				<span class="categorie">Vos sensations et visuels:</span><br />
+				<span id="vos_obs"></span>
 				<input type="text" name="ob_extra" id="ob_extra" style="width: 95%" placeholder="autres sensations/visuels (séparées par une virgule)"/><br />
 				<br />
 				<span class="categorie">Evénements:</span><br />

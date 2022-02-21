@@ -115,7 +115,7 @@ try {
 		$sensation = [];
 		foreach ($_POST as $key => $p) {
 			if (!str_starts_with($key, "ob_") || $p=="") continue;
-			array_push($sensation, trim($p));
+			array_push($sensation, strtolower(trim($p)));
 		}
 		$sensation_db = implode(", ", $sensation);
 		if ($sensation_db == "") $sensation_db = null;

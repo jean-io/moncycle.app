@@ -142,10 +142,22 @@ bill = {
 		$("#jour_form")[0].reset();
 		$("#form_date").val(j.date);
 		$("#go_" + bill.gommette[gommette][1]).prop('checked', true);
+		$("#vos_obs").empty();
+		let n = 0;
+		Object.entries(sensations).map(([k, v]) => {
+			if (n<10) {
+				let ob_id = btoa(k).replaceAll('+', '').replaceAll('=', '').replaceAll('/', '');
+				let html = `<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${k}" /><label for="ob_${k}">${k}</label><br />`;
+				$("#vos_obs").append(html);
+			}
+			n += 1;	
+		});
 		let extra = []
 		if (j.sensation) j.sensation.split(',').forEach(ob => {
 			if (ob == bill.text.a_renseigner) return;
-			let obj = $("#ob_" + ob.replace(/\s/g, ''));
+			ob = ob.toLowerCase().trim();
+			let ob_id = btoa(ob).replaceAll('+', '').replaceAll('=', '').replaceAll('/', '');
+			let obj = $(`#ob_${ob_id}`);
 			if(obj.length) obj.prop('checked', true);
 			else extra.push(ob);
 		});
