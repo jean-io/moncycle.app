@@ -47,7 +47,7 @@ INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `gommette`
 (39,	2,	CURDATE() + INTERVAL -35 DAY,	'I',	NULL,	NULL,	NULL,	NULL,	'',	NULL),
 (40,	2,	CURDATE() + INTERVAL -34 DAY,	'I',	NULL,	NULL,	NULL,	NULL,	'',	NULL),
 (41,	2,	CURDATE() + INTERVAL -33 DAY,	'I',	NULL,	NULL,	NULL,	NULL,	'',	NULL),
-(42,	2,	CURDATE() + INTERVAL -32 DAY,	'=',	'humide, jaune pâteux collant',	NULL,	NULL,	NULL,	'',	NULL),
+(42,	2,	CURDATE() + INTERVAL -32 DAY,	'=',	'humide, jaune, pâteux, collant',	NULL,	NULL,	NULL,	'',	NULL),
 (43,	2,	CURDATE() + INTERVAL -31 DAY,	'=',	'humide',	NULL,	NULL,	NULL,	'Idem veille',	NULL),
 (45,	2,	CURDATE() + INTERVAL -30 DAY,	'.',	NULL,	NULL,	NULL,	1,	'',	NULL),
 (46,	2,	CURDATE() + INTERVAL -29 DAY,	'.',	NULL,	NULL,	NULL,	NULL,	'',	NULL),
