@@ -49,6 +49,7 @@ if (isset($_REQUEST["modif_compte"]) && (empty($_POST["email2"]) || (!empty($_PO
 	$statement->execute();
 
 	$_SESSION["compte"] = $statement->fetchAll(PDO::FETCH_ASSOC)[0] ?? [];
+	unset($_SESSION["compte"]["motdepasse"]);
 
 	//return $statement->fetchAll(PDO::FETCH_ASSOC);
 	$succes .= "Vos informations ont été mises à jour. &#x1F44F;";
