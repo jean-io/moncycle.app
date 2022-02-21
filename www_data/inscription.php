@@ -9,9 +9,6 @@ require_once 'phpmailer/src/PHPMailer.php';
 require_once 'phpmailer/src/SMTP.php';
 
 session_start();
-$cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
-$options = ['expires' => time()+$cookieLifetime, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'strict'];
-setcookie(session_name(),session_id(),$options);
 
 if (isset($_SESSION["connected"]) && $_SESSION["connected"]) {
 	header('Location: /');

@@ -3,9 +3,6 @@
 require_once "config.php";
 
 session_start();
-$cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
-$options = ['expires' => time()+$cookieLifetime, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'strict'];
-setcookie(session_name(),session_id(),$options);
 
 $output = "";
 

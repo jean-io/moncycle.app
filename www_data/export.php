@@ -4,10 +4,6 @@ require_once "config.php";
 require_once "fpdf/fpdf.php";
 
 session_start();
-$cookieLifetime = 365 * 24 * 60 * 60; // A year in seconds
-$options = ['expires' => time()+$cookieLifetime, 'path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'strict'];
-setcookie(session_name(),session_id(),$options);
-
 
 function format_date($date) {
 	$d = $date['day']<10? "0" . $date['day'] : "" . $date['day'];
