@@ -9,5 +9,6 @@ RUN apt-get update \
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 COPY ./php_conf/moncycleapp_php.ini $PHP_INI_DIR/conf.d
+RUN mkdir -p /var/lib/php/session && mkdir -p /var/lib/php/soap_cache && chown -R www-data:www-data /var/lib/php/
 
 COPY ./www_data /var/www/html/
