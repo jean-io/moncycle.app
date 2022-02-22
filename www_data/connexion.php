@@ -1,6 +1,7 @@
 <?php
 
 require_once "config.php";
+require_once "lib/db.php";
 
 session_start();
 
@@ -27,14 +28,9 @@ try {
 
 	if (isset($_POST["email1"]) && isset($_POST["mdp"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 
-		$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
+		$db = db_open();
 
-		$sql = "select * from compte where email1 like :email1";
-		$statement = $db->prepare($sql);
-		$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
-		$statement->execute();
-
-		$compte = $statement->fetchAll(PDO::FETCH_ASSOC)[0] ?? [];
+		$compte = db_select_compte_par_mail($db, $_POST["email1"])[0] ?? [];
 		
 		if (isset($compte["nb_co_echoue"]) && intval($compte["nb_co_echoue"])>=5) sleep(5);
 		elseif (!isset($compte["nb_co_echoue"]) && rand(0,5)==0) sleep(5);
@@ -53,23 +49,13 @@ try {
 			$_SESSION["compte"] = $compte;
 			$_SESSION["no"] = intval($compte["no_compte"] ?? -1);
 
-			$sql ="update compte set derniere_co_date = now(), nb_co_echoue = 0 where no_compte = :no_compte";
-			
-			$statement = $db->prepare($sql);
-			$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-			$statement->execute();
+			db_update_compte_connecte($db, $_SESSION["no"]);
 
 			header('Location: /');
 			exit;
-
 		}
 		else {
-			$sql ="update compte set nb_co_echoue = nb_co_echoue + 1 where email1 like :email1";
-			
-			$statement = $db->prepare($sql);
-			$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
-			$statement->execute();
-
+			db_update_co_echoue($db, $_POST["email1"]);
 			$output .= "Mauvais mot de passe ou compte inexistant.";
 		}
 	

@@ -1,6 +1,8 @@
 <?php
 
 require_once "config.php";
+require_once "lib/db.php";
+require_once "lib/sec.php";
 
 session_start();
 
@@ -9,23 +11,14 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 	exit;
 }
 
-$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
+$db = db_open();
 
 $erreur = "";
 $succes = "";
 
 if (isset($_REQUEST["change_motdepasse"])) {
 	if (!empty($_POST["mdp1"])) {
-		$pass_hash = password_hash($_POST["mdp1"], PASSWORD_BCRYPT);
-
-		$sql = "UPDATE compte SET motdepasse = :motdepasse, mdp_change_date = now() WHERE no_compte = :no_compte";
-
-		$statement = $db->prepare($sql);
-		$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-		$statement->bindValue(":motdepasse", $pass_hash, PDO::PARAM_STR);
-		$statement->execute();
-
-		//return $statement->fetchAll(PDO::FETCH_ASSOC);
+		db_udpate_motdepasse_par_nocompte($db, sec_hash($_POST["mdp1"]), $_SESSION["no"]);
 		$succes .= "Votre mot de passe a été changé. &#x270C;";
 	}
 	else {
@@ -34,55 +27,25 @@ if (isset($_REQUEST["change_motdepasse"])) {
 }
 
 if (isset($_REQUEST["modif_compte"]) && (empty($_POST["email2"]) || (!empty($_POST["email2"]) && filter_var($_POST["email2"], FILTER_VALIDATE_EMAIL)) )) {
-	$sql = "UPDATE compte SET nom = :nom, email2 = :email2, age = :age WHERE no_compte = :no_compte";
+	db_update_compte($db, $_POST["nom"], $_POST["email2"], $_POST["age"], $_SESSION["no"]);
 
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-	$statement->bindValue(":nom", $_POST["nom"], PDO::PARAM_STR);
-	$statement->bindValue(":email2", $_POST["email2"], PDO::PARAM_STR);
-	$statement->bindValue(":age", $_POST["age"], PDO::PARAM_INT);
-	$statement->execute();
-
-	$sql = "select * from compte where email1 like :email1";
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
-	$statement->execute();
-
-	$_SESSION["compte"] = $statement->fetchAll(PDO::FETCH_ASSOC)[0] ?? [];
+	$_SESSION["compte"] = db_select_compte_par_nocompte($db, $_SESSION["no"])[0] ?? [];
 	unset($_SESSION["compte"]["motdepasse"]);
 
-	//return $statement->fetchAll(PDO::FETCH_ASSOC);
 	$succes .= "Vos informations ont été mises à jour. &#x1F44F;";
-
 }
 
 if (isset($_REQUEST["suppr_compte"]) && isset($_POST["boutton_suppr"])) {
-	$sql = "DELETE FROM compte WHERE no_compte = :no_compte";
-	
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-	$statement->execute();
+	db_delete_compte($db, $_SESSION["no"]);
+	$_SESSION["connected"] = false;
 
 	header('Location: connexion.php?deconnexion_svp');
 	exit;
-
 }
 
 if (isset($_REQUEST["mes_donnees_svp"])) {
-	$sql1 = "SELECT * FROM `compte` WHERE `no_compte` = :no_compte";
-	$sql2 = "SELECT * FROM `observation` WHERE `no_compte` = :no_compte";
-
-	$statement = $db->prepare($sql1);
-	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-	$statement->execute();
-
-	$export_compte = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-	$statement = $db->prepare($sql2);
-	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-	$statement->execute();
-
-	$export_obs = $statement->fetchAll(PDO::FETCH_ASSOC);
+	$export_compte = db_select_compte_par_nocompte($db, $_SESSION["no"]);
+	$export_obs = db_select_all_observation($db, $_SESSION["no"]);
 
 	header("content-type:application/csv;charset=UTF-8");
 	header('Content-Disposition: attachment; filename="export_moncycle_app.csv"');

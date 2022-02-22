@@ -1,70 +1,15 @@
 <?php
 
 require_once "config.php";
+require_once "lib/date.php";
+require_once "lib/db.php";
 require_once "fpdf/fpdf.php";
 
 session_start();
 
-function format_date($date) {
-	$d = $date['day']<10? "0" . $date['day'] : "" . $date['day'];
-	$m = $date['month']<10? "0" . $date['month'] : "" . $date['month'];
-	return "" . $date['year'] . "-" . $m . "-" . $d;
-}
-
-function human_date($date, $sep='/') {
-	$d = $date['day'];
-	$m = $date['month'];
-	return $d . $sep . $m . $sep . $date['year'];
-}
-
-function read_observation ($db, $date) {
-	$sql = "SELECT * FROM observation WHERE date_obs = :date LIMIT 1";
-
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
-	$statement->execute();
-
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function get_cycle($db, $date) {
-	$sql = "SELECT date_obs AS cycle FROM observation WHERE premier_jour=1 and date_obs<=:date AND no_compte = :no_compte ORDER BY date_obs DESC LIMIT 1";
-
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
-	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-	$statement->execute();
-
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function get_cycle_end($db, $date) {
-	$sql = "SELECT date_obs AS cycle_end FROM observation WHERE premier_jour=1 and date_obs>:date AND no_compte = :no_compte ORDER BY date_obs ASC LIMIT 1";
-
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":date", format_date($date), PDO::PARAM_STR);
-	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-	$statement->execute();
-
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function export_cycle($db, $date_start, $date_end) {
-	$sql = "SELECT date_obs, gommette, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
-
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":date_start", format_date($date_start), PDO::PARAM_STR);
-	$statement->bindValue(":date_end", format_date($date_end), PDO::PARAM_STR);
-	$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-	$statement->execute();
-
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
-}
-
-
 try {
 
-	$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
+	$db = db_open();
 
 	// VERIFICATION DE LA BONNE OUVERTURE DE LA SESSION
 	if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
@@ -74,8 +19,8 @@ try {
 
 	// LECTURE D'UNE DATE DE DEBUT DE CYCLE
 	if (isset($_GET['cycle'])) {
-		$date = date_parse($_GET['cycle']);
-		$result["date"] = format_date($date);
+		$date = new DateTime($_GET['cycle']);
+		$result["date"] = date_sql($date);
 	}
 	else {
 		print("Date du cycle non indique.");
@@ -91,17 +36,17 @@ try {
 	}
 
 	// RECUPERATION DE LA DATE DE DEBUT ET DE FIN DU CYCLE
-	$result["cycle_debut"] = date_parse(get_cycle($db, $date)[0]["cycle"]);
-	$cycle_end = get_cycle_end($db, $date);
+	$result["cycle_debut"] = new DateTime(db_select_cycle($db, date_sql($date), $_SESSION["no"])[0]["cycle"]);
+	$cycle_end = db_select_cycle_end($db, date_sql($date), $_SESSION["no"]);
 	if (isset($cycle_end[0]["cycle_end"])) {
 		$date_tmp = new DateTime($cycle_end[0]["cycle_end"]);
 		$date_tmp->modify('-1 day');
-		$result["cycle_fin"] = date_parse($date_tmp->format('Y-m-d'));
+		$result["cycle_fin"] = $date_tmp;
 	}
-	else $result["cycle_fin"] = date_parse(date("Y-m-d"));
+	else $result["cycle_fin"] = new DateTime();
 
 	// RECUPERATION DU CYCLE
-	$data = export_cycle($db, $result["cycle_debut"],$result["cycle_fin"]);
+	$data = db_select_cycle_complet($db, date_sql($result["cycle_debut"]),date_sql($result["cycle_fin"]), $_SESSION["no"]);
 
 	// AJOUT DES JOURS MANQUANTS DU CYCLE
 	$nb_jours = 0;
@@ -117,14 +62,11 @@ try {
 		$nb_jours += 1;
 	}
 
-	// print_r($cycle);
-	// exit;
-
 	if ($_GET['type'] == "csv") {
 
 		// ECRITURE DU CSV
 		header("content-type:application/csv;charset=UTF-8");
-		header('Content-Disposition: attachment; filename="moncycle_app_'. format_date($date) .'.csv"');
+		header('Content-Disposition: attachment; filename="moncycle_app_'. date_sql($date) .'.csv"');
 		$i = 1;
 		print(implode(CSV_SEP,["jour","date","gommette","sensation","sommet", "unions", "commentaires"]));
 		print(PHP_EOL);
@@ -138,7 +80,7 @@ try {
 	elseif ($_GET['type'] == "pdf") {
 	
 		$pdf = new FPDF('P','mm','A4');
-		$pdf->SetTitle('bill_cycle_'. human_date($date, '_') . '.pdf');
+		$pdf->SetTitle('bill_cycle_'. date_humain($date, '_') . '.pdf');
 		$pdf->AddPage();
 		$pdf->SetFont('Courier','B',16);
 		$pdf->Link($pdf->GetX(), $pdf->GetY(), $pdf->GetStringWidth("MONCYCLE.APP "), 10, "https://moncycle.app");
@@ -149,7 +91,7 @@ try {
 		$pdf->Cell(0,10,sprintf(".APP %s", utf8_decode($_SESSION["compte"]["nom"])));
 		$pdf->SetFont('Courier','',10);
 		$pdf->Ln();
-		$pdf->Cell(40,10,sprintf("Cycle de %d jours du %s au %s", $nb_jours, human_date($result["cycle_debut"]), human_date($result["cycle_fin"])));
+		$pdf->Cell(40,10,sprintf("Cycle de %d jours du %s au %s", $nb_jours, date_humain($result["cycle_debut"]), date_humain($result["cycle_fin"])));
 		$pdf->Ln();
 		$pdf->Ln();
 
@@ -207,7 +149,7 @@ try {
 			$pdf->SetFont('Courier','I',7);
 			$pdf->Cell(10,5,utf8_decode($line["commentaire"]?? ""));
 			$pdf->SetTextColor(100,100,100);
-		 	$pdf->Text($pdf->GetPageWidth()-35,$pdf->GetY()+4,human_date(date_parse($line["date_obs"])));
+		 	$pdf->Text($pdf->GetPageWidth()-35,$pdf->GetY()+4,date_humain(new DateTime($line["date_obs"])));
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFont('Courier','',10);
 			$pdf->Ln();
@@ -215,7 +157,7 @@ try {
 			$i += 1;
 		}
 
-		$pdf->Output('I', 'moncycle_app_'. human_date($date, '_') . '.pdf');
+		$pdf->Output('I', 'moncycle_app_'. date_humain($date, '_') . '.pdf');
 	
 	}
 

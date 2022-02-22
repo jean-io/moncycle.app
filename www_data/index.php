@@ -1,6 +1,7 @@
 <?php
 
 require_once "config.php";
+require_once "lib/db.php";
 
 session_start();
 
@@ -10,25 +11,10 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 }
 
 
-$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
+$db = db_open();
 
-
-$sql = "SELECT date_obs AS cycles FROM observation WHERE no_compte = :no_compte AND premier_jour = 1 ORDER BY cycles DESC";
-
-$statement = $db->prepare($sql);
-$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-$statement->execute();
-
-$cycles = $statement->fetchAll(PDO::FETCH_COLUMN);
-
-
-$sql = "select distinct sensation, count(sensation) as nb from observation where sensation is not null and no_compte=:no_compte group by sensation order by nb desc";
-
-$statement = $db->prepare($sql);
-$statement->bindValue(":no_compte", $_SESSION["no"], PDO::PARAM_INT);
-$statement->execute();
-
-$sensations_brut = $statement->fetchAll(PDO::FETCH_ASSOC);
+$cycles = db_select_cycles($db, $_SESSION["no"]);
+$sensations_brut = db_select_sensations($db, $_SESSION["no"]);
 
 $sensations = [];
 foreach ($sensations_brut as $obj) {

@@ -4,6 +4,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require_once "config.php";
+require_once "lib/db.php";
+require_once "lib/sec.php";
 require_once 'phpmailer/src/Exception.php';
 require_once 'phpmailer/src/PHPMailer.php';
 require_once 'phpmailer/src/SMTP.php';
@@ -21,35 +23,19 @@ $mail_mdp = false;
 
 try {
 
-	$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
+	$db = db_open();
 
 	$compte_existe = false;
-	if (isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
-		$sql = "select count(no_compte)>0 as compte_existe from compte where email1 like :email1";
-		$statement = $db->prepare($sql);
-		$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
-		$statement->execute();
-
-		$compte_existe = boolval($statement->fetchAll(PDO::FETCH_ASSOC)[0]["compte_existe"]);
-	}
-
+	if (isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) $compte_existe = boolval(db_select_compte_existe($db,$_POST["email1"])[0]["compte_existe"]);
 
 	if (isset($_GET["creation_compte"]) && !$compte_existe && isset($_POST["prenom"]) && isset($_POST["email1"]) && isset($_POST["age"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 
 		if (isset($_SESSION["captcha"]) && isset($_POST["captcha"]) && strlen($_POST["captcha"])>=1 && $_POST["captcha"]==$_SESSION["captcha"]) {
-			$pass_text = substr(bin2hex(random_bytes(8)), 0, 8);
-			$pass_hash = password_hash($pass_text, PASSWORD_BCRYPT);
+			$pass_text = sec_motdepasse_aleatoire();
+			$pass_hash = sec_hash($pass_text);
 
-			$sql = "INSERT INTO compte (nom, age, email1, motdepasse) VALUES (:nom, :age, :email1, :motdepasse)";
+			db_insert_compte($db, $_POST["prenom"], $_POST["age"], $_POST["email1"],$pass_hash);
 
-			$statement = $db->prepare($sql);
-			$statement->bindValue(":nom", $_POST["prenom"], PDO::PARAM_STR);
-			$statement->bindValue(":age", $_POST["age"], PDO::PARAM_INT);
-			$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
-			$statement->bindValue(":motdepasse", $pass_hash, PDO::PARAM_STR);
-			$statement->execute();
-
-			//return $statement->fetchAll(PDO::FETCH_ASSOC);
 			$succes = "Votre compte a été créé. Vous allez recevoir votre mot de passe par mail. &#x1F525;";
 			$mail_mdp = $pass_hash;
 		}
@@ -58,21 +44,16 @@ try {
 		}
 	} 
 	elseif (isset($_GET["nouveau_motdepasse_svp"]) && $compte_existe && isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
-		$pass_text = substr(bin2hex(random_bytes(8)), 0, 8);
-		$pass_hash = password_hash($pass_text, PASSWORD_BCRYPT);
+		$pass_text = sec_motdepasse_aleatoire();
+		$pass_hash = sec_hash($pass_text);
 
-		$sql = "UPDATE compte SET motdepasse = :motdepasse, mdp_change_date = NULL WHERE email1 = :email1";
+		db_update_motdepasse_par_mail($db, $pass_hash, $_POST["email1"]);
 
-		$statement = $db->prepare($sql);
-		$statement->bindValue(":email1", $_POST["email1"], PDO::PARAM_STR);
-		$statement->bindValue(":motdepasse", $pass_hash, PDO::PARAM_STR);
-		$statement->execute();
-
-		//return $statement->fetchAll(PDO::FETCH_ASSOC);
 		$succes = "Un nouveau mot de passe va vous être envoyé par mail (si ce compte existe). &#x2709;";
 		$mail_mdp = $pass_hash;	
 	}
 	elseif (isset($_GET["nouveau_motdepasse_svp"])) {
+		sleep(1);
 		$succes = "Un nouveau mot de passe va vous être envoyé par mail (si ce compte existe). &#x2709;";
 	}
 	elseif (isset($_GET["creation_compte"])) {
