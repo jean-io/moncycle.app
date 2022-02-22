@@ -13,8 +13,8 @@ CREATE TABLE `compte` (
   `inscription_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `mdp_change_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`no_compte`),
-  KEY `email1` (`email1`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+  UNIQUE KEY `email1` (`email1`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 
 CREATE TABLE `observation` (
@@ -32,4 +32,4 @@ CREATE TABLE `observation` (
   KEY `no_compte` (`no_compte`),
   KEY `date_obs` (`date_obs`),
   CONSTRAINT `observation_ibfk_1` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
