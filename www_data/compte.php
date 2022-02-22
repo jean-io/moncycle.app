@@ -177,8 +177,9 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		</form><br />
 		<br />
 		<h2>A propos et contact</h2>
-		<p>MONCYCLE.APP est une application Open Source: le code source est disponnible sur Github. <a href="https://github.com/jean-io/moncycle.app" traget="_blank">Consulter le code source</a></p>
-		<p>Besoin d'aide? Une question? Une suggestion? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a></p>
+		<p>Cette application est Open Source: le code est disponnible sur <a href="https://github.com/jean-io/moncycle.app" target="_blank">github.com/jean-io/moncycle.app</a>.</p>
+		<p>Retrouvez toutes les informations de cette application sur <a href="https://www.moncycle.app" target="_blank">www.moncycle.app</a>.</p>
+		<p>Besoin d'aide? Une question? Une suggestion? Une demande? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a>.</p>
 		<br />
 		<h2 class="rouge">Zone de danger</h2>
 		<span class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est ireversible mais vous avez la possibilité de télècharger toutes vos donné en amont de la suppression.</span><br />

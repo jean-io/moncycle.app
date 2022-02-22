@@ -147,7 +147,7 @@ bill = {
 		Object.entries(sensations).map(([k, v]) => {
 			if (n<10) {
 				let ob_id = btoa(k).replaceAll('+', '').replaceAll('=', '').replaceAll('/', '');
-				let html = `<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${k}" /><label for="ob_${k}">${k}</label><br />`;
+				let html = `<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${k}" /><label for="ob_${ob_id}">${k}</label><br />`;
 				$("#vos_obs").append(html);
 			}
 			n += 1;	

@@ -106,7 +106,9 @@ catch (Exception $e){
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
-			<a href="inscription.php"><button type="button" class="nav_button">Créer un compte ou mot de passe perdu</button></a>
+			<a href="inscription.php"><button type="button" class="nav_button">Créer un compte</button></a>
+			<a href="inscription.php"><button type="button" class="nav_button">Mot de passe perdu</button></a>
+			<a href="https://www.moncycle.app"><button type="button" class="nav_button">Présentation de l'APP</button></a>
 		</center>
 
 		<div class="contennu" id="timeline">

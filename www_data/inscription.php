@@ -135,6 +135,7 @@ catch (Exception $e){
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<a href="/"><button type="button" class="nav_button">Se connecter</button></a>
+			<a href="https://www.moncycle.app"><button type="button" class="nav_button">Présentation de l'APP</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $output? "<br /><br />" . $output : "" ?></span>
 		</center>

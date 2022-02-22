@@ -41,6 +41,10 @@ html, body, #jour_form_titre {
 	color: black;
 }
 
+a {
+	color: #4169E1;
+}
+
 #jour_form {
 	background-color: white;
 	border: 1px solid black;
