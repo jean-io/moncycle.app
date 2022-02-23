@@ -62,7 +62,7 @@ try {
 		$sensation_db = implode(", ", $sensation);
 		if ($sensation_db == "") $sensation_db = null;
 
-		db_update_observation ($db, date_sql($date), $_SESSION["no"], $_POST["gommette"] ?? '', $sensation_db, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["commentaire"] ?? null);
+		db_update_observation ($db, date_sql($date), $_SESSION["no"], $_POST["gommette"] ?? '', $sensation_db, $_POST["temp"] ?? null, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["commentaire"] ?? null);
 		$result["outcome"] = "ok";
 		$result["args"] = $_POST;
 	}

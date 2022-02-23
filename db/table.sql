@@ -23,6 +23,7 @@ CREATE TABLE `observation` (
   `date_obs` date NOT NULL DEFAULT '0000-00-00',
   `gommette` varchar(2) COLLATE utf8mb4_bin NOT NULL,
   `sensation` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `temperature` decimal(4,2) unsigned DEFAULT NULL,
   `jour_sommet` tinyint(1) unsigned zerofill DEFAULT NULL,
   `union_sex` tinyint(1) unsigned zerofill DEFAULT NULL,
   `premier_jour` tinyint(1) unsigned DEFAULT NULL,
@@ -33,3 +34,4 @@ CREATE TABLE `observation` (
   KEY `date_obs` (`date_obs`),
   CONSTRAINT `observation_ibfk_1` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+

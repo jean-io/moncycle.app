@@ -93,9 +93,22 @@
 	font-style: italic;
 }
 
+.day .t:not(:empty) {
+	background-color: gray;
+	font-size: .75em;
+	border-radius: 10px;
+	color: white;
+	padding: 2px 5px;
+}
+
+.day .t:not(:empty)::after {
+	content: '°';
+}
+
 .petit {
 	font-size: .8em;
 }
+
 .bold {
 	font-weight: bold;
 }

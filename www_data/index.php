@@ -43,6 +43,7 @@ foreach ($sensations_brut as $obj) {
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
 		<title>MONCYCLE.APP</title>
 		<script type="text/javascript" src="js/jquery.min.js"></script> 
+		<script type="text/javascript" src="js/chart.min.js"></script> 
 		<script type="text/javascript">
 			var tous_les_cycles = <?= json_encode($cycles); ?>;
 			var sensations = <?= json_encode($sensations); ?>;
@@ -70,6 +71,9 @@ foreach ($sensations_brut as $obj) {
 				<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 sécrétion inféconde <span class='note'>=</span></label><br />
 				<input type="radio" name="gommette" id="go_bebe" value=":)" /><label for="go_bebe">👶 sécrétion féconde <span class='note'>:)</span></label><br />
 				<input type="radio" name="gommette" id="go_jesaispas" value="?" /><label for="go_jesaispas">❔ jour non observé <span class='note'>?</span></span></label><br />
+				<br />
+				<span class="categorie">Température:</span><br />
+				<input type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="entrer votre temperature corporelle"> °C <br>
 				<br />
 				<span class="categorie">Vos sensations et visuels:</span><br />
 				<span id="vos_obs"></span>

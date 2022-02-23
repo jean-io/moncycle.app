@@ -125,6 +125,17 @@ bill = {
 		observation.append(`<span class='j'>${j.pos}</span>`);
 		let gommette = j.gommette ?? "";
 		observation.append(`<span class='g ${bill.gommette[gommette][1]}'>${bill.gommette[gommette][0]}</span>`);
+		if (j.temperature) {
+			let temp = parseFloat(j.temperature);
+			let color = "#4169e1";
+			if (temp > 37.5) color = "#b469e1";
+			else if (temp <= 37.5 && temp >= 36.5) {
+				let r = parseInt((1-(37.5-temp))*115)+65;
+				color = `rgb(${r}, 105, 225)`;
+			}
+			observation.append(`<span class='t' style='background-color: ${color}'>${temp}</span>`);
+		}
+		else observation.append(`<span class='t'></span>`);
 		observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
 		observation.append(`<span class='u'>${j.union_sex ? bill.text.union : ""}</span>`);
 		if (gommette == "") j.sensation = bill.text.a_renseigner;
@@ -142,6 +153,7 @@ bill = {
 		$("#jour_form")[0].reset();
 		$("#form_date").val(j.date);
 		$("#go_" + bill.gommette[gommette][1]).prop('checked', true);
+		$("#form_temp").val(j.temperature);
 		$("#vos_obs").empty();
 		let n = 0;
 		Object.entries(sensations).map(([k, v]) => {
