@@ -277,4 +277,21 @@ function db_select_age_moyen_recent($db) {
 	return $statement->fetchAll(PDO::FETCH_NUM);
 }
 
+function db_select_observation_aujourdhui($db) {
+	$sql = "select count(no_observation) as MONCYCLE_APP_NB_OBSERVATION_AUJOURDHUI from observation where date_obs like DATE(NOW()) and no_compte!=2";
 
+	$statement = $db->prepare($sql);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_NUM);
+}
+
+function db_select_observation_count($db, $nbj) {
+	$sql = "select count(no_observation) as MONCYCLE_APP_NB_OBSERVATION from observation where date_obs>= DATE(NOW()) - INTERVAL :nbj DAY and no_compte!=2";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":nbj", $nbj, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_NUM);
+}
