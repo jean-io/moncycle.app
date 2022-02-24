@@ -66,14 +66,14 @@ foreach ($sensations_brut as $obj) {
 			<div>
 				<br />
 				<span class="categorie">Gommettes:</span><br />
-				<input type="radio" name="gommette" id="go_rouge" value="." /><label for="go_rouge">🟥 menstruation <span class='note'>.</span><label><br />
-				<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 absence de sécrétion <span class='note'>I</span></label><br />
+				<input type="radio" name="gommette" id="go_rouge" value="." /><label for="go_rouge">🟥 menstruation <span class='note'>.</span></label><br />
+				<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 pas de sécrétion <span class='note'>I</span></label><br />
 				<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 sécrétion inféconde <span class='note'>=</span></label><br />
 				<input type="radio" name="gommette" id="go_bebe" value=":)" /><label for="go_bebe">👶 sécrétion féconde <span class='note'>:)</span></label><br />
 				<input type="radio" name="gommette" id="go_jesaispas" value="?" /><label for="go_jesaispas">❔ jour non observé <span class='note'>?</span></span></label><br />
 				<br />
 				<span class="categorie">Température:</span><br />
-				<input type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="entrer votre temperature corporelle"> °C <br>
+				<input type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="entrer votre temperature corporelle"> °C 🌡️</br>
 				<br />
 				<span class="categorie">Vos sensations et visuels:</span><br />
 				<span id="vos_obs"></span>
@@ -85,7 +85,7 @@ foreach ($sensations_brut as $obj) {
 				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ jour sommet</label><br />
 				<br />
 				<span class="categorie">Commentaire:</span><br />
-				<textarea style="width: 95%" name="commentaire" id="from_com"></textarea><br />
+				<textarea style="width: 95%" name="commentaire" id="from_com" maxlength="255"></textarea><br />
 				<br />
 				<button type="button" id="jour_form_submit">✔️</button> <button type="button" id="jour_form_close">❌</button> 
 				<div id="form_err" class="err"></div>

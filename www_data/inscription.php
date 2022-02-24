@@ -128,11 +128,11 @@ catch (Exception $e){
 			<input name="prenom" type="text" maxlength="255" id="i_prenom" required placeholder='ex: "Alice et Benoît" ou "Charlotte"' value="<?= $_POST['prenom'] ?? "" ?>" /><br />
 			<br />
 			<label for="i_email1">E-mail:</label><br />
-			<input name="email1" id="i_email1" type="email" maxlength="255" required placeholder="Votre adresse mail."  value="<?= $_POST['email1'] ?? "" ?>" /><br />
+			<input name="email1" id="i_email1" type="email" maxlength="255" required placeholder="Entrer votre adresse mail."  value="<?= $_POST['email1'] ?? "" ?>" /><br />
 			<br />
 			<label for="i_anaissance">Année de naissance:</label><br />
-			<select name="age" id="i_anaissance" required>
-			<option label=" "></option>
+			<select name="age" id="i_anaissance" required placeholder="">
+			<option disabled selected class="placeholder">Selectionner votre année de naissance</option>
 			<?php for ($i = date('Y')-(date('Y')%5)-75; $i < date('Y')-5; $i += 5) { ?>
 				<option <?= $i==($_POST["age"]?? -1) ? "selected" : "" ?>  value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>	
 			<?php } ?>

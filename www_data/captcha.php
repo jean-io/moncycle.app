@@ -16,7 +16,7 @@ header('Content-type: image/jpeg');
 
 
 $image = imagecreate($img_width, $img_height);
-imagecolorallocate($image, 65, 105, 225); // couleur de fond
+imagecolorallocate($image, 30, 130, 76); // couleur de fond
 $text_color = imagecolorallocate($image, 255, 255, 255); // couleur du texte
 
 imagettftext($image, $font_size, 0, 15, 30, $text_color, 'font/montserrat/static/Montserrat-Regular.ttf', $captcha_num);

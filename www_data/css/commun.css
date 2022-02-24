@@ -21,8 +21,8 @@ h2 {
 }
 
 .gradiant_logo {
-	color: #4169E1;
-	background-image: linear-gradient(90deg, #163aa6, #3d6bf5);
+	color: #1e824c;
+	background-image: linear-gradient(90deg, #0b6334, #37a369);
 	background-size: 100%;
 	background-repeat: repeat;
 	-webkit-background-clip: text;
@@ -42,7 +42,7 @@ html, body, #jour_form_titre {
 }
 
 a {
-	color: #4169E1;
+	color: #1e824c;
 }
 
 #jour_form {
@@ -50,16 +50,7 @@ a {
 	border: 1px solid black;
 }
 
-@media (prefers-color-scheme: dark) {
-	html, body, h2, #jour_form_titre {
-		background-color: black;
-		color: white;
-	}
-	#jour_form {
-		background-color: black;
-		border-color: white;
-	}
-}
+
 
 #nom {
 	font-family: 'Montserrat';
@@ -77,3 +68,93 @@ a {
 	margin: 0 auto;
 }
 
+input[type=button],
+input[type=submit],
+button {
+	background-color: #f0f0f0;
+	border: #f0f0f0 1px solid;
+	border-radius: 5px;
+	color: #1e824c;
+	text-transform: uppercase;
+	padding: 3px 5px;
+	cursor: pointer;
+}
+
+input[type=button].rouge,
+input[type=submit].rouge,
+button.rouge {
+	color: #ac2433;
+}
+
+input[type=button].rougei:focus,
+input[type=submit].rouge:focus,
+button.rouge:focus {
+	border-color: #ac2433;
+}
+
+input[type=text],
+input[type=number],
+input[type=password],
+input[type=email],
+select,
+textarea {
+	background-color: #f0f0f0;
+	border: #f0f0f0 1px solid;
+	border-radius: 5px;
+	padding: 5px 7px;
+	font-size: .9em;
+}
+
+input:focus,
+select:focus,
+button:focus,
+textarea:focus {
+	outline: none;
+	border-color: #1e824c;
+}
+
+.placeholder,
+::placeholder {
+	font-size: .7em;
+	font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+	html, body, h2, #jour_form_titre {
+		background-color: black;
+		color: white;
+	}
+	
+	#jour_form {
+		background-color: black;
+		border-color: white;
+	}
+	
+	input[type=button],
+	input[type=submit],
+	button {
+		background-color: #191919;
+		border-color: #191919;
+	}
+	
+	input[type=text],
+	input[type=number],
+	input[type=password],
+	input[type=email],
+	select,
+	textarea {
+		color: white;
+		background-color: #191919;
+		border-color: #191919;
+	}
+	
+	input:focus,
+	select:focus,
+	button:focus,
+	textarea:focus {
+		outline: none;
+		border-color: #1e824c;
+	}
+
+
+}
