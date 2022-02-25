@@ -132,6 +132,17 @@ function db_delete_compte($db, $no_compte){
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_delete_observation($db, $no_compte, $date){
+	$sql = "DELETE FROM observation WHERE no_compte = :no_compte AND date_obs = :date";
+	
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":date", $date, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function db_select_all_observation($db, $no_compte) {
 	$sql = "select * from observation where no_compte = :no_compte";
 

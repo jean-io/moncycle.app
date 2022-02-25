@@ -39,7 +39,7 @@ if (isset($_REQUEST["suppr_compte"]) && isset($_POST["boutton_suppr"])) {
 	db_delete_compte($db, $_SESSION["no"]);
 	$_SESSION["connected"] = false;
 
-	header('Location: connexion.php?deconnexion_svp');
+	header('Location: connexion?deconnexion_svp');
 	exit;
 }
 
@@ -98,7 +98,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom"><?= $_SESSION["compte"]["nom"] ?? "Mon compte" ?></div>
-			<a href="/"><button type="button" class="nav_button">Revenir aux cycles</button></a> <a href="connexion.php?deconnexion_svp"><button type="button" id="mon_compte" class="nav_button rouge">Déconnexion</button></a>
+			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="connexion?deconnexion_svp"><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $erreur? "<br /><br />" . $erreur : "" ?></span>
 		</center>
@@ -142,12 +142,12 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<h2>A propos et contact</h2>
 		<p>Cette application est Open Source: le code est disponnible sur <a href="https://github.com/jean-io/moncycle.app" target="_blank">github.com/jean-io/moncycle.app</a>.</p>
 		<p>Retrouvez toutes les informations de cette application sur <a href="https://www.moncycle.app" target="_blank">www.moncycle.app</a>.</p>
-		<p>Besoin d'aide? Une question? Une suggestion? Une demande? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a>.</p>
+		<p>Un bug? Besoin d'aide? Une question? Une suggestion? Une demande? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a>.</p>
 		<br />
 		<h2 class="rouge">Zone de danger</h2>
 		<span class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est ireversible mais vous avez la possibilité de télècharger toutes vos donné en amont de la suppression.</span><br />
 		<br />
-		<a href="?mes_donnees_svp"><input type="button" value="Exporter mes données" /></a> <form method="post" action="?suppr_compte" onsubmit="return confirm('Êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irreversible.')"><input name="boutton_suppr" type="submit" class="rouge" value="&#x26A0; Supprimer mon compte" /></form>
+		<a href="?mes_donnees_svp"><input type="button" value="📦 Exporter mes données" /></a> <form method="post" action="?suppr_compte" onsubmit="return confirm('Êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irreversible.')"><input name="boutton_suppr" type="submit" class="rouge" value="⚠️ Supprimer mon compte" /></form>
 <br /><br /><br /><br /><br /><br />
 </div>
 

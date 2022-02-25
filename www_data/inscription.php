@@ -116,7 +116,6 @@ catch (Exception $e){
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<a href="/"><button type="button" class="nav_button">Se connecter</button></a>
-			<a href="https://www.moncycle.app"><button type="button" class="nav_button">Présentation de l'APP</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $output? "<br /><br />" . $output : "" ?></span>
 		</center>
@@ -152,6 +151,8 @@ catch (Exception $e){
 			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail"  value="<?= $_POST['email1'] ?? "" ?>" /><br />
 			<br />
 			<input type="submit" value="Recevoir un nouveau mot de passe &#x2709;" /></form>
+			<br /><br /><br />
+			<center><a class="decouverte" href="https://www.moncycle.app">&#x1F60D; découvrir moncycle.app</a></center>
 			<br /><br /><br />
 		</div>
 

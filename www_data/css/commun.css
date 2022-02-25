@@ -47,7 +47,7 @@ a {
 
 #jour_form {
 	background-color: white;
-	border: 1px solid black;
+	border: 1px solid #c8c8c8;
 }
 
 
@@ -76,8 +76,12 @@ button {
 	border-radius: 5px;
 	color: #1e824c;
 	text-transform: uppercase;
+	font-weight: normal;
 	padding: 3px 5px;
 	cursor: pointer;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 }
 
 input[type=button].rouge,
@@ -113,6 +117,15 @@ textarea:focus {
 	border-color: #1e824c;
 }
 
+input:disabled,
+input[type=email]:read-only,
+input[type=email]:-moz-read-only,
+select:disabled,
+button:disabled,
+textarea:disabled {
+	color: gray;
+}
+
 .placeholder,
 ::placeholder {
 	font-size: .7em;
@@ -127,7 +140,7 @@ textarea:focus {
 	
 	#jour_form {
 		background-color: black;
-		border-color: white;
+		border-color: #393939;
 	}
 	
 	input[type=button],
@@ -156,5 +169,9 @@ textarea:focus {
 		border-color: #1e824c;
 	}
 
+	input[type=email]:read-only,
+	input[type=email]:-moz-read-only {
+		color: gray;
+	}
 
 }

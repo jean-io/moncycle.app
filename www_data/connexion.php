@@ -92,9 +92,8 @@ catch (Exception $e){
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
-			<a href="inscription.php"><button type="button" class="nav_button">Créer un compte</button></a>
-			<a href="inscription.php"><button type="button" class="nav_button">Mot de passe perdu</button></a>
-			<a href="https://www.moncycle.app"><button type="button" class="nav_button">Présentation de l'APP</button></a>
+			<a href="inscription"><button type="button" class="nav_button">Créer un compte</button></a>
+			<a href="inscription"><button type="button" class="nav_button">Mot de passe perdu</button></a>
 		</center>
 
 		<div class="contennu" id="timeline">
@@ -109,7 +108,8 @@ catch (Exception $e){
 			<br />
 			<input type="submit" value="Connexion &#x1F511;" /></form>
 			<br /><br /><br />
-			
+			<center><a class="decouverte" href="https://www.moncycle.app">&#x1F60D; découvrir moncycle.app</a></center>
+			<br /><br /><br />
 		</div>
 
 

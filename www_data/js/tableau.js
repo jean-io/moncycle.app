@@ -20,13 +20,14 @@ bill = {
 	sommets : [],
 	page_a_recharger: false,
 	letsgo : function() {
-		console.log("Bill - cahier à gommettes pour la méthode Billings.");
+		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		bill.charger_cycle();
 		$("#charger_cycle").click(bill.charger_cycle);
 		$("#jour_form_close").click(function () {
 			$("#jour_form").hide();
 		});
 		$("#jour_form_submit").click(bill.submit_menu);	
+		$("#jour_form_suppr").click(bill.suppr_observation);	
 	},
 	cycle_curseur : 0,
 	charger_cycle : function() {
@@ -42,6 +43,7 @@ bill = {
 		let date_cycle = new Date(date_cycle_str);
 		let nb_jours = parseInt((date_fin-date_cycle)/(1000*60*60*24)+1);
 		$("#timeline").prepend(bill.cycle2html(date_cycle_str, nb_jours, date_fin));
+		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(bill.cycle_aff_switch);
 		for (let pas = 0; pas < nb_jours; pas++) {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
@@ -76,15 +78,15 @@ bill = {
 			}
 			$.post("observation.php", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
 			console.log(data);
-			if (data.err){
-				console.error(data.err);
-			}
-			if (data.outcome == "ok") {
-				tous_les_cycles.push(nouveau_cycle_date);
-				$("#charger_cycle").prop("disabled", false);
-				$("#nouveau_cycle").remove();
-				bill.charger_cycle();
-			}		
+				if (data.err){
+					console.error(data.err);
+				}
+				if (data.outcome == "ok") {
+					tous_les_cycles.push(nouveau_cycle_date);
+					$("#charger_cycle").prop("disabled", false);
+					$("#nouveau_cycle").remove();
+					bill.charger_cycle();
+				}		
 			}).fail(function (ret) {
 				console.error(ret.responseText); 
 			});
@@ -107,14 +109,25 @@ bill = {
 			});
 		});
 	},
+	cycle_aff_switch: function (e) {
+		if ($("#" + $(this).attr("for")).is(":hidden")) {
+			$("#" + $(this).attr("for")).show();
+			$(this).html("&#x1F440; Masquer");
+		}
+		else {
+			$("#" + $(this).attr("for")).hide();
+			$(this).html("&#x1F440; Afficher");
+		}
+	},
 	cycle2html : function (c, nb, fin) {
 		let c_id = "c-" + c;
 		let cycle = $("<div>", {id: c_id, class: "cycle"});
 		let c_date = new Date(c);
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
-		cycle.append(`<h2 class='titre'><a href='export.php?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'>PDF</a><a href='export.php?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'>CSV</a>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> <span class='nb_jours'>${nb}</span>j</h2>`);
-		cycle.append("<div class='contenu'></div>");
+		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
+		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}'>&#x1F440; Masquer</button> <button>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		cycle.append(`<div class='contenu' id='contenu-${c_id}'></div>`);
 		return cycle;
 	},
 	observation2html : function(j) {
@@ -212,6 +225,26 @@ bill = {
 			console.error(ret.responseText); 
 			$("#form_err").val(ret.responseText);
 		});
+	},
+	suppr_observation : function () {
+		let date = new Date($("#form_date").val());
+		let jour = [bill.text.semaine[date.getDay()], date.getDate(), bill.text.mois_long[date.getMonth()], date.getFullYear()].join(" ");
+		if (confirm(`Voulez-vous vraiment supprimer definitivement les données de la journée du ${jour}?`)) {
+			$.post("observation.php", `suppr=${date.toISOString().substring(0, 10)}`).done(function(data){
+				console.log(data);
+				if (data.err){
+					$("#form_err").val(data.err);
+					console.error(data.err);
+				}
+				if (data.outcome == "ok") {
+					bill.charger_observation(data.date);
+					$("#jour_form").hide();
+				}		
+			}).fail(function (ret) {
+				console.error(ret.responseText); 
+				$("#form_err").val(ret.responseText);
+			});
+		}
 	}
 }
 

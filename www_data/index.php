@@ -6,7 +6,7 @@ require_once "lib/db.php";
 session_start();
 
 if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
-	header('Location: connexion.php');
+	header('Location: connexion');
 	exit;
 }
 
@@ -50,20 +50,21 @@ foreach ($sensations_brut as $obj) {
 		</script>
 		<script type="text/javascript" src="js/tableau.js"></script>
 		<link rel="stylesheet" href="css/commun.css">
-		<link rel="stylesheet" href="css/cahier.css">
+		<link rel="stylesheet" href="css/tableau.css">
 	</head>
 
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom"><?= $_SESSION["compte"]["nom"] ?? "Mon cahier" ?></div>
-			<button type="button" id="charger_cycle" class="nav_button">Cycle précedent</button> <a href="compte.php"><button type="button" class="nav_button">Mon compte</button></a>
+			<button type="button" id="charger_cycle" class="nav_button">☝️ Cycle précedent</button> <a href="compte"><button type="button" class="nav_button">&#x1F9CD; Mon compte</button></a>
 		</center>
 		<div class="contennu" id="timeline"></div>
 		<form id="jour_form" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
 			<div id="jour_form_titre" class="bold uppercase"></div>
 			<div>
+				<button type="button" id="jour_form_submit">✏️ enregistrer</button> <button type="button" id="jour_form_close">❌ fermer</button><br />
 				<br />
 				<span class="categorie">Gommettes:</span><br />
 				<input type="radio" name="gommette" id="go_rouge" value="." /><label for="go_rouge">🟥 menstruation <span class='note'>.</span></label><br />
@@ -87,7 +88,7 @@ foreach ($sensations_brut as $obj) {
 				<span class="categorie">Commentaire:</span><br />
 				<textarea style="width: 95%" name="commentaire" id="from_com" maxlength="255"></textarea><br />
 				<br />
-				<button type="button" id="jour_form_submit">✔️</button> <button type="button" id="jour_form_close">❌</button> 
+				<button id="jour_form_suppr" type="button" class="rouge">🗑️ Supprimer</button>
 				<div id="form_err" class="err"></div>
 			</div>
 		</form>

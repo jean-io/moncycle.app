@@ -62,7 +62,26 @@ try {
 		$sensation_db = implode(", ", $sensation);
 		if ($sensation_db == "") $sensation_db = null;
 
-		db_update_observation ($db, date_sql($date), $_SESSION["no"], $_POST["gommette"] ?? '', $sensation_db, $_POST["temp"] ?? null, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["commentaire"] ?? null);
+		$temp = null;
+		if (isset($_POST["temp"]) && !empty(trim($_POST["temp"]))) {
+			$temp = floatval($_POST["temp"]);
+			if ($temp <= 0) $temp = null;
+		}
+
+		db_update_observation ($db, date_sql($date), $_SESSION["no"], $_POST["gommette"] ?? '', $sensation_db, $temp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["commentaire"] ?? null);
+		$result["outcome"] = "ok";
+		$result["args"] = $_POST;
+	}
+
+	// SUPPRESSION D'UNE OBSERVATION
+	elseif(isset($_POST['suppr'])) {
+		$result["command"] = "SUPPR";
+		
+		$date = new DateTime($_POST['suppr']);
+		$result["date"] = date_sql($date);
+
+		db_delete_observation($db, $_SESSION["no"], date_sql($date));
+
 		$result["outcome"] = "ok";
 		$result["args"] = $_POST;
 	}
