@@ -117,7 +117,7 @@
 	text-transform: uppercase;
 }
 
-#jour_form {
+#jour_form, #temp_graph {
 	display: block;
 	position: fixed;
 	top: 50px;
@@ -175,3 +175,23 @@ h2 {
 	font-size: .9em;
 	font-family: monospace;
 }
+
+#temp_graph {
+	padding-top: 10px;
+}
+
+#temp_graph_close {
+	display: block;
+	float: right;
+}
+
+#temp_graph_titre {
+	font-family: 'Montserrat';
+}
+
+#graph_container {
+	position: relative;
+	height: calc(100% - 20px);
+	width: 100%;
+}
+

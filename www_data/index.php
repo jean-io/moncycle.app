@@ -60,7 +60,7 @@ foreach ($sensations_brut as $obj) {
 			<button type="button" id="charger_cycle" class="nav_button">☝️ Cycle précedent</button> <a href="compte"><button type="button" class="nav_button">&#x1F9CD; Mon compte</button></a>
 		</center>
 		<div class="contennu" id="timeline"></div>
-		<form id="jour_form" style="display:none">
+		<form id="jour_form" class="popup" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
 			<div id="jour_form_titre" class="bold uppercase"></div>
 			<div>
@@ -92,6 +92,11 @@ foreach ($sensations_brut as $obj) {
 				<div id="form_err" class="err"></div>
 			</div>
 		</form>
+		<div id="temp_graph" class="popup" style="display: none">
+			<button type="button" id="temp_graph_close">❌ fermer</button>
+			<div id="temp_graph_titre" class="bold uppercase"></div>
+			<div id="graph_container" class="graph_container"></div>
+		</div>
 		<script type="text/javascript">
 			window.onload = bill.letsgo;
 		</script>

@@ -33,7 +33,7 @@ h2 {
 	font-weight: 900;
 }
 
-html, body, #jour_form_titre {
+html, body, .popup {
 	margin: 0;
 	padding: 0;
 	font-family: sans-serif;
@@ -45,7 +45,7 @@ a {
 	color: #1e824c;
 }
 
-#jour_form {
+.popup {
 	background-color: white;
 	border: 1px solid #c8c8c8;
 }
@@ -133,12 +133,12 @@ textarea:disabled {
 }
 
 @media (prefers-color-scheme: dark) {
-	html, body, h2, #jour_form_titre {
+	html, body, h2, .popup {
 		background-color: black;
 		color: white;
 	}
 	
-	#jour_form {
+	.popup {
 		background-color: black;
 		border-color: #393939;
 	}

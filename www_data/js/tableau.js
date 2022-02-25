@@ -19,12 +19,16 @@ bill = {
 	},
 	sommets : [],
 	page_a_recharger: false,
+	graph_data : {},
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		bill.charger_cycle();
 		$("#charger_cycle").click(bill.charger_cycle);
 		$("#jour_form_close").click(function () {
 			$("#jour_form").hide();
+		});
+		$("#temp_graph_close").click(function () {
+			$("#temp_graph").hide();
 		});
 		$("#jour_form_submit").click(bill.submit_menu);	
 		$("#jour_form_suppr").click(bill.suppr_observation);	
@@ -44,11 +48,14 @@ bill = {
 		let nb_jours = parseInt((date_fin-date_cycle)/(1000*60*60*24)+1);
 		$("#timeline").prepend(bill.cycle2html(date_cycle_str, nb_jours, date_fin));
 		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(bill.cycle_aff_switch);
+		$(`#c-${date_cycle_str} .aff_temp_graph`).click(bill.open_temp_graph);
 		for (let pas = 0; pas < nb_jours; pas++) {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
 			date_obs_str = date_obs.toISOString().substring(0, 10);
-			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2html({date: date_obs_str, pos: pas+1, gommette: '_'}));
+			let data = {date: date_obs_str, pos: pas+1, gommette: '_', temperature: NaN, cycle: date_cycle_str};
+			bill.graph_preparation_data(data);
+			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2html(data));
 			bill.charger_observation(date_obs_str);
 		}
 	},
@@ -59,6 +66,7 @@ bill = {
 			if (data.jour_sommet && !bill.sommets.includes(data.date)) bill.sommets.push(data.date);
 			else if (!data.jour_sommet && bill.sommets.includes(data.date)) bill.sommets.splice(bill.sommets.indexOf(data.date),1);
 			bill.trois_jours();
+			bill.graph_preparation_data(data);
 		});
 	},
 	form_nouveau_cycle: function () {
@@ -126,7 +134,7 @@ bill = {
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
 		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}'>&#x1F440; Masquer</button> <button>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
 		cycle.append(`<div class='contenu' id='contenu-${c_id}'></div>`);
 		return cycle;
 	},
@@ -159,6 +167,7 @@ bill = {
 		return observation;
 	},
 	open_menu : function(e) {
+		$("#temp_graph").hide();
 		let j = JSON.parse($("#" + $(this).attr('id') + " .data").text());
 		let o_date = new Date(j.date);
 		let gommette = j.gommette? j.gommette : "";
@@ -245,6 +254,41 @@ bill = {
 				$("#form_err").val(ret.responseText);
 			});
 		}
+	},
+	graph_preparation_data : function (data) {
+		if (bill.graph_data[data.cycle] == undefined) bill.graph_data[data.cycle] = {};
+		let date = new Date(data.date);
+		let label = `${date.getDate()} ${bill.text.mois[date.getMonth()]}`;
+		bill.graph_data[data.cycle][label] = parseFloat(data.temperature);
+	},
+	open_temp_graph : function() {
+		$("#jour_form").hide();
+		let cycle = $(this).attr("for");
+		let cycle_date = new Date(cycle);
+		$("#temp_graph_titre").text(`Cycle du ${cycle_date.getDate()} ${bill.text.mois_long[cycle_date.getMonth()]}`);
+		$('#canvas_temp').remove();
+		$('#graph_container').append("<canvas id='canvas_temp'></canvas>");
+		$("#temp_graph").show();
+		const temp_chart = new Chart($("#canvas_temp"), {
+			type: 'line',
+			data: {
+				datasets: [{
+					data: bill.graph_data[cycle],
+					fill: false,
+					borderColor: '#1e824c',
+					tension: 0.1
+				}]
+			},
+			options: {
+				responsive:true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						display: false
+					}
+				}
+			}
+		});
 	}
 }
 
