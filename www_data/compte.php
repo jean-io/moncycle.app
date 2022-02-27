@@ -27,12 +27,19 @@ if (isset($_REQUEST["change_motdepasse"])) {
 }
 
 if (isset($_REQUEST["modif_compte"]) && (empty($_POST["email2"]) || (!empty($_POST["email2"]) && filter_var($_POST["email2"], FILTER_VALIDATE_EMAIL)) )) {
-	db_update_compte($db, $_POST["nom"], $_POST["email2"], $_POST["age"], $_SESSION["no"]);
+	$methode = intval($_POST["methode"]);
+	if (!$methode || $methode<1 || $methode>3) {
+		$erreur .= "Erreur dans l'enregistrement de la méthode.";
+	}
+	else {
+		db_update_compte($db, $_POST["nom"], $_POST["email2"], $_POST["age"], $methode, $_SESSION["no"]);
 
-	$_SESSION["compte"] = db_select_compte_par_nocompte($db, $_SESSION["no"])[0] ?? [];
-	unset($_SESSION["compte"]["motdepasse"]);
+		$compte = db_select_compte_par_nocompte($db, $_SESSION["no"])[0] ?? [];
+		unset($compte["motdepasse"]);
+		$_SESSION["compte"] = $compte;
 
-	$succes .= "Vos informations ont été mises à jour. &#x1F44F;";
+		$succes .= "Vos informations ont été mises à jour. &#x1F44F;";
+	}
 }
 
 if (isset($_REQUEST["suppr_compte"]) && isset($_POST["boutton_suppr"])) {
@@ -109,10 +116,16 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<label for="i_prenom">Prénom(s):</label><br />
 		<input type="text" id="i_prenom" required name="nom" value="<?= $_SESSION['compte']['nom'] ?? '' ?>" /><br />
 		<br />
-		<label for="i_email1">E-mail:</label> <span class="label_info">identifiant de connexion et envoie des cycles.</span><br />
+		J'ai besoin de suivre:<br />
+		<span class="label_info">Modifier ce choix ne génère aucune perte de données.</span><br />
+		<input type="radio" name="methode" value="2" id="m_glaire" <?php if ($_SESSION["compte"]["methode"]==2): ?>checked<?php endif; ?>  required /><label for="m_glaire">l'évolution de la glaire cervicale</label><br />	
+		<input type="radio" name="methode" value="3" id="m_temp"  <?php if ($_SESSION["compte"]["methode"]==3): ?>checked<?php endif; ?>/><label for="m_temp">les changements de température corporelle</label><br />	
+		<input type="radio" name="methode" value="1" id="m_les2"  <?php if ($_SESSION["compte"]["methode"]==1): ?>checked<?php endif; ?>/><label for="m_les2">les deux</label><br />	
+		<br />
+		<label for="i_email1">E-mail:</label> <br /><span class="label_info">Identifiant de connexion et envoie des cycles (non modifiable).</span><br />
 		<input id="i_email1" type="email" readonly name="email1" value="<?= $_SESSION['compte']['email1'] ?? '' ?>" /><br />
 		<br />
-		<label for="i_email2">2ème e-mail:</label> <span class="label_info">permet de recevoir les cycles sur une deuxième addresse.</span><br />
+		<label for="i_email2">2ème e-mail:</label> <br /><span class="label_info">Permet de recevoir les cycles sur une deuxième addresse.</span><br />
 		<input id="i_email2" type="email" name="email2" value="<?= $_SESSION['compte']['email2'] ?? '' ?>" /><br />
 		<br />
 		<label for="i_anaissance">Année de naissance:</label><br />

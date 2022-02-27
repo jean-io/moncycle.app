@@ -74,11 +74,12 @@ function db_select_compte_existe($db, $mail) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_insert_compte($db, $nom, $age, $mail, $mdp) {
-	$sql = "INSERT INTO compte (nom, age, email1, motdepasse) VALUES (:nom, :age, :email1, :motdepasse)";
+function db_insert_compte($db, $nom, $methode, $age, $mail, $mdp) {
+	$sql = "INSERT INTO compte (nom, methode, age, email1, motdepasse) VALUES (:nom, :methode, :age, :email1, :motdepasse)";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":nom", $nom, PDO::PARAM_STR);
+	$statement->bindValue(":methode", $methode, PDO::PARAM_INT);
 	$statement->bindValue(":age", $age, PDO::PARAM_INT);
 	$statement->bindValue(":email1", $mail, PDO::PARAM_STR);
 	$statement->bindValue(":motdepasse", $mdp, PDO::PARAM_STR);
@@ -87,14 +88,15 @@ function db_insert_compte($db, $nom, $age, $mail, $mdp) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_compte($db, $nom, $mail2, $age, $no_compte) {
-	$sql = "UPDATE compte SET nom = :nom, email2 = :email2, age = :age WHERE no_compte = :no_compte";
+function db_update_compte($db, $nom, $mail2, $age, $methode, $no_compte) {
+	$sql = "UPDATE compte SET nom = :nom, email2 = :email2, age = :age, methode = :methode WHERE no_compte = :no_compte";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->bindValue(":nom", $nom, PDO::PARAM_STR);
 	$statement->bindValue(":email2", $mail2, PDO::PARAM_STR);
 	$statement->bindValue(":age", $age, PDO::PARAM_INT);
+	$statement->bindValue(":methode", $methode, PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);

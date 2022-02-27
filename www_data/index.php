@@ -26,7 +26,7 @@ foreach ($sensations_brut as $obj) {
 	}
 } 
 
-
+$methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 
 ?><!doctype html>
 <html lang="fr">
@@ -48,6 +48,11 @@ foreach ($sensations_brut as $obj) {
 			var tous_les_cycles = <?= json_encode($cycles); ?>;
 			var sensations = <?= json_encode($sensations); ?>;
 		</script>
+		<style>
+			.pas_<?= $methode[$_SESSION["compte"]["methode"]] ?> {
+				display: none;
+			}
+		</style>
 		<script type="text/javascript" src="js/tableau.js"></script>
 		<link rel="stylesheet" href="css/commun.css">
 		<link rel="stylesheet" href="css/tableau.css">
@@ -71,7 +76,6 @@ foreach ($sensations_brut as $obj) {
 				<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 pas de sécrétion <span class='note'>I</span></label><br />
 				<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 sécrétion inféconde <span class='note'>=</span></label><br />
 				<input type="radio" name="gommette" id="go_bebe" value=":)" /><label for="go_bebe">👶 sécrétion féconde <span class='note'>:)</span></label><br />
-				<input type="radio" name="gommette" id="go_jesaispas" value="?" /><label for="go_jesaispas">❔ jour non observé <span class='note'>?</span></span></label><br />
 				<br />
 				<span class="categorie">Température:</span><br />
 				<input type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="entrer votre temperature corporelle"> °C 🌡️</br>
@@ -84,6 +88,7 @@ foreach ($sensations_brut as $obj) {
 				<input type="checkbox" name="premier_jour" id="ev_premier_jour" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
 				<input type="checkbox" name="union_sex" id="ev_union" value="1" /><label for="ev_union">❤️ union</label><br />
 				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ jour sommet</label><br />
+				<input type="radio" name="gommette" id="go_jesaispas" value="?" /><label for="go_jesaispas">❔ jour non observé <span class='note'>?</span></span></label><br />
 				<br />
 				<span class="categorie">Commentaire:</span><br />
 				<textarea style="width: 95%" name="commentaire" id="from_com" maxlength="255"></textarea><br />
