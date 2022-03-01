@@ -1,7 +1,13 @@
 <?php
 
 function db_open() {
-	return new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
+	$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
+
+	$sql = "SET NAMES utf8mb4;";
+	$statement = $db->prepare($sql);
+	$statement->execute();
+
+	return $db;
 }
 
 function db_select_cycles($db, $no_compte) {
@@ -177,8 +183,8 @@ function db_insert_observation ($db, $date, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_observation ($db, $date, $no_compte, $gommette='', $sensation=null, $temp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $commentaire=null) {
-	$sql = "UPDATE observation SET gommette = :gommette, temperature = :temp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
+function db_update_observation ($db, $date, $no_compte, $gommette='', $sensation=null, $temp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $commentaire=null) {
+	$sql = "UPDATE observation SET gommette = :gommette, temperature = :temp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":gommette", $gommette, PDO::PARAM_STR);
@@ -188,6 +194,7 @@ function db_update_observation ($db, $date, $no_compte, $gommette='', $sensation
 	$statement->bindValue(":union_sex", $union_sex, PDO::PARAM_INT);
 	$statement->bindValue(":premier_jour", $premier_jour, PDO::PARAM_INT);
 	$statement->bindValue(":commentaire", $commentaire, PDO::PARAM_STR);
+	$statement->bindValue(":jenesaispas", $jenesaispas, PDO::PARAM_INT);
 	$statement->bindValue(":date", $date, PDO::PARAM_STR);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->execute();

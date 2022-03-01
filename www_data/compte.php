@@ -89,18 +89,10 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 ?><!doctype html>
 <html lang="fr">
 	<head>
-		<meta charset="utf-8" />
-		<meta name="mobile-web-app-capable" content="yes" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-		<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
-		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
-		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
-		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
-		<title>MONCYCLE.APP</title>
-		<link rel="stylesheet" href="css/commun.css" />
-		<link rel="stylesheet" href="css/compte.css" />
+		<?= file_get_contents("./vue/head.html") ?>
+		<link rel="stylesheet" href="css/commun.css?h=<?= hash_file("sha1", "./css/commun.css") ?>" />
+		<link rel="stylesheet" href="css/compte.css?h=<?= hash_file("sha1", "./css/compte.css") ?>" />
 	</head>
-
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
@@ -108,6 +100,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="connexion?deconnexion_svp"><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $erreur? "<br /><br />" . $erreur : "" ?></span>
+			<?php if(boolval($_SESSION["compte"]["donateur"])): ?><p>🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p><?php endif; ?>
 		</center>
 
 		<div class="contennu" id="timeline">
@@ -153,6 +146,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		</form><br />
 		<br />
 		<h2>A propos et contact</h2>
+		<p>Cette application est gratuite et sans publicité/vente de donnnées! Vous pouvez cependant contribuer au financement de l'application et aider le développer via </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">tipeee.com/moncycleapp</a>.</p>
 		<p>Cette application est Open Source: le code est disponnible sur <a href="https://github.com/jean-io/moncycle.app" target="_blank">github.com/jean-io/moncycle.app</a>.</p>
 		<p>Retrouvez toutes les informations de cette application sur <a href="https://www.moncycle.app" target="_blank">www.moncycle.app</a>.</p>
 		<p>Un bug? Besoin d'aide? Une question? Une suggestion? Une demande? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a>.</p>

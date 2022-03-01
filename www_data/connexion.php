@@ -72,23 +72,16 @@ catch (Exception $e){
 ?><!doctype html>
 <html lang="fr">
 	<head>
-		<meta charset="utf-8" />
-		<meta name="mobile-web-app-capable" content="yes" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-		<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
-		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
-		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
-		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
-		<title>MONCYCLE.APP</title>
-		<link rel="stylesheet" href="css/commun.css" />
-		<link rel="stylesheet" href="css/compte.css" />
+		<?= file_get_contents("./vue/head.html") ?>
+		<link rel="stylesheet" href="css/commun.css?h=<?= hash_file("sha1", "./css/commun.css") ?>" />
+		<link rel="stylesheet" href="css/compte.css?h=<?= hash_file("sha1", "./css/compte.css") ?>" />
+
 		<style>
 			.contennu {
 				max-width: 300px;
 			}
 		</style>
 	</head>
-
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>

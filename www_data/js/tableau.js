@@ -1,15 +1,14 @@
 bill = {
 	gommette : {
-		"_"   : ["⌛", "chargement"],
 		"."  : [".", "rouge"],
 		"I"  : ["I", "vert"],
 		"="  : ["=", "jaune"],
-		"?"  : ["?", "jesaispas"],
 		":)" : ["👶", "bebe"],
-		""   : ["👋", "aremplir"]
 	},
 	text : {
-		a_renseigner : "à renseigner",
+		je_sais_pas: "❔ jour non observé",
+		a_renseigner : "👋 à renseigner",
+		chargement : "⏳ chargement",
 		a_aujourdhui : "à auj.",
 		union : "❤️",
 		sommet : "⛰️",
@@ -53,7 +52,7 @@ bill = {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
 			date_obs_str = date_obs.toISOString().substring(0, 10);
-			let data = {date: date_obs_str, pos: pas+1, gommette: '_', temperature: NaN, cycle: date_cycle_str};
+			let data = {date: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
 			bill.graph_preparation_data(data);
 			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2html(data));
 			bill.charger_observation(date_obs_str);
@@ -134,36 +133,39 @@ bill = {
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
 		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph pas_glaire' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
 		cycle.append(`<div class='contenu' id='contenu-${c_id}'></div>`);
 		return cycle;
 	},
 	observation2html : function(j) {
 		let o_id = "o-" + j.date;
-		let observation = $("<div>", {id: o_id, class: "day"});
 		let o_date = new Date(j.date);
+		let observation = $("<div>", {id: o_id, class: "day"});
+		observation.click(bill.open_menu);
+		observation.append(`<span class='data' style='display:none'>${JSON.stringify(j)}</span>`);
 		observation.append(`<span class='d'>${o_date.getDate()} ${bill.text.mois[o_date.getMonth()]} </span>`);	
 		observation.append(`<span class='j'>${j.pos}</span>`);
-		let gommette = j.gommette ?? "";
-		observation.append(`<span class='g ${bill.gommette[gommette][1]}'>${bill.gommette[gommette][0]}</span>`);
-		if (j.temperature) {
-			let temp = parseFloat(j.temperature);
-			let color = "#4169e1";
-			if (temp > 37.5) color = "#b469e1";
-			else if (temp <= 37.5 && temp >= 36.5) {
-				let r = parseInt((1-(37.5-temp))*115)+65;
-				color = `rgb(${r}, 105, 225)`;
+		observation.append(`<span class='p'>${j.jenesaispas ?  bill.text.je_sais_pas : ""}</span>`);
+		if (j.chargement) observation.append(`<span class='l'>${bill.text.chargement}</span>`);
+		else if (!j.jenesaispas && ((!j.gommette && !j.temperature) || (!j.gommette && methode==2) || (!j.temperature && methode==3))) observation.append(`<span class='r'>${bill.text.a_renseigner}</span>`);
+		else if (!j.jenesaispas) {
+			if (j.gommette) observation.append(`<span class='g pas_temp ${bill.gommette[j.gommette][1]}'>${bill.gommette[j.gommette][0]}</span>`);
+			if (j.temperature) {
+				let temp = parseFloat(j.temperature);
+				let color = "#4169e1";
+				if (temp > 37.5) color = "#b469e1";
+				else if (temp <= 37.5 && temp >= 36.5) {
+					let r = parseInt((1-(37.5-temp))*115)+65;
+					color = `rgb(${r}, 105, 225)`;
+				}
+				observation.append(`<span class='t pas_glaire' style='background-color: ${color}'>${temp}</span>`);
 			}
-			observation.append(`<span class='t' style='background-color: ${color}'>${temp}</span>`);
+			else observation.append(`<span class='t'></span>`);
+			observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
+			observation.append(`<span class='u'>${j.union_sex ? bill.text.union : ""}</span>`);
+			observation.append(`<span class='o pas_temp'>${j.sensation ?? ""}</span>`);
 		}
-		else observation.append(`<span class='t'></span>`);
-		observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
-		observation.append(`<span class='u'>${j.union_sex ? bill.text.union : ""}</span>`);
-		if (gommette == "") j.sensation = bill.text.a_renseigner;
-		observation.append(`<span class='o'>${j.sensation ?? ""}</span>`);
 		observation.append(`<span class='c'>${j.commentaire ?? ""}</span>`);
-		observation.append(`<span class='data' style='display:none'>${JSON.stringify(j)}</span>`);
-		observation.click(bill.open_menu);
 		return observation;
 	},
 	open_menu : function(e) {
@@ -174,7 +176,7 @@ bill = {
 		$("#jour_form_titre").text([bill.text.semaine[o_date.getDay()], o_date.getDate(), bill.text.mois_long[o_date.getMonth()], o_date.getFullYear()].join(" "));
 		$("#jour_form")[0].reset();
 		$("#form_date").val(j.date);
-		$("#go_" + bill.gommette[gommette][1]).prop('checked', true);
+		if (bill.gommette[gommette]) $("#go_" + bill.gommette[gommette][1]).prop('checked', true);
 		$("#form_temp").val(j.temperature);
 		$("#vos_obs").empty();
 		let n = 0;
@@ -203,6 +205,7 @@ bill = {
 		else $("#ev_premier_jour").attr('initial', false);
 		if (j.union_sex) $("#ev_union").prop('checked', true);
 		if (j.jour_sommet) $("#ev_jour_sommet").prop('checked', true);
+		if (j.jenesaispas) $("#ev_jesaispas").prop('checked', true);
 		$("#ev_premier_jour").change(function () {
 			if (JSON.parse($("#ev_premier_jour").attr('initial')) && $("#ev_premier_jour").is(':checked')) {
 				bill.page_a_recharger = false;

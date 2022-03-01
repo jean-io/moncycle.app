@@ -2,12 +2,17 @@
 .day {
 	padding: 1px;
 	cursor: pointer;
+	height: 28px;
 }
 	
 .day span {
 	display: inline-block;
 	vertical-align: sub;
 	margin-right: 3px;
+}
+
+.day span:empty {
+	display: none;
 }
 
 .day .d {
@@ -74,20 +79,18 @@
 	font-weight: 600;
 }
 
-.day .aremplir {
-	border: none;
-	background: linear-gradient(45deg, white 25%, black 25%, black 50%, white 50%, white 75%, black 75%);
-}
-
 .day .u {
 
 }
+
 .day .s {
 	font-family: monospace;
-}	
+}
+
 .day .o {
 
-}	
+}
+
 .day .c {
 	font-size: .7em;
 	font-style: italic;
@@ -174,6 +177,8 @@ h2 {
 	color: gray;
 	font-size: .9em;
 	font-family: monospace;
+	line-height: 1;
+	margin: 0;
 }
 
 #temp_graph {

@@ -6,6 +6,8 @@ Plus d'information 👉 [https://moncycle.app](https://moncycle.app)
 
 Code source 👉 [https://github.com/jean-io/moncycle.app](https://github.com/jean-io/moncycle.app)
 
+Page Tipeee 👉 [https://fr.tipeee.com/moncycleapp](https://fr.tipeee.com/moncycleapp)
+
 ### Licence
 
 Creative Commons **CC BY-NC-SA**

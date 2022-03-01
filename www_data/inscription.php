@@ -104,19 +104,11 @@ catch (Exception $e){
 ?><!doctype html>
 <html lang="fr">
 	<head>
-		<meta charset="utf-8" />
-		<meta name="mobile-web-app-capable" content="yes" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-		<link rel="apple-touch-icon" href="/img/bill512.jpg" />
-		<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
-		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
-		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
-		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
-		<title>MONCYCLE.APP</title>
-		<link rel="stylesheet" href="css/commun.css" />
-		<link rel="stylesheet" href="css/compte.css" />
-	</head>
+		<?= file_get_contents("./vue/head.html") ?>
+		<link rel="stylesheet" href="css/commun.css?h=<?= hash_file("sha1", "./css/commun.css") ?>" />
+		<link rel="stylesheet" href="css/compte.css?h=<?= hash_file("sha1", "./css/compte.css") ?>" />
 
+	</head>
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
@@ -152,7 +144,7 @@ catch (Exception $e){
 			<input name="captcha" id="i_captcha" type="text" maxlength="6" required placeholder="Entrer les six lettres ou chiffres affichés ci-dessous." /><br />
 			<img src="captcha.php" class="captcha" /><br />
 			<br />
-			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" <?php if (boolval($_POST["monito"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_monito">Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficulté dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'applique. &#x1F4C3;&#x1F58D;</label></p>
+			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" <?php if (boolval($_POST["monito"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_monito">Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficulté dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'applique. &#x1F4DD;</label></p>
 			<p><input type="checkbox" required id="jc_gratuit" name="gratuit" value="1" <?php if (boolval($_POST["gratuit"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_gratuit">Je comprends que moncycle.app est gratuit et sans publicité/vente de donnnées! Je peux cependant contribuer au financement de l'application et aider le développer via la </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">page Tipeee de moncycle.app</a>. &#x1F4B6;</p>
 			<br />
 			<input type="submit" value="Créer mon compte &#x1F942;&#x1F37E;" /></form>
