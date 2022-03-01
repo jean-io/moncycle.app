@@ -200,3 +200,30 @@ h2 {
 	width: 100%;
 }
 
+.actu {
+	width: 90%;
+	margin: 0 auto;
+	margin-top: 30px;
+	max-width: 550px;
+	padding: 5px;
+	border: 1px dotted #1e824c;
+	border-radius: 8px;
+}
+
+.actu .tag {
+	color: #1e824c;
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: .7em;
+	vertical-align: top;
+}
+
+.actu h4 {
+	margin: 0;
+	font-family: Montserrat;
+}
+
+.actu time {
+	color: gray;
+}
+

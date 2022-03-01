@@ -19,6 +19,7 @@ bill = {
 	sommets : [],
 	page_a_recharger: false,
 	graph_data : {},
+	cycle_curseur : 0,
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		bill.charger_cycle();
@@ -31,8 +32,19 @@ bill = {
 		});
 		$("#jour_form_submit").click(bill.submit_menu);	
 		$("#jour_form_suppr").click(bill.suppr_observation);	
+		bill.charger_actu();
 	},
-	cycle_curseur : 0,
+	charger_actu : function() {
+		$.get("https://www.moncycle.app/actu.html", function(data) {
+			let html = $.parseHTML(data);
+			$("#actu_contennu").html(html);
+			if (localStorage.actu_lu != $("#actu_contennu").find("h4").text()) $("#actu").show();
+			$("#fermer_actu").click(function () {
+				localStorage.actu_lu = $("#actu_contennu").find("h4").text();
+				$("#actu").hide();
+			});
+		});	
+	},
 	charger_cycle : function() {
 		if (bill.cycle_curseur >= tous_les_cycles.length) {
 			bill.form_nouveau_cycle();
@@ -46,7 +58,10 @@ bill = {
 		let date_cycle = new Date(date_cycle_str);
 		let nb_jours = parseInt((date_fin-date_cycle)/(1000*60*60*24)+1);
 		$("#timeline").prepend(bill.cycle2html(date_cycle_str, nb_jours, date_fin));
-		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(bill.cycle_aff_switch);
+		if (JSON.parse(localStorage.cycle_cache ?? "[]").includes("contenu-c-" + date_cycle_str)) bill.cycle_aff_switch("contenu-c-" + date_cycle_str);
+		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function (e) {
+			bill.cycle_aff_switch($(this).attr("for"));
+		});
 		$(`#c-${date_cycle_str} .aff_temp_graph`).click(bill.open_temp_graph);
 		for (let pas = 0; pas < nb_jours; pas++) {
 			let date_obs = new Date(date_cycle);
@@ -116,15 +131,19 @@ bill = {
 			});
 		});
 	},
-	cycle_aff_switch: function (e) {
-		if ($("#" + $(this).attr("for")).is(":hidden")) {
-			$("#" + $(this).attr("for")).show();
-			$(this).html("&#x1F440; Masquer");
+	cycle_aff_switch: function (id) {
+		let cache = JSON.parse(localStorage.cycle_cache ?? "[]");
+		if ($("#" + id).is(":hidden")) {
+			$("#" + id).show();
+			$("#but-" + id).html("&#x1F440; Masquer");
+			if (cache.includes(id)) cache.splice(cache.indexOf(id) , 1);
 		}
 		else {
-			$("#" + $(this).attr("for")).hide();
-			$(this).html("&#x1F440; Afficher");
+			$("#" + id).hide();
+			$("#but-" + id).html("&#x1F440; Afficher");
+			if (!cache.includes(id)) cache.push(id);
 		}
+		localStorage.cycle_cache = JSON.stringify(cache);
 	},
 	cycle2html : function (c, nb, fin) {
 		let c_id = "c-" + c;
@@ -133,7 +152,7 @@ bill = {
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
 		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph pas_glaire' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph pas_glaire' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
 		cycle.append(`<div class='contenu' id='contenu-${c_id}'></div>`);
 		return cycle;
 	},

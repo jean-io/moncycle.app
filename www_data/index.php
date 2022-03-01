@@ -54,7 +54,13 @@ $methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom"><?= $_SESSION["compte"]["nom"] ?? "Mon cahier" ?><?=  $_SESSION["compte"]["donateur"] ? " 🎖️" : "" ?></div>
 			<button type="button" id="charger_cycle" class="nav_button">☝️ Cycle précedent</button> <a href="compte"><button type="button" class="nav_button">👨‍💻 Mon compte</button></a>
+			<noscript><p class="rouge">Cette application a besoin de Javascript pour fonctionner.</p></noscript>
 		</center>
+		<div class="actu" id="actu" style="display:none">
+			<span class="tag">actualités</span>
+			<div id="actu_contennu"></div>
+			<button type="button" id="fermer_actu">OK merci &#x1F44D;</button>
+		</div>
 		<div class="contennu" id="timeline"></div>
 		<form id="jour_form" class="popup" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
