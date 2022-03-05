@@ -48,7 +48,6 @@ $methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 		<link rel="stylesheet" href="css/commun.css?h=<?= hash_file("sha1", "./css/commun.css") ?>">
 		<link rel="stylesheet" href="css/tableau.css?h=<?= hash_file("sha1", "./css/tableau.css") ?>">
 	</head>
-
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
@@ -75,7 +74,7 @@ $methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 				<input class="pas_temp" type="radio" name="gommette" id="go_bebe" value=":)" /><label class="pas_temp" for="go_bebe">👶 sécrétion féconde <span class='note'>:)</span></label><br class="pas_temp" />
 				<br class="pas_temp pas_glaire" />
 				<span class="categorie pas_glaire">Température:</span><br class="pas_glaire" />
-				<input class="pas_glaire" type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="entrer votre temperature corporelle"><span class="pas_glaire"> °C 🌡️</span><br />
+				<input class="pas_glaire" type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="entrer votre température corporelle"><span class="pas_glaire"> °C 🌡️</span><br />
 				<br class="pas_glaire" />
 				<span class="categorie pas_temp">Vos sensations et visuels:</span><br class="pas_temp" />
 				<span class="pas_temp" id="vos_obs"></span>
