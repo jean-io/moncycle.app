@@ -93,12 +93,6 @@ try {
 		$pdf->SetTitle('bill_cycle_'. date_humain($date, '_') . '.pdf');
 		$pdf->AddPage();
 		$pdf->SetFont('Courier','B',16);
-		//$pdf->Link($pdf->GetX(), $pdf->GetY(), $pdf->GetStringWidth("MONCYCLE.APP "), 10, "https://moncycle.app");
-		//$pdf->Cell($pdf->GetStringWidth("MON"),10,"MON");
-		//$pdf->SetTextColor(30, 130, 76);
-		//$pdf->Cell($pdf->GetStringWidth("CYCLE"),10,"CYCLE");
-		//$pdf->SetTextColor(0,0,0);
-		//$pdf->Cell(0,10,sprintf(".APP %s", utf8_decode($_SESSION["compte"]["nom"])));
 		$pdf->Cell($pdf->GetPageWidth()-35,10,utf8_decode($_SESSION["compte"]["nom"]), 0, 0, 'C');
 		$pdf->SetFont('Courier','',10);
 		$pdf->Ln();
@@ -109,19 +103,42 @@ try {
 		$pdf->Cell($pdf->GetPageWidth()-35,5,"suivi avec MONCYCLE.APP", 0, 0, 'C');
 		$pdf->SetTextColor(0,0,0);
 		$pdf->Ln();
-		$pdf->Ln();
+
+		$temp_max = 0;
+		$temp_mini = 100;
+		if ($methode!=2) {
+			foreach ($cycle as $line){
+				if (isset($line["temperature"]) && !empty($line["temperature"])) {
+					$temp = floatval($line["temperature"]);
+					if ($temp>$temp_max) $temp_max = $temp;
+					if ($temp<$temp_mini) $temp_mini = $temp;	
+				}
+			}
+			if ($temp_max == $temp_mini) {
+				$temp_max = 38;
+				$temp_mini = 36;
+			}
+		}
 
 		$i = 1;
 		$s = -1;
 		$prev_temp_x = 0;
 		$prev_temp_y = 0;
 		foreach ($cycle as $line){
+			if($pdf->GetPageHeight()-$pdf->GetY()<=30){
+				$pdf->AddPage();
+				$prev_temp_x = 0;
+				$prev_temp_y = 0;
+			}
+			else {
+				$pdf->Ln();
+			} 
 			$pdf->SetFont('Courier','',8);
 			$pdf->SetTextColor(150,150,150);
 			$pdf->Cell(8,5,$i, 0, 0, 'C');
 			$pdf->SetFont('Courier','',10);
 			$pdf->SetTextColor(0,0,0);
-			if (isset($line["gommette"])) {
+			if (isset($line["gommette"]) && !boolval($line["?"])) {
 				if($line["gommette"]==".")	$pdf->SetFillColor(172,36,51);
 				elseif($line["gommette"]=="I")	$pdf->SetFillColor(30,130,76);
 				elseif($line["gommette"]=="?")	$pdf->SetFillColor(220,220,220);
@@ -129,12 +146,19 @@ try {
 				else $pdf->SetFillColor(255,255,255);
 				if ($line["gommette"]==":)") {
 					$pdf->SetTextColor(75,119,190);
-					$pdf->Cell(5,5,$line["gommette"],0,0,'C', true);
+					$pdf->Cell(5,5,"(:",0,0,'C', true);
 					$pdf->SetTextColor(0,0,0);
 				}
 				elseif ($line["gommette"]=="?") $pdf->Cell(5,5,$line["gommette"],0,0,'C', true);
 				else $pdf->Cell(5,5,"",0,0,'C', true);
-			}	
+			}
+			if (boolval($line["?"])) {
+				$pdf->SetFont('Courier','I',8);
+				$pdf->SetTextColor(100,100,100);
+				$pdf->Cell($pdf->GetStringWidth("jour non observé"),5,utf8_decode("jour non observé"));
+				$pdf->SetFont('Courier','',10);
+				$pdf->SetTextColor(0,0,0);
+			}
 			if(intval($line["unions"])) {
 				$pdf->SetFont("ZapfDingbats");	
 				$pdf->SetTextColor(172,36,51);
@@ -169,14 +193,10 @@ try {
 			$pdf->SetFont('Courier','I',7);
 			$pdf->Cell(10,5,utf8_decode($line["commentaire"]?? ""));
 			$pdf->SetFont('Courier','',10);
-			if (isset($line["temperature"]) && !empty($line["temperature"])) {
+			if (isset($line["temperature"]) && !empty($line["temperature"]) && !boolval($line["?"])) {
 				$temp = floatval($line["temperature"]);
 				$largeur = 65;
-				$mini = 36;
-				$maxi = 38;
 				$disptemp = $temp;
-				if ($temp>$maxi) $disptemp = $maxi; 
-				if ($temp<$mini) $disptemp = $mini; 
 				$pdf->SetX($pdf->GetPageWidth()/2-12);
 				$pdf->SetFont('Courier','',9);
 				$pdf->SetTextColor(135, 67, 176);
@@ -186,7 +206,7 @@ try {
 				$pdf->SetDrawColor(200,200,200);
 				$pdf->SetX($pdf->GetPageWidth()/2);
 				$pdf->Line($pdf->GetX(),$pdf->GetY()+2.5,$pdf->GetX()+$largeur,$pdf->GetY()+2.5);
-				$trace = (($disptemp-$mini)/($maxi-$mini))*$largeur;
+				$trace = (($disptemp-$temp_mini)/($temp_max-$temp_mini))*$largeur;
 				$pdf->SetFillColor(135, 67, 176);
 				$pdf->Rect($pdf->GetX()+$trace,$pdf->GetY()+2,1,1,"F");
 				if ($prev_temp_x!=0 && $prev_temp_y!=0) {
@@ -202,18 +222,10 @@ try {
 			}
 			$pdf->SetFont('Courier','I',7);
 			$pdf->SetTextColor(100,100,100);
-		 	$pdf->Text($pdf->GetPageWidth()-35,$pdf->GetY()+4,date_humain(new DateTime($line["date_obs"])));
+		 	$pdf->Text($pdf->GetPageWidth()-35,$pdf->GetY()+3.5,date_humain(new DateTime($line["date_obs"])));
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFont('Courier','',10);
-			if($pdf->GetPageHeight()-$pdf->GetY()<=30){
-				$pdf->AddPage();
-				$prev_temp_x = 0;
-				$prev_temp_y = 0;
-			}
-			else {
-				$pdf->Ln();
-				$pdf->SetY($pdf->GetY()+0.5);
-			} 
+			$pdf->SetY($pdf->GetY()+0.5);
 			$i += 1;
 		}
 
