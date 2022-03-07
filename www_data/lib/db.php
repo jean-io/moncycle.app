@@ -316,3 +316,13 @@ function db_select_observation_count($db, $nbj) {
 
 	return $statement->fetchAll(PDO::FETCH_NUM);
 }
+
+function db_select_cycles_recent($db) {
+	$sql = "select subdate(obs.date_obs, 1) as cycle_complet, obs.no_compte as no_compte, c.nom as nom, c.email1 as email1, c.email2 as email2 from observation as obs, compte as c where obs.no_compte=c.no_compte and date_obs= DATE(NOW()) - INTERVAL 2 DAY and premier_jour=1";
+
+	$statement = $db->prepare($sql);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+

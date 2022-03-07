@@ -1,78 +1,45 @@
 <?php
 
-require_once "config.php";
-require_once "lib/date.php";
-require_once "lib/db.php";
-require_once "lib/doc.php";
-require_once "fpdf/fpdf.php";
 
-session_start();
-
-try {
-
-	// VERIFICATION DE LA BONNE OUVERTURE DE LA SESSION
-	if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
-		print("Vous devez etre connecte pour realiser cette action.");
-		exit;
-	}
-
-	// LECTURE D'UNE DATE DE DEBUT DE CYCLE
-	if (isset($_GET['cycle'])) {
-		$date = new DateTime($_GET['cycle']);
-		$result["date"] = date_sql($date);
-	}
-	else {
-		print("Date du cycle non indique.");
-		exit;
-	}
-
-	// VERIFICATION DU FORMAT DE L'EXPORT
-	$available_type = ["pdf", "csv"];
-	if (!isset($_GET['type']) || !in_array($_GET['type'], $available_type)) {
-		print("Le format de l'export doit être: ");
-		print(implode(", ", $available_type));
-		exit;
-	}
-
-	$db = db_open();
-	$methode = $_SESSION["compte"]["methode"];
-
-	// RECUPERATION DE LA DATE DE DEBUT ET DE FIN DU CYCLE
-	$result["cycle_debut"] = new DateTime(db_select_cycle($db, date_sql($date), $_SESSION["no"])[0]["cycle"]);
-	$cycle_end = db_select_cycle_end($db, date_sql($date), $_SESSION["no"]);
-	if (isset($cycle_end[0]["cycle_end"])) {
-		$date_tmp = new DateTime($cycle_end[0]["cycle_end"]);
-		$date_tmp->modify('-1 day');
-		$result["cycle_fin"] = $date_tmp;
-	}
-	else $result["cycle_fin"] = new DateTime();
-
-	// RECUPERATION DU CYCLE
-	$data = db_select_cycle_complet($db, date_sql($result["cycle_debut"]),date_sql($result["cycle_fin"]), $_SESSION["no"]);
-
-	// AJOUT DES JOURS MANQUANTS DU CYCLE
-	$cycle = doc_ajout_jours_manquant($data, $methode);
-	$nb_jours = count($cycle);
-	
-	if ($_GET['type'] == "csv") {
-
-		// ECRITURE DU CSV
-		header("content-type:application/csv;charset=UTF-8");
-		header('Content-Disposition: attachment; filename="moncycle_app_'. date_sql($date) .'.csv"');
-		$i = 1;
-		$out = fopen('php://output', 'w');
-		fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
-		if ($methode == 2) fputcsv($out,["jour","date","?","gommette","sensation","sommet", "unions", "commentaires"], CSV_SEP);
-		elseif ($methode == 3) fputcsv($out,["jour","date","?","température","sommet", "unions", "commentaires"], CSV_SEP);
-		else fputcsv($out,["jour","date","?","gommette","température","sensation","sommet", "unions", "commentaires"], CSV_SEP);
-		foreach ($cycle as $line){
-			fputcsv($out,array_merge([$i], $line), CSV_SEP);
-			$i += 1;
+function doc_ajout_jours_manquant($data, $methode){
+	$nb_jours = 0;
+	$cycle = [];
+	$date_cursor = new DateTime($data[0]["date_obs"]);
+	foreach ($data as $line){
+		while ($date_cursor->format('Y-m-d') != $line["date_obs"]) {
+			if ($methode == 2) array_push($cycle, array("date_obs" => $date_cursor->format('Y-m-d'),"?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '',"commentaire" => ''));
+			elseif ($methode == 3) array_push($cycle, array("date_obs" => $date_cursor->format('Y-m-d'),"?" => '1',"temperature" => '',"sommet" => '',"unions" => '',"commentaire" => ''));
+			else array_push($cycle, array("date_obs" => $date_cursor->format('Y-m-d'),"?" => '1',"gommette" => '',"temperature" => '',"sensation" => '',"sommet" => '',"unions" => '',"commentaire" => ''));
+			$date_cursor->modify('+1 day');
 		}
-		fclose($out);
+		if ($methode == 2) unset($line["temperature"]);
+		elseif ($methode == 3) {
+			unset($line["gommette"]);
+			unset($line["sensation"]);
+		}
+		array_push($cycle, $line);
+		$date_cursor->modify('+1 day');
+		$nb_jours += 1;
 	}
-	elseif ($_GET['type'] == "pdf") {
-	
+	return $cycle;
+}
+
+
+function doc_cycle_vers_csv ($out) {
+	$i = 1;
+	fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
+	if ($methode == 2) fputcsv($out,["jour","date","?","gommette","sensation","sommet", "unions", "commentaires"], CSV_SEP);
+	elseif ($methode == 3) fputcsv($out,["jour","date","?","température","sommet", "unions", "commentaires"], CSV_SEP);
+	else fputcsv($out,["jour","date","?","gommette","température","sensation","sommet", "unions", "commentaires"], CSV_SEP);
+	foreach ($cycle as $line){
+		fputcsv($out,array_merge([$i], $line), CSV_SEP);
+		$i += 1;
+	}
+}
+
+
+
+function doc_cycle_vers_pdf ($data, $methode) {	
 		$pdf = new FPDF('P','mm','A4');
 		$pdf->SetTitle('bill_cycle_'. date_humain($date, '_') . '.pdf');
 		$pdf->AddPage();
@@ -213,14 +180,9 @@ try {
 			$i += 1;
 		}
 
-		$pdf->Output('I', 'moncycle_app_'. date_humain($date, '_') . '.pdf');
+		// $pdf->Output('I', 'moncycle_app_'. date_humain($date, '_') . '.pdf');
+		return $pdf;
 	
 	}
 
-	$db = null;
-}
-catch (Exception $e) {
-	$result["err"] = $e->getMessage();
-	$result["line"] = $e->getLine();
-	print(json_encode($result));
-}
+
