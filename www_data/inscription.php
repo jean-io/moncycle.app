@@ -40,8 +40,28 @@ try {
 
 			db_insert_compte($db, $_POST["prenom"], $methode, $_POST["age"], $_POST["email1"],$pass_hash);
 
-			$succes = "Votre compte a été créé. Vous allez recevoir votre mot de passe par mail. &#x1F525;";
+			$succes = "Félicitation <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyée par mail.";
 			$mail_mdp = $pass_hash;
+
+			$mail = mail_init();
+			$mail->addAddress($_POST["email1"], $_POST["email1"]);
+
+			$mail->isHTML(false);
+			$mail->Subject = 'Bienvenue et mot de passe';
+			$mail->Body    = "Bonjour {$_POST["prenom"]},<br />
+					<br />
+					Bienvenue sur moncycle.app!<br />
+					<br />					
+					Votre mot de passe temporaire: <b>$pass_text</b><br />
+					Ce mot de passe est à changer dans la rubrique \"Mon compte\".<br />
+					<br />
+					A bientôt,<br />
+					<br />
+					<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br />";
+			$mail->AltBody = 'Bienvenue sur moncycle.app! Votre mot de passe: ' . $pass_text;
+
+			$mail->send();
+
 		}
 		else {
 			$output .= "Erreur dans la saisi du captcha.";
@@ -57,6 +77,28 @@ try {
 
 		$succes = "Un nouveau mot de passe va vous être envoyé par mail (si ce compte existe). &#x2709;";
 		$mail_mdp = $pass_hash;	
+
+		$mail = mail_init();
+		$mail->addAddress($_POST["email1"], $_POST["email1"]);     //Add a recipient
+		//$mail->addReplyTo('info@example.com', 'Information');
+
+		//Content
+		$mail->isHTML(false);                                  //Set email format to HTML
+		$mail->Subject = 'Nouveau mot de passe';
+		$mail->Body    = "Bonjour,<br />
+		<br />
+		Voici un nouveau mot de passe temporaire: <b>$pass_text</b><br />
+		Ce mot de passe est à changer dans la rubrique \"Mon compte\".<br />
+		<br />
+		A bientôt,<br />
+		<br />
+		<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br />";
+		$mail->AltBody = 'Nouveau mot de passe temporaire: ' . $pass_text;
+
+
+
+		$mail->send();
+
 	}
 	elseif (isset($_GET["nouveau_motdepasse_svp"])) {
 		sleep(1);
@@ -66,21 +108,6 @@ try {
 		$output .= "Erreur lors du traitement de votre demande. Merci de verifier votre addresse mail. Peut-être avez-vous déja un compte?";
 	}
 
-
-
-	if ($mail_mdp) {
-		$mail = mail_init();
-		$mail->addAddress($_POST["email1"], $_POST["email1"]);     //Add a recipient
-		//$mail->addReplyTo('info@example.com', 'Information');
-
-		//Content
-		$mail->isHTML(false);                                  //Set email format to HTML
-		$mail->Subject = 'Nouveau mot de passe';
-		$mail->Body    = "Bonjour,\n\nMerci d'utiliser MONCYCLE.APP!\n\nVotre nouveau mot de passe: " . $pass_text . "\nCe mot de passe est à changer dans la rubrique \"Mon compte\".\n\nA bientôt.";
-		//$mail->AltBody = 'Votre mot de passe: ' . $pass_text;
-
-		$mail->send();
-	}
 
 }
 catch (Exception $e){
@@ -101,12 +128,12 @@ catch (Exception $e){
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
-			<a href="/"><button type="button" class="nav_button">Se connecter</button></a>
+			<a href="/connexion?email1=<?= $_POST['email1'] ?? "" ?>"><button type="button" class="nav_button">Se connecter</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $output? "<br /><br />" . $output : "" ?></span>
 		</center>
 
-		<div class="contennu" id="timeline">
+		<div class="contennu" id="timeline" <?php if(!empty($succes)): ?>style="display:none;"<?php endif; ?>>
 			<h2>Créer votre compte</h2>
 			<form action="?creation_compte" method="post"><br />
 			<label for="i_prenom">Prénoms:</label><br />
