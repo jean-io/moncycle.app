@@ -25,7 +25,7 @@ function doc_ajout_jours_manquant($data, $methode){
 }
 
 
-function doc_cycle_vers_csv ($out) {
+function doc_cycle_vers_csv ($out, $cycle, $methode) {
 	$i = 1;
 	fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
 	if ($methode == 2) fputcsv($out,["jour","date","?","gommette","sensation","sommet", "unions", "commentaires"], CSV_SEP);
@@ -39,15 +39,15 @@ function doc_cycle_vers_csv ($out) {
 
 
 
-function doc_cycle_vers_pdf ($data, $methode) {	
+function doc_cycle_vers_pdf ($cycle, $methode, $nom) {	
 		$pdf = new FPDF('P','mm','A4');
-		$pdf->SetTitle('bill_cycle_'. date_humain($date, '_') . '.pdf');
+		$pdf->SetTitle('bill_cycle_'. date_humain(new Datetime($cycle[0]["date_obs"]), '_') . '.pdf');
 		$pdf->AddPage();
 		$pdf->SetFont('Courier','B',16);
-		$pdf->Cell($pdf->GetPageWidth()-35,10,utf8_decode($_SESSION["compte"]["nom"]), 0, 0, 'C');
+		$pdf->Cell($pdf->GetPageWidth()-35,10,utf8_decode($nom), 0, 0, 'C');
 		$pdf->SetFont('Courier','',10);
 		$pdf->Ln();
-		$pdf->Cell($pdf->GetPageWidth()-35,5,sprintf("Cycle de %d jours du %s au %s", $nb_jours, date_humain($result["cycle_debut"]), date_humain($result["cycle_fin"])), 0, 0, 'C');
+		$pdf->Cell($pdf->GetPageWidth()-35,5,sprintf("Cycle de %d jours du %s au %s", count($cycle), date_humain(new Datetime($cycle[0]["date_obs"])), date_humain(new Datetime(end($cycle)["date_obs"]))), 0, 0, 'C');
 		$pdf->Ln();
 		$pdf->SetTextColor(30, 130, 76);
 		$pdf->Link($pdf->GetX(), $pdf->GetY(), $pdf->GetPageWidth()-25, 6, "https://www.moncycle.app");
