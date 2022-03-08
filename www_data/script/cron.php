@@ -4,14 +4,15 @@ require_once "../config.php";
 require_once "../lib/db.php";
 require_once "../lib/doc.php";
 require_once "../lib/date.php";
+require_once "../lib/mail.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once '../phpmailer/src/Exception.php';
-require_once '../phpmailer/src/PHPMailer.php';
-require_once '../phpmailer/src/SMTP.php';
-require_once "../fpdf/fpdf.php";
+require_once '../module/phpmailer/src/Exception.php';
+require_once '../module/phpmailer/src/PHPMailer.php';
+require_once '../module/phpmailer/src/SMTP.php';
+require_once "../module/fpdf/fpdf.php";
 
 
 
@@ -42,18 +43,8 @@ foreach($cycles as $cyc) {
 	doc_cycle_vers_csv ($csv, $cycle_complet, $cyc["methode"]);
 	rewind($csv);
 
-	$mail = new PHPMailer(true);
+	$mail = mail_init();
 
-	$mail->isSMTP();
-	$mail->Host       = SMTP_HOST;
-	$mail->SMTPAuth   = true;
-	$mail->Username   = SMTP_MAIL;
-	$mail->Password   = SMTP_PASSWORD;
-	$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-	$mail->Port       = SMTP_PORT;
-	$mail->CharSet    = 'UTF-8';
-
-	$mail->setFrom(SMTP_MAIL, 'moncycle.app');
 	$mail->addAddress($cyc["email1"], $cyc["email1"]);     //Add a recipient
 	if (!empty($cyc["email2"])) $mail->addAddress($cyc["email2"], $cyc["email2"]);
 

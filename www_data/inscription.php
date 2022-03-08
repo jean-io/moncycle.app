@@ -6,9 +6,10 @@ use PHPMailer\PHPMailer\Exception;
 require_once "config.php";
 require_once "lib/db.php";
 require_once "lib/sec.php";
-require_once 'phpmailer/src/Exception.php';
-require_once 'phpmailer/src/PHPMailer.php';
-require_once 'phpmailer/src/SMTP.php';
+require_once "lib/mail.php";
+require_once 'module/phpmailer/src/Exception.php';
+require_once 'module/phpmailer/src/PHPMailer.php';
+require_once 'module/phpmailer/src/SMTP.php';
 
 session_start();
 
@@ -68,19 +69,7 @@ try {
 
 
 	if ($mail_mdp) {
-		$mail = new PHPMailer(true);
-
-		//$mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-		$mail->isSMTP();                                            //Send using SMTP
-		$mail->Host       = SMTP_HOST;                     //Set the SMTP server to send through
-		$mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-		$mail->Username   = SMTP_MAIL;                     //SMTP username
-		$mail->Password   = SMTP_PASSWORD;                               //SMTP password
-		$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-		$mail->Port       = SMTP_PORT;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
-		//Recipients
-		$mail->setFrom(SMTP_MAIL, 'MONCYCLE.APP');
+		$mail = mail_init();
 		$mail->addAddress($_POST["email1"], $_POST["email1"]);     //Add a recipient
 		//$mail->addReplyTo('info@example.com', 'Information');
 

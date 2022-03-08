@@ -4,7 +4,7 @@ require_once "config.php";
 require_once "lib/date.php";
 require_once "lib/db.php";
 require_once "lib/doc.php";
-require_once "fpdf/fpdf.php";
+require_once "module/fpdf/fpdf.php";
 
 session_start();
 

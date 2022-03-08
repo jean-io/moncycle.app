@@ -3,3 +3,5 @@ www_data/config.php
 www_data/info.php
 htpasswd
 sessions
+www_data/module
+
