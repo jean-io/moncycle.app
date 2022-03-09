@@ -1,4 +1,11 @@
 <?php
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
 
 require_once "../config.php";
 require_once "../lib/db.php";
@@ -54,13 +61,13 @@ foreach($cycles as $cyc) {
 
 	$mail->isHTML(true);
 	$mail->Subject = "Cycle de $nb_j jours du $dh";
-	$mail->Body    = "Bonjour {$cyc['nom']},<br />
+	$mail->Body    = "<div style='font-family: sans-serif;'>Bonjour {$cyc['nom']},<br />
 		<br />
 		Vous trouverez en PJ un export au format PDF et CSV de votre cycle du $dh au $fh d'une durée de $nb_j jours.<br />
 		<br />
 		A bientôt,<br />
 		<br />
-		<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br />";
+		<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br /></div>";
 
 	$mail->AltBody = "Export de votre cycle du $dh au $fh de $nb_j jours.\n\nmoncycle.app";
 

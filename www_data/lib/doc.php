@@ -1,5 +1,11 @@
 <?php
-
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
 
 function doc_ajout_jours_manquant($data, $methode){
 	$nb_jours = 0;

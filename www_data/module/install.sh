@@ -1,5 +1,12 @@
 #!/bin/bash
 
+## moncycle.app
+##
+## licence Creative Commons CC BY-NC-SA
+##
+## https://www.moncycle.app
+## https://github.com/jean-io/moncycle.app
+
 DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd $DIR
 

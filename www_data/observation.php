@@ -1,4 +1,11 @@
 <?php
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
 
 require_once "config.php";
 require_once "lib/db.php";

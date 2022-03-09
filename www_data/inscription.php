@@ -1,4 +1,11 @@
 <?php
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -31,14 +38,17 @@ try {
 
 	if (isset($_GET["creation_compte"]) && !$compte_existe && isset($_POST["prenom"]) && isset($_POST["email1"]) && isset($_POST["age"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 
-		if (isset($_SESSION["captcha"]) && isset($_POST["captcha"]) && strlen($_POST["captcha"])>=1 && $_POST["captcha"]==$_SESSION["captcha"]) {
+		if (!CREATION_COMPTE) {
+			$output .= "La création de compte est temporairement désactivée. Veuillez nous excuser pour tout désagrément.";
+		}
+		elseif (isset($_SESSION["captcha"]) && isset($_POST["captcha"]) && strlen($_POST["captcha"])>=1 && $_POST["captcha"]==$_SESSION["captcha"]) {
 			$methode = intval($_POST["methode"] ?? 0);
 			if ($methode<1 || $methode>3) $methode=1;
 
 			$pass_text = sec_motdepasse_aleatoire();
 			$pass_hash = sec_hash($pass_text);
 
-			db_insert_compte($db, $_POST["prenom"], $methode, $_POST["age"], $_POST["email1"],$pass_hash);
+			db_insert_compte($db, $_POST["prenom"], $methode, $_POST["age"], $_POST["email1"],$pass_hash, $_POST["decouvert"] ?? null);
 
 			$succes = "Félicitation <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyée par mail.";
 			$mail_mdp = $pass_hash;
@@ -48,16 +58,18 @@ try {
 
 			$mail->isHTML(false);
 			$mail->Subject = 'Bienvenue et mot de passe';
-			$mail->Body    = "Bonjour {$_POST["prenom"]},<br />
+			$mail->Body    = "<div style='font-family: sans-serif;'>Bonjour {$_POST["prenom"]},<br />
 					<br />
 					Bienvenue sur moncycle.app!<br />
 					<br />					
-					Votre mot de passe temporaire: <b>$pass_text</b><br />
+					Voici votre mot de passe temporaire: <b>$pass_text</b><br />
 					Ce mot de passe est à changer dans la rubrique \"Mon compte\".<br />
+					<br />
+					<a href='https://tableau.moncycle.app/connexion?email1={$_POST["email1"]}'>connectez-vous</a><br />
 					<br />
 					A bientôt,<br />
 					<br />
-					<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br />";
+					<a style='color: #1e824c' href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c !important;font-weight: bold;'>cycle</span>.app</a><br /></div>";
 			$mail->AltBody = 'Bienvenue sur moncycle.app! Votre mot de passe: ' . $pass_text;
 
 			$mail->send();
@@ -75,7 +87,7 @@ try {
 
 		db_update_motdepasse_par_mail($db, $pass_hash, $_POST["email1"]);
 
-		$succes = "Un nouveau mot de passe va vous être envoyé par mail (si ce compte existe). &#x2709;";
+		$succes = "Un nouveau mot de passe vous a été envoyé par mail (si ce compte existe). &#x2709;";
 		$mail_mdp = $pass_hash;	
 
 		$mail = mail_init();
@@ -85,14 +97,16 @@ try {
 		//Content
 		$mail->isHTML(false);                                  //Set email format to HTML
 		$mail->Subject = 'Nouveau mot de passe';
-		$mail->Body    = "Bonjour,<br />
+		$mail->Body    = "<div style='font-family: sans-serif;'>Bonjour,<br />
 		<br />
 		Voici un nouveau mot de passe temporaire: <b>$pass_text</b><br />
 		Ce mot de passe est à changer dans la rubrique \"Mon compte\".<br />
 		<br />
+		<a style='color: #1e824c' href='https://tableau.moncycle.app/connexion?email1={$_POST["email1"]}'>connectez-vous</a><br />
+		<br />
 		A bientôt,<br />
 		<br />
-		<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br />";
+		<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br /></div>";
 		$mail->AltBody = 'Nouveau mot de passe temporaire: ' . $pass_text;
 
 
@@ -118,6 +132,14 @@ catch (Exception $e){
 
 
 ?><!doctype html>
+<!--
+** moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+-->
 <html lang="fr">
 	<head>
 		<?= file_get_contents("./vue/head.html") ?>
@@ -154,11 +176,14 @@ catch (Exception $e){
 			<?php for ($i = date('Y')-(date('Y')%5)-75; $i < date('Y')-5; $i += 5) { ?>
 				<option <?= $i==($_POST["age"]?? -1) ? "selected" : "" ?>  value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>	
 			<?php } ?>
-			</select><br /><br />
-			
+			</select><br />
+			<br />			
 			<label for="i_captcha">Captcha:</label><br />
 			<input name="captcha" id="i_captcha" type="text" maxlength="6" required placeholder="Entrer les six lettres ou chiffres affichés ci-dessous." /><br />
 			<img src="captcha.php" class="captcha" /><br />
+			<br />
+			<label for="i_comment">Comment avez-vous découvert moncycle.app? Un commentaire?</label><br />
+			<textarea id="i_comment" name="decouvert" maxlength="255" placeholder="Dites nous tout!"><?= $_POST['decouvert'] ?? "" ?></textarea>
 			<br />
 			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" <?php if (boolval($_POST["monito"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_monito">Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficulté dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'applique. &#x1F4DD;</label></p>
 			<p><input type="checkbox" required id="jc_gratuit" name="gratuit" value="1" <?php if (boolval($_POST["gratuit"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_gratuit">Je comprends que moncycle.app est gratuit et sans publicité/vente de donnnées! Je peux cependant contribuer au financement de l'application et aider le développer via la </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">page Tipeee de moncycle.app</a>. &#x1F4B6;</p>

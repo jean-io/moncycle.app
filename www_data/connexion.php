@@ -1,7 +1,15 @@
 <?php
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
 
 require_once "config.php";
 require_once "lib/db.php";
+require_once "lib/date.php";
 
 session_start();
 
@@ -31,11 +39,12 @@ try {
 		$db = db_open();
 
 		$compte = db_select_compte_par_mail($db, $_POST["email1"])[0] ?? [];
-		
+
 		if (isset($compte["nb_co_echoue"]) && intval($compte["nb_co_echoue"])>=5) sleep(5);
 		elseif (!isset($compte["nb_co_echoue"]) && rand(0,5)==0) sleep(5);
 
-		if (empty($_POST["email1"]) || empty($_POST["mdp"])) {
+		if (!CONNEXION_COMPTE) $output .= "Les connexions aux comptes sont désactivées. Veuillez nous excuser pour ce désagrément.";
+		elseif (empty($_POST["email1"]) || empty($_POST["mdp"])) {
 			$output .= "E-mail et mot de passe manquant.";
 		}
 		elseif (isset($compte["actif"]) && !boolval($compte["actif"])) {
@@ -48,6 +57,7 @@ try {
 			$_SESSION["connected"] = true;
 			$_SESSION["compte"] = $compte;
 			$_SESSION["no"] = intval($compte["no_compte"] ?? -1);
+			$_SESSION["sess_refresh"] = date_sql(new DateTime());
 
 			db_update_compte_connecte($db, $_SESSION["no"]);
 
@@ -70,6 +80,14 @@ catch (Exception $e){
 
 
 ?><!doctype html>
+<!--
+** moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+-->
 <html lang="fr">
 	<head>
 		<?= file_get_contents("./vue/head.html") ?>
@@ -105,7 +123,9 @@ catch (Exception $e){
 			<br /><br /><br />
 		</div>
 
-
+		<script>
+			window.localStorage.clear();
+		</script>
 	</body>
 </html>
 

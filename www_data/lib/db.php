@@ -1,4 +1,11 @@
 <?php
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
 
 function db_open() {
 	$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
@@ -80,8 +87,8 @@ function db_select_compte_existe($db, $mail) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_insert_compte($db, $nom, $methode, $age, $mail, $mdp) {
-	$sql = "INSERT INTO compte (nom, methode, age, email1, motdepasse) VALUES (:nom, :methode, :age, :email1, :motdepasse)";
+function db_insert_compte($db, $nom, $methode, $age, $mail, $mdp, $decouvert) {
+	$sql = "INSERT INTO compte (nom, methode, age, email1, motdepasse, decouvert) VALUES (:nom, :methode, :age, :email1, :motdepasse, :decouvert)";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":nom", $nom, PDO::PARAM_STR);
@@ -89,6 +96,7 @@ function db_insert_compte($db, $nom, $methode, $age, $mail, $mdp) {
 	$statement->bindValue(":age", $age, PDO::PARAM_INT);
 	$statement->bindValue(":email1", $mail, PDO::PARAM_STR);
 	$statement->bindValue(":motdepasse", $mdp, PDO::PARAM_STR);
+	$statement->bindValue(":decouvert", $decouvert, PDO::PARAM_STR);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);

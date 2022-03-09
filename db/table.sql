@@ -14,6 +14,7 @@ CREATE TABLE `compte` (
   `derniere_co_date` timestamp NULL DEFAULT NULL,
   `inscription_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `mdp_change_date` timestamp NULL DEFAULT NULL,
+  `decouvert` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`no_compte`),
   UNIQUE KEY `email1` (`email1`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;

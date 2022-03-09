@@ -1,3 +1,10 @@
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
 
 .day {
 	padding: 1px;
@@ -133,11 +140,21 @@
 	border-radius: 3px;
 }
 
+#jour_form {
+	padding-bottom: 50px;
+}
+
+#jour_form_suppr {
+	position: absolute;
+	right: 5%;
+}
+
 #jour_form_titre {
 	position: sticky;
 	padding: 10px 0 5px 0;
 	top: 0;
 	font-family: 'Montserrat';
+	background-color: white;
 }
 
 .categorie {
@@ -166,6 +183,10 @@ h2 {
 	h2 a {
 		background-color: white;
 		color: black;
+	}
+
+	#jour_form_titre {
+		background-color: black;
 	}
 }
 

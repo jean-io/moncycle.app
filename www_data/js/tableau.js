@@ -1,3 +1,11 @@
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
+
 bill = {
 	gommette : {
 		"."  : [".", "rouge"],
@@ -20,6 +28,8 @@ bill = {
 	page_a_recharger: false,
 	graph_data : {},
 	cycle_curseur : 0,
+	a_le_focus: true,
+	date_chargement: new Date().toISOString().substring(0, 10),
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		bill.charger_cycle();
@@ -33,12 +43,16 @@ bill = {
 		$("#jour_form_submit").click(bill.submit_menu);	
 		$("#jour_form_suppr").click(bill.suppr_observation);	
 		bill.charger_actu();
+		$(window).focus(function() {
+			if (new Date().toISOString().substring(0, 10) != bill.date_chargement) location.reload(false); 
+		})
 	},
 	charger_actu : function() {
 		$.get("https://www.moncycle.app/actu.html", function(data) {
 			let html = $.parseHTML(data);
 			$("#actu_contennu").html(html);
-			if (localStorage.actu_lu != $("#actu_contennu").find("h4").text()) $("#actu").show();
+			let titre = $("#actu_contennu").find("h4").text();
+			if (titre && localStorage.actu_lu != titre) $("#actu").show();
 			$("#fermer_actu").click(function () {
 				localStorage.actu_lu = $("#actu_contennu").find("h4").text();
 				$("#actu").hide();
@@ -58,7 +72,7 @@ bill = {
 		let date_cycle = new Date(date_cycle_str);
 		let nb_jours = parseInt((date_fin-date_cycle)/(1000*60*60*24)+1);
 		$("#timeline").prepend(bill.cycle2html(date_cycle_str, nb_jours, date_fin));
-		if (JSON.parse(localStorage.cycle_cache ?? "[]").includes("contenu-c-" + date_cycle_str)) bill.cycle_aff_switch("contenu-c-" + date_cycle_str);
+		if (JSON.parse(localStorage.cycle_cache || "[]").includes("contenu-c-" + date_cycle_str)) bill.cycle_aff_switch("contenu-c-" + date_cycle_str);
 		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function (e) {
 			bill.cycle_aff_switch($(this).attr("for"));
 		});
@@ -132,7 +146,7 @@ bill = {
 		});
 	},
 	cycle_aff_switch: function (id) {
-		let cache = JSON.parse(localStorage.cycle_cache ?? "[]");
+		let cache = JSON.parse(localStorage.cycle_cache || "[]");
 		if ($("#" + id).is(":hidden")) {
 			$("#" + id).show();
 			$("#but-" + id).html("&#x1F440; Masquer");
@@ -182,9 +196,13 @@ bill = {
 			else observation.append(`<span class='t'></span>`);
 			observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
 			observation.append(`<span class='u'>${j.union_sex ? bill.text.union : ""}</span>`);
-			observation.append(`<span class='o pas_temp'>${j.sensation ?? ""}</span>`);
+			observation.append(`<span class='o pas_temp'>${j.sensation || ""}</span>`);
 		}
-		observation.append(`<span class='c'>${j.commentaire ?? ""}</span>`);
+		else {
+			observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
+			observation.append(`<span class='u'>${j.union_sex ? bill.text.union : ""}</span>`);
+		}
+		observation.append(`<span class='c'>${j.commentaire || ""}</span>`);
 		return observation;
 	},
 	open_menu : function(e) {
@@ -199,10 +217,10 @@ bill = {
 		$("#form_temp").val(j.temperature);
 		$("#vos_obs").empty();
 		let n = 0;
-		Object.entries(sensations).map(([k, v]) => {
+		Object.entries(sensations).sort((a,b) => b[1] - a[1]).forEach(function (o){
 			if (n<10) {
-				let ob_id = btoa(k).replaceAll('+', '').replaceAll('=', '').replaceAll('/', '');
-				let html = `<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${k}" /><label for="ob_${ob_id}">${k}</label><br />`;
+				let ob_id = btoa(o[0]).replace(/[^A-Za-z0-9 -]/g, "");
+				let html = `<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${o[0]}" /><label for="ob_${ob_id}">${o[0]}</label><br />`;
 				$("#vos_obs").append(html);
 			}
 			n += 1;	
@@ -211,7 +229,7 @@ bill = {
 		if (j.sensation) j.sensation.split(',').forEach(ob => {
 			if (ob == bill.text.a_renseigner) return;
 			ob = ob.toLowerCase().trim();
-			let ob_id = btoa(ob).replaceAll('+', '').replaceAll('=', '').replaceAll('/', '');
+			let ob_id = btoa(ob).replace(/[^A-Za-z0-9 -]/g, "");
 			let obj = $(`#ob_${ob_id}`);
 			if(obj.length) obj.prop('checked', true);
 			else extra.push(ob);
@@ -240,6 +258,12 @@ bill = {
 		$("#jour_form").show();
 	},
 	submit_menu : function () {
+		$("#ob_extra").val().split(',').forEach(function(o) {
+			o = o.trim().toLowerCase();
+			if (!o) return;
+			if (!(o in sensations)) sensations[o] = 0;
+			sensations[o] += 1;
+		});
 		let d = $("#jour_form").serializeArray();
 		$.post("observation.php", $.param(d)).done(function(data){
 			console.log(data);

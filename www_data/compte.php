@@ -1,4 +1,11 @@
 <?php
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
 
 require_once "config.php";
 require_once "lib/db.php";
@@ -87,6 +94,14 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 
 
 ?><!doctype html>
+<!--
+** moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+-->
 <html lang="fr">
 	<head>
 		<?= file_get_contents("./vue/head.html") ?>

@@ -1,7 +1,15 @@
 <?php
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+*/
 
 require_once "config.php";
 require_once "lib/db.php";
+require_once "lib/date.php";
 
 session_start();
 
@@ -12,6 +20,13 @@ if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 
 
 $db = db_open();
+
+if (!isset($_SESSION["sess_refresh"]) || $_SESSION["sess_refresh"] != date_sql(new DateTime())) {
+	$_SESSION["sess_refresh"] = date_sql(new DateTime());
+	$compte = db_select_compte_par_nocompte($db, $_SESSION["no"])[0] ?? [];
+	unset($compte["motdepasse"]);
+	$_SESSION["compte"] = $compte;
+}
 
 $cycles = db_select_cycles($db, $_SESSION["no"]);
 $sensations_brut = db_select_sensations($db, $_SESSION["no"]);
@@ -29,11 +44,19 @@ foreach ($sensations_brut as $obj) {
 $methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 
 ?><!doctype html>
+<!--
+** moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+-->
 <html lang="fr">
 	<head>
 		<?= file_get_contents("./vue/head.html") ?>
-		<script type="text/javascript" src="js/jquery.min.js?h=<?= hash_file("sha1", "./js/jquery.min.js") ?>"></script> 
-		<script type="text/javascript" src="js/chart.min.js?h=<?= hash_file("sha1", "./js/chart.min.js") ?>"></script> 
+		<script type="text/javascript" src="module/jquery.js?h=<?= hash_file("sha1", "./module/jquery.js") ?>"></script> 
+		<script type="text/javascript" src="module/chart.js?h=<?= hash_file("sha1", "./module/chart.js") ?>"></script> 
 		<script type="text/javascript">
 			var tous_les_cycles = <?= json_encode($cycles); ?>;
 			var sensations = <?= json_encode($sensations); ?>;
