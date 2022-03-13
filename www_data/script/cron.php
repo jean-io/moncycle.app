@@ -36,50 +36,54 @@ $db = db_open();
 
 $cycles = db_select_cycles_recent($db);
 
+
 foreach($cycles as $cyc) {
 	
-	$debut_cycle = db_select_cycle($db, $cyc["cycle_complet"], $cyc["no_compte"])[0]["cycle"];
-	$cycle_complet = db_select_cycle_complet($db, $debut_cycle,  $cyc["cycle_complet"], $cyc["no_compte"]);
-	$cycle_complet = doc_ajout_jours_manquant($cycle_complet, $cyc["methode"]);
+	$debut_cycle = db_select_cycle($db, $cyc["cycle_complet"], $cyc["no_compte"]);
 	
-	$pdf = doc_cycle_vers_pdf ($cycle_complet, $cyc["methode"], $cyc["nom"]);
+	if(!empty($debut_cycle)) {
 
+		$debut_cycle = $debut_cycle[0]["cycle"];
+		$cycle_complet = db_select_cycle_complet($db, $debut_cycle,  $cyc["cycle_complet"], $cyc["no_compte"]);
+		$cycle_complet = doc_ajout_jours_manquant($cycle_complet, $cyc["methode"]);
 
+		$nb_j = count($cycle_complet);
 
-	$csv = fopen('php://memory','rw');
-	doc_cycle_vers_csv ($csv, $cycle_complet, $cyc["methode"]);
-	rewind($csv);
+		$pdf = doc_cycle_vers_pdf ($cycle_complet, $cyc["methode"], $cyc["nom"]);
 
-	$mail = mail_init();
+		$csv = fopen('php://memory','rw');
+		doc_cycle_vers_csv ($csv, $cycle_complet, $cyc["methode"]);
+		rewind($csv);
 
-	$mail->addAddress($cyc["email1"], $cyc["email1"]);     //Add a recipient
-	if (!empty($cyc["email2"])) $mail->addAddress($cyc["email2"], $cyc["email2"]);
+		$mail = mail_init();
 
-	$nb_j = count($cycle_complet);
-	$dh = date_humain(new Datetime($cycle_complet[0]["date_obs"]));
-	$fh = date_humain(new Datetime(end($cycle_complet)["date_obs"]));
+		$mail->addAddress($cyc["email1"], $cyc["email1"]);     //Add a recipient
+		if (!empty($cyc["email2"])) $mail->addAddress($cyc["email2"], $cyc["email2"]);
 
-	$mail->isHTML(true);
-	$mail->Subject = "Cycle de $nb_j jours du $dh";
-	$mail->Body    = "<div style='font-family: sans-serif;'>Bonjour {$cyc['nom']},<br />
-		<br />
-		Vous trouverez en PJ un export au format PDF et CSV de votre cycle du $dh au $fh d'une durée de $nb_j jours.<br />
-		<br />
-		A bientôt,<br />
-		<br />
-		<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br /></div>";
+		$dh = date_humain(new Datetime($cycle_complet[0]["date_obs"]));
+		$fh = date_humain(new Datetime(end($cycle_complet)["date_obs"]));
 
-	$mail->AltBody = "Export de votre cycle du $dh au $fh de $nb_j jours.\n\nmoncycle.app";
+		$mail->isHTML(true);
+		$mail->Subject = "Cycle de $nb_j jours du $dh";
+		$mail->Body    = "<div style='font-family: sans-serif;'>Bonjour {$cyc['nom']},<br />
+			<br />
+			Vous trouverez en PJ un export au format PDF et CSV de votre cycle du $dh au $fh d'une durée de $nb_j jours.<br />
+			<br />
+			A bientôt,<br />
+			<br />
+			<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br /></div>";
 
-	$mail->addStringAttachment($pdf->Output('', 'S'), 'moncycle_app_'. $debut_cycle . '.pdf');
-	$mail->addStringAttachment(stream_get_contents($csv), 'moncycle_app_'. $debut_cycle . '.csv');
+		$mail->AltBody = "Export de votre cycle du $dh au $fh de $nb_j jours.\n\nmoncycle.app";
 
-	$mail->send();
+		$mail->addStringAttachment($pdf->Output('', 'S'), 'moncycle_app_'. $debut_cycle . '.pdf');
+		$mail->addStringAttachment(stream_get_contents($csv), 'moncycle_app_'. $debut_cycle . '.csv');
 
-	fclose($csv);
+		$mail->send();
 
-	echo "cycle de $nb_j envoye a {$cyc["email1"]} (et {$cyc["email2"]})";
-	echo PHP_EOL;
+		fclose($csv);
 
+		echo "cycle de $nb_j envoye a {$cyc["email1"]} (et {$cyc["email2"]})";
+		echo PHP_EOL;
+	}
 }
 

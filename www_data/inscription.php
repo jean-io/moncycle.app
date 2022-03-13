@@ -62,14 +62,14 @@ try {
 					<br />
 					Bienvenue sur moncycle.app!<br />
 					<br />					
-					Voici votre mot de passe temporaire: <b>$pass_text</b><br />
+					Voici votre mot de passe temporaire: <b style='font-family: monospace;'>$pass_text</b><br />
 					Ce mot de passe est à changer dans la rubrique \"Mon compte\".<br />
-					<br />
-					<a href='https://tableau.moncycle.app/connexion?email1={$_POST["email1"]}'>connectez-vous</a><br />
+					<br />					
+					<a style='color: #1e824c' href='https://tableau.moncycle.app/connexion?email1={$_POST["email1"]}'>connectez-vous</a><br />
 					<br />
 					A bientôt,<br />
 					<br />
-					<a style='color: #1e824c' href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c !important;font-weight: bold;'>cycle</span>.app</a><br /></div>";
+					<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br /></div>";
 			$mail->AltBody = 'Bienvenue sur moncycle.app! Votre mot de passe: ' . $pass_text;
 
 			$mail->send();
@@ -99,7 +99,7 @@ try {
 		$mail->Subject = 'Nouveau mot de passe';
 		$mail->Body    = "<div style='font-family: sans-serif;'>Bonjour,<br />
 		<br />
-		Voici un nouveau mot de passe temporaire: <b>$pass_text</b><br />
+		Voici un nouveau mot de passe temporaire: <b style='font-family: monospace;'>$pass_text</b><br />
 		Ce mot de passe est à changer dans la rubrique \"Mon compte\".<br />
 		<br />
 		<a style='color: #1e824c' href='https://tableau.moncycle.app/connexion?email1={$_POST["email1"]}'>connectez-vous</a><br />

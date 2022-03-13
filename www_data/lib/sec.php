@@ -7,8 +7,8 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
-function sec_motdepasse_aleatoire($taille=10){
-	$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-!%&@$:,;.';
+function sec_motdepasse_aleatoire($taille=12){
+	$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 	$pass = [];
 	$alphaLength = strlen($alphabet)-1;
 	for ($i = 0; $i < $taille; $i++) {

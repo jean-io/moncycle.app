@@ -167,7 +167,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<p>Un bug? Besoin d'aide? Une question? Une suggestion? Une demande? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a>.</p>
 		<br />
 		<h2 class="rouge">Zone de danger</h2>
-		<span class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est ireversible mais vous avez la possibilité de télècharger toutes vos donné en amont de la suppression.</span><br />
+		<span class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est ireversible mais vous avez la possibilité de télècharger toutes vos données en amont de la suppression.</span><br />
 		<br />
 		<a href="?mes_donnees_svp"><input type="button" value="📦 Exporter mes données" /></a> <form method="post" action="?suppr_compte" onsubmit="return confirm('Êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irreversible.')"><input name="boutton_suppr" type="submit" class="rouge" value="⚠️ Supprimer mon compte" /></form>
 <br /><br /><br /><br /><br /><br />

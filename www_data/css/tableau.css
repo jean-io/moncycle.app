@@ -51,6 +51,16 @@
 	border-radius: 2px;
 }
 
+.day .r {
+	color: #fbca0b;
+}
+
+.day .p {
+	color: gray;
+	font-size: .85em;
+	font-style: italic;
+}
+
 @media (prefers-color-scheme: dark) {
 	.day .g {
 		border-color: white;
@@ -76,8 +86,7 @@
 }
 
 .day .bebe {
-	background-color: white;
-	border-color: black;
+	border-color: #c8c8c8;
 }
 
 .day .jesaispas {
@@ -187,6 +196,10 @@ h2 {
 
 	#jour_form_titre {
 		background-color: black;
+	}
+
+	.day .bebe {
+		border-color: #393939;
 	}
 }
 

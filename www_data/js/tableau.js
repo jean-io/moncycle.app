@@ -219,7 +219,7 @@ bill = {
 		let n = 0;
 		Object.entries(sensations).sort((a,b) => b[1] - a[1]).forEach(function (o){
 			if (n<10) {
-				let ob_id = btoa(o[0]).replace(/[^A-Za-z0-9 -]/g, "");
+				let ob_id = btoa(unescape(encodeURIComponent(o[0]))).replace(/[^A-Za-z0-9 -]/g, "");
 				let html = `<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${o[0]}" /><label for="ob_${ob_id}">${o[0]}</label><br />`;
 				$("#vos_obs").append(html);
 			}
@@ -229,7 +229,7 @@ bill = {
 		if (j.sensation) j.sensation.split(',').forEach(ob => {
 			if (ob == bill.text.a_renseigner) return;
 			ob = ob.toLowerCase().trim();
-			let ob_id = btoa(ob).replace(/[^A-Za-z0-9 -]/g, "");
+			let ob_id = btoa(unescape(encodeURIComponent(ob))).replace(/[^A-Za-z0-9 -]/g, "");
 			let obj = $(`#ob_${ob_id}`);
 			if(obj.length) obj.prop('checked', true);
 			else extra.push(ob);
