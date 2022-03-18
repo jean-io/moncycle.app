@@ -180,7 +180,10 @@ bill = {
 		observation.append(`<span class='j'>${j.pos}</span>`);
 		observation.append(`<span class='p'>${j.jenesaispas ?  bill.text.je_sais_pas : ""}</span>`);
 		if (j.chargement) observation.append(`<span class='l'>${bill.text.chargement}</span>`);
-		else if (!j.jenesaispas && ((!j.gommette && !j.temperature) || (!j.gommette && methode==2) || (!j.temperature && methode==3))) observation.append(`<span class='r'>${bill.text.a_renseigner}</span>`);
+		else if (!j.jenesaispas && ((!j.gommette && !j.temperature) || (!j.gommette && methode==2) || (!j.temperature && methode==3))) {
+			observation.append(`<span class='r'>${bill.text.a_renseigner}</span>`);
+			observation.append(`<span class='s'></span>`);
+		}
 		else if (!j.jenesaispas) {
 			if (j.gommette) observation.append(`<span class='g pas_temp ${bill.gommette[j.gommette][1]}'>${bill.gommette[j.gommette][0]}</span>`);
 			if (j.temperature) {

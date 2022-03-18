@@ -64,30 +64,32 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 	header("content-type:application/csv;charset=UTF-8");
 	header('Content-Disposition: attachment; filename="export_moncycle_app.csv"');
 
-	print(mb_convert_encoding("Export des données MONCYCLE.APP de " . $_SESSION["compte"]["nom"], 'UTF-16LE', 'UTF-8'));	
-	print(PHP_EOL);
-	print(PHP_EOL);
+	$out = fopen('php://output', 'w');
+	fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
+
+	fputs($out,"Export des données MONCYCLE.APP de " . $_SESSION["compte"]["nom"] . PHP_EOL);
+	fputs($out, PHP_EOL);
 
 	foreach ($export_compte[0] as $key => $value) {
-		print(mb_convert_encoding($key . CSV_SEP . " ", 'UTF-16LE', 'UTF-8'));
+		fputs($out, $key . CSV_SEP . " ");
 	}
-	print(PHP_EOL);
-	print(mb_convert_encoding(implode(CSV_SEP, $export_compte[0]), 'UTF-16LE', 'UTF-8'));
-	print(PHP_EOL);
-	print(PHP_EOL);
+	fputs($out, PHP_EOL);
+	fputcsv($out, $export_compte[0], CSV_SEP);
+	fputs($out, PHP_EOL);
 
 	if (!isset($export_obs[0])) exit;
 
 	foreach ($export_obs[0] as $key => $value) {
-		print(mb_convert_encoding($key . CSV_SEP . " ", 'UTF-16LE', 'UTF-8'));
+		fputs($out, $key . CSV_SEP . " ");
 	}
-	print(PHP_EOL);
-	foreach ($export_obs as $key => $value) {
-		print(mb_convert_encoding(implode(CSV_SEP, $value), 'UTF-16LE', 'UTF-8'));
-		print(PHP_EOL);
-	}
-	print(PHP_EOL);
+	fputs($out, PHP_EOL);
 
+	foreach ($export_obs as $key => $value) {
+		fputcsv($out, $value, CSV_SEP);
+	}
+	fputs($out, PHP_EOL);
+
+	fclose($out);
 	exit;
 }
 
@@ -112,7 +114,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom"><?= $_SESSION["compte"]["nom"] ?? "Mon compte" ?></div>
-			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="connexion?deconnexion_svp"><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
+			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="connexion?deconnexion_svp" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $erreur? "<br /><br />" . $erreur : "" ?></span>
 			<?php if(boolval($_SESSION["compte"]["donateur"])): ?><p>🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p><?php endif; ?>

@@ -27,7 +27,6 @@ if (isset($_SESSION["connected"]) && $_SESSION["connected"]) {
 
 $output = "";
 $succes = "";
-$mail_mdp = false;
 
 try {
 
@@ -50,26 +49,14 @@ try {
 
 			db_insert_compte($db, $_POST["prenom"], $methode, $_POST["age"], $_POST["email1"],$pass_hash, $_POST["decouvert"] ?? null);
 
-			$succes = "Félicitation <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyée par mail.";
-			$mail_mdp = $pass_hash;
+			$succes = "Félicitation <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par mail.";
 
 			$mail = mail_init();
 			$mail->addAddress($_POST["email1"], $_POST["email1"]);
 
 			$mail->isHTML(false);
 			$mail->Subject = 'Bienvenue et mot de passe';
-			$mail->Body    = "<div style='font-family: sans-serif;'>Bonjour {$_POST["prenom"]},<br />
-					<br />
-					Bienvenue sur moncycle.app!<br />
-					<br />					
-					Voici votre mot de passe temporaire: <b style='font-family: monospace;'>$pass_text</b><br />
-					Ce mot de passe est à changer dans la rubrique \"Mon compte\".<br />
-					<br />					
-					<a style='color: #1e824c' href='https://tableau.moncycle.app/connexion?email1={$_POST["email1"]}'>connectez-vous</a><br />
-					<br />
-					A bientôt,<br />
-					<br />
-					<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br /></div>";
+			$mail->Body = mail_body_creation_compte($_POST["prenom"], $pass_text, $_POST["email1"]);
 			$mail->AltBody = 'Bienvenue sur moncycle.app! Votre mot de passe: ' . $pass_text;
 
 			$mail->send();
@@ -82,44 +69,32 @@ try {
 
 
 	elseif (isset($_GET["nouveau_motdepasse_svp"]) && $compte_existe && isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
+		sleep(rand(1,5));
+
 		$pass_text = sec_motdepasse_aleatoire();
 		$pass_hash = sec_hash($pass_text);
 
 		db_update_motdepasse_par_mail($db, $pass_hash, $_POST["email1"]);
 
 		$succes = "Un nouveau mot de passe vous a été envoyé par mail (si ce compte existe). &#x2709;";
-		$mail_mdp = $pass_hash;	
 
 		$mail = mail_init();
-		$mail->addAddress($_POST["email1"], $_POST["email1"]);     //Add a recipient
-		//$mail->addReplyTo('info@example.com', 'Information');
+		$mail->addAddress($_POST["email1"], $_POST["email1"]);
 
-		//Content
-		$mail->isHTML(false);                                  //Set email format to HTML
+		$mail->isHTML(false);
 		$mail->Subject = 'Nouveau mot de passe';
-		$mail->Body    = "<div style='font-family: sans-serif;'>Bonjour,<br />
-		<br />
-		Voici un nouveau mot de passe temporaire: <b style='font-family: monospace;'>$pass_text</b><br />
-		Ce mot de passe est à changer dans la rubrique \"Mon compte\".<br />
-		<br />
-		<a style='color: #1e824c' href='https://tableau.moncycle.app/connexion?email1={$_POST["email1"]}'>connectez-vous</a><br />
-		<br />
-		A bientôt,<br />
-		<br />
-		<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br /></div>";
+		$mail->Body = mail_body_nouveau_mdp($pass_text, $_POST["email1"]);
 		$mail->AltBody = 'Nouveau mot de passe temporaire: ' . $pass_text;
-
-
 
 		$mail->send();
 
 	}
 	elseif (isset($_GET["nouveau_motdepasse_svp"])) {
-		sleep(1);
+		sleep(rand(1,5));
 		$succes = "Un nouveau mot de passe va vous être envoyé par mail (si ce compte existe). &#x2709;";
 	}
 	elseif (isset($_GET["creation_compte"])) {
-		$output .= "Erreur lors du traitement de votre demande. Merci de verifier votre addresse mail. Peut-être avez-vous déja un compte?";
+		$output .= "Un compte existe déja pour cette addresse mail.";
 	}
 
 
@@ -183,7 +158,7 @@ catch (Exception $e){
 			<img src="captcha.php" class="captcha" /><br />
 			<br />
 			<label for="i_comment">Comment avez-vous découvert moncycle.app? Un commentaire?</label><br />
-			<textarea id="i_comment" name="decouvert" maxlength="255" placeholder="Dites nous tout!"><?= $_POST['decouvert'] ?? "" ?></textarea>
+			<textarea required id="i_comment" name="decouvert" maxlength="255" placeholder="Dites nous tout!"><?= $_POST['decouvert'] ?? "" ?></textarea>
 			<br />
 			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" <?php if (boolval($_POST["monito"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_monito">Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficulté dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'applique. &#x1F4DD;</label></p>
 			<p><input type="checkbox" required id="jc_gratuit" name="gratuit" value="1" <?php if (boolval($_POST["gratuit"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_gratuit">Je comprends que moncycle.app est gratuit et sans publicité/vente de donnnées! Je peux cependant contribuer au financement de l'application et aider le développer via la </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">page Tipeee de moncycle.app</a>. &#x1F4B6;</p>
