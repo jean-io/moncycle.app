@@ -20,7 +20,7 @@ require_once 'module/phpmailer/src/SMTP.php';
 
 session_start();
 
-if (isset($_SESSION["connected"]) && $_SESSION["connected"]) {
+if (isset($_SESSION["connected"]) && $_SESSION["connected"] && $_SESSION["no"]!=2) {
 	header('Location: /');
 	exit;
 }

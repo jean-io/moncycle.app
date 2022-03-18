@@ -118,6 +118,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $erreur? "<br /><br />" . $erreur : "" ?></span>
 			<?php if(boolval($_SESSION["compte"]["donateur"])): ?><p>🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p><?php endif; ?>
+			<?php if($_SESSION["no"]==2): ?><p style="font-weight:bold">&#x1F6A8; Vous visualisez actuellement le compte de démonstration.<br /><br /><a style="color:#fbca0b" href='/inscription'><button type='button'>&#x1F680; créer votre compte</button></a></p><?php endif; ?>
 		</center>
 
 		<div class="contennu" id="timeline">
