@@ -11,6 +11,7 @@ CREATE TABLE `compte` (
   `nb_co_echoue` smallint(5) unsigned NOT NULL DEFAULT 0,
   `donateur` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `actif` tinyint(1) unsigned NOT NULL DEFAULT 1,
+  `relance` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `derniere_co_date` timestamp NULL DEFAULT NULL,
   `inscription_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `mdp_change_date` timestamp NULL DEFAULT NULL,

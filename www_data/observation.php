@@ -50,6 +50,8 @@ try {
 	// CREATION ET MISE A JOUR D'UNE OBSERVATION
 	elseif(isset($_POST['date'])) {
 
+		if (isset($_SESSION["compte"]["relance"]) && boolval($_SESSION["compte"]["relance"])) db_update_relance($db, $_SESSION["no"], 0);
+
 		$result["command"] = "POST";
 		
 		$date = new DateTime($_POST['date']);

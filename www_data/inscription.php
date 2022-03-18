@@ -168,7 +168,7 @@ catch (Exception $e){
 			<h2>Mot de passe perdu?</h2>
 			<form action="?nouveau_motdepasse_svp" method="post"><br />
 			<label for="i_email1">E-mail:</label><br />
-			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail"  value="<?= $_POST['email1'] ?? "" ?>" /><br />
+			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail"  value="<?= $_REQUEST['email1'] ?? "" ?>" /><br />
 			<br />
 			<input type="submit" value="Recevoir un nouveau mot de passe &#x2709;" /></form>
 			<br /><br /><br />

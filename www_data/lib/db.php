@@ -334,3 +334,24 @@ function db_select_cycles_recent($db) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_select_compte_inactif($db) {
+	$sql = "select `c`.`no_compte` as `no_compte`,`c`.`nom` as `nom`,max(`o`.`dernier_modif`) as `derniere_obs_modif`,`c`.`email1` as `email1`,`c`.`email2` as `email2`,`c`.`inscription_date` as `inscription_date` from `compte` as     `c` left join `observation` as `o` on `c`.`no_compte` = `o`.`no_compte` where `c`.`no_compte` != 2 and `c`.`relance`=0 group by `c`.`no_compte`  having (date(`derniere_obs_modif`) < date(now()) - interval 35 DAY or `derniere_obs_modif` is null) and `inscription_date` < date(now()) - interval 35 DAY order by `derniere_obs_modif` desc";
+
+	$statement = $db->prepare($sql);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_update_relance ($db, $no_compte, $relance) {
+	$sql = "UPDATE compte SET relance = :relance WHERE no_compte = :no_compte";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":relance", $relance, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+

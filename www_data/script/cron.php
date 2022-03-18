@@ -77,9 +77,36 @@ foreach($cycles as $cyc) {
 
 			fclose($csv);
 
-			echo "cycle de $nb_j jours envoye a {$cyc["email1"]} (et {$cyc["email2"]})";
+			echo "cycle de $nb_j jours envoye a {$cyc["email1"]} (et {$cyc["email2"]}).";
 			echo PHP_EOL;
 		}
 	}
 }
+
+
+$compte = db_select_compte_inactif($db);
+
+foreach($compte as $com) {
+
+	$mail = mail_init();
+
+	$mail->addAddress($com["email1"], $com["email1"]);
+	if (!empty($com["email2"])) $mail->addAddress($com["email2"], $com["email2"]);
+
+	$mail->isHTML(true);
+	$mail->Subject = "Comment allez-vous?";
+	$mail->Body = mail_body_relance($com["nom"], $com["email1"]);
+	$mail->AltBody = "Cela fait longtemps que l'on ne vous a pas vu sur moncycle.app, tout va bien?";
+
+	$mail->send();
+
+	db_update_relance($db, $com["no_compte"], 1);
+
+	echo "relance envoye a {$com["email1"]} (et {$com["email2"]}).";
+	echo PHP_EOL;
+}
+
+
+
+
 
