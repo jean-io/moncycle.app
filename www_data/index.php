@@ -41,7 +41,8 @@ foreach ($sensations_brut as $obj) {
 	}
 } 
 
-$methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
+//$methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
+$methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 
 ?><!doctype html>
 <!--
@@ -90,7 +91,7 @@ $methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 			<div>
 				<button type="button" id="jour_form_submit">✏️ enregistrer</button> <button type="button" id="jour_form_close">❌ fermer</button><br />
 				<br />
-				<div style="display:none">
+				<div class="pas_glaire pas_temp">
 					<span class="categorie pas_temp">Note FertilityCare:</span> <span id="fc_msg"></span><br class="pas_temp" />
 					<input class="pas_glaire" type="text" autocapitalize="characters" name="note_fc" id="form_fc" style="width: 95%" placeholder="note FC" /><br class="pas_temp" />	
 					<br />
@@ -138,21 +139,21 @@ $methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 					<input class="pas_temp fc_form_note" type="radio" name="fc_dou" id="fc_rp" value="" checked /><label class="pas_temp" for="fc_rp">pas de douleur</label><br class="pas_temp" />
 					<br />
 				</div>
-				<span class="categorie pas_temp">Gommettes:</span><br class="pas_temp" />
-				<input class="pas_temp" type="radio" name="gommette" id="go_vide" value="" checked /><label class="pas_temp" for="go_vide">pas de couleur (blanc)</label><br class="pas_temp" />
-				<input class="pas_temp" type="radio" name="gommette" id="go_rouge" value="." /><label class="pas_temp" for="go_rouge">🟥 rouge <span class='note'>.</span></label><br class="pas_temp" />
-				<input class="pas_temp" type="radio" name="gommette" id="go_vert" value="I" /><label class="pas_temp" for="go_vert">🟩 vert <span class='note'>I</span></label><br class="pas_temp" />
-				<input class="pas_temp" type="radio" name="gommette" id="go_jaune" value="=" /><label class="pas_temp" for="go_jaune">🟨 jaune <span class='note'>=</span></label><br class="pas_temp" />
-				<input class="pas_temp" type="checkbox" name="bebe" id="go_bebe" value=":)" /><label class="pas_temp" for="go_bebe">👶 bébé <span class='note'>:)</span></label><br class="pas_temp" />
-				<br class="pas_temp pas_glaire" />
-				<span class="categorie pas_glaire">Température:</span><br class="pas_glaire" />
-				<input class="pas_glaire" type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="entrer votre température corporelle" /><span class="pas_glaire"> °C 🌡️</span><br />
-				<br class="pas_glaire" />
-				<span class="categorie pas_temp">Vos sensations et visuels:</span><br class="pas_temp" />
-				<span class="pas_temp" id="vos_obs"></span>
-				<input class="pas_temp" type="text" name="ob_extra" id="ob_extra" autocapitalize="off" style="width: 95%" placeholder="autres sensations/visuels (séparées par une virgule)"/><br class="pas_temp" />
-				<p class="pas_temp note">Séparez vos sensations/visuels par des virgules afin qu'ils vous soient proposés ultérieurement.</p>
-				<br class="pas_temp" />
+				<span class="categorie">Gommettes:</span><br />
+				<input type="radio" name="gommette" id="go_vide" value="" checked /><label for="go_vide">pas de couleur (blanc)</label><br />
+				<input type="radio" name="gommette" id="go_rouge" value="." /><label for="go_rouge">🟥 rouge <span class='note'>.</span></label><br />
+				<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 vert <span class='note'>I</span></label><br />
+				<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 jaune <span class='note'>=</span></label><br />
+				<input type="checkbox" name="bebe" id="go_bebe" value=":)" /><label for="go_bebe">👶 bébé <span class='note'>:)</span></label><br />
+				<br class="pas_glaire pas_fc" />
+				<span class="categorie pas_fc pas_glaire">Température:</span><br class="pas_glaire" />
+				<input class="pas_fc pas_glaire" type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="ex: 36,5" /><span class="pas_glaire pas_fc"> °C 🌡️</span><br class="pas_glaire pas_fc"/>
+				<br class="pas_fc pas_glaire" />
+				<span class="categorie pas_fc">Vos sensations et visuels:</span><br class="pas_fc" />
+				<span class="pas_fc" id="vos_obs"></span>
+				<input class="pas_fc" type="text" name="ob_extra" id="ob_extra" autocapitalize="off" style="width: 95%" placeholder="autres sensations/visuels (séparées par une virgule)"/><br class="pas_fc" />
+				<p class="pas_fc note">Séparez vos sensations/visuels par des virgules afin qu'ils vous soient proposés ultérieurement.</p>
+				<br class="pas_fc" />
 				<span class="categorie">Evénements:</span><br />
 				<input type="checkbox" name="premier_jour" id="ev_premier_jour" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
 				<input type="checkbox" name="union_sex" id="ev_union" value="1" /><label for="ev_union">❤️ union</label><br />

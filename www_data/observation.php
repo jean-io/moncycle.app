@@ -83,7 +83,8 @@ try {
 		$go  = $_POST["gommette"] ?? '';
 		$go .= $_POST["bebe"] ?? '';
 
-		db_update_observation ($db, date_sql($date), $_SESSION["no"], $go, $sensation_db, $temp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["commentaire"] ?? null);
+		db_update_observation ($db, date_sql($date), $_SESSION["no"], $go, $_POST["note_fc"] ?? null, $sensation_db, $temp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["commentaire"] ?? null);
+
 		$result["outcome"] = "ok";
 		$result["args"] = $_POST;
 	}

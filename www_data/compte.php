@@ -130,8 +130,8 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		J'ai besoin de suivre:<br />
 		<span class="label_info">Modifier ce choix ne génère aucune perte de données.</span><br />
 		<input type="radio" name="methode" value="2" id="m_glaire" <?php if ($_SESSION["compte"]["methode"]==2): ?>checked<?php endif; ?>  required /><label for="m_glaire">l'évolution de la glaire cervicale</label><br />	
-		<input type="radio" name="methode" value="3" id="m_temp"  <?php if ($_SESSION["compte"]["methode"]==3): ?>checked<?php endif; ?>/><label for="m_temp">les changements de température corporelle</label><br />	
-		<input type="radio" name="methode" value="1" id="m_les2"  <?php if ($_SESSION["compte"]["methode"]==1): ?>checked<?php endif; ?>/><label for="m_les2">les deux</label><br />	
+		<input type="radio" name="methode" value="3" id="m_fc"  <?php if ($_SESSION["compte"]["methode"]==3): ?>checked<?php endif; ?>/><label for="m_fc">l'évolution de la glaire cervicale + notation FertilityCare</label><br />	
+		<input type="radio" name="methode" value="1" id="m_temp"  <?php if ($_SESSION["compte"]["methode"]==1): ?>checked<?php endif; ?>/><label for="m_temp">l'évolution de la glaire cervicale + les changements de température corporelle</label><br />	
 		<br />
 		<label for="i_email1">E-mail:</label> <br /><span class="label_info">Identifiant de connexion et envoie des cycles (non modifiable).</span><br />
 		<input id="i_email1" type="email" readonly name="email1" value="<?= $_SESSION['compte']['email1'] ?? '' ?>" /><br />

@@ -191,11 +191,12 @@ function db_insert_observation ($db, $date, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_observation ($db, $date, $no_compte, $gommette='', $sensation=null, $temp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $commentaire=null) {
-	$sql = "UPDATE observation SET gommette = :gommette, temperature = :temp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
+function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $sensation=null, $temp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $commentaire=null) {
+	$sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, temperature = :temp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":gommette", $gommette, PDO::PARAM_STR);
+	$statement->bindValue(":note_fc", $note_fc, PDO::PARAM_STR);
 	$statement->bindValue(":sensation", $sensation, PDO::PARAM_STR);
 	$statement->bindValue(":temp", $temp, PDO::PARAM_STR);
 	$statement->bindValue(":jour_sommet", $jour_sommet, PDO::PARAM_INT);

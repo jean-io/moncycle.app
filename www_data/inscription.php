@@ -138,8 +138,8 @@ catch (Exception $e){
 			<br />
 			J'ai besoin de suivre:<br />
 			<input type="radio" name="methode" value="2" id="m_glaire" <?php if (($_POST["methode"] ?? 0) ==2): ?>checked<?php endif; ?> required /><label for="m_glaire">l'évolution de la glaire cervicale</label><br />	
-			<input type="radio" name="methode" value="3" id="m_temp" <?php if (($_POST["methode"] ?? 0) ==3): ?>checked<?php endif; ?>/><label for="m_temp">les changements de température corporelle</label><br />	
-			<input type="radio" name="methode" value="1" id="m_les2" <?php if (($_POST["methode"] ?? 0) ==1): ?>checked<?php endif; ?>/><label for="m_les2">les deux</label><br />	
+			<input type="radio" name="methode" value="3" id="m_fc" <?php if (($_POST["methode"] ?? 0) ==3): ?>checked<?php endif; ?>/><label for="m_fc">l'évolution de la glaire cervicale + notation FertilityCare</label><br />	
+			<input type="radio" name="methode" value="1" id="m_temp" <?php if (($_POST["methode"] ?? 0) ==1): ?>checked<?php endif; ?>/><label for="m_temp">l'évolution de la glaire cervicale + les changements de température corporelle</label><br />	
 			<span class="label_info">Vous pourrez modifier ce choix dans la rubrique "mom compte" sans perte de données une fois votre compte créé.</span><br />
 			<br />
 			<label for="i_email1">E-mail:</label><br />

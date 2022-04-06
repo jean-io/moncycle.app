@@ -71,7 +71,7 @@ bill = {
 		bill.cycle_curseur += 1;
 		let date_cycle_str = tous_les_cycles[c];
 		let date_fin = bill.date.now();
-		date_fin.setDate(date_fin.getDate()+3);
+		date_fin.setHours(23, 59, 59, 999);
 		if (c>0) {
 			date_fin = new Date(bill.date.parse(tous_les_cycles[c-1]) - (1000*60*60*24));
 			date_fin.setHours(9);
@@ -85,12 +85,9 @@ bill = {
 			bill.cycle_aff_switch($(this).attr("for"));
 		});
 		$(`#c-${date_cycle_str} .aff_temp_graph`).click(bill.open_temp_graph);
-		let auj_minuit = bill.date.now();
-		auj_minuit.setHours(23, 59, 59, 999);
 		for (let pas = 0; pas < nb_jours; pas++) {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
-			if (date_obs > auj_minuit) continue;
 			date_obs_str = bill.date.str(date_obs);
 			let data = {date: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
 			bill.graph_preparation_data(data);
@@ -179,7 +176,8 @@ bill = {
 		cycle.append(`<div class='contenu' id='contenu-${c_id}'></div>`);
 		return cycle;
 	},
-	observation2html : function(j) {
+	ooobservation2html : function(j) {
+		console.log(j);
 		let o_date = bill.date.parse(j.date);
 		let o_id = "o-" + bill.date.str(o_date);
 		let observation = $("<div>", {id: o_id, class: "day"});
@@ -189,10 +187,10 @@ bill = {
 		observation.append(`<span class='j'>${j.pos}</span>`);
 		observation.append(`<span class='p'>${j.jenesaispas ?  bill.text.je_sais_pas : ""}</span>`);
 		if (j.chargement) observation.append(`<span class='l'>${bill.text.chargement}</span>`);
-		else if (!j.jenesaispas && ((!j.gommette && !j.temperature) || (!j.gommette && methode==2) || (!j.temperature && methode==3))) {
-			observation.append(`<span class='r'>${bill.text.a_renseigner}</span>`);
-			observation.append(`<span class='s'></span>`);
-		}
+		//else if (!j.jenesaispas && ((!j.gommette && !j.temperature) || (!j.gommette && methode==2) || (!j.temperature && methode==3))) {
+		//	observation.append(`<span class='r'>${bill.text.a_renseigner}</span>`);
+		//	observation.append(`<span class='s'></span>`);
+		//}
 		else if (!j.jenesaispas) {
 			if (j.gommette) {
 				let contenu = "o";
@@ -204,7 +202,7 @@ bill = {
 				else {
 					contenu = bill.gommette[j.gommette][0];
 				}
-				observation.append(`<span class='g pas_temp ${bill.gommette[color][1]}'>${contenu}</span>`);
+				observation.append(`<span class='g ${bill.gommette[color][1]}'>${contenu}</span>`);
 			}
 			if (j.temperature) {
 				let temp = parseFloat(j.temperature);
@@ -214,7 +212,7 @@ bill = {
 					let r = parseInt((1-(37.5-temp))*115)+65;
 					color = `rgb(${r}, 105, 225)`;
 				}
-				observation.append(`<span class='t pas_glaire' style='background-color: ${color}'>${temp}</span>`);
+				observation.append(`<span class='t pas_glaire pas_fc' style='background-color: ${color}'>${temp}</span>`);
 			}
 			else observation.append(`<span class='t'></span>`);
 			observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
@@ -228,6 +226,67 @@ bill = {
 		observation.append(`<span class='c'>${j.commentaire || ""}</span>`);
 		return observation;
 	},
+	observation2html : function(j) {
+		console.log(j);
+		let o_date = bill.date.parse(j.date);
+		let o_id = "o-" + bill.date.str(o_date);
+		let observation = $("<div>", {id: o_id, class: "day"});
+		observation.click(bill.open_menu);
+		observation.append(`<span class='data' style='display:none'>${JSON.stringify(j)}</span>`);
+		observation.append(`<span class='d'>${o_date.getDate()} ${bill.text.mois[o_date.getMonth()]} </span>`);	
+		observation.append(`<span class='j'>${j.pos}</span>`);
+		if (j.chargement) {
+			observation.append(`<span class='l'>${bill.text.chargement}</span>`);
+			return observation;
+		}
+		let tbd = true;
+		if (j.jenesaispas) {
+			observation.append(`<span class='p'>${j.jenesaispas ?  bill.text.je_sais_pas : ""}</span>`);
+			tbd = false;
+		}
+		else {
+			if (j.gommette) {
+				let contenu = "o";
+				let color = j.gommette;
+				if (j.gommette.includes(':)') && j.gommette.length>2){
+					contenu = bill.gommette[":)"][0];
+					color = j.gommette.replace(":)", "");
+				}
+				else {
+					contenu = bill.gommette[j.gommette][0];
+				}
+				observation.append(`<span class='g ${bill.gommette[color][1]}'>${contenu}</span>`);
+				tbd = false;
+			}
+			if (methode==1 && j.temperature) {
+				let temp = parseFloat(j.temperature);
+				let color = "#4169e1";
+				if (temp > 37.5) color = "#b469e1";
+				else if (temp <= 37.5 && temp >= 36.5) {
+					let r = parseInt((1-(37.5-temp))*115)+65;
+					color = `rgb(${r}, 105, 225)`;
+				}
+				observation.append(`<span class='t pas_glaire pas_fc' style='background-color: ${color}'>${temp}</span>`);
+				tbd = false;
+			}
+			if (methode==3 && j.note_fc) {
+				tbd = false;
+			}
+		}
+		if (tbd) {
+			observation.append(`<span class='r'>${bill.text.a_renseigner}</span>`);
+			observation.append(`<span class='s'></span>`);
+			return observation;
+		}
+		observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
+		observation.append(`<span class='u'>${j.union_sex ? bill.text.union : ""}</span>`);
+		if (!j.jenesaispas) {
+			observation.append(`<span class='o pas_fc'>${j.sensation || ""}</span>`);
+			observation.append(`<span class='fc pas_temp pas_glaire'>${j.note_fc || ""}</span>`);
+		}
+		observation.append(`<span class='c'>${j.commentaire || ""}</span>`);
+		return observation;
+	},
 	open_menu : function(e) {
 		$("#temp_graph").hide();
 		let j = JSON.parse($("#" + $(this).attr('id') + " .data").text());
@@ -236,6 +295,10 @@ bill = {
 		$("#jour_form_titre").text([bill.text.semaine[o_date.getDay()], o_date.getDate(), bill.text.mois_long[o_date.getMonth()], o_date.getFullYear()].join(" "));
 		$("#jour_form")[0].reset();
 		$("#form_date").val(j.date);
+		if (j.note_fc && methode==3) {
+			$("#form_fc").val(j.note_fc);
+			bill.fc_note2form();
+		}
 		if (gommette.includes(":)") && gommette.length>2) {
 			$("#go_" + bill.gommette[":)"][1]).prop('checked', true);
 			gommette = gommette.replace(":)", "");
@@ -292,6 +355,7 @@ bill = {
 			sensations[o] += 1;
 		});
 		let d = $("#jour_form").serializeArray();
+		console.log(d);
 		$.post("observation.php", $.param(d)).done(function(data){
 			if (data.err){
 				$("#form_err").val(data.err);
