@@ -96,13 +96,18 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 			$pdf->SetFont('Courier','',10);
 			$pdf->SetTextColor(0,0,0);
 			if (isset($line["gommette"]) && !boolval($line["?"])) {
-				if($line["gommette"]==".")	$pdf->SetFillColor(172,36,51);
-				elseif($line["gommette"]=="I")	$pdf->SetFillColor(30,130,76);
-				elseif($line["gommette"]=="?")	$pdf->SetFillColor(220,220,220);
-				elseif($line["gommette"]=="=")	$pdf->SetFillColor(251,202,11);
+				if(str_contains($line["gommette"], "."))	$pdf->SetFillColor(172,36,51);
+				elseif(str_contains($line["gommette"], "I"))	$pdf->SetFillColor(30,130,76);
+				elseif(str_contains($line["gommette"], "?"))	$pdf->SetFillColor(220,220,220);
+				elseif(str_contains($line["gommette"], "="))	$pdf->SetFillColor(251,202,11);
 				else $pdf->SetFillColor(255,255,255);
-				if ($line["gommette"]==":)") {
-					$pdf->SetTextColor(75,119,190);
+				if ($line["gommette"] == ":)") {
+					$pdf->SetTextColor(30, 130, 76);
+					$pdf->Cell(5,5,"(:",0,0,'C', true);
+					$pdf->SetTextColor(0,0,0);
+				}
+				elseif (str_contains($line["gommette"], ":)")) {
+					$pdf->SetTextColor(255,255,255);
 					$pdf->Cell(5,5,"(:",0,0,'C', true);
 					$pdf->SetTextColor(0,0,0);
 				}
