@@ -90,18 +90,67 @@ $methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 			<div>
 				<button type="button" id="jour_form_submit">✏️ enregistrer</button> <button type="button" id="jour_form_close">❌ fermer</button><br />
 				<br />
+				<div style="display:none">
+					<span class="categorie pas_temp">Note FertilityCare:</span> <span id="fc_msg"></span><br class="pas_temp" />
+					<input class="pas_glaire" type="text" autocapitalize="characters" name="note_fc" id="form_fc" style="width: 95%" placeholder="note FC" /><br class="pas_temp" />	
+					<br />
+					<span class="categorie pas_temp">&#x1FA78; Règles:</span><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_h" value="H" /><label class="pas_temp" for="fc_h"><b>H</b> flux abondant</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_m" value="M" /><label class="pas_temp" for="fc_m"><b>M</b> flux modéré</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_rl" value="L" /><label class="pas_temp" for="fc_rl"><b>L</b> flux léger</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_vl" value="VL" /><label class="pas_temp" for="fc_vl"><b>VL</b> flux vraiment léger</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_b" value="B" /><label class="pas_temp" for="fc_b"><b>B</b> saignement brun (ou noir)</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_r" value="" checked /><label class="pas_temp" for="fc_r">pas de règle</label><br class="pas_temp" />
+					<br />
+					<span class="categorie pas_temp">&#x1F90F; Sensation:</span><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_0" value="0" /><label class="pas_temp" for="fc_0"><b>0</b> sec</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_2" value="2" /><label class="pas_temp" for="fc_2"><b>2</b> humide sans lubrification</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_2w" value="2W" /><label class="pas_temp" for="fc_2w"><b>2W</b> mouillé sans lubrification</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_4" value="4" /><label class="pas_temp" for="fc_4"><b>4</b> brillant sans lubrification</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_6" value="6" /><label class="pas_temp" for="fc_6"><b>6</b> peu élastique (0,5cm)</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_8" value="8" /><label class="pas_temp" for="fc_8"><b>8</b> moyennement élastique (1-2cm)</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_10" value="10" /><label class="pas_temp" for="fc_10"><b>10</b> très élastique (2,5cm ou +)</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_10dl" value="10DL" /><label class="pas_temp" for="fc_10dl"><b>10DL</b> humide avec lubrification</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_10sl" value="10SL" /><label class="pas_temp" for="fc_10sl"><b>10SL</b> brillant avec lubrification</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_10wl" value="10WL" /><label class="pas_temp" for="fc_10wl"><b>10WL</b> mouillé avec lubrification</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_sr" value="" checked /><label class="pas_temp" for="fc_sr">pas de sensation</label><br class="pas_temp" />
+					<br />
+					<span class="categorie pas_temp">&#x1F441;&#xFE0F; Observation:</span><br class="pas_temp" />
+					<!--<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_b" id="fc_b" value="B" /><label class="pas_temp" for="fc_b"><b>B</b> saignement brun (ou noir)</label><br class="pas_temp" />-->
+					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_c" id="fc_c" value="C" /><label class="pas_temp" for="fc_c"><b>C</b> opaque (blanc)</label><br class="pas_temp" />
+					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_g" id="fc_g" value="G" /><label class="pas_temp" for="fc_g"><b>G</b> gommeux (collant)</label><br class="pas_temp" />
+					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_k" id="fc_k" value="K" /><label class="pas_temp" for="fc_k"><b>K</b> transparent</label><br class="pas_temp" />
+					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_l" id="fc_l" value="L" /><label class="pas_temp" for="fc_l"><b>L</b> lubrifiant</label><br class="pas_temp" />
+					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_p" id="fc_p" value="P" /><label class="pas_temp" for="fc_p"><b>P</b> pâteux (crémeux)</label><br class="pas_temp" />
+					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_y" id="fc_y" value="Y" /><label class="pas_temp" for="fc_y"><b>Y</b> jaune (même jaune pâle)</label><br class="pas_temp" />
+					<br />
+					<span class="categorie pas_temp">&#x1F522; Récurrence de l'observation:</span><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_rec" id="fc_x1" value="X1" /><label class="pas_temp" for="fc_x1"><b>X1</b> vu seulement une fois ce jour</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_rec" id="fc_x2" value="X2" /><label class="pas_temp" for="fc_x2"><b>X2</b> vu deux fois ce jour</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_rec" id="fc_x3" value="X3" /><label class="pas_temp" for="fc_x3"><b>X3</b> vu trois fois ce jour</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_rec" id="fc_ad" value="AD" /><label class="pas_temp" for="fc_ad"><b>AD</b> vu toute la journée</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_rec" id="fc_rr" value="" checked /><label class="pas_temp" for="fc_rr">pas de récurrence</label><br class="pas_temp" />
+					<br />
+					<span class="categorie pas_temp">&#x1F974; Douleur:</span><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_dou" id="fc_ap" value="AP" /><label class="pas_temp" for="fc_ap"><b>AP</b> douleur abdominal</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_dou" id="fc_rap" value="RAP" /><label class="pas_temp" for="fc_rap"><b>RAP</b> douleur abdominal à droite</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_dou" id="fc_lap" value="LAP" /><label class="pas_temp" for="fc_lap"><b>LAP</b> douleur abdominal à gauche</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_dou" id="fc_rp" value="" checked /><label class="pas_temp" for="fc_rp">pas de douleur</label><br class="pas_temp" />
+					<br />
+				</div>
 				<span class="categorie pas_temp">Gommettes:</span><br class="pas_temp" />
-				<input class="pas_temp" type="radio" name="gommette" id="go_rouge" value="." /><label class="pas_temp" for="go_rouge">🟥 menstruation <span class='note'>.</span></label><br class="pas_temp" />
-				<input class="pas_temp" type="radio" name="gommette" id="go_vert" value="I" /><label class="pas_temp" for="go_vert">🟩 pas de sécrétion <span class='note'>I</span></label><br class="pas_temp" />
-				<input class="pas_temp" type="radio" name="gommette" id="go_jaune" value="=" /><label class="pas_temp" for="go_jaune">🟨 sécrétion inféconde <span class='note'>=</span></label><br class="pas_temp" />
-				<input class="pas_temp" type="radio" name="gommette" id="go_bebe" value=":)" /><label class="pas_temp" for="go_bebe">👶 sécrétion féconde <span class='note'>:)</span></label><br class="pas_temp" />
+				<input class="pas_temp" type="radio" name="gommette" id="go_vide" value="" checked /><label class="pas_temp" for="go_vide">pas de couleur (blanc)</label><br class="pas_temp" />
+				<input class="pas_temp" type="radio" name="gommette" id="go_rouge" value="." /><label class="pas_temp" for="go_rouge">🟥 rouge <span class='note'>.</span></label><br class="pas_temp" />
+				<input class="pas_temp" type="radio" name="gommette" id="go_vert" value="I" /><label class="pas_temp" for="go_vert">🟩 vert <span class='note'>I</span></label><br class="pas_temp" />
+				<input class="pas_temp" type="radio" name="gommette" id="go_jaune" value="=" /><label class="pas_temp" for="go_jaune">🟨 jaune <span class='note'>=</span></label><br class="pas_temp" />
+				<input class="pas_temp" type="checkbox" name="bebe" id="go_bebe" value=":)" /><label class="pas_temp" for="go_bebe">👶 bébé <span class='note'>:)</span></label><br class="pas_temp" />
 				<br class="pas_temp pas_glaire" />
 				<span class="categorie pas_glaire">Température:</span><br class="pas_glaire" />
-				<input class="pas_glaire" type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="entrer votre température corporelle"><span class="pas_glaire"> °C 🌡️</span><br />
+				<input class="pas_glaire" type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="entrer votre température corporelle" /><span class="pas_glaire"> °C 🌡️</span><br />
 				<br class="pas_glaire" />
 				<span class="categorie pas_temp">Vos sensations et visuels:</span><br class="pas_temp" />
 				<span class="pas_temp" id="vos_obs"></span>
-				<input class="pas_temp" type="text" name="ob_extra" id="ob_extra" style="width: 95%" placeholder="autres sensations/visuels (séparées par une virgule)"/><br class="pas_temp" />
+				<input class="pas_temp" type="text" name="ob_extra" id="ob_extra" autocapitalize="off" style="width: 95%" placeholder="autres sensations/visuels (séparées par une virgule)"/><br class="pas_temp" />
 				<p class="pas_temp note">Séparez vos sensations/visuels par des virgules afin qu'ils vous soient proposés ultérieurement.</p>
 				<br class="pas_temp" />
 				<span class="categorie">Evénements:</span><br />
@@ -111,7 +160,7 @@ $methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 				<input type="checkbox" name="jenesaispas" id="ev_jesaispas" value="1" /><label for="ev_jesaispas">🤷‍♀️ jour non observé <span class='note'>?</span></label><br />
 				<br />
 				<span class="categorie">Commentaire:</span><br />
-				<textarea style="width: 95%" name="commentaire" id="from_com" maxlength="255"></textarea><br />
+				<textarea style="width: 95%" name="commentaire" id="from_com" autocapitalize="off" maxlength="255"></textarea><br />
 				<br />
 				<button id="jour_form_suppr" type="button" class="rouge">🗑️ Supprimer</button>
 				<div id="form_err" class="err"></div>
@@ -128,3 +177,4 @@ $methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 	</body>
 
 </html>
+

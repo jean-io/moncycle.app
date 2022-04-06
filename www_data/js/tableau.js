@@ -29,8 +29,9 @@ bill = {
 	graph_data : {},
 	cycle_curseur : 0,
 	a_le_focus: true,
-	date_chargement: new Date().toISOString().substring(0, 10),
+	date_chargement: null,
 	letsgo : function() {
+		bill.date_chargement = bill.date.str(bill.date.now());
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		bill.charger_cycle();
 		$("#charger_cycle").click(bill.charger_cycle);
@@ -42,9 +43,11 @@ bill = {
 		});
 		$("#jour_form_submit").click(bill.submit_menu);	
 		$("#jour_form_suppr").click(bill.suppr_observation);	
+		$("#form_fc").keyup(bill.fc_test_note).change(bill.fc_test_note);
+		$('input.fc_form_note').change(bill.fc_form2note);
 		bill.charger_actu();
 		$(window).focus(function() {
-			if (new Date().toISOString().substring(0, 10) != bill.date_chargement) location.reload(false); 
+			if (bill.date.str(bill.date.now()) != bill.date_chargement) location.reload(false); 
 		})
 	},
 	charger_actu : function() {
@@ -67,20 +70,28 @@ bill = {
 		let c = bill.cycle_curseur;
 		bill.cycle_curseur += 1;
 		let date_cycle_str = tous_les_cycles[c];
-		let date_fin = new Date();
-		if (c>0) { date_fin = new Date(new Date(tous_les_cycles[c-1]) - (1000*60*60*24)); }
-		let date_cycle = new Date(date_cycle_str);
-		let nb_jours = parseInt((date_fin-date_cycle)/(1000*60*60*24)+1);
+		let date_fin = bill.date.now();
+		date_fin.setDate(date_fin.getDate()+3);
+		if (c>0) {
+			date_fin = new Date(bill.date.parse(tous_les_cycles[c-1]) - (1000*60*60*24));
+			date_fin.setHours(9);
+		}
+		let date_cycle = bill.date.parse(date_cycle_str);
+		date_cycle.setHours(9);
+		let nb_jours = parseInt(Math.round((date_fin-date_cycle)/(1000*60*60*24)+1));
 		$("#timeline").prepend(bill.cycle2html(date_cycle_str, nb_jours, date_fin));
 		if (JSON.parse(localStorage.cycle_cache || "[]").includes("contenu-c-" + date_cycle_str)) bill.cycle_aff_switch("contenu-c-" + date_cycle_str);
 		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function (e) {
 			bill.cycle_aff_switch($(this).attr("for"));
 		});
 		$(`#c-${date_cycle_str} .aff_temp_graph`).click(bill.open_temp_graph);
+		let auj_minuit = bill.date.now();
+		auj_minuit.setHours(23, 59, 59, 999);
 		for (let pas = 0; pas < nb_jours; pas++) {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
-			date_obs_str = date_obs.toISOString().substring(0, 10);
+			if (date_obs > auj_minuit) continue;
+			date_obs_str = bill.date.str(date_obs);
 			let data = {date: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
 			bill.graph_preparation_data(data);
 			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2html(data));
@@ -89,7 +100,6 @@ bill = {
 	},
 	charger_observation : function(o_date) {
 		$.get("observation.php", { date: o_date }).done(function(data) {
-			console.log(data);
 			$(`#o-${data.date}`).replaceWith(bill.observation2html(data));
 			if (data.jour_sommet && !bill.sommets.includes(data.date)) bill.sommets.push(data.date);
 			else if (!data.jour_sommet && bill.sommets.includes(data.date)) bill.sommets.splice(bill.sommets.indexOf(data.date),1);
@@ -98,22 +108,21 @@ bill = {
 		});
 	},
 	form_nouveau_cycle: function () {
-		let max_date = new Date().toISOString().substring(0, 10);
+		let max_date = bill.date.str(bill.date.now());
 		if (bill.cycle_curseur>0) {
 			max_date = tous_les_cycles[bill.cycle_curseur-1];
-			max_date = new Date(new Date(max_date) - (1000*60*60*24)).toISOString().substring(0, 10);
+			max_date = bill.date.str(new Date(bill.date.parse(max_date) - (1000*60*60*24)));
 		}
 		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="titre">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">Entrer la date du premier jour du cycle à créer.<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" /> <input type="button" id="but_creer_cycle" value="✔️" /></div></div>`;
 		$("#charger_cycle").prop("disabled", true);
 		$("#timeline").prepend(html);
 		$("#but_creer_cycle").click(function () {
 			let nouveau_cycle_date = $("#nouveau_cycle_date").val();
-			if (new Date(nouveau_cycle_date) > new Date($("#nouveau_cycle_date").attr("max"))) {
+			if (bill.date.parse(nouveau_cycle_date) > bill.date.parse($("#nouveau_cycle_date").attr("max"))) {
 				alert("Erreur: la date du premier jour du cycle à créer doit être antérieur aux cycles déja existant et antérieur à auhjourd'hui.");
 				return;
 			}
 			$.post("observation.php", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
-			console.log(data);
 				if (data.err){
 					console.error(data.err);
 				}
@@ -135,7 +144,7 @@ bill = {
 			$(`#o-${s} .s`).html(bill.text.sommet);
 			let nb_j_sommet = [1, 2, 3, $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1];
 			nb_j_sommet.forEach(n => {
-				let s_date = new Date(s);
+				let s_date = bill.date.parse(s);
 				s_date.setDate(s_date.getDate()+n);		
 				let s_id = s_date.getFullYear() + "-";
 				s_id += (s_date.getMonth()+1).toLocaleString('fr-FR', {minimumIntegerDigits: 2, useGrouping:false}) + "-";
@@ -162,17 +171,17 @@ bill = {
 	cycle2html : function (c, nb, fin) {
 		let c_id = "c-" + c;
 		let cycle = $("<div>", {id: c_id, class: "cycle"});
-		let c_date = new Date(c);
+		let c_date = bill.date.parse(c);
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
 		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph pas_glaire' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${c_date.toISOString().substring(0, 10)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph pas_glaire' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${bill.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${bill.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
 		cycle.append(`<div class='contenu' id='contenu-${c_id}'></div>`);
 		return cycle;
 	},
 	observation2html : function(j) {
-		let o_id = "o-" + j.date;
-		let o_date = new Date(j.date);
+		let o_date = bill.date.parse(j.date);
+		let o_id = "o-" + bill.date.str(o_date);
 		let observation = $("<div>", {id: o_id, class: "day"});
 		observation.click(bill.open_menu);
 		observation.append(`<span class='data' style='display:none'>${JSON.stringify(j)}</span>`);
@@ -185,7 +194,18 @@ bill = {
 			observation.append(`<span class='s'></span>`);
 		}
 		else if (!j.jenesaispas) {
-			if (j.gommette) observation.append(`<span class='g pas_temp ${bill.gommette[j.gommette][1]}'>${bill.gommette[j.gommette][0]}</span>`);
+			if (j.gommette) {
+				let contenu = "o";
+				let color = j.gommette;
+				if (j.gommette.includes(':)') && j.gommette.length>2){
+					contenu = bill.gommette[":)"][0];
+					color = j.gommette.replace(":)", "");
+				}
+				else {
+					contenu = bill.gommette[j.gommette][0];
+				}
+				observation.append(`<span class='g pas_temp ${bill.gommette[color][1]}'>${contenu}</span>`);
+			}
 			if (j.temperature) {
 				let temp = parseFloat(j.temperature);
 				let color = "#4169e1";
@@ -211,11 +231,15 @@ bill = {
 	open_menu : function(e) {
 		$("#temp_graph").hide();
 		let j = JSON.parse($("#" + $(this).attr('id') + " .data").text());
-		let o_date = new Date(j.date);
+		let o_date = bill.date.parse(j.date);
 		let gommette = j.gommette? j.gommette : "";
 		$("#jour_form_titre").text([bill.text.semaine[o_date.getDay()], o_date.getDate(), bill.text.mois_long[o_date.getMonth()], o_date.getFullYear()].join(" "));
 		$("#jour_form")[0].reset();
 		$("#form_date").val(j.date);
+		if (gommette.includes(":)") && gommette.length>2) {
+			$("#go_" + bill.gommette[":)"][1]).prop('checked', true);
+			gommette = gommette.replace(":)", "");
+		}
 		if (bill.gommette[gommette]) $("#go_" + bill.gommette[gommette][1]).prop('checked', true);
 		$("#form_temp").val(j.temperature);
 		$("#vos_obs").empty();
@@ -269,7 +293,6 @@ bill = {
 		});
 		let d = $("#jour_form").serializeArray();
 		$.post("observation.php", $.param(d)).done(function(data){
-			console.log(data);
 			if (data.err){
 				$("#form_err").val(data.err);
 				console.error(data.err);
@@ -285,11 +308,11 @@ bill = {
 		});
 	},
 	suppr_observation : function () {
-		let date = new Date($("#form_date").val());
+		let date = bill.date.parse($("#form_date").val());
+		date.setHours(9);
 		let jour = [bill.text.semaine[date.getDay()], date.getDate(), bill.text.mois_long[date.getMonth()], date.getFullYear()].join(" ");
 		if (confirm(`Voulez-vous vraiment supprimer definitivement les données de la journée du ${jour}?`)) {
-			$.post("observation.php", `suppr=${date.toISOString().substring(0, 10)}`).done(function(data){
-				console.log(data);
+			$.post("observation.php", `suppr=${bill.date.str(date)}`).done(function(data){
 				if (data.err){
 					$("#form_err").val(data.err);
 					console.error(data.err);
@@ -306,14 +329,14 @@ bill = {
 	},
 	graph_preparation_data : function (data) {
 		if (bill.graph_data[data.cycle] == undefined) bill.graph_data[data.cycle] = {};
-		let date = new Date(data.date);
+		let date = bill.date.parse(data.date);
 		let label = `${date.getDate()} ${bill.text.mois[date.getMonth()]}`;
 		bill.graph_data[data.cycle][label] = parseFloat(data.temperature);
 	},
 	open_temp_graph : function() {
 		$("#jour_form").hide();
 		let cycle = $(this).attr("for");
-		let cycle_date = new Date(cycle);
+		let cycle_date = bill.date.parse(cycle);
 		$("#temp_graph_titre").text(`Cycle du ${cycle_date.getDate()} ${bill.text.mois_long[cycle_date.getMonth()]}`);
 		$('#canvas_temp').remove();
 		$('#graph_container').append("<canvas id='canvas_temp'></canvas>");
@@ -338,6 +361,99 @@ bill = {
 				}
 			}
 		});
+	},
+	fc_note_regex : /^((h|m|l|vl|b|H|M|L|VL|B)\s*)?((2W|10KL|10SL|WL|[024]|(([68]|10)\s*[BCGKLPYbcgklpy]{1,7}))\s*([xX][123]|AD|ad)?)?(\s*[RrLl]?(ap|AP))?$/,
+	fc_test_note : function() {
+		if (!$("#form_fc").val()) {	
+			$("#fc_msg").empty();
+		}
+		else if (bill.fc_note_regex.test($("#form_fc").val().toUpperCase())) {
+			$("#fc_msg").html("(valide)");
+			$("#fc_msg").addClass("vert");
+			$("#fc_msg").removeClass("rouge");
+		}
+		else {
+			$("#fc_msg").html("(non valide)");
+			$("#fc_msg").addClass("rouge");
+			$("#fc_msg").removeClass("vert");
+		}
+		bill.fc_note2form();
+	},
+	fc_form2note : function() {
+		let note = $('input[name="fc_regles"]:checked').val();
+		if (note.length && !note.endsWith(' ')) note += " " ;
+		note += $('input[name="fc_sens"]:checked').val();
+		note += $(".fc_obs:checked").map(function(){ return this.value }).get().join("");
+		if (note.length && !note.endsWith(' ')) note += " ";
+		note += $('input[name="fc_rec"]:checked').val();
+		if (note.length && !note.endsWith(' ')) note += " ";
+		note += $('input[name="fc_dou"]:checked').val();
+		$("#form_fc").val(note.trim());
+		bill.fc_test_note();
+	},
+	fc_note2form : function() {
+		let note = $("#form_fc").val().trim().toUpperCase();
+		if (note.startsWith('L') && !note.startsWith('LAP')) {
+			$("#fc_rl").prop("checked", true);
+			note = note.slice(1);
+		}
+		else {
+			$("#fc_rl").prop("checked", false);
+		}
+		['10DL', '10SL', '10WL', 'RAP', 'LAP', 'X1', 'X2', 'X3', 'AD', 'AP', 'VL', '2W', '10', 'H', 'M', 'L', 'B', '0', '2', '4', '6', '8', 'C', 'G', 'K', 'P', 'Y'].forEach(c => {
+			if (note.includes(c)) {
+				$("#fc_" + c.toLowerCase()).prop("checked", true);
+				note = note.replace(c,'');
+			}
+			else $("#fc_" + c.toLowerCase()).prop("checked", false);
+		});
+		note = $("#form_fc").val().trim().toUpperCase();
+		let no_regle = true;
+		let no_sens = true;
+		let no_dou = true;
+		let no_rec = true;
+		['10DL', '10SL', '10WL', '10', '2W'].forEach(c => {
+			if (note.includes(c)) no_sens=false;
+			note = note.replace(c,'');
+		});
+		['RAP', 'LAP', 'AP'].forEach(c => {
+			if (note.includes(c)) no_dou=false;
+			note = note.replace(c,'');
+		});
+		['X1', 'X2', 'X3', 'AD'].forEach(c => {
+			if (note.includes(c)) no_rec=false;
+			note = note.replace(c,'');
+		});
+		['VL', 'H', 'M', 'L', 'B'].forEach(c => {
+			if (note.includes(c)) no_regle=false;
+			note = note.replace(c,'');
+		});
+		['0', '2', '4', '6', '8'].forEach(c => {
+			if (note.includes(c)) no_sens=false;
+			note = note.replace(c,'');
+		});
+		if (no_regle) $("#fc_r").prop("checked", true);
+		if (no_sens) $("#fc_sr").prop("checked", true);
+		if (no_rec) $("#fc_rr").prop("checked", true);
+		if (no_dou) $("#fc_rp").prop("checked", true);
+	},
+	date : {
+		now : function () {
+			let d =  new Date();
+			d.setHours(9,0,0,0);
+			return d;
+		},
+		parse : function (str) {
+			let d = bill.date.now();
+			let b = str.split(/\D/);
+			d.setFullYear(b[0], b[1]-1, b[2]);
+			return d;
+		},
+		str : function (d) {
+			let m = d.getMonth()+1;
+			let j = d.getDate();
+			return [d.getFullYear(), m<10 ? "0"+m : m, j<10 ? "0"+j : j].join("-");
+		}
 	}
 }
 

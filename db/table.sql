@@ -26,7 +26,7 @@ CREATE TABLE `observation` (
   `no_compte` mediumint(8) unsigned NOT NULL,
   `date_obs` date NOT NULL DEFAULT '0000-00-00',
   `jenesaispas` tinyint(1) unsigned DEFAULT NULL,
-  `gommette` varchar(2) COLLATE utf8mb4_bin NOT NULL,
+  `gommette` varchar(3) COLLATE utf8mb4_bin NOT NULL,
   `sensation` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `temperature` decimal(4,2) unsigned DEFAULT NULL,
   `jour_sommet` tinyint(1) unsigned zerofill DEFAULT NULL,

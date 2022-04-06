@@ -32,6 +32,10 @@ h2 {
 	color: #ac2433;
 }
 
+.vert {
+	color: #1e824c;
+}
+
 .gradiant_logo {
 	color: #1e824c;
 	background-image: linear-gradient(90deg, #0b6334, #37a369);

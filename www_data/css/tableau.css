@@ -261,3 +261,11 @@ h2 {
 	color: gray;
 }
 
+#fc_msg {
+	font-family: monospace;
+}
+
+#form_fc {
+	text-transform: uppercase;
+}
+
