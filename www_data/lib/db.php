@@ -234,7 +234,7 @@ function db_select_cycle_end($db, $date, $no_compte) {
 }
 
 function db_select_cycle_complet($db, $date_start, $date_end, $no_compte) {
-	$sql = "SELECT date_obs, COALESCE(jenesaispas,'') as '?', gommette, COALESCE(temperature,'') as temperature, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
+	$sql = "SELECT date_obs, COALESCE(jenesaispas,'') as '?', COALESCE(note_fc,'') as note_fc, gommette, COALESCE(temperature,'') as temperature, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date_start", $date_start, PDO::PARAM_STR);

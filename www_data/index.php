@@ -41,7 +41,6 @@ foreach ($sensations_brut as $obj) {
 	}
 } 
 
-//$methode = [1 => "les2", 2 => "glaire", 3 => "temp"];
 $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 
 ?><!doctype html>
@@ -95,7 +94,7 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 					<span class="categorie pas_temp">Note FertilityCare:</span> <span id="fc_msg"></span><br class="pas_temp" />
 					<input class="pas_glaire" type="text" autocapitalize="characters" name="note_fc" id="form_fc" style="width: 95%" placeholder="note FC" /><br class="pas_temp" />	
 					<br />
-					<span class="categorie pas_temp">&#x1FA78; Règles:</span><br class="pas_temp" />
+					<span class="categorie pas_temp">&#x1FA78; Saignement:</span><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_h" value="H" /><label class="pas_temp" for="fc_h"><b>H</b> flux abondant</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_m" value="M" /><label class="pas_temp" for="fc_m"><b>M</b> flux modéré</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_rl" value="L" /><label class="pas_temp" for="fc_rl"><b>L</b> flux léger</label><br class="pas_temp" />
@@ -117,7 +116,6 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_sr" value="" checked /><label class="pas_temp" for="fc_sr">pas de sensation</label><br class="pas_temp" />
 					<br />
 					<span class="categorie pas_temp">&#x1F441;&#xFE0F; Observation:</span><br class="pas_temp" />
-					<!--<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_b" id="fc_b" value="B" /><label class="pas_temp" for="fc_b"><b>B</b> saignement brun (ou noir)</label><br class="pas_temp" />-->
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_c" id="fc_c" value="C" /><label class="pas_temp" for="fc_c"><b>C</b> opaque (blanc)</label><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_g" id="fc_g" value="G" /><label class="pas_temp" for="fc_g"><b>G</b> gommeux (collant)</label><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_k" id="fc_k" value="K" /><label class="pas_temp" for="fc_k"><b>K</b> transparent</label><br class="pas_temp" />
@@ -157,7 +155,7 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 				<span class="categorie">Evénements:</span><br />
 				<input type="checkbox" name="premier_jour" id="ev_premier_jour" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
 				<input type="checkbox" name="union_sex" id="ev_union" value="1" /><label for="ev_union">❤️ union</label><br />
-				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ jour sommet</label><br />
+				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ <span class="pas_fc">jour sommet</span><span class="pas_glaire pas_temp">peak</span></label><br />
 				<input type="checkbox" name="jenesaispas" id="ev_jesaispas" value="1" /><label for="ev_jesaispas">🤷‍♀️ jour non observé <span class='note'>?</span></label><br />
 				<br />
 				<span class="categorie">Commentaire:</span><br />

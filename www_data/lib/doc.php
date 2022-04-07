@@ -11,18 +11,17 @@ function doc_ajout_jours_manquant($data, $methode){
 	$nb_jours = 0;
 	$cycle = [];
 	$date_cursor = new DateTime($data[0]["date_obs"]);
+	$empty_line = array("?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '',"commentaire" => '');
+	if ($methode == 1) $empty_line["temperature"] = '';
+	if ($methode == 3) $empty_line["note_fc"] = '';
 	foreach ($data as $line){
 		while ($date_cursor->format('Y-m-d') != $line["date_obs"]) {
-			if ($methode == 2) array_push($cycle, array("date_obs" => $date_cursor->format('Y-m-d'),"?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '',"commentaire" => ''));
-			elseif ($methode == 3) array_push($cycle, array("date_obs" => $date_cursor->format('Y-m-d'),"?" => '1',"temperature" => '',"sommet" => '',"unions" => '',"commentaire" => ''));
-			else array_push($cycle, array("date_obs" => $date_cursor->format('Y-m-d'),"?" => '1',"gommette" => '',"temperature" => '',"sensation" => '',"sommet" => '',"unions" => '',"commentaire" => ''));
+			$empty_line["date_obs"] = $date_cursor->format('Y-m-d');
+			array_push($cycle, $empty_line);
 			$date_cursor->modify('+1 day');
 		}
-		if ($methode == 2) unset($line["temperature"]);
-		elseif ($methode == 3) {
-			unset($line["gommette"]);
-			unset($line["sensation"]);
-		}
+		if ($methode != 1) unset($line["temperature"]);
+		if ($methode != 3) unset($line["note_fc"]);
 		array_push($cycle, $line);
 		$date_cursor->modify('+1 day');
 		$nb_jours += 1;
@@ -63,7 +62,7 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 
 		$temp_max = 0;
 		$temp_mini = 100;
-		if ($methode!=2) {
+		if ($methode==1) {
 			foreach ($cycle as $line){
 				if (isset($line["temperature"]) && !empty($line["temperature"])) {
 					$temp = floatval($line["temperature"]);
@@ -96,23 +95,38 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 			$pdf->SetFont('Courier','',10);
 			$pdf->SetTextColor(0,0,0);
 			if (isset($line["gommette"]) && !boolval($line["?"])) {
-				if(str_contains($line["gommette"], "."))	$pdf->SetFillColor(172,36,51);
-				elseif(str_contains($line["gommette"], "I"))	$pdf->SetFillColor(30,130,76);
-				elseif(str_contains($line["gommette"], "?"))	$pdf->SetFillColor(220,220,220);
-				elseif(str_contains($line["gommette"], "="))	$pdf->SetFillColor(251,202,11);
-				else $pdf->SetFillColor(255,255,255);
+				if(str_contains($line["gommette"], ".")) {
+					$pdf->SetFillColor(172,36,51);
+					$pdf->SetDrawColor(172,36,51);
+				}
+				elseif(str_contains($line["gommette"], "I")){
+					$pdf->SetFillColor(30,130,76);
+					$pdf->SetDrawColor(30,130,76);
+				}
+				elseif(str_contains($line["gommette"], "?")){
+					$pdf->SetFillColor(220,220,220);
+					$pdf->SetDrawColor(220,220,220);
+				}
+				elseif(str_contains($line["gommette"], "=")) {
+					$pdf->SetFillColor(251,202,11);
+					$pdf->SetDrawColor(251,202,11);
+				}
+				else {
+					$pdf->SetFillColor(255,255,255);
+					$pdf->SetDrawColor(255,255,255);
+				}
 				if ($line["gommette"] == ":)") {
 					$pdf->SetTextColor(30, 130, 76);
-					$pdf->Cell(5,5,"(:",0,0,'C', true);
+					$pdf->SetDrawColor(30, 130, 76);
+					$pdf->Cell(5,5,"(:",1,0,'C', true);
 					$pdf->SetTextColor(0,0,0);
 				}
 				elseif (str_contains($line["gommette"], ":)")) {
 					$pdf->SetTextColor(255,255,255);
-					$pdf->Cell(5,5,"(:",0,0,'C', true);
+					$pdf->Cell(5,5,"(:",1,0,'C', true);
 					$pdf->SetTextColor(0,0,0);
 				}
-				elseif ($line["gommette"]=="?") $pdf->Cell(5,5,$line["gommette"],0,0,'C', true);
-				else $pdf->Cell(5,5,"",0,0,'C', true);
+				else $pdf->Cell(5,5,"",1,0,'C', true);
 			}
 			if (boolval($line["?"])) {
 				$pdf->SetFont('Courier','I',8);
@@ -146,13 +160,20 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',10);
 			}
-			if (isset($line["sensation"]) && !empty($line["sensation"])){
+			if ($methode==3 && isset($line["note_fc"]) && !empty($line["note_fc"])) {
+				$pdf->SetFont('Arial','',10);
+				$w = $pdf->GetStringWidth(utf8_decode($line["note_fc"]))+1;
+				$pdf->Cell($w,5,utf8_decode($line["note_fc"]));
+				$pdf->SetFont('Courier','',10);
+
+			}
+			if ($methode !=3 && isset($line["sensation"]) && !empty($line["sensation"])){
 				$pdf->SetFont('Courier','',10);
 				$w = $pdf->GetStringWidth(utf8_decode($line["sensation"]))+1;
 				$pdf->Cell($w,5,utf8_decode($line["sensation"]));
 				$pdf->SetFont('Courier','',10);
 			}
-			$pdf->SetFont('Courier','I',7);
+			$pdf->SetFont('Arial','I',7);
 			$pdf->Cell(10,5,utf8_decode($line["commentaire"]?? ""));
 			$pdf->SetFont('Courier','',10);
 			if (isset($line["temperature"]) && !empty($line["temperature"]) && !boolval($line["?"])) {

@@ -35,9 +35,7 @@ bill = {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		bill.charger_cycle();
 		$("#charger_cycle").click(bill.charger_cycle);
-		$("#jour_form_close").click(function () {
-			$("#jour_form").hide();
-		});
+		$("#jour_form_close").click(bill.close_menu);
 		$("#temp_graph_close").click(function () {
 			$("#temp_graph").hide();
 		});
@@ -71,7 +69,6 @@ bill = {
 		bill.cycle_curseur += 1;
 		let date_cycle_str = tous_les_cycles[c];
 		let date_fin = bill.date.now();
-		date_fin.setHours(23, 59, 59, 999);
 		if (c>0) {
 			date_fin = new Date(bill.date.parse(tous_les_cycles[c-1]) - (1000*60*60*24));
 			date_fin.setHours(9);
@@ -292,12 +289,15 @@ bill = {
 		let j = JSON.parse($("#" + $(this).attr('id') + " .data").text());
 		let o_date = bill.date.parse(j.date);
 		let gommette = j.gommette? j.gommette : "";
-		$("#jour_form_titre").text([bill.text.semaine[o_date.getDay()], o_date.getDate(), bill.text.mois_long[o_date.getMonth()], o_date.getFullYear()].join(" "));
+		let titre = [bill.text.semaine[o_date.getDay()], o_date.getDate(), bill.text.mois_long[o_date.getMonth()], o_date.getFullYear()];
+		titre.push(`<span>J${j.pos}</span>`);
+		$("#jour_form_titre").html(titre.join(" "));
 		$("#jour_form")[0].reset();
+		$("#fc_msg").empty();
 		$("#form_date").val(j.date);
 		if (j.note_fc && methode==3) {
 			$("#form_fc").val(j.note_fc);
-			bill.fc_note2form();
+			bill.fc_test_note();
 		}
 		if (gommette.includes(":)") && gommette.length>2) {
 			$("#go_" + bill.gommette[":)"][1]).prop('checked', true);
@@ -345,7 +345,18 @@ bill = {
 			bill.page_a_recharger = true;
 		});
 		$("#from_com").val(j.commentaire);
+		$("html, body").css({
+			"overflow": "hidden",
+			"touch-action": "none"
+		});
 		$("#jour_form").show();
+	},
+	close_menu : function (e) {
+		$("html, body").css({
+			"overflow": "visible",
+			"touch-action": "auto"
+		});
+		$("#jour_form").hide();
 	},
 	submit_menu : function () {
 		$("#ob_extra").val().split(',').forEach(function(o) {
@@ -364,7 +375,7 @@ bill = {
 			if (data.outcome == "ok") {
 				if (bill.page_a_recharger) location.reload();
 				bill.charger_observation(data.date);
-				$("#jour_form").hide();
+				bill.close_menu();
 			}		
 		}).fail(function (ret) {
 			console.error(ret.responseText); 
@@ -383,7 +394,7 @@ bill = {
 				}
 				if (data.outcome == "ok") {
 					bill.charger_observation(data.date);
-					$("#jour_form").hide();
+					bill.close_menu();
 				}		
 			}).fail(function (ret) {
 				console.error(ret.responseText); 
@@ -398,7 +409,7 @@ bill = {
 		bill.graph_data[data.cycle][label] = parseFloat(data.temperature);
 	},
 	open_temp_graph : function() {
-		$("#jour_form").hide();
+		bill.close_menu();
 		let cycle = $(this).attr("for");
 		let cycle_date = bill.date.parse(cycle);
 		$("#temp_graph_titre").text(`Cycle du ${cycle_date.getDate()} ${bill.text.mois_long[cycle_date.getMonth()]}`);
@@ -426,18 +437,18 @@ bill = {
 			}
 		});
 	},
-	fc_note_regex : /^((h|m|l|vl|b|H|M|L|VL|B)\s*)?((2W|10KL|10SL|WL|[024]|(([68]|10)\s*[BCGKLPYbcgklpy]{1,7}))\s*([xX][123]|AD|ad)?)?(\s*[RrLl]?(ap|AP))?$/,
+	fc_note_regex : /^((h|m|l|vl|b|H|M|L|VL|B)\s*)?(2W|10KL|10SL|10DL|10WL|2w|10kl|10sl|10dl|10wl|[024]|(([68]|10)\s*[BCGKLPYbcgklpy]{1,7}))?\s*([xX][123]|AD|ad)?(\s*[RrLl]?(ap|AP))?$/,
 	fc_test_note : function() {
 		if (!$("#form_fc").val()) {	
 			$("#fc_msg").empty();
 		}
 		else if (bill.fc_note_regex.test($("#form_fc").val().toUpperCase())) {
-			$("#fc_msg").html("(valide)");
+			$("#fc_msg").html("(syntaxe valide)");
 			$("#fc_msg").addClass("vert");
 			$("#fc_msg").removeClass("rouge");
 		}
 		else {
-			$("#fc_msg").html("(non valide)");
+			$("#fc_msg").html("(syntaxe invalide)");
 			$("#fc_msg").addClass("rouge");
 			$("#fc_msg").removeClass("vert");
 		}
