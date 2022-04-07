@@ -121,7 +121,6 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				}
 				if ($line["gommette"] == ":)") {
 					$pdf->SetTextColor(30, 130, 76);
-					//$pdf->SetDrawColor(30, 130, 76);
 					$pdf->SetDrawColor(150,150,150);
 					$pdf->Cell(5,5,"(:",1,0,'C', true);
 					$pdf->SetTextColor(0,0,0);

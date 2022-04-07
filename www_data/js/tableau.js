@@ -27,6 +27,7 @@ bill = {
 	sommets : [],
 	page_a_recharger: false,
 	graph_data : {},
+	graphs : {},
 	cycle_curseur : 0,
 	a_le_focus: true,
 	date_chargement: null,
@@ -36,9 +37,6 @@ bill = {
 		bill.charger_cycle();
 		$("#charger_cycle").click(bill.charger_cycle);
 		$("#jour_form_close").click(bill.close_menu);
-		$("#temp_graph_close").click(function () {
-			$("#temp_graph").hide();
-		});
 		$("#jour_form_submit").click(bill.submit_menu);	
 		$("#jour_form_suppr").click(bill.suppr_observation);	
 		$("#form_fc").keyup(bill.fc_test_note).change(bill.fc_test_note);
@@ -77,11 +75,10 @@ bill = {
 		date_cycle.setHours(9);
 		let nb_jours = parseInt(Math.round((date_fin-date_cycle)/(1000*60*60*24)+1));
 		$("#timeline").prepend(bill.cycle2html(date_cycle_str, nb_jours, date_fin));
-		if (JSON.parse(localStorage.cycle_cache || "[]").includes("contenu-c-" + date_cycle_str)) bill.cycle_aff_switch("contenu-c-" + date_cycle_str);
+		if (JSON.parse(localStorage.cycle_cache || "[]").includes(date_cycle_str)) bill.cycle_aff_switch(date_cycle_str);
 		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function (e) {
 			bill.cycle_aff_switch($(this).attr("for"));
 		});
-		$(`#c-${date_cycle_str} .aff_temp_graph`).click(bill.open_temp_graph);
 		for (let pas = 0; pas < nb_jours; pas++) {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
@@ -91,6 +88,7 @@ bill = {
 			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2html(data));
 			bill.charger_observation(date_obs_str);
 		}
+		if (methode == 1) bill.cycle2graph(date_cycle_str);
 	},
 	charger_observation : function(o_date) {
 		$.get("observation.php", { date: o_date }).done(function(data) {
@@ -150,14 +148,14 @@ bill = {
 	},
 	cycle_aff_switch: function (id) {
 		let cache = JSON.parse(localStorage.cycle_cache || "[]");
-		if ($("#" + id).is(":hidden")) {
-			$("#" + id).show();
-			$("#but-" + id).html("&#x1F440; Masquer");
+		if ($("#contenu-c-" + id).is(":hidden")) {
+			$("#contenu-c-" + id).show();
+			$("#but-contenu-c-" + id).html("&#x1F440; Masquer");
 			if (cache.includes(id)) cache.splice(cache.indexOf(id) , 1);
 		}
 		else {
-			$("#" + id).hide();
-			$("#but-" + id).html("&#x1F440; Afficher");
+			$("#contenu-c-" + id).hide();
+			$("#but-contenu-c-" + id).html("&#x1F440; Afficher");
 			if (!cache.includes(id)) cache.push(id);
 		}
 		localStorage.cycle_cache = JSON.stringify(cache);
@@ -169,54 +167,46 @@ bill = {
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
 		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph pas_glaire pas_fc' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${bill.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${bill.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
-		cycle.append(`<div class='contenu' id='contenu-${c_id}'></div>`);
+		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='export?cycle=${bill.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${bill.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		cycle.append(`<div class='contenu' id='contenu-${c_id}'><div class='graph pas_glaire pas_fc' id='graph-${c_id}' ><canvas id='canvas-${c_id}'></canvas></div></div>`);
 		return cycle;
 	},
-	ooobservation2html : function(j) {
-		let o_date = bill.date.parse(j.date);
-		let o_id = "o-" + bill.date.str(o_date);
-		let observation = $("<div>", {id: o_id, class: "day"});
-		observation.click(bill.open_menu);
-		observation.append(`<span class='data' style='display:none'>${JSON.stringify(j)}</span>`);
-		observation.append(`<span class='d'>${o_date.getDate()} ${bill.text.mois[o_date.getMonth()]} </span>`);	
-		observation.append(`<span class='j'>${j.pos}</span>`);
-		observation.append(`<span class='p'>${j.jenesaispas ?  bill.text.je_sais_pas : ""}</span>`);
-		if (j.chargement) observation.append(`<span class='l'>${bill.text.chargement}</span>`);
-		else if (!j.jenesaispas) {
-			if (j.gommette) {
-				let contenu = "o";
-				let color = j.gommette;
-				if (j.gommette.includes(':)') && j.gommette.length>2){
-					contenu = bill.gommette[":)"][0];
-					color = j.gommette.replace(":)", "");
+	cycle2graph : function (id) {
+		const temp_chart = new Chart($(`#canvas-c-${id}`), {
+			type: 'line',
+			data: {
+				datasets: [{
+					data: bill.graph_data[id],
+					fill: false,
+					borderColor: '#8743b0',
+					tension: 0.1,
+				}]
+			},
+			options: {
+				responsive:true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						display: false
+					}
 				}
-				else {
-					contenu = bill.gommette[j.gommette][0];
-				}
-				observation.append(`<span class='g ${bill.gommette[color][1]}'>${contenu}</span>`);
 			}
-			if (j.temperature) {
-				let temp = parseFloat(j.temperature);
-				let color = "#4169e1";
-				if (temp > 37.5) color = "#b469e1";
-				else if (temp <= 37.5 && temp >= 36.5) {
-					let r = parseInt((1-(37.5-temp))*115)+65;
-					color = `rgb(${r}, 105, 225)`;
-				}
-				observation.append(`<span class='t pas_glaire pas_fc' style='background-color: ${color}'>${temp}</span>`);
-			}
-			else observation.append(`<span class='t'></span>`);
-			observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
-			observation.append(`<span class='u'>${j.union_sex ? bill.text.union : ""}</span>`);
-			observation.append(`<span class='o pas_temp'>${j.sensation || ""}</span>`);
+		});
+		bill.graphs[id] = temp_chart;
+	},
+	graph_update : function(id) {
+		let vide = true;
+		for (let k in bill.graph_data[id]) {
+			if (vide && !isNaN(bill.graph_data[id][k])) vide = false;
+		}
+		if (vide) {
+			$("#graph-c-" + id).hide();
 		}
 		else {
-			observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
-			observation.append(`<span class='u'>${j.union_sex ? bill.text.union : ""}</span>`);
+			$("#graph-c-" + id).show();
+			bill.graphs[id].data.datasets[0].data = bill.graph_data[id];
+			bill.graphs[id].update();
 		}
-		observation.append(`<span class='c'>${j.commentaire || ""}</span>`);
-		return observation;
 	},
 	observation2html : function(j) {
 		let o_date = bill.date.parse(j.date);
@@ -279,7 +269,6 @@ bill = {
 		return observation;
 	},
 	open_menu : function(e) {
-		$("#temp_graph").hide();
 		let j = JSON.parse($("#" + $(this).attr('id') + " .data").text());
 		let o_date = bill.date.parse(j.date);
 		let gommette = j.gommette? j.gommette : "";
@@ -400,36 +389,8 @@ bill = {
 		let date = bill.date.parse(data.date);
 		let label = `${date.getDate()} ${bill.text.mois[date.getMonth()]}`;
 		bill.graph_data[data.cycle][label] = parseFloat(data.temperature);
-	},
-	open_temp_graph : function() {
-		bill.close_menu();
-		let cycle = $(this).attr("for");
-		let cycle_date = bill.date.parse(cycle);
-		$("#temp_graph_titre").text(`Cycle du ${cycle_date.getDate()} ${bill.text.mois_long[cycle_date.getMonth()]}`);
-		$('#canvas_temp').remove();
-		$('#graph_container').append("<canvas id='canvas_temp'></canvas>");
-		$("#temp_graph").show();
-		const temp_chart = new Chart($("#canvas_temp"), {
-			type: 'line',
-			data: {
-				datasets: [{
-					data: bill.graph_data[cycle],
-					fill: false,
-					borderColor: '#1e824c',
-					tension: 0.1
-				}]
-			},
-			options: {
-				responsive:true,
-				maintainAspectRatio: false,
-				plugins: {
-					legend: {
-						display: false
-					}
-				}
-			}
-		});
-	},
+		if (bill.graphs[data.cycle]) bill.graph_update(data.cycle);
+	},	
 	fc_note_regex : /^((h|m|l|vl|b|H|M|L|VL|B)\s*)?(2W|10KL|10SL|10DL|10WL|2w|10kl|10sl|10dl|10wl|[024]|(([68]|10)\s*[BCGKLPYbcgklpy]{1,7}))?\s*([xX][123]|AD|ad)?(\s*[RrLl]?(ap|AP))?$/,
 	fc_test_note : function() {
 		if (!$("#form_fc").val()) {	

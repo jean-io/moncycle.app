@@ -165,11 +165,6 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 				<div id="form_err" class="err"></div>
 			</div>
 		</form>
-		<div id="temp_graph" class="popup pas_glaire" style="display: none">
-			<button type="button" id="temp_graph_close">❌ fermer</button>
-			<div id="temp_graph_titre" class="bold uppercase"></div>
-			<div id="graph_container" class="graph_container"></div>
-		</div>
 		<script type="text/javascript">
 			window.onload = bill.letsgo;
 		</script>
