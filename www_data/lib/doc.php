@@ -13,7 +13,10 @@ function doc_ajout_jours_manquant($data, $methode){
 	$date_cursor = new DateTime($data[0]["date_obs"]);
 	$empty_line = array("?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '',"commentaire" => '');
 	if ($methode == 1) $empty_line["temperature"] = '';
-	if ($methode == 3) $empty_line["note_fc"] = '';
+	if ($methode == 3) {
+		$empty_line["note_fc"] = '';
+		unset($empty_line["sensation"]);
+	}
 	foreach ($data as $line){
 		while ($date_cursor->format('Y-m-d') != $line["date_obs"]) {
 			$empty_line["date_obs"] = $date_cursor->format('Y-m-d');
@@ -22,6 +25,7 @@ function doc_ajout_jours_manquant($data, $methode){
 		}
 		if ($methode != 1) unset($line["temperature"]);
 		if ($methode != 3) unset($line["note_fc"]);
+		if ($methode == 3) unset($line["sensation"]);
 		array_push($cycle, $line);
 		$date_cursor->modify('+1 day');
 		$nb_jours += 1;
@@ -117,7 +121,8 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				}
 				if ($line["gommette"] == ":)") {
 					$pdf->SetTextColor(30, 130, 76);
-					$pdf->SetDrawColor(30, 130, 76);
+					//$pdf->SetDrawColor(30, 130, 76);
+					$pdf->SetDrawColor(150,150,150);
 					$pdf->Cell(5,5,"(:",1,0,'C', true);
 					$pdf->SetTextColor(0,0,0);
 				}
