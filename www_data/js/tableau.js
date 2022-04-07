@@ -169,12 +169,11 @@ bill = {
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
 		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph pas_glaire' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${bill.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${bill.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='contenu-${c_id}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <button class='aff_temp_graph pas_glaire pas_fc' for='${c}'>&#x1F4C8; Courbe de température</button> <a href='export?cycle=${bill.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${bill.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
 		cycle.append(`<div class='contenu' id='contenu-${c_id}'></div>`);
 		return cycle;
 	},
 	ooobservation2html : function(j) {
-		console.log(j);
 		let o_date = bill.date.parse(j.date);
 		let o_id = "o-" + bill.date.str(o_date);
 		let observation = $("<div>", {id: o_id, class: "day"});
@@ -184,10 +183,6 @@ bill = {
 		observation.append(`<span class='j'>${j.pos}</span>`);
 		observation.append(`<span class='p'>${j.jenesaispas ?  bill.text.je_sais_pas : ""}</span>`);
 		if (j.chargement) observation.append(`<span class='l'>${bill.text.chargement}</span>`);
-		//else if (!j.jenesaispas && ((!j.gommette && !j.temperature) || (!j.gommette && methode==2) || (!j.temperature && methode==3))) {
-		//	observation.append(`<span class='r'>${bill.text.a_renseigner}</span>`);
-		//	observation.append(`<span class='s'></span>`);
-		//}
 		else if (!j.jenesaispas) {
 			if (j.gommette) {
 				let contenu = "o";
@@ -224,7 +219,6 @@ bill = {
 		return observation;
 	},
 	observation2html : function(j) {
-		console.log(j);
 		let o_date = bill.date.parse(j.date);
 		let o_id = "o-" + bill.date.str(o_date);
 		let observation = $("<div>", {id: o_id, class: "day"});
@@ -366,7 +360,6 @@ bill = {
 			sensations[o] += 1;
 		});
 		let d = $("#jour_form").serializeArray();
-		console.log(d);
 		$.post("observation.php", $.param(d)).done(function(data){
 			if (data.err){
 				$("#form_err").val(data.err);

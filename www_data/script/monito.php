@@ -18,6 +18,6 @@ session_destroy();
 
 $db = db_open();
 
-echo boolval(db_select_nb_compte($db)[0][0]);
+echo boolval(db_select_nb_compte($db)[0][0]) ? "oookkk" : "kkkooo";
 echo PHP_EOL;
 
