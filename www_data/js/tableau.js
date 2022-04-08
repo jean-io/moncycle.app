@@ -400,7 +400,7 @@ bill = {
 		bill.graph_data[data.cycle][label] = parseFloat(data.temperature);
 		if (bill.graphs[data.cycle]) bill.graph_update(data.cycle);
 	},	
-	fc_note_regex : /^((h|m|l|vl|b|H|M|L|VL|B)\s*)?(2W|10KL|10SL|10DL|10WL|2w|10kl|10sl|10dl|10wl|[024]|(([68]|10)\s*[BCGKLPYbcgklpy]{1,7}))?\s*([xX][123]|AD|ad)?(\s*[RrLl]?(ap|AP))?$/,
+	fc_note_regex : /^((h|m|l|vl|b|H|M|L|VL|B)\s*)?(2W|10KL|10SL|10DL|10WL|2w|10kl|10sl|10dl|10wl|[024]|(([68]|10)\s*[BCGKLPYRbcgklpyr]{1,8}))?\s*([xX][123]|AD|ad)?(\s*[RrLl]?(ap|AP))?$/,
 	fc_test_note : function() {
 		if (!$("#form_fc").val()) {	
 			$("#fc_msg").empty();

@@ -22,8 +22,33 @@ echo "moncycle_app_nb_compte ";
 echo db_select_nb_compte($db)[0][0];
 echo PHP_EOL;
 
+$nb_compte_actif = db_select_nb_compte_actif($db)[0][0];
 echo "moncycle_app_nb_compte_actif ";
-echo db_select_nb_compte_actif($db)[0][0];
+echo $nb_compte_actif;
+echo PHP_EOL;
+
+$nb_compte_actif_billings = db_select_nb_compte_actif_par_methode($db, 2)[0][0];
+echo "moncycle_app_nb_compte_actif_billings ";
+echo $nb_compte_actif_billings;
+echo PHP_EOL;
+echo "moncycle_app_%%_compte_actif_billings ";
+echo ($nb_compte_actif_billings/$nb_compte_actif)*100;
+echo PHP_EOL;
+
+$nb_compte_actif_symptothermie = db_select_nb_compte_actif_par_methode($db, 1)[0][0];
+echo "moncycle_app_nb_compte_actif_symptothermie ";
+echo $nb_compte_actif_symptothermie;
+echo PHP_EOL;
+echo "moncycle_app_%%_compte_actif_symptothermie ";
+echo ($nb_compte_actif_symptothermie/$nb_compte_actif)*100;
+echo PHP_EOL;
+
+$nb_compte_actif_fertilitycare = db_select_nb_compte_actif_par_methode($db, 3)[0][0];
+echo "moncycle_app_nb_compte_actif_fertilitycare ";
+echo $nb_compte_actif_fertilitycare;
+echo PHP_EOL;
+echo "moncycle_app_%%_compte_actif_fertilitycare ";
+echo ($nb_compte_actif_fertilitycare/$nb_compte_actif)*100;
 echo PHP_EOL;
 
 echo "moncycle_app_nb_compte_recent ";
@@ -60,6 +85,10 @@ echo PHP_EOL;
 
 echo "moncycle_app_nb_observation_15j ";
 echo db_select_observation_count($db, 15)[0][0];
+echo PHP_EOL;
+
+echo "moncycle_app_nb_observation_30j ";
+echo db_select_observation_count($db, 30)[0][0];
 echo PHP_EOL;
 
 echo "moncycle_app_nb_session ";
