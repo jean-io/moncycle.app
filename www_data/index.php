@@ -122,6 +122,7 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_l" id="fc_l" value="L" /><label class="pas_temp" for="fc_l"><b>L</b> lubrifiant</label><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_p" id="fc_p" value="P" /><label class="pas_temp" for="fc_p"><b>P</b> pâteux (crémeux)</label><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_y" id="fc_y" value="Y" /><label class="pas_temp" for="fc_y"><b>Y</b> jaune (même jaune pâle)</label><br class="pas_temp" />
+					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_r" id="fc_ro" value="R" /><label class="pas_temp" for="fc_ro"><b>R</b> rouge</label><br class="pas_temp" />
 					<br />
 					<span class="categorie pas_temp">&#x1F522; Récurrence de l'observation:</span><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_rec" id="fc_x1" value="X1" /><label class="pas_temp" for="fc_x1"><b>X1</b> vu seulement une fois ce jour</label><br class="pas_temp" />
@@ -135,6 +136,12 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 					<input class="pas_temp fc_form_note" type="radio" name="fc_dou" id="fc_rap" value="RAP" /><label class="pas_temp" for="fc_rap"><b>RAP</b> douleur abdominal à droite</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_dou" id="fc_lap" value="LAP" /><label class="pas_temp" for="fc_lap"><b>LAP</b> douleur abdominal à gauche</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_dou" id="fc_rp" value="" checked /><label class="pas_temp" for="fc_rp">pas de douleur</label><br class="pas_temp" />
+					<br />
+					<span class="categorie">Flèche:</span><br class="pas_temp" />
+					<input class="fc_form_note" type="radio" name="fc_fle" id="fc_fh" value="↑" /><label for="fc_fh">&#x2B06;&#xFE0F;</label>
+					<input class="fc_form_note" type="radio" name="fc_fle" id="fc_fb" value="↓" /><label for="fc_fb">&#x2B07;&#xFE0F;</label>
+					<input class="fc_form_note" type="radio" name="fc_fle" id="fc_fd" value="→" /><label for="fc_fd">&#x27A1;&#xFE0F;</label>
+					<input class="fc_form_note" type="radio" name="fc_fle" id="fc_fr" value="" checked /><label class="" for="fc_fr">aucune</label><br />
 					<br />
 				</div>
 				<span class="categorie">Gommettes:</span><br />
@@ -155,7 +162,7 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 				<span class="categorie">Evénements:</span><br />
 				<input type="checkbox" name="premier_jour" id="ev_premier_jour" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
 				<input type="checkbox" name="union_sex" id="ev_union" value="1" /><label for="ev_union">❤️ union</label><br />
-				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ <span class="pas_fc">jour sommet</span><span class="pas_glaire pas_temp">peak</span></label><br />
+				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ <span class="pas_fc">jour sommet</span><span class="pas_glaire pas_temp">pic</span></label><br />
 				<input type="checkbox" name="jenesaispas" id="ev_jesaispas" value="1" /><label for="ev_jesaispas">🤷‍♀️ jour non observé <span class='note'>?</span></label><br />
 				<br />
 				<span class="categorie">Commentaire:</span><br />

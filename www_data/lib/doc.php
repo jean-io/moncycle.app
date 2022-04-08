@@ -15,6 +15,7 @@ function doc_ajout_jours_manquant($data, $methode){
 	if ($methode == 1) $empty_line["temperature"] = '';
 	if ($methode == 3) {
 		$empty_line["note_fc"] = '';
+		$empty_line["fleche_fc"] = '';
 		unset($empty_line["sensation"]);
 	}
 	foreach ($data as $line){
@@ -24,7 +25,10 @@ function doc_ajout_jours_manquant($data, $methode){
 			$date_cursor->modify('+1 day');
 		}
 		if ($methode != 1) unset($line["temperature"]);
-		if ($methode != 3) unset($line["note_fc"]);
+		if ($methode != 3) {
+			unset($line["note_fc"]);
+			unset($line["fleche_fc"]);
+		}
 		if ($methode == 3) unset($line["sensation"]);
 		array_push($cycle, $line);
 		$date_cursor->modify('+1 day');
@@ -140,22 +144,35 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetTextColor(0,0,0);
 			}
 			if(intval($line["unions"])) {
-				$pdf->SetFont("ZapfDingbats");	
 				$pdf->SetTextColor(172,36,51);
-				$pdf->Cell(4,5,chr(164)); // <3
+				if ($methode == 3) { 
+					$pdf->SetFont("Arial");	
+					$pdf->Cell(4,5,"U");
+				}
+				else {
+					$pdf->SetFont("ZapfDingbats");	
+					$pdf->Cell(4,5,chr(164)); // <3
+				}
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',10);
 			}
 			else $pdf->Cell(4,5,"");
 			if(intval($line["sommet"]) || $s>0) {
-				$pdf->SetFont("ZapfDingbats");	
 				$pdf->SetTextColor(139,69,19);
 				if(intval($line["sommet"])) {
-					$pdf->Cell(8,5,chr(115).chr(115)); // /\/\
+					if ($methode == 3) {
+						$pdf->SetFont("Arial");	
+						$pdf->Cell(4,5,"P");
+					}
+					else {
+						$pdf->SetFont("ZapfDingbats");	
+						$pdf->Cell(8,5,chr(115).chr(115)); // /\/\
+					}
 					$s = 1;
 				}
 				elseif ($s<=3) {
-					$pdf->Cell(3,5,chr(115)); // /\
+					if ($methode==3) $pdf->Cell(3,5,"p");
+					else $pdf->Cell(3,5,chr(115)); // /\
 					$pdf->SetFont('Courier','',10);
 					$pdf->Cell(5,5,"+". $s); 
 					$s += 1;
@@ -168,6 +185,14 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetFont('Arial','',10);
 				$w = $pdf->GetStringWidth(utf8_decode($line["note_fc"]))+1;
 				$pdf->Cell($w,5,utf8_decode($line["note_fc"]));
+				$pdf->SetFont('Courier','',10);
+			}
+			if ($methode==3 && isset($line["fleche_fc"]) && !empty($line["fleche_fc"])) {
+				$fleche = array("↑" => chr(173), "↓" => chr(175), "→" => chr(174), "←" => chr(172));
+				$pdf->SetFont("Symbol");	
+				$pdf->SetTextColor(135, 67, 176);
+				$pdf->Cell(4,5,$fleche[$line["fleche_fc"]] ?? ""); // <3
+				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',10);
 
 			}
@@ -216,7 +241,6 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 			$i += 1;
 		}
 
-		// $pdf->Output('I', 'moncycle_app_'. date_humain($date, '_') . '.pdf');
 		return $pdf;
 	
 	}

@@ -13,6 +13,13 @@ bill = {
 		"="  : ["=", "jaune"],
 		":)" : ["👶", "bebe"],
 	},
+	fleche : {
+		"↓" : ["b", "⬇️"],
+		"↑" : ["h", "⬆️"],
+		"→" : ["d", "➡️"],
+		"←" : ["g", "⬅️"],
+		""  : ["", ""]
+	},
 	text : {
 		je_sais_pas: "❔ jour non observé",
 		a_renseigner : "👋 à renseigner",
@@ -264,6 +271,7 @@ bill = {
 		if (!j.jenesaispas) {
 			observation.append(`<span class='o pas_fc'>${j.sensation || ""}</span>`);
 			observation.append(`<span class='fc pas_temp pas_glaire'>${j.note_fc || ""}</span>`);
+			if (bill.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_temp pas_glaire'>${bill.fleche[j.fleche_fc][1] || ""}</span>`);
 		}
 		observation.append(`<span class='c'>${j.commentaire || ""}</span>`);
 		return observation;
@@ -282,6 +290,7 @@ bill = {
 			$("#form_fc").val(j.note_fc);
 			bill.fc_test_note();
 		}
+		if (j.fleche_fc && methode==3) $("#fc_f" + bill.fleche[j.fleche_fc][0]).prop('checked', true);
 		if (gommette.includes(":)") && gommette.length>2) {
 			$("#go_" + bill.gommette[":)"][1]).prop('checked', true);
 			gommette = gommette.replace(":)", "");

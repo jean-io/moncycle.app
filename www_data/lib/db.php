@@ -191,12 +191,13 @@ function db_insert_observation ($db, $date, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $sensation=null, $temp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $commentaire=null) {
-	$sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, temperature = :temp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
+function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $commentaire=null) {
+	$sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, fleche_fc = :fleche_fc, temperature = :temp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":gommette", $gommette, PDO::PARAM_STR);
 	$statement->bindValue(":note_fc", $note_fc, PDO::PARAM_STR);
+	$statement->bindValue(":fleche_fc", $fleche_fc, PDO::PARAM_STR);
 	$statement->bindValue(":sensation", $sensation, PDO::PARAM_STR);
 	$statement->bindValue(":temp", $temp, PDO::PARAM_STR);
 	$statement->bindValue(":jour_sommet", $jour_sommet, PDO::PARAM_INT);
@@ -234,7 +235,7 @@ function db_select_cycle_end($db, $date, $no_compte) {
 }
 
 function db_select_cycle_complet($db, $date_start, $date_end, $no_compte) {
-	$sql = "SELECT date_obs, COALESCE(jenesaispas,'') as '?', COALESCE(note_fc,'') as note_fc, gommette, COALESCE(temperature,'') as temperature, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
+	$sql = "SELECT date_obs, COALESCE(jenesaispas,'') as '?', COALESCE(note_fc,'') as note_fc, COALESCE(fleche_fc,'') as fleche_fc, gommette, COALESCE(temperature,'') as temperature, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date_start", $date_start, PDO::PARAM_STR);
