@@ -88,15 +88,17 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 		$s = -1;
 		$prev_temp_x = 0;
 		$prev_temp_y = 0;
+		$com_long = false;
 		foreach ($cycle as $line){
 			if($pdf->GetPageHeight()-$pdf->GetY()<=30){
 				$pdf->AddPage();
 				$prev_temp_x = 0;
 				$prev_temp_y = 0;
 			}
-			else {
+			elseif (!$com_long) {
 				$pdf->Ln();
 			} 
+			$com_long = false;
 			$pdf->SetFont('Courier','',8);
 			$pdf->SetTextColor(150,150,150);
 			$pdf->Cell(8,5,$i, 0, 0, 'C');
@@ -172,7 +174,10 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				}
 				elseif ($s<=3) {
 					if ($methode==3) $pdf->Cell(3,5,"p");
-					else $pdf->Cell(3,5,chr(115)); // /\
+					else {
+						$pdf->SetFont("ZapfDingbats");	
+						$pdf->Cell(3,5,chr(115)); // /\
+					}
 					$pdf->SetFont('Courier','',10);
 					$pdf->Cell(5,5,"+". $s); 
 					$s += 1;
@@ -197,14 +202,14 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 
 			}
 			if ($methode !=3 && isset($line["sensation"]) && !empty($line["sensation"])){
-				$pdf->SetFont('Courier','',10);
+				if ($methode==1) $pdf->SetFont('Courier','',8.5);
+				else $pdf->SetFont('Courier','',10);
 				$w = $pdf->GetStringWidth(utf8_decode($line["sensation"]))+1;
 				$pdf->Cell($w,5,utf8_decode($line["sensation"]));
 				$pdf->SetFont('Courier','',10);
 			}
-			$pdf->SetFont('Arial','I',7);
-			$pdf->Cell(10,5,utf8_decode($line["commentaire"]?? ""));
-			$pdf->SetFont('Courier','',10);
+			$com_debut_x = $pdf->GetX();
+			$com_fin_x = -1;	
 			if (isset($line["temperature"]) && !empty($line["temperature"]) && !boolval($line["?"])) {
 				$temp = floatval($line["temperature"]);
 				$largeur = 65;
@@ -212,7 +217,10 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetX($pdf->GetPageWidth()/2-12);
 				$pdf->SetFont('Courier','',9);
 				$pdf->SetTextColor(135, 67, 176);
-				$pdf->Cell(12,5,strval($temp) . utf8_decode("°"),0,0,'R');
+				$w = strval($temp) . utf8_decode("°");
+				$com_fin_x = $pdf->GetPageWidth()/2 - $pdf->GetStringWidth($w);
+				$pdf->SetX($com_fin_x);
+				$pdf->Cell($pdf->GetStringWidth($w),5,$w,0,0,'R');
 				$pdf->SetFont('Courier','',10);
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetDrawColor(200,200,200);
@@ -232,17 +240,33 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$prev_temp_x = 0;
 				$prev_temp_y = 0;
 			}
+			if ($com_fin_x<=0) {
+				$com_fin_x = $pdf->GetPageWidth()-35;
+			}
 			$pdf->SetFont('Courier','I',7);
 			$pdf->SetTextColor(100,100,100);
 		 	$pdf->Text($pdf->GetPageWidth()-35,$pdf->GetY()+3.5,date_humain(new DateTime($line["date_obs"])));
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFont('Courier','',10);
 			$pdf->SetY($pdf->GetY()+0.5);
+			if (isset($line["commentaire"]) && $line["commentaire"]) {
+				$pdf->SetFont('Arial','I',7);
+				$w = $pdf->GetStringWidth(utf8_decode($line["commentaire"]));
+				if ($w < ($com_fin_x-$com_debut_x)) {
+					$pdf->SetX($com_debut_x);
+					$pdf->Cell($w,5,utf8_decode($line["commentaire"]));
+				}
+				else {
+					$pdf->Ln();
+					$pdf->SetX($pdf->GetX()+16.5);
+					$pdf->MultiCell($pdf->GetPageWidth()-50,3,utf8_decode($line["commentaire"]));
+					$com_long = true;
+				}
+				$pdf->SetFont('Courier','',10);
+			}
 			$i += 1;
 		}
-
 		return $pdf;
-	
 	}
 
 

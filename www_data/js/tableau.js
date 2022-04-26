@@ -140,17 +140,32 @@ bill = {
 		$(".day .s").empty();
 		$(".day .s").removeClass("petit");				
 		bill.sommets.forEach(s => {
-			$(`#o-${s} .s`).html(bill.text.sommet);
+			$(`#o-${s} .s`).html(bill.text.sommet);	
 			let nb_j_sommet = [1, 2, 3, $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1];
 			nb_j_sommet.forEach(n => {
 				let s_date = bill.date.parse(s);
 				s_date.setDate(s_date.getDate()+n);		
-				let s_id = s_date.getFullYear() + "-";
-				s_id += (s_date.getMonth()+1).toLocaleString('fr-FR', {minimumIntegerDigits: 2, useGrouping:false}) + "-";
-				s_id += s_date.getDate().toLocaleString('fr-FR', {minimumIntegerDigits: 2, useGrouping:false});
+				let s_id = bill.date.str(s_date);
 				$(`#o-${s_id} .s`).html(`${bill.text.sommet}+${n}`);
-				$(`#o-${s_id} .s`).addClass("petit");
+				$(`#o-${s_id} .s`).addClass("petit");	
 			});
+		});
+	},
+	ligne_sympto : function () {
+		bill.sommets.forEach(s => {
+			let somme = 0;
+			let nb = 0;
+			for (let n=0; n<=3 ; n+=1) {
+				let s_date = bill.date.parse(s);
+				s_date.setDate(s_date.getDate()-n);		
+				let s_id = bill.date.str(s_date);
+				let temp = parseFloat($(`#o-${s_id} .t`).text());
+				if (!isNaN(temp)) {
+					somme += temp;
+					nb += 1;
+				}
+			}
+			console.log(somme/nb+0.3);
 		});
 	},
 	cycle_aff_switch: function (id) {
@@ -187,6 +202,12 @@ bill = {
 					fill: false,
 					borderColor: '#8743b0',
 					tension: 0.1,
+				}, {
+					data: {"24 mars" : 37, "30 mars" : 37},
+					fill: false,
+					borderColor: '#000000',
+					pointRadius: 0,
+					tension: 0,
 				}]
 			},
 			options: {

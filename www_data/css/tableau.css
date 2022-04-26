@@ -9,7 +9,7 @@
 .day {
 	padding: 1px;
 	cursor: pointer;
-	height: 28px;
+	min-height: 28.5px;
 }
 	
 .day span {

@@ -18,8 +18,9 @@ session_destroy();
 
 $db = db_open();
 
+$nb_compte = db_select_nb_compte($db)[0][0];
 echo "moncycle_app_nb_compte ";
-echo db_select_nb_compte($db)[0][0];
+echo $nb_compte;
 echo PHP_EOL;
 
 $nb_compte_actif = db_select_nb_compte_actif($db)[0][0];
@@ -27,27 +28,31 @@ echo "moncycle_app_nb_compte_actif ";
 echo $nb_compte_actif;
 echo PHP_EOL;
 
+echo "moncycle_app_%_compte_actif ";
+echo round(($nb_compte_actif/$nb_compte)*100,1);
+echo PHP_EOL;
+
 $nb_compte_actif_billings = db_select_nb_compte_actif_par_methode($db, 2)[0][0];
 echo "moncycle_app_nb_compte_actif_billings ";
 echo $nb_compte_actif_billings;
 echo PHP_EOL;
-echo "moncycle_app_%%_compte_actif_billings ";
-echo ($nb_compte_actif_billings/$nb_compte_actif)*100;
+echo "moncycle_app_%_compte_actif_billings ";
+echo round(($nb_compte_actif_billings/$nb_compte_actif)*100,1);
 echo PHP_EOL;
 
 $nb_compte_actif_symptothermie = db_select_nb_compte_actif_par_methode($db, 1)[0][0];
 echo "moncycle_app_nb_compte_actif_symptothermie ";
 echo $nb_compte_actif_symptothermie;
 echo PHP_EOL;
-echo "moncycle_app_%%_compte_actif_symptothermie ";
-echo ($nb_compte_actif_symptothermie/$nb_compte_actif)*100;
+echo "moncycle_app_%_compte_actif_symptothermie ";
+echo round(($nb_compte_actif_symptothermie/$nb_compte_actif)*100,1);
 echo PHP_EOL;
 
 $nb_compte_actif_fertilitycare = db_select_nb_compte_actif_par_methode($db, 3)[0][0];
 echo "moncycle_app_nb_compte_actif_fertilitycare ";
 echo $nb_compte_actif_fertilitycare;
 echo PHP_EOL;
-echo "moncycle_app_%%_compte_actif_fertilitycare ";
+echo "moncycle_app_%_compte_actif_fertilitycare ";
 echo ($nb_compte_actif_fertilitycare/$nb_compte_actif)*100;
 echo PHP_EOL;
 
@@ -64,7 +69,7 @@ echo db_select_nb_cycle_recent($db)[0][0];
 echo PHP_EOL;
 
 echo "moncycle_app_age_moyen ";
-echo db_select_age_moyen($db)[0][0];
+echo round(db_select_age_moyen($db)[0][0],1);
 echo PHP_EOL;
 
 echo "moncycle_app_age_moyen_recent ";
