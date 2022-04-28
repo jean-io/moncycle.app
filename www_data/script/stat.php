@@ -53,11 +53,11 @@ echo "moncycle_app_nb_compte_actif_fertilitycare ";
 echo $nb_compte_actif_fertilitycare;
 echo PHP_EOL;
 echo "moncycle_app_%_compte_actif_fertilitycare ";
-echo ($nb_compte_actif_fertilitycare/$nb_compte_actif)*100;
+echo round(($nb_compte_actif_fertilitycare/$nb_compte_actif)*100);
 echo PHP_EOL;
 
 echo "moncycle_app_nb_compte_recent ";
-echo db_select_nb_compte_recent($db)[0][0];
+echo round(db_select_nb_compte_recent($db)[0][0]);
 echo PHP_EOL;
 
 echo "moncycle_app_nb_cycle ";
