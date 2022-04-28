@@ -162,7 +162,7 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 				<span class="categorie">Evénements:</span><br />
 				<input type="checkbox" name="premier_jour" id="ev_premier_jour" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
 				<input type="checkbox" name="union_sex" id="ev_union" value="1" /><label for="ev_union">❤️ union</label><br />
-				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ <span class="pas_fc">jour sommet</span><span class="pas_glaire pas_temp">pic</span></label><br />
+				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ <span class="pas_fc">jour sommet</span><span class="pas_glaire pas_temp">pic</span><span class="note pas_glaire pas_fc"> point de température le plus bas</span></label><br />
 				<input type="checkbox" name="jenesaispas" id="ev_jesaispas" value="1" /><label for="ev_jesaispas">🤷‍♀️ jour non observé <span class='note'>?</span></label><br />
 				<br />
 				<span class="categorie">Commentaire:</span><br />

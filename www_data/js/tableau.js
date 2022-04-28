@@ -31,7 +31,7 @@ bill = {
 		mois_long : ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
 		semaine : ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
 	},
-	sommets : [],
+	sommets : {},
 	page_a_recharger: false,
 	graph_data : {},
 	graphs : {},
@@ -100,8 +100,8 @@ bill = {
 	charger_observation : function(o_date) {
 		$.get("observation.php", { date: o_date }).done(function(data) {
 			$(`#o-${data.date}`).replaceWith(bill.observation2html(data));
-			if (data.jour_sommet && !bill.sommets.includes(data.date)) bill.sommets.push(data.date);
-			else if (!data.jour_sommet && bill.sommets.includes(data.date)) bill.sommets.splice(bill.sommets.indexOf(data.date),1);
+			if (data.jour_sommet) bill.sommets[data.date] = [data.cycle, 0];
+			else if (!data.jour_sommet && data.date in bill.sommets) delete bill.sommets[data.date];
 			bill.trois_jours();
 			bill.graph_preparation_data(data);
 		});
@@ -139,7 +139,7 @@ bill = {
 	trois_jours : function() {
 		$(".day .s").empty();
 		$(".day .s").removeClass("petit");				
-		bill.sommets.forEach(s => {
+		for (const [s, data] of Object.entries(bill.sommets)) {
 			$(`#o-${s} .s`).html(bill.text.sommet);	
 			let nb_j_sommet = [1, 2, 3, $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1];
 			nb_j_sommet.forEach(n => {
@@ -149,13 +149,13 @@ bill = {
 				$(`#o-${s_id} .s`).html(`${bill.text.sommet}+${n}`);
 				$(`#o-${s_id} .s`).addClass("petit");	
 			});
-		});
+		}
 	},
 	ligne_sympto : function () {
-		bill.sommets.forEach(s => {
+		for (const [s, data] of Object.entries(bill.sommets)) {
 			let somme = 0;
 			let nb = 0;
-			for (let n=0; n<=3 ; n+=1) {
+			for (let n=0; n<=6 ; n+=1) {
 				let s_date = bill.date.parse(s);
 				s_date.setDate(s_date.getDate()-n);		
 				let s_id = bill.date.str(s_date);
@@ -165,8 +165,8 @@ bill = {
 					nb += 1;
 				}
 			}
-			console.log(somme/nb+0.3);
-		});
+			bill.sommets[s] = [data[0], (somme/nb)+0.2];
+		};
 	},
 	cycle_aff_switch: function (id) {
 		let cache = JSON.parse(localStorage.cycle_cache || "[]");
@@ -200,14 +200,8 @@ bill = {
 				datasets: [{
 					data: bill.graph_data[id],
 					fill: false,
-					borderColor: '#8743b0',
+					borderColor: '#1e824c',
 					tension: 0.1,
-				}, {
-					data: {"24 mars" : 37, "30 mars" : 37},
-					fill: false,
-					borderColor: '#000000',
-					pointRadius: 0,
-					tension: 0,
 				}]
 			},
 			options: {
@@ -234,6 +228,34 @@ bill = {
 			$("#graph-c-" + id).show();
 			bill.graphs[id].data.datasets[0].data = bill.graph_data[id];
 			bill.graphs[id].update();
+		}
+		if (!vide && methode==1) {
+			let j_sommet = "";
+			for (const [s, data] of Object.entries(bill.sommets)) {
+				if (id == data[0]) j_sommet = s;
+			}
+			if (j_sommet) {
+				let date = bill.date.parse(j_sommet);
+				let data = {};
+				data[`${date.getDate()} ${bill.text.mois[date.getMonth()]}`] = bill.sommets[j_sommet][1];
+				date.setDate(date.getDate()-6);
+				data[`${date.getDate()} ${bill.text.mois[date.getMonth()]}`] = bill.sommets[j_sommet][1];
+				let graph_data = {
+					data: data,
+					fill: false,
+					borderColor: '#ac2433',
+					pointRadius: 0,
+					tension: 0,
+					borderDash: [2, 2]
+				};
+				if (bill.graphs[id].data.datasets.length<=1) bill.graphs[id].data.datasets.push(graph_data);
+				else bill.graphs[id].data.datasets[1].data = graph_data.data;
+				bill.graphs[id].update();
+			}
+			if (!j_sommet && bill.graphs[id].data.datasets.length>1) {
+				bill.graphs[id].data.datasets = bill.graphs[id].data.datasets.slice(0,1);
+				bill.graphs[id].update();
+			}
 		}
 	},
 	observation2html : function(j) {
@@ -419,7 +441,10 @@ bill = {
 		let date = bill.date.parse(data.date);
 		let label = `${date.getDate()} ${bill.text.mois[date.getMonth()]}`;
 		bill.graph_data[data.cycle][label] = parseFloat(data.temperature);
-		if (bill.graphs[data.cycle]) bill.graph_update(data.cycle);
+		if (bill.graphs[data.cycle]) {
+			bill.ligne_sympto();
+			bill.graph_update(data.cycle);
+		}
 	},	
 	fc_note_regex : /^((h|m|l|vl|b|H|M|L|VL|B)\s*)?(2W|10KL|10SL|10DL|10WL|2w|10kl|10sl|10dl|10wl|[024]|(([68]|10)\s*[BCGKLPYRbcgklpyr]{1,8}))?\s*([xX][123]|AD|ad)?(\s*[RrLl]?(ap|AP))?$/,
 	fc_test_note : function() {
