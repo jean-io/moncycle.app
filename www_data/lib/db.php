@@ -18,7 +18,17 @@ function db_open() {
 }
 
 function db_select_cycles($db, $no_compte) {
-	$sql = "SELECT date_obs AS cycles FROM observation WHERE no_compte = :no_compte AND premier_jour = 1 ORDER BY cycles DESC";
+	$sql = "SELECT date_obs AS cycles FROM observation WHERE no_compte = :no_compte AND premier_jour=1 ORDER BY cycles DESC";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_COLUMN);
+}
+
+function db_select_grossesses($db, $no_compte) {
+	$sql = "SELECT date_obs AS cycles FROM observation WHERE no_compte = :no_compte AND grossesse=1 ORDER BY cycles DESC";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
@@ -191,8 +201,8 @@ function db_insert_observation ($db, $date, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $commentaire=null) {
-	$sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, fleche_fc = :fleche_fc, temperature = :temp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
+function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $grossesse=null, $commentaire=null) {
+	$sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, fleche_fc = :fleche_fc, temperature = :temp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, grossesse = :grossesse, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":gommette", $gommette, PDO::PARAM_STR);
@@ -205,6 +215,7 @@ function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=n
 	$statement->bindValue(":premier_jour", $premier_jour, PDO::PARAM_INT);
 	$statement->bindValue(":commentaire", $commentaire, PDO::PARAM_STR);
 	$statement->bindValue(":jenesaispas", $jenesaispas, PDO::PARAM_INT);
+	$statement->bindValue(":grossesse", $grossesse, PDO::PARAM_INT);
 	$statement->bindValue(":date", $date, PDO::PARAM_STR);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->execute();

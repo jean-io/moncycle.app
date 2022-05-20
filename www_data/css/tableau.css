@@ -51,6 +51,12 @@
 	border-radius: 2px;
 }
 
+.day .e {
+	font-weight: light;	
+	text-transform: uppercase;
+	font-family: "Montserrat";
+}
+
 .day .r {
 	color: #fbca0b;
 }

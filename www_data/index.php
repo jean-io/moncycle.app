@@ -29,6 +29,7 @@ if (!isset($_SESSION["sess_refresh"]) || $_SESSION["sess_refresh"] != date_sql(n
 }
 
 $cycles = db_select_cycles($db, $_SESSION["no"]);
+$grossesses = db_select_grossesses($db, $_SESSION["no"]);
 $sensations_brut = db_select_sensations($db, $_SESSION["no"]);
 
 $sensations = [];
@@ -59,6 +60,7 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 		<script type="text/javascript" src="module/chart.js?h=<?= hash_file("sha1", "./module/chart.js") ?>"></script> 
 		<script type="text/javascript">
 			var tous_les_cycles = <?= json_encode($cycles); ?>;
+			var toutes_les_grossesses = <?= json_encode($grossesses); ?>;
 			var sensations = <?= json_encode($sensations); ?>;
 			const methode = <?= $_SESSION["compte"]["methode"] ?>;
 		</script>
@@ -160,10 +162,11 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 				<p class="pas_fc note">Séparez vos sensations/visuels par des virgules afin qu'ils vous soient proposés ultérieurement.</p>
 				<br class="pas_fc" />
 				<span class="categorie">Evénements:</span><br />
-				<input type="checkbox" name="premier_jour" id="ev_premier_jour" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
+				<input type="checkbox" name="premier_jour" id="ev_premier_jour" class="ev_reload" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
 				<input type="checkbox" name="union_sex" id="ev_union" value="1" /><label for="ev_union">❤️ union</label><br />
 				<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ <span class="pas_fc">jour sommet</span><span class="pas_glaire pas_temp">pic</span><span class="note pas_glaire pas_fc"> point de température le plus bas</span></label><br />
 				<input type="checkbox" name="jenesaispas" id="ev_jesaispas" value="1" /><label for="ev_jesaispas">🤷‍♀️ jour non observé <span class='note'>?</span></label><br />
+				<input type="checkbox" name="grossesse" id="ev_grossesse" class="ev_reload" value="1" /><label for="ev_grossesse">&#x1F930; grossesse</label><br />
 				<br />
 				<span class="categorie">Commentaire:</span><br />
 				<textarea style="width: 95%" name="commentaire" id="from_com" autocapitalize="off" maxlength="255"></textarea><br />

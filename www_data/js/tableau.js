@@ -22,6 +22,7 @@ bill = {
 	},
 	text : {
 		je_sais_pas: "❔ jour non observé",
+		grossesse: "🤰 grossesse",
 		a_renseigner : "👋 à renseigner",
 		chargement : "⏳ chargement",
 		a_aujourdhui : "à auj.",
@@ -74,12 +75,23 @@ bill = {
 		bill.cycle_curseur += 1;
 		let date_cycle_str = tous_les_cycles[c];
 		let date_fin = bill.date.now();
+		let fin_auj = true;
 		if (c>0) {
 			date_fin = new Date(bill.date.parse(tous_les_cycles[c-1]) - (1000*60*60*24));
 			date_fin.setHours(9);
+			fin_auj = false;
 		}
 		let date_cycle = bill.date.parse(date_cycle_str);
 		date_cycle.setHours(9);
+		let form_nouv_cycle = false;
+		for (let i = 0; i < toutes_les_grossesses.length; i++) {
+			let gross = bill.date.parse(toutes_les_grossesses[i]);
+			gross.setHours(9);
+			if (gross>=date_cycle && gross<=date_fin) {
+				date_fin = gross;
+				if (fin_auj) form_nouv_cycle = true;
+			}
+		}
 		let nb_jours = parseInt(Math.round((date_fin-date_cycle)/(1000*60*60*24)+1));
 		$("#timeline").prepend(bill.cycle2html(date_cycle_str, nb_jours, date_fin));
 		if (JSON.parse(localStorage.cycle_cache || "[]").includes(date_cycle_str)) bill.cycle_aff_switch(date_cycle_str);
@@ -96,6 +108,9 @@ bill = {
 			bill.charger_observation(date_obs_str);
 		}
 		if (methode == 1) bill.cycle2graph(date_cycle_str);
+		if (form_nouv_cycle) {
+			bill.form_nouveau_cycle(false);
+		}
 	},
 	charger_observation : function(o_date) {
 		$.get("observation.php", { date: o_date }).done(function(data) {
@@ -106,26 +121,43 @@ bill = {
 			bill.graph_preparation_data(data);
 		});
 	},
-	form_nouveau_cycle: function () {
+	form_nouveau_cycle: function (prepend=true) {
 		let max_date = bill.date.str(bill.date.now());
-		if (bill.cycle_curseur>0) {
+		let min_date = "";
+		if (prepend && bill.cycle_curseur>0) {
 			max_date = tous_les_cycles[bill.cycle_curseur-1];
 			max_date = bill.date.str(new Date(bill.date.parse(max_date) - (1000*60*60*24)));
 		}
-		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="titre">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">Entrer la date du premier jour du cycle à créer.<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" /> <input type="button" id="but_creer_cycle" value="✔️" /></div></div>`;
-		$("#charger_cycle").prop("disabled", true);
-		$("#timeline").prepend(html);
+		else if (!prepend) {
+			let min_calc = bill.date.parse(toutes_les_grossesses[0]);
+			min_calc.setDate(min_calc.getDate()+1);
+			min_date = bill.date.str(min_calc);
+		}
+		let text = "Entrer la date du premier jour du cycle à créer.";
+		if (!prepend) text = "Entrer la date du jour de reprise du suivi du cycle.";
+		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="titre">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">${text}<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" min="${min_date}" /> <input type="button" id="but_creer_cycle" value="✔️" /></div></div>`;	
+		if (prepend) {
+			$("#charger_cycle").prop("disabled", true);
+			$("#timeline").prepend(html);
+		}
+		else $("#timeline").append(html);
 		$("#but_creer_cycle").click(function () {
 			let nouveau_cycle_date = $("#nouveau_cycle_date").val();
-			if (bill.date.parse(nouveau_cycle_date) > bill.date.parse($("#nouveau_cycle_date").attr("max"))) {
-				alert("Erreur: la date du premier jour du cycle à créer doit être antérieur aux cycles déja existant et antérieur à auhjourd'hui.");
+			let max = bill.date.parse($("#nouveau_cycle_date").attr("max"));
+			let min = bill.date.parse($("#nouveau_cycle_date").attr("min"));
+			if (bill.date.parse(nouveau_cycle_date) > max || (!isNaN(min) && bill.date.parse(nouveau_cycle_date) < min)) {
+				alert("Erreur: la date du premier jour du cycle à créer ne doit pas être dans un cycle existant et doit être antérieur à auhjourd'hui.");
 				return;
 			}
 			$.post("observation.php", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
 				if (data.err){
 					console.error(data.err);
 				}
-				if (data.outcome == "ok") {
+				if (data.outcome == "ok"){
+					if (!prepend) {
+						location.reload(true);
+						return;
+					}
 					tous_les_cycles.push(nouveau_cycle_date);
 					$("#charger_cycle").prop("disabled", false);
 					$("#nouveau_cycle").remove();
@@ -271,8 +303,12 @@ bill = {
 			return observation;
 		}
 		let tbd = true;
-		if (j.jenesaispas) {
-			observation.append(`<span class='p'>${j.jenesaispas ?  bill.text.je_sais_pas : ""}</span>`);
+		if (j.grossesse) {
+			observation.append(`<span class='e'>${bill.text.grossesse}</span>`);
+			tbd = false;
+		}
+		else if (j.jenesaispas) {
+			observation.append(`<span class='p'>${bill.text.je_sais_pas}</span>`);
 			tbd = false;
 		}
 		else {
@@ -368,16 +404,11 @@ bill = {
 		if (j.union_sex) $("#ev_union").prop('checked', true);
 		if (j.jour_sommet) $("#ev_jour_sommet").prop('checked', true);
 		if (j.jenesaispas) $("#ev_jesaispas").prop('checked', true);
-		$("#ev_premier_jour").change(function () {
-			if (JSON.parse($("#ev_premier_jour").attr('initial')) && $("#ev_premier_jour").is(':checked')) {
-				bill.page_a_recharger = false;
-				return;
-			}
-			if (!JSON.parse($("#ev_premier_jour").attr('initial')) && !$("#ev_premier_jour").is(':checked')) {
-				bill.page_a_recharger = false;
-				return;
-			}
-			bill.page_a_recharger = true;
+		if (j.grossesse) $("#ev_grossesse").prop('checked', true);
+		$("#ev_grossesse").attr('initial', new Boolean(j.grossesse));
+		$(".ev_reload").change(function () {
+			bill.page_a_recharger = (JSON.parse($("#ev_premier_jour").attr('initial')) != $("#ev_premier_jour").is(':checked'));
+			if (!bill.page_a_recharger) bill.page_a_recharger = (JSON.parse($("#ev_grossesse").attr('initial')) != $("#ev_grossesse").is(':checked'));
 		});
 		$("#from_com").val(j.commentaire);
 		$("html, body").css({
