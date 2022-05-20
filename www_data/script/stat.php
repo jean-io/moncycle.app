@@ -73,7 +73,7 @@ echo round(db_select_age_moyen($db)[0][0],1);
 echo PHP_EOL;
 
 echo "moncycle_app_age_moyen_recent ";
-echo db_select_age_moyen_recent($db)[0][0];
+echo round(db_select_age_moyen_recent($db)[0][0],1);
 echo PHP_EOL;
 
 echo "moncycle_app_nb_observation_aujourdhui ";

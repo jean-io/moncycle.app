@@ -75,15 +75,17 @@ try {
 		if ($sensation_db == "") $sensation_db = null;
 
 		$temp = null;
+		$htemp = null;
 		if (isset($_POST["temp"]) && !empty(trim($_POST["temp"]))) {
 			$temp = floatval($_POST["temp"]);
 			if ($temp <= 0) $temp = null;
+			elseif (!empty($_POST["h_temp"])) $htemp = trim($_POST["h_temp"]);
 		}
 
 		$go  = $_POST["gommette"] ?? '';
 		$go .= $_POST["bebe"] ?? '';
 
-		db_update_observation ($db, date_sql($date), $_SESSION["no"], $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null);
+		db_update_observation ($db, date_sql($date), $_SESSION["no"], $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null);
 
 		$result["outcome"] = "ok";
 		$result["args"] = $_POST;

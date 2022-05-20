@@ -11,8 +11,11 @@ function doc_ajout_jours_manquant($data, $methode){
 	$nb_jours = 0;
 	$cycle = [];
 	$date_cursor = new DateTime($data[0]["date_obs"]);
-	$empty_line = array("?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '',"commentaire" => '');
-	if ($methode == 1) $empty_line["temperature"] = '';
+	$empty_line = array("?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '', "grossesse" => 0,"commentaire" => '');
+	if ($methode == 1) {
+		$empty_line["temperature"] = '';
+		$empty_line["heure_temp"] = '';
+	}
 	if ($methode == 3) {
 		$empty_line["note_fc"] = '';
 		$empty_line["fleche_fc"] = '';
@@ -43,7 +46,7 @@ function doc_cycle_vers_csv ($out, $cycle, $methode) {
 	fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
 	if ($methode == 2) fputcsv($out,["jour","date","?","gommette","sensation","sommet", "unions", "commentaires"], CSV_SEP);
 	elseif ($methode == 3) fputcsv($out,["jour","date","?","température","sommet", "unions", "commentaires"], CSV_SEP);
-	else fputcsv($out,["jour","date","?","gommette","température","sensation","sommet", "unions", "commentaires"], CSV_SEP);
+	else fputcsv($out,["jour","date","?","gommette","température", "heure temp","sensation","sommet", "unions", "commentaires"], CSV_SEP);
 	foreach ($cycle as $line){
 		fputcsv($out,array_merge([$i], $line), CSV_SEP);
 		$i += 1;
@@ -199,7 +202,6 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->Cell(4,5,$fleche[$line["fleche_fc"]] ?? ""); // <3
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',10);
-
 			}
 			if ($methode !=3 && isset($line["sensation"]) && !empty($line["sensation"])){
 				if ($methode==1) $pdf->SetFont('Courier','',8.5);
@@ -218,6 +220,7 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetFont('Courier','',9);
 				$pdf->SetTextColor(135, 67, 176);
 				$w = strval($temp) . utf8_decode("°");
+				if ($line["heure_temp"]) $w .= utf8_decode(" à ") .  str_replace(':', 'h', substr($line["heure_temp"],0,-3));
 				$com_fin_x = $pdf->GetPageWidth()/2 - $pdf->GetStringWidth($w);
 				$pdf->SetX($com_fin_x);
 				$pdf->Cell($pdf->GetStringWidth($w),5,$w,0,0,'R');
@@ -263,6 +266,11 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 					$com_long = true;
 				}
 				$pdf->SetFont('Courier','',10);
+			}
+			if ($line["grossesse"]) {	
+				//$pdf->Ln();
+				$pdf->SetFont('Courier','',12);
+				$pdf->Cell($pdf->GetPageWidth()-35, 10,"GROSSESSE",1,0,'C');
 			}
 			$i += 1;
 		}

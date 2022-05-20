@@ -52,6 +52,12 @@ if (isset($cycle_end[0]["cycle_end"])) {
 }
 else $result["cycle_fin"] = new DateTime();
 
+$cycle_gross = db_select_cycle_grossesse($db, date_sql($date), $_SESSION["no"]);
+if (isset($cycle_gross[0]["grossesse"])) {	
+	$date_tmp = new DateTime($cycle_gross[0]["grossesse"]);
+	if ($date_tmp < $result["cycle_fin"]) $result["cycle_fin"] = $date_tmp;
+}
+
 // RECUPERATION DU CYCLE
 $data = db_select_cycle_complet($db, date_sql($result["cycle_debut"]),date_sql($result["cycle_fin"]), $_SESSION["no"]);
 

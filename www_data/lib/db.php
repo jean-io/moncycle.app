@@ -201,8 +201,8 @@ function db_insert_observation ($db, $date, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $grossesse=null, $commentaire=null) {
-	$sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, fleche_fc = :fleche_fc, temperature = :temp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, grossesse = :grossesse, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
+function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $htemp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $grossesse=null, $commentaire=null) {
+	$sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, fleche_fc = :fleche_fc, temperature = :temp, heure_temp = :htemp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, grossesse = :grossesse, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":gommette", $gommette, PDO::PARAM_STR);
@@ -210,6 +210,7 @@ function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=n
 	$statement->bindValue(":fleche_fc", $fleche_fc, PDO::PARAM_STR);
 	$statement->bindValue(":sensation", $sensation, PDO::PARAM_STR);
 	$statement->bindValue(":temp", $temp, PDO::PARAM_STR);
+	$statement->bindValue(":htemp", $htemp, PDO::PARAM_STR);
 	$statement->bindValue(":jour_sommet", $jour_sommet, PDO::PARAM_INT);
 	$statement->bindValue(":union_sex", $union_sex, PDO::PARAM_INT);
 	$statement->bindValue(":premier_jour", $premier_jour, PDO::PARAM_INT);
@@ -245,8 +246,19 @@ function db_select_cycle_end($db, $date, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_select_cycle_grossesse($db, $date, $no_compte) {
+	$sql = "SELECT date_obs AS grossesse FROM observation WHERE grossesse=1 and date_obs>:date AND no_compte = :no_compte ORDER BY date_obs ASC LIMIT 1";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":date", $date, PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function db_select_cycle_complet($db, $date_start, $date_end, $no_compte) {
-	$sql = "SELECT date_obs, COALESCE(jenesaispas,'') as '?', COALESCE(note_fc,'') as note_fc, COALESCE(fleche_fc,'') as fleche_fc, gommette, COALESCE(temperature,'') as temperature, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
+	$sql = "SELECT date_obs, COALESCE(jenesaispas,'') as '?', COALESCE(note_fc,'') as note_fc, COALESCE(fleche_fc,'') as fleche_fc, gommette, COALESCE(temperature,'') as temperature, COALESCE(heure_temp,'') as heure_temp, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', COALESCE(grossesse, '') as 'grossesse', commentaire FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":date_start", $date_start, PDO::PARAM_STR);
@@ -349,7 +361,7 @@ function db_select_observation_count($db, $nbj) {
 }
 
 function db_select_cycles_recent($db) {
-	$sql = "select subdate(obs.date_obs, 1) as cycle_complet, obs.no_compte as no_compte, c.nom as nom, c.methode as methode, c.email1 as email1, c.email2 as email2 from observation as obs, compte as c where obs.no_compte=c.no_compte and date_obs= DATE(NOW()) - INTERVAL 2 DAY and premier_jour=1";
+	$sql = "select subdate(obs.date_obs, 1) as cycle_complet, obs.no_compte as no_compte, c.nom as nom, c.methode as methode, c.email1 as email1, c.email2 as email2 from observation as obs, compte as c where obs.no_compte=c.no_compte and date_obs= DATE(NOW()) - INTERVAL 2 DAY and (premier_jour=1 or grossesse=1)";
 
 	$statement = $db->prepare($sql);
 	$statement->execute();

@@ -155,6 +155,7 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 				<br class="pas_glaire pas_fc" />
 				<span class="categorie pas_fc pas_glaire">Température:</span><br class="pas_glaire" />
 				<input class="pas_fc pas_glaire" type="number" step="0.1" min="0" max="99" name="temp" id="form_temp" style="width: 100px;" placeholder="ex: 36,5" /><span class="pas_glaire pas_fc"> °C 🌡️</span><br class="pas_glaire pas_fc"/>
+				<span class="pas_glaire pas_fc">température prise à </span><input class="pas_fc pas_glaire" type="time" name="h_temp" id="form_h_temp" /><br class="pas_glaire pas_fc"/>
 				<br class="pas_fc " />
 				<span class="categorie pas_fc">Vos sensations et visuels:</span><br class="pas_fc" />
 				<span class="pas_fc" id="vos_obs"></span>

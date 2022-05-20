@@ -116,6 +116,7 @@ input[type=text],
 input[type=number],
 input[type=password],
 input[type=email],
+input[type=time],
 select,
 textarea {
 	background-color: #f0f0f0;
@@ -123,6 +124,11 @@ textarea {
 	border-radius: 5px;
 	padding: 5px 7px;
 	font-size: .9em;
+}
+
+input[type=time]{
+	width: 60px;
+	text-align: center;
 }
 
 input:focus,
@@ -167,6 +173,7 @@ textarea:disabled {
 	
 	input[type=text],
 	input[type=number],
+	input[type=time],
 	input[type=password],
 	input[type=email],
 	select,

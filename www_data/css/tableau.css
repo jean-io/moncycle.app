@@ -134,6 +134,10 @@
 	content: '°';
 }
 
+.day .th {
+	font-size: .7em;
+}
+
 .petit {
 	font-size: .8em;
 }

@@ -48,7 +48,13 @@ bill = {
 		$("#jour_form_submit").click(bill.submit_menu);	
 		$("#jour_form_suppr").click(bill.suppr_observation);	
 		$("#form_fc").keyup(bill.fc_test_note).change(bill.fc_test_note);
-		$('input.fc_form_note').change(bill.fc_form2note);
+		$("input.fc_form_note").change(bill.fc_form2note);
+		$("#form_h_temp").focus(function () {
+			if($("#form_h_temp").val().trim().length==0) {
+				let m  = new Date();
+				$("#form_h_temp").val(m.getHours() + ":" + m.getMinutes());
+			}
+		});
 		bill.charger_actu();
 		$(window).focus(function() {
 			if (bill.date.str(bill.date.now()) != bill.date_chargement) location.reload(false); 
@@ -334,6 +340,10 @@ bill = {
 					color = `rgb(${r}, 105, 225)`;
 				}
 				observation.append(`<span class='t pas_glaire pas_fc' style='background-color: ${color}'>${temp}</span>`);
+				if (j.heure_temp) {
+					let h = j.heure_temp.substring(0,5).replace(':','h');
+					observation.append(`<span class='th pas_glaire pas_fc' style='color: ${color}'> à ${h}</span>`);
+				}
 				tbd = false;
 			}
 			if (methode==3 && j.note_fc) {
@@ -376,6 +386,7 @@ bill = {
 		}
 		if (bill.gommette[gommette]) $("#go_" + bill.gommette[gommette][1]).prop('checked', true);
 		$("#form_temp").val(j.temperature);
+		$("#form_h_temp").val(j.heure_temp);
 		$("#vos_obs").empty();
 		let n = 0;
 		Object.entries(sensations).sort((a,b) => b[1] - a[1]).forEach(function (o){
