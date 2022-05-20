@@ -51,8 +51,10 @@ bill = {
 		$("input.fc_form_note").change(bill.fc_form2note);
 		$("#form_h_temp").focus(function () {
 			if($("#form_h_temp").val().trim().length==0) {
-				let m  = new Date();
-				$("#form_h_temp").val(m.getHours() + ":" + m.getMinutes());
+				let d  = new Date();
+				let h = d.getHours();
+				let m = d.getMinutes();
+				$("#form_h_temp").val((h<10 ? "0"+h : h) + ":" + (m<10 ? "0"+m : m));
 			}
 		});
 		bill.charger_actu();
