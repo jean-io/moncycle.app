@@ -32,6 +32,8 @@ echo "moncycle_app_pc_compte_actif ";
 echo round(($nb_compte_actif/$nb_compte)*100,1);
 echo PHP_EOL;
 
+if ($nb_compte_actif<=0) exit;
+
 $nb_compte_actif_billings = db_select_nb_compte_actif_par_methode($db, 2)[0][0];
 echo "moncycle_app_nb_compte_actif_billings ";
 echo $nb_compte_actif_billings;
@@ -74,6 +76,10 @@ echo PHP_EOL;
 
 echo "moncycle_app_age_moyen_recent ";
 echo round(db_select_age_moyen_recent($db)[0][0],1);
+echo PHP_EOL;
+
+echo "moncycle_app_nb_total_observation ";
+echo db_select_total_observation_count($db, 1)[0][0];
 echo PHP_EOL;
 
 echo "moncycle_app_nb_observation_aujourdhui ";
