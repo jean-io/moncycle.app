@@ -27,15 +27,6 @@
 				background-color: white;
 				font-family: sans-serif;
 			}
-			@media (prefers-color-scheme: dark) {
-				html, body {
-					color: white;
-					background-color: black;
-				}
-				.img_svg {
-					filter: invert(1);
-				}
-			}
 			body {
 				padding: 0 15px;
 			}
@@ -109,10 +100,43 @@
 			ul {
 				list-style-type: none;
 			}
-			.capture {
-				width: 30%;
-				border: 1px solid #696969;
+			ol li {
+				margin: 10px 0;
+			}
+			.desc_emoji {
+				line-height: 1.5em;
+				display: inline-block;
+				margin-left: 15px;
+			}
+			.media_border {
+				border: 7px solid #d2d2d2;
 				border-radius: 5px;
+			}
+			.capture {
+				width: 27%;
+			}
+			video {
+				float: left;
+				height: 370px;
+			}
+			@media (prefers-color-scheme: dark) {
+				html, body {
+					color: white;
+					background-color: black;
+				}
+				.img_svg {
+					filter: invert(1);
+				}
+				.media_border {
+					border-color: #393939;
+				}
+			}
+			@media (max-width: 650px) {
+				video {
+					float: none;
+					display: block;
+					margin: 0 auto;
+				}
 			}
 		</style>
 	</head>
@@ -134,8 +158,14 @@
 
 			<br /><br />
 
-			<h2 class="gradiant_logo">Que propose l’application ?</h2>
-			<p style="text-align: left">
+
+
+			<h2 class="gradiant_logo" id="info">Que propose l’application?</h2>
+
+			<video class="media_border" autoplay loop muted autobuffer playsinline>
+				<source src="video/demo.mp4" type="video/mp4" loading="lazy" />
+			</video>
+			<p class="desc_emoji" style="text-align: left">
 				👩	un tableau de suivi du cycle menstruel<br />
 				🌳	dédiée aux méthodes naturelles<br />
 				🤏	suivi de l'évolution de la glaire cervicale<br />
@@ -153,14 +183,18 @@
 				🇫🇷	hébergée et développée en France<br />
 			</p>
 
-			<h2 class="gradiant_logo">A quoi ressemble cette application?</h2>
+
+
+			<h2 class="gradiant_logo" id="captures">A quoi ressemble cette application?</h2>
 			<p>
-				<a href="image/capture1.png"><img class="capture" src="image/capture1.png" alt="Capture d'écran 1" /></a>
-				<a href="image/capture2.png"><img class="capture" src="image/capture2.png" alt="Capture d'écran 2" /></a>
-				<a href="image/capture3.png"><img class="capture" src="image/capture3.png" alt="Capture d'écran 3" /></a>
+				<a href="image/capture1.png"><img class="capture media_border" src="image/capture1.png" alt="Capture d'écran 1" loading="lazy" /></a>
+				<a href="image/capture2.png"><img class="capture media_border" src="image/capture2.png" alt="Capture d'écran 2" loading="lazy" /></a>
+				<a href="image/capture3.png"><img class="capture media_border" src="image/capture3.png" alt="Capture d'écran 3" loading="lazy" /></a>
 			</p>
 
-			<h2 class="gradiant_logo">Quels sont les tarifs?</h2>
+
+
+			<h2 class="gradiant_logo" id="tarifs">Quels sont les tarifs?</h2>
 			<p>Cette application est <b>GRATUITE</b> et sans publicité/vente de donnnées! moncycle.app vie seulement de vos dons.</p>
 			<p>En faisant un don vous participez:<br />
 				🖥️ aux frais de serveurs et d’hébergements<br />
@@ -170,21 +204,27 @@
 			<p>moncycle.app utilise Tipeee pour la collecte de dons.</p>
 				
 			<center><a target='_blank' href='https://fr.tipeee.com/moncycleapp'><button type="button">Faire un don</button></a></center>
-			
-			<h2 class="gradiant_logo">Est-ce possible d'essayer?</h2>
+
+
+	
+			<h2 class="gradiant_logo" id="demo">Est-ce possible d'essayer?</h2>
 			<p>Il y a une démo disponible pour tester l'application sans s'inscrire.<br />
 			Email de connexion: <span class="monospace">demo@moncycle.app</span><br />
 			Mot de passe: <span class="monospace">demo</span></p>
 			<center><a href="https://tableau.moncycle.app/connexion.php?email1=demo@moncycle.app&mdp=demo" target="_blank"><button type="button">Démo</button></a></center>
 
-			<h2 class="gradiant_logo">Comment l'installer sur son téléphone?</h2>
+
+
+			<h2 class="gradiant_logo" id="installation">Comment l'installer sur son téléphone?</h2>
 			<p>Cette application n'est pas sur l'App Store d'Apple ou sur le Google Play Store. Il s'agit d'une application web. <b>Une fois connecté et sur votre tableau</b>, vous pouvez installer l'application en l'ajoutant sur votre écran d'accueil comme montré sur les captures d'écrans ci-dessous. Plus de détails sur la procédure à suivre: <a target="_blank" href="https://www.astuces-aide-informatique.info/11299/ajouter-site-sur-ecran-accueil-android-ios">installer une web-app</a>.</p>
 			<p>
-				<a href="image/install_iphone.png"><img class="capture" src="image/install_iphone.png" alt="Capture d'installation sur iPhone" /></a>
-				<a href="image/install_android.png"><img class="capture" src="image/install_android.png" alt="Capture d'installation sur Android" /></a>
+				<a href="image/install_iphone.png"><img class="capture media_border" src="image/install_iphone.png" alt="Capture d'installation sur iPhone" loading="lazy" /></a>
+				<a href="image/install_android.png"><img class="capture media_border" src="image/install_android.png" alt="Capture d'installation sur Android" loading="lazy" /></a>
 			</p>
+
+
 			
-			<h2 class="gradiant_logo">Mais c'est quoi les méthodes naturelles?</h2>
+			<h2 class="gradiant_logo" id="methodes" >Mais c'est quoi les méthodes naturelles?</h2>
 			<p><i>«Ce sont des méthodes basées sur la connaissance des signes de fertilité du cycle féminin. Le couple peut ainsi connaitre avec précision les périodes fertiles ou infertiles qu'il traverse, et en fonction de son projet d'enfant, connaitre le meilleur moment pour transmettre la vie, ou les périodes infertiles lorsqu'il souhaite espacer ou limiter les naissances.» <span class="gris">Source: methodes-naturelles.fr</span></i></p>
 
 			<p>Il existe plusieurs méthodes et regroupées en différentes associations. Voici une liste non exhaustive:
@@ -201,7 +241,24 @@
 
 			<p>🧠 moncycle.app n'a pas pour objectif de prédire ou de contrôler la bonne application des méthodes (ni de remplacer vos moniteurs) mais seulement de proposer un support numérique. <b>Vous restez le cerveau derrière votre tableau.</b> Si vous ne connaissez pas les méthodes naturelles ou si vous avez des questions sur les règles de celles-ci, rapprochez-vous d'un moniteur de l'une des associations ci-dessus.</p>
 
-			<h2 class="gradiant_logo">Et techniquement comment ça marche?</h2>
+
+
+			<h2 class="gradiant_logo" id="rgpd">Quel traitement des données?</h2>
+
+			<p>&#x1F1EA;&#x1F1FA; L'application respecte la <b>RGPD</b> (Règlement Général sur la Protection des Données):
+			<ol type='a'>
+				<li><u>Finalités de la collecte des données:</u> les données collectées ont pour objectif de vous présenter le tableau de vos cycles menstruels le plus simple et le plus complet, c'est le seul traitement de vos données réalisée par l'application.</li>
+				<li><u>Base légale du traitement de données:</u> les données collectées sont celles que vous saisissez manuellement dans l'application, en le faisant vous consentez à envoyer vos données de cycles menstruels à l'application. Cela permet à l'application de présenter vos données sous forme de tableau et de les archiver pour vous.</li>
+				<li><u>Caractère obligatoire ou facultatif du recueil des données:</u> afin d'afficher un tableau de vos cycles complet, vous devez envoyer vos données. Cependant rien ne vous oblige à utiliser l'application ni même à fournir votre nom ou d'autres informations personnelles d'indentification.</li>
+				<li><u>Destinataires des données:</u> les destinataires des données sont: l'application moncycle.app, vous, et les adresses mails que vous aurez configuré dans votre espace. L’application sauvegarde vos données en France.</li>
+				<li><u>Durée de conservation des données:</u> il n'y a pas de limitation dans le temps de conservation des données, autrement dit, les données ne sont pas supprimées automatiquement après une certaine durée de conservation. L'absence de limite vous permet de garder un historique de vos cycles.</li>
+				<li><u>Droits des personnes concernées:</u> vous avez les droits d’accès, de rectification, d’effacement de vos données. L'interface de l'application vos permets d'exercer ces droits en toute autonomie.</li>
+			</ol>
+			</p>
+
+
+
+			<h2 class="gradiant_logo" id="tech">Et techniquement comment ça marche?</h2>
 			<p>L'application est <b>Open Source</b> sous licence <b>Creative Commons</b> (CC BY-NC-SA) et est disponible sur <b>Github</b>. L'application est hebergée chez <b>OVH</b> en France et la disponibilité du serveur est surveillée par <b>updown.io</b>.</p>
 
 			<p>Liens utiles:
@@ -211,7 +268,10 @@
 				<li><a target="_blank" href="https://status.moncycle.app">Disponiblité par updown.io</a></li>
 			</ul></p>
 			<img src="https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png" />
-			<h2 class="gradiant_logo">Contact</h2>
+
+
+
+			<h2 class="gradiant_logo" id="contact">Contact</h2>
 			<p>Besoin d'aide? Une question? Une suggestion? Une demande? Vous pouvez contacter le développeur et l'administrateur par mail à l'adresse:</p>
 			<p><a href="" id="contact_mail"></a></p>
 		</div>
