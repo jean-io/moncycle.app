@@ -68,7 +68,7 @@ function db_select_compte_par_mail($db, $mail) {
 }
 
 function db_update_compte_connecte($db, $no_compte){
-	$sql ="update compte set derniere_co_date = now(), nb_co_echoue = 0 where no_compte = :no_compte";
+	$sql ="update compte set derniere_co_date = now(), nb_co_echoue = 0, relance = 0 where no_compte = :no_compte";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
