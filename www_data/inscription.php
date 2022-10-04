@@ -161,7 +161,7 @@ catch (Exception $e){
 			<textarea required id="i_comment" name="decouvert" maxlength="255" placeholder="Dites nous tout!"><?= $_POST['decouvert'] ?? "" ?></textarea>
 			<br />
 			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" <?php if (boolval($_POST["monito"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_monito">Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficulté dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'applique. &#x1F4DD;</label></p>
-			<p><input type="checkbox" required id="jc_gratuit" name="gratuit" value="1" <?php if (boolval($_POST["gratuit"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_gratuit">Je comprends que moncycle.app est gratuit et sans publicité/vente de donnnées! Je peux cependant contribuer au financement de l'application et aider le développer via la </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">page Tipeee de moncycle.app</a>. &#x1F4B6;</p>
+			<p><input type="checkbox" required id="jc_gratuit" name="gratuit" value="1" <?php if (boolval($_POST["gratuit"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_gratuit">Je comprends que moncycle.app est gratuit et sans publicité/vente de donnnées! Je suis d'accord avec <a target="_blank" href="https://www.moncycle.app/#rgpd">la politique de gestion des données</a>. Je peux cependant contribuer au financement de l'application et aider le développer via la </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">page Tipeee de moncycle.app</a>. &#x1F4B6;</p>
 			<br />
 			<input type="submit" value="Créer mon compte &#x1F942;&#x1F37E;" /></form>
 			<br /><br /><br />
