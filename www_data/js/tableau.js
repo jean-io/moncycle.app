@@ -364,7 +364,13 @@ bill = {
 			observation.append(`<span class='fc pas_temp pas_glaire'>${j.note_fc || ""}</span>`);
 			if (bill.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_temp pas_glaire'>${bill.fleche[j.fleche_fc][1] || ""}</span>`);
 		}
-		observation.append(`<span class='c'>${j.commentaire || ""}</span>`);
+		if (j.commentaire) {
+			let comment = j.commentaire.trim();
+			while (comment.includes('\n')) {
+				comment = comment.replace('\n', "<br />");
+			}
+			observation.append(`<span class='c'>${comment}</span>`);
+		}
 		return observation;
 	},
 	open_menu : function(e) {

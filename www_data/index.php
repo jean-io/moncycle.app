@@ -88,9 +88,11 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 		<div class="contennu" id="timeline"></div>
 		<form id="jour_form" class="popup" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
-			<div id="jour_form_titre" class="bold uppercase"></div>
-			<div>
+			<div id="jour_form_top">
+				<div id="jour_form_titre" class="bold uppercase"></div>
 				<button type="button" id="jour_form_submit">✏️ enregistrer</button> <button type="button" id="jour_form_close">❌ fermer</button><br />
+			</div>
+			<div>
 				<br />
 				<div class="pas_glaire pas_temp">
 					<span class="categorie pas_temp">Note FertilityCare:</span> <span id="fc_msg"></span><br class="pas_temp" />

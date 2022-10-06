@@ -126,6 +126,10 @@ textarea {
 	font-size: .9em;
 }
 
+textarea {
+	height: 50px;
+}
+
 input[type=time]{
 	width: 60px;
 	text-align: center;

@@ -97,6 +97,7 @@
 
 .day .bebe {
 	border-color: #c8c8c8;
+	background-color: white;
 }
 
 .day .jesaispas {
@@ -120,6 +121,9 @@
 .day .c {
 	font-size: .7em;
 	font-style: italic;
+	display: inline-flex;
+	top: -5px;
+	position: relative;
 }
 
 .day .t:not(:empty) {
@@ -174,12 +178,16 @@
 	right: 5%;
 }
 
-#jour_form_titre {
+#jour_form_top {
 	position: sticky;
-	padding: 10px 0 5px 0;
 	top: 0;
-	font-family: 'Montserrat';
 	background-color: white;
+	padding: 10px 0 5px 0;
+}
+
+#jour_form_titre {
+	font-family: 'Montserrat';
+	margin-bottom: 5px;
 }
 
 #jour_form_titre span {
@@ -214,13 +222,10 @@ h2 {
 		color: black;
 	}
 
-	#jour_form_titre {
+	#jour_form_top {
 		background-color: black;
 	}
 
-	.day .bebe {
-		border-color: #393939;
-	}
 }
 
 .nouveau_cycle_form {
