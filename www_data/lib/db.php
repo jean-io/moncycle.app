@@ -342,7 +342,7 @@ function db_select_age_moyen_recent($db) {
 }
 
 function db_select_total_observation_count($db) {
-	$sql = "select count(no_observation) from observation where no_compte!=2;";
+	$sql = "select count(no_observation) as MONCYCLE_APP_NB_OBSERVATION from observation where no_compte!=2;";
 
 	$statement = $db->prepare($sql);
 	$statement->execute();
