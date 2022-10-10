@@ -1,0 +1,181 @@
+@font-face {
+	font-family: "Montserrat";
+	src: url("font/Montserrat-VariableFont_wght.ttf") format("truetype");
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	color: black;
+	background-color: white;
+	font-family: sans-serif;
+}
+
+body {
+	padding: 0 15px;
+}
+
+.col_central {
+	margin: 150px auto;
+	max-width: 800px;
+}
+
+h1, h2, .soustitre, button {
+	font-family: Montserrat;
+}
+
+.gradiant_logo {
+	color: #1e824c;
+	background-image: linear-gradient(90deg, #0b6334, #37a369);
+	background-size: 100%;
+	background-repeat: repeat;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent; 
+	-moz-background-clip: text;
+	-moz-text-fill-color: transparent;
+	font-size: 1.1em;
+	font-weight: 900;
+}
+
+h2 {
+	margin-top: 80px;
+}
+
+h1 {
+	font-weight: normal;
+	text-transform: uppercase;
+	font-size: 9.5vmin;
+}
+
+.soustitre {
+	font-size: 3.5vmin;
+	margin-bottom: 40px;
+}
+
+.centre {
+	text-align: center;
+}
+
+.monospace {
+	font-family: monospace;
+}
+
+p {
+	text-align: justify;
+}
+
+button {
+	display: inline-block;
+	background-color: #1e824c;
+	color: white;
+	border: 0;
+	font-size: .9em;
+	border-radius: 3px;
+	padding: 5px 10px;
+	margin-bottom: 10px;
+	cursor: pointer;
+	text-transform: uppercase;
+}
+
+a {
+	color: #1e824c;
+}
+
+.vert {
+	color: #1e824c;
+}
+
+.rouge {
+	color: #ac2433;
+}
+
+.orange {
+	color: #fbca0b;
+}
+
+.gris {
+	color: #696969;
+}
+
+ul {
+	list-style-type: none;
+}
+
+ol li {
+	margin: 10px 0;
+}
+
+.desc_emoji {
+	line-height: 1.5em;
+	display: inline-block;
+	margin-left: 15px;
+}
+
+.media_border {
+	border: 7px solid #d2d2d2;
+	border-radius: 5px;
+}
+
+.capture {
+	width: 27%;
+}
+
+video {
+	float: left;
+	height: 370px;
+}
+
+.chiffre_cle {
+	display: inline-block;
+	text-align: center;
+	margin: 5%;
+}
+
+.chiffre_cle span {
+	font-family: Montserrat;
+	font-weight: bolder;
+	font-size: 2.5em;	
+}
+
+.chiffre_cle p {
+	text-align: center;
+}
+
+.chiffre_couples {
+	color: #ac2433;
+}
+
+.chiffre_cycles {
+	color: #fc520b;
+}
+
+.chiffre_observations {
+	color: #fbca0b;
+}
+
+@media (prefers-color-scheme: dark) {
+
+	html, body {
+		color: white;
+		background-color: black;
+	}
+
+	.img_svg {
+		filter: invert(1);
+	}
+
+	.media_border {
+		border-color: #393939;
+	}
+}
+
+@media (max-width: 650px) {
+
+	video {
+		float: none;
+		display: block;
+		margin: 0 auto;
+	}
+
+}
+
