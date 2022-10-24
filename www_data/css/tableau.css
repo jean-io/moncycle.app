@@ -6,6 +6,10 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
+.flou {
+	filter: blur(5px);
+}
+
 .day {
 	padding: 1px;
 	cursor: pointer;
@@ -162,36 +166,39 @@
 	left: 25px;
 	right: 25px;
 	overflow-y: scroll;
-	padding: 10px;
-	padding-top: 0;
+	padding: 0 10px;
 	border-radius: 3px;
 }
 
 #jour_form {
-	padding-bottom: 50px;
 	max-width: 600px;
 	margin: auto;
 }
 
-#jour_form_suppr {
-	position: absolute;
-	right: 5%;
+#jour_form_suppr_holder {
+	text-align: right;
+	display: inline-block;
+	width: 95%;
 }
 
-#jour_form_top {
+#jour_form_titre {
+	font-family: 'Montserrat';
+	margin-bottom: 5px;
 	position: sticky;
 	top: 0;
 	background-color: white;
 	padding: 10px 0 5px 0;
 }
 
-#jour_form_titre {
-	font-family: 'Montserrat';
-	margin-bottom: 5px;
-}
-
 #jour_form_titre span {
 	font-weight: lighter;
+}
+
+#jour_form_but {
+	position: sticky;
+	bottom: 0;
+	background-color: white;
+	padding: 5px 0;
 }
 
 .categorie {
@@ -222,7 +229,8 @@ h2 {
 		color: black;
 	}
 
-	#jour_form_top {
+	#jour_form_titre,
+	#jour_form_but {
 		background-color: black;
 	}
 

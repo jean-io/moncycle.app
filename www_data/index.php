@@ -88,10 +88,7 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 		<div class="contennu" id="timeline"></div>
 		<form id="jour_form" class="popup" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
-			<div id="jour_form_top">
-				<div id="jour_form_titre" class="bold uppercase"></div>
-				<button type="button" id="jour_form_submit">✏️ enregistrer</button> <button type="button" id="jour_form_close">❌ fermer</button><br />
-			</div>
+			<div id="jour_form_titre" class="bold uppercase"></div>
 			<div>
 				<br />
 				<div class="pas_glaire pas_temp">
@@ -174,8 +171,15 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 				<span class="categorie">Commentaire:</span><br />
 				<textarea style="width: 95%" name="commentaire" id="from_com" autocapitalize="off" maxlength="255"></textarea><br />
 				<br />
-				<button id="jour_form_suppr" type="button" class="rouge">🗑️ Supprimer</button>
+				<span id="jour_form_suppr_holder" class="rouge">
+					<button id="jour_form_suppr" type="button" class="rouge">🗑️ Tout supprimer</button>
+				</span>
 				<div id="form_err" class="err"></div>
+				<br />
+				<br />
+			</div>
+			<div id="jour_form_but">
+				<button type="button" id="jour_form_submit">✏️ enregistrer</button> <button type="button" id="jour_form_close">❌ fermer</button><br />
 			</div>
 		</form>
 		<script type="text/javascript">

@@ -435,12 +435,15 @@ bill = {
 			"touch-action": "none"
 		});
 		$("#jour_form").show();
+		$("#jour_form").scrollTop(0);
+		$("#timeline").addClass("flou");
 	},
 	close_menu : function (e) {
 		$("html, body").css({
 			"overflow": "visible",
 			"touch-action": "auto"
 		});
+		$("#timeline").removeClass("flou");
 		$("#jour_form").hide();
 	},
 	submit_menu : function () {
