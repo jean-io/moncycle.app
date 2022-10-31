@@ -101,9 +101,9 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_rl" value="L" /><label class="pas_temp" for="fc_rl"><b>L</b> flux léger</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_vl" value="VL" /><label class="pas_temp" for="fc_vl"><b>VL</b> flux vraiment léger</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_b" value="B" /><label class="pas_temp" for="fc_b"><b>B</b> saignement brun (ou noir)</label><br class="pas_temp" />
-					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_r" value="" checked /><label class="pas_temp" for="fc_r">pas de règle</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_nr" value="" checked /><label class="pas_temp" for="fc_nr">pas de règle</label><br class="pas_temp" />
 					<br />
-					<span class="categorie pas_temp">&#x1F90F; Sensation:</span><br class="pas_temp" />
+					<span class="categorie pas_temp">&#x1F441;&#xFE0F; Sensation & observation:</span><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_0" value="0" /><label class="pas_temp" for="fc_0"><b>0</b> sec</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_2" value="2" /><label class="pas_temp" for="fc_2"><b>2</b> humide sans lubrification</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_2w" value="2W" /><label class="pas_temp" for="fc_2w"><b>2W</b> mouillé sans lubrification</label><br class="pas_temp" />
@@ -116,14 +116,14 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_10wl" value="10WL" /><label class="pas_temp" for="fc_10wl"><b>10WL</b> mouillé avec lubrification</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_sr" value="" checked /><label class="pas_temp" for="fc_sr">pas de sensation</label><br class="pas_temp" />
 					<br />
-					<span class="categorie pas_temp">&#x1F441;&#xFE0F; Observation:</span><br class="pas_temp" />
+					<span class="categorie pas_temp">&#x1F90F; Test au doigt:</span><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_c" id="fc_c" value="C" /><label class="pas_temp" for="fc_c"><b>C</b> opaque (blanc)</label><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_g" id="fc_g" value="G" /><label class="pas_temp" for="fc_g"><b>G</b> gommeux (collant)</label><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_k" id="fc_k" value="K" /><label class="pas_temp" for="fc_k"><b>K</b> transparent</label><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_l" id="fc_l" value="L" /><label class="pas_temp" for="fc_l"><b>L</b> lubrifiant</label><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_p" id="fc_p" value="P" /><label class="pas_temp" for="fc_p"><b>P</b> pâteux (crémeux)</label><br class="pas_temp" />
 					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_y" id="fc_y" value="Y" /><label class="pas_temp" for="fc_y"><b>Y</b> jaune (même jaune pâle)</label><br class="pas_temp" />
-					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_r" id="fc_ro" value="R" /><label class="pas_temp" for="fc_ro"><b>R</b> rouge</label><br class="pas_temp" />
+					<input class="fc_obs pas_temp fc_form_note" type="checkbox" name="fc_r" id="fc_r" value="R" /><label class="pas_temp" for="fc_r"><b>R</b> rouge</label><br class="pas_temp" />
 					<br />
 					<span class="categorie pas_temp">&#x1F522; Récurrence de l'observation:</span><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_rec" id="fc_x1" value="X1" /><label class="pas_temp" for="fc_x1"><b>X1</b> vu seulement une fois ce jour</label><br class="pas_temp" />

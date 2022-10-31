@@ -304,7 +304,7 @@ bill = {
 		let observation = $("<div>", {id: o_id, class: "day"});
 		observation.click(bill.open_menu);
 		observation.append(`<span class='data' style='display:none'>${JSON.stringify(j)}</span>`);
-		observation.append(`<span class='d'>${o_date.getDate()} ${bill.text.mois[o_date.getMonth()]} </span>`);	
+		observation.append(`<span class='d'>${bill.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${bill.text.mois[o_date.getMonth()]} </span>`);	
 		observation.append(`<span class='j'>${j.pos}</span>`);
 		if (j.chargement) {
 			observation.append(`<span class='l'>${bill.text.chargement}</span>`);
@@ -537,7 +537,7 @@ bill = {
 		else {
 			$("#fc_rl").prop("checked", false);
 		}
-		['10DL', '10SL', '10WL', 'RAP', 'LAP', 'X1', 'X2', 'X3', 'AD', 'AP', 'VL', '2W', '10', 'H', 'M', 'L', 'B', '0', '2', '4', '6', '8', 'C', 'G', 'K', 'P', 'Y'].forEach(c => {
+		['10DL', '10SL', '10WL', 'RAP', 'LAP', 'X1', 'X2', 'X3', 'AD', 'AP', 'VL', '2W', '10', 'H', 'M', 'L', 'B', '0', '2', '4', '6', '8', 'C', 'G', 'K', 'P', 'Y', 'R'].forEach(c => {
 			if (note.includes(c)) {
 				$("#fc_" + c.toLowerCase()).prop("checked", true);
 				note = note.replace(c,'');
@@ -569,7 +569,7 @@ bill = {
 			if (note.includes(c)) no_sens=false;
 			note = note.replace(c,'');
 		});
-		if (no_regle) $("#fc_r").prop("checked", true);
+		if (no_regle) $("#fc_nr").prop("checked", true);
 		if (no_sens) $("#fc_sr").prop("checked", true);
 		if (no_rec) $("#fc_rr").prop("checked", true);
 		if (no_dou) $("#fc_rp").prop("checked", true);
