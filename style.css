@@ -39,6 +39,10 @@ h1, h2, .soustitre, button {
 
 h2 {
 	margin-top: 80px;
+	font-weight: 300;
+	text-transform: uppercase;
+	color: #1e824c;
+	text-align: center;
 }
 
 h1 {
@@ -129,6 +133,8 @@ video {
 	display: inline-block;
 	text-align: center;
 	margin: 5%;
+	max-width: 20%;
+	vertical-align: top;
 }
 
 .chiffre_cle span {
@@ -147,10 +153,12 @@ video {
 
 .chiffre_cycles {
 	color: #fc520b;
+	color: #ac2433;
 }
 
 .chiffre_observations {
 	color: #fbca0b;
+	color: #ac2433;
 }
 
 @media (prefers-color-scheme: dark) {
