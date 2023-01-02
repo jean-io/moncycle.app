@@ -4,7 +4,7 @@
 		<title>moncycle.app - suivi de cycle pour les méthodes naturelles</title>
 		<link rel="icon" href="favicon.ico" />
 		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" /> <!-- , height=device-height -->
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
@@ -16,30 +16,42 @@
 		<meta property="og:image" content="https://www.moncycle.app/image/preview.png" />
 		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances: Billings, Symptothermie ou FertilityCare." />
 		<link rel="stylesheet" href="style.css" />
+		<script type="text/javascript" src="script/jquery-3.6.3.min.js"></script>
+		<script type="text/javascript" src="script/animation.js"></script>
 	</head>
 	<body>
-		<div class="col_central">
+		<div class="animation">
+			<div class="img_container">
+				<img id="img_couple" src="image/moncycle_app_couple_web.png" alt="couple souriant visionnant un télèphonne" loading="lazy" />
+			</div>
+		</div>
+		<div class="acceuil"></div>		
+		<div class="corp">
+		<div class="menu">
 			<h1 class="centre">mon<span class="gradiant_logo">cycle</span>.app</h1>
-			<p class="centre soustitre vert">Rendre facile le suivi des cycles menstruels et l’application des méthodes naturelles.<br />
-			<b>Billings . Symptothermie . FertilityCare</b></p>
-			<p class="centre">
-				<a href="https://tableau.moncycle.app"><button>Mon tableau</button></a>
-				<a href="https://tableau.moncycle.app/inscription.php" target="_blank"><button>S'inscrire</button></a>
-				<a href="https://tableau.moncycle.app/connexion.php?email1=demo@moncycle.app&mdp=demo" target="_blank"><button>Démo</button></a>
-			</p>
-			<p class="centre">
-				<a href="https://www.instagram.com/moncycle.app" target="_blank"><img class="img_svg" src="image/instagram.svg" height="20px" /></a>
-				&nbsp;
-				<a href="https://github.com/jean-io/moncycle.app" target="_blank"><img class="img_svg" src="image/github.svg" height="20px" /></a>
-			</p>
-
-			<br /><br />
-
-
+			<div class="actions">
+				<a href="#info">Découvrir</a>
+				<a>Inscription</a>
+				<a>Mon tableau</a>
+			</div>
+			<!--<div class="liens">
+				<a href="#info">L'application</a>
+				<a href="#captures">Caputres d'écran</a>
+				<a href="#tarifs">C'est gratuit</a>
+				<a href="#demo">Démonstration</a>
+				<a href="#installation">Installer l'app</a>
+				<a href="#methodes">Les méthodes naturelles</a>
+				<a href="#rgpd">Traitement des données</a>
+			</div>-->
+		</div>
+		<div class="col_central">
+			<div class="sous_titre">Rendre facile le suivi des cycles menstruels et l’application des méthodes naturelles.</div>
+			<div class="sous_titre"><b>Billings . Symptothermie . FertilityCare</b></div>
+			
 
 			<h2 class="" id="info">L’application</h2>
 
-			<video class="media_border" autoplay loop muted autobuffer playsinline>
+			<video class="media_border" width="170px" autoplay loop muted autobuffer playsinline>
 				<source src="video/demo.mp4" type="video/mp4" loading="lazy" />
 			</video>
 			<p class="desc_emoji" style="text-align: left">
@@ -59,10 +71,6 @@
 				🔒	pas de vente de données / pas de publicité<br />
 				🇫🇷	hébergée et développée en France<br />
 			</p>
-
-
-
-			<h2 class="" id="stat">Quelques chiffres</h2>
 			<div>
 				<div class="chiffre_cle chiffre_couples">
 					<p>moncycle.app c'est:</p>
@@ -155,23 +163,16 @@
 			</ol>
 			</p>
 
-
-
-			<h2 class="" id="tech">Coin technique</h2>
+		</div>
+		</div>
+		<div class="pieddepage">
 			<p>L'application est <b>Open Source</b> sous licence <b>Creative Commons</b> (CC BY-NC-SA) et est disponible sur <b>Github</b>. L'application est hebergée chez <b>OVH</b> en France et la disponibilité du serveur est surveillée par <b>updown.io</b>.</p>
-
-			<p>Liens utiles:
 			<ul>
 				<li><a target="_blank" href="https://github.com/jean-io/moncycle.app">Code source sur Github</a></li>
 				<li><a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0">Licences CC BY-NC-SA</a></li>
 				<li><a target="_blank" href="https://status.moncycle.app">Disponiblité par updown.io</a></li>
 			</ul></p>
-			<img src="https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png" />
-
-
-
-			<h2 class="" id="contact">Contact</h2>
-			<p>Besoin d'aide? Une question? Une suggestion? Une demande? Vous pouvez contacter le développeur et l'administrateur par mail à l'adresse:</p>
+			<!--<img src="https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png" />-->
 			<p><a href="" id="contact_mail"></a></p>
 		</div>
 		<script type="text/javascript">
