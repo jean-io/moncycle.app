@@ -81,19 +81,22 @@
 	}
 }
 
-.day .rouge {
+.day .rouge,
+.obs .rouge {
 	background-color: #ac2433;
 	border-color: #ac2433;
 	color: #ac2433;
 }
 
-.day .vert {
+.day .vert,
+.obs .vert {
 	background-color: #1e824c;
 	border-color: #1e824c;
 	color: #1e824c;
 }
 
-.day .jaune {
+.day .jaune,
+.obs .jaune {
 	background-color: #fbca0b;
 	border-color: #fbca0b;
 	color: #fbca0b;
@@ -102,6 +105,15 @@
 .day .bebe {
 	border-color: #c8c8c8;
 	background-color: white;
+}
+
+.obs .bebe {
+	background-color: #eee;
+}
+
+.obs .bleu {
+	background-color: #00200e;
+	color: white;
 }
 
 .day .jesaispas {
@@ -306,5 +318,29 @@ h2 {
 
 #form_fc {
 	text-transform: uppercase;
+}
+
+.cycle_recap .obs {
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	width: 2.5%;
+}
+
+.cycle_recap .obs span {
+	display: block;
+	height: 11px;
+	width: 100%;
+	font-size: 6px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.cycle_recap h5 {
+	margin: 0;
+	margin-left: 20px;
+	margin-top: 20px;
+	font-weight: normal;
+	font-family: 'Montserrat';
 }
 

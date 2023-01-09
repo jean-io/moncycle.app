@@ -39,9 +39,10 @@ bill = {
 	cycle_curseur : 0,
 	a_le_focus: true,
 	date_chargement: null,
+	utilisateurs_beta : [5],
 	letsgo : function() {
-		bill.date_chargement = bill.date.str(bill.date.now());
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
+		bill.date_chargement = bill.date.str(bill.date.now());
 		bill.charger_cycle();
 		$("#charger_cycle").click(bill.charger_cycle);
 		$("#jour_form_close").click(bill.close_menu);
@@ -49,6 +50,19 @@ bill = {
 		$("#jour_form_suppr").click(bill.suppr_observation);	
 		$("#form_fc").keyup(bill.fc_test_note).change(bill.fc_test_note);
 		$("input.fc_form_note").change(bill.fc_form2note);
+		$("#but_macro").click(function () {
+			$("#but_macro").hide();
+			$("#timeline").hide();
+			$("#but_micro").show();
+			$("#recap").show();
+			while (bill.cycle_curseur < Math.min(5, tous_les_cycles.length)) bill.charger_cycle();
+		});
+		$("#but_micro").click(function () {
+			$("#but_macro").show();
+			$("#timeline").show();
+			$("#but_micro").hide();
+			$("#recap").hide();
+		});
 		$("#form_h_temp").focus(function () {
 			if($("#form_h_temp").val().trim().length==0) {
 				let d  = new Date();
@@ -61,6 +75,7 @@ bill = {
 		$(window).focus(function() {
 			if (bill.date.str(bill.date.now()) != bill.date_chargement) location.reload(false); 
 		})
+		if (bill.utilisateurs_beta.includes(id_utilisateur)) $(".beta").show();
 	},
 	charger_actu : function() {
 		$.get("https://www.moncycle.app/actu.html", function(data) {
@@ -101,7 +116,8 @@ bill = {
 			}
 		}
 		let nb_jours = parseInt(Math.round((date_fin-date_cycle)/(1000*60*60*24)+1));
-		$("#timeline").prepend(bill.cycle2html(date_cycle_str, nb_jours, date_fin));
+		$("#timeline").prepend(bill.cycle2timeline(date_cycle_str, nb_jours, date_fin));
+		$("#recap").prepend(bill.cycle2recap(date_cycle_str, nb_jours, date_fin));
 		if (JSON.parse(localStorage.cycle_cache || "[]").includes(date_cycle_str)) bill.cycle_aff_switch(date_cycle_str);
 		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function (e) {
 			bill.cycle_aff_switch($(this).attr("for"));
@@ -112,7 +128,8 @@ bill = {
 			date_obs_str = bill.date.str(date_obs);
 			let data = {date: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
 			bill.graph_preparation_data(data);
-			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2html(data));
+			$(`#c-${date_cycle_str} .contenu`).append(bill.observation2timeline(data));
+			$(`#rc-${date_cycle_str} .contenu`).append(bill.observation2recap(data));
 			bill.charger_observation(date_obs_str);
 		}
 		if (methode == 1) bill.cycle2graph(date_cycle_str);
@@ -122,7 +139,8 @@ bill = {
 	},
 	charger_observation : function(o_date) {
 		$.get("observation.php", { date: o_date }).done(function(data) {
-			$(`#o-${data.date}`).replaceWith(bill.observation2html(data));
+			$(`#o-${data.date}`).replaceWith(bill.observation2timeline(data));
+			$(`#ro-${data.date}`).replaceWith(bill.observation2recap(data));
 			if (data.jour_sommet) bill.sommets[data.date] = [data.cycle, 0];
 			else if (!data.jour_sommet && data.date in bill.sommets) delete bill.sommets[data.date];
 			bill.trois_jours();
@@ -178,9 +196,11 @@ bill = {
 	},
 	trois_jours : function() {
 		$(".day .s").empty();
+		$(".obs .s").empty();
 		$(".day .s").removeClass("petit");				
 		for (const [s, data] of Object.entries(bill.sommets)) {
 			$(`#o-${s} .s`).html(bill.text.sommet);	
+			$(`#ro-${s} .s`).html(bill.text.sommet);	
 			let nb_j_sommet = [1, 2, 3, $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1];
 			nb_j_sommet.forEach(n => {
 				let s_date = bill.date.parse(s);
@@ -188,6 +208,7 @@ bill = {
 				let s_id = bill.date.str(s_date);
 				$(`#o-${s_id} .s`).html(`${bill.text.sommet}+${n}`);
 				$(`#o-${s_id} .s`).addClass("petit");	
+				$(`#ro-${s_id} .s`).html(n);
 			});
 		}
 	},
@@ -222,7 +243,7 @@ bill = {
 		}
 		localStorage.cycle_cache = JSON.stringify(cache);
 	},
-	cycle2html : function (c, nb, fin) {
+	cycle2timeline : function (c, nb, fin) {
 		let c_id = "c-" + c;
 		let cycle = $("<div>", {id: c_id, class: "cycle"});
 		let c_date = bill.date.parse(c);
@@ -231,6 +252,16 @@ bill = {
 		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
 		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='export?cycle=${bill.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${bill.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
 		cycle.append(`<div class='contenu' id='contenu-${c_id}'><div class='graph pas_glaire pas_fc' id='graph-${c_id}' ><canvas id='canvas-${c_id}'></canvas></div></div>`);
+		return cycle;
+	},
+	cycle2recap : function (c, nb, fin) {
+		let c_id = "rc-" + c;
+		let cycle = $("<div>", {id: c_id, class: "cycle_recap"});
+		let c_date = bill.date.parse(c);
+		let c_fin = new Date(fin);
+		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
+		cycle.append(`<h5 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h5>`);
+		cycle.append($("<div>", {id: "rc_contenu_" + c, class: "contenu"}));
 		return cycle;
 	},
 	cycle2graph : function (id) {
@@ -298,7 +329,34 @@ bill = {
 			}
 		}
 	},
-	observation2html : function(j) {
+	observation2recap : function(j) {
+		let o_date = bill.date.parse(j.date);
+		let o_id = "ro-" + bill.date.str(o_date);
+		let observation = $("<div>", {id: o_id, class: "obs"});
+		observation.click(bill.open_menu);
+		observation.append(`<span class='data' style='display:none'>${JSON.stringify(j)}</span>`);
+		let color = "bleu";
+		let index_couleur = j.gommette;
+		let bebe = (j.gommette == ":)");
+		if (j.gommette && j.gommette.includes(':)') && j.gommette.length>2) {
+			color = bill.gommette[":)"][1];
+			index_couleur = index_couleur.replace(":)", "");
+			bebe = true;
+		}
+		if (bill.gommette[index_couleur]) color = bill.gommette[index_couleur][1]; 
+		let car_du_bas = j.union_sex ? bill.text.union : "";
+		if (j.err && j.err.includes("no data")) car_du_bas = bill.text.a_renseigner.substring(0,2);
+		let car_du_milieu = bebe ? bill.gommette[":)"][0] : "";
+		if (j.jenesaispas) {
+			car_du_milieu = "?";		
+			color = "bleu";
+		}
+		observation.append(`<span class='s'>${j.jour_sommet ? bill.text.sommet : ""}</span>`);
+		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
+		observation.append(`<span class=''>${car_du_bas}</span>`);
+		return observation;
+	},
+	observation2timeline : function(j) {
 		let o_date = bill.date.parse(j.date);
 		let o_id = "o-" + bill.date.str(o_date);
 		let observation = $("<div>", {id: o_id, class: "day"});
@@ -437,6 +495,7 @@ bill = {
 		$("#jour_form").show();
 		$("#jour_form").scrollTop(0);
 		$("#timeline").addClass("flou");
+		$("#recap").addClass("flou");
 	},
 	close_menu : function (e) {
 		$("html, body").css({
@@ -444,6 +503,7 @@ bill = {
 			"touch-action": "auto"
 		});
 		$("#timeline").removeClass("flou");
+		$("#recap").removeClass("flou");
 		$("#jour_form").hide();
 	},
 	submit_menu : function () {

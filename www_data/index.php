@@ -59,6 +59,7 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 		<script type="text/javascript" src="module/jquery.js?h=<?= hash_file("sha1", "./module/jquery.js") ?>"></script> 
 		<script type="text/javascript" src="module/chart.js?h=<?= hash_file("sha1", "./module/chart.js") ?>"></script> 
 		<script type="text/javascript">
+			const id_utilisateur = <?= $_SESSION["no"] ?>;
 			var tous_les_cycles = <?= json_encode($cycles); ?>;
 			var toutes_les_grossesses = <?= json_encode($grossesses); ?>;
 			var sensations = <?= json_encode($sensations); ?>;
@@ -77,7 +78,9 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom"><?= $_SESSION["compte"]["nom"] ?? "Mon cahier" ?><?=  $_SESSION["compte"]["donateur"] ? " 🎖️" : "" ?></div>
-			<button type="button" id="charger_cycle" class="nav_button">☝️ Cycle précedent</button> <a href="compte"><button type="button" class="nav_button">👨‍💻 Mon compte</button></a>
+			<button type="button" id="charger_cycle" class="nav_button">☝️ Cycle précedent</button>
+			<button id="but_macro" class="beta" style="display:none">&#x1F50D; Vue mini</button><button id="but_micro" style="display:none">&#x1F50D; Vue maxi</button>
+			<a href="compte"><button type="button" class="nav_button">👨‍💻 Mon compte</button></a>
 			<noscript><p class="rouge">Cette application a besoin de Javascript pour fonctionner.</p></noscript>
 		</center>
 		<div class="actu" id="actu" style="display:none">
@@ -85,7 +88,8 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 			<div id="actu_contennu"></div>
 			<button type="button" id="fermer_actu">OK merci &#x1F44D;</button>
 		</div>
-		<div class="contennu" id="timeline"></div>
+		<div class="contennu macro" id="recap" style="display:none"></div>
+		<div class="contennu micro" id="timeline"></div>
 		<form id="jour_form" class="popup" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
 			<div id="jour_form_titre" class="bold uppercase"></div>
