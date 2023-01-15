@@ -14,10 +14,10 @@
 		<meta property="og:type" content="siteweb" />
 		<meta property="og:url" content="https://www.moncycle.app/" />
 		<meta property="og:image" content="https://www.moncycle.app/image/preview.png" />
-		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances: Billings, Symptothermie ou FertilityCare." />
-		<link rel="stylesheet" href="style.css" />
+		<meta property="og:description" content="Application de suivi de cycle menstruel pour les méthodes naturelles de régulation des naissances: Billings, Symptothermie ou FertilityCare." />
+		<link rel="stylesheet" href="style.css?v=test" />
 		<script type="text/javascript" src="script/jquery-3.6.3.min.js"></script>
-		<script type="text/javascript" src="script/animation.js"></script>
+		<script type="text/javascript" src="script/animation.js?v=test"></script>
 	</head>
 	<body>
 		<div class="animation">
@@ -31,18 +31,9 @@
 			<h1 class="centre">mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div class="actions">
 				<a href="#info">Découvrir</a>
-				<a>Inscription</a>
-				<a>Mon tableau</a>
+				<a href="https://tableau.moncycle.app/inscription" target="_blank">Inscription</a>
+				<a href="https://tableau.moncycle.app">Mon tableau</a>
 			</div>
-			<!--<div class="liens">
-				<a href="#info">L'application</a>
-				<a href="#captures">Caputres d'écran</a>
-				<a href="#tarifs">C'est gratuit</a>
-				<a href="#demo">Démonstration</a>
-				<a href="#installation">Installer l'app</a>
-				<a href="#methodes">Les méthodes naturelles</a>
-				<a href="#rgpd">Traitement des données</a>
-			</div>-->
 		</div>
 		<div class="col_central">
 			<div class="sous_titre">Rendre facile le suivi des cycles menstruels et l’application des méthodes naturelles.</div>
@@ -71,20 +62,20 @@
 				🔒	pas de vente de données / pas de publicité<br />
 				🇫🇷	hébergée et développée en France<br />
 			</p>
-			<div>
+			<div class="chiffre">
 				<div class="chiffre_cle chiffre_couples">
 					<p>moncycle.app c'est:</p>
-					<span>780</span>
+					<span id="stat_compte">800</span>
 					<p>femmes et couples qui suivent en confiance et quotidennement leurs fertilités.</p>
 				</div>
 				<div class="chiffre_cle chiffre_cycles">
 					<p>moncycle.app c'est:</p>
-					<span>1 670</span>
+					<span id="stat_cycle">2000</span>
 					<p>cycles menstruels enregistré regroupant les informations propre à chaque méthodes.</p>
 				</div>
 				<div class="chiffre_cle chiffre_observations">
 					<p>moncycle.app c'est:</p>
-					<span>30 000</span>
+					<span id="stat_obs">40 000</span>
 					<p>observations journalières personnalisés et confidentiel.</p>
 				</div>
 			</div>
@@ -93,11 +84,17 @@
 
 
 			<h2 class="" id="captures">Captures d'écrans</h2>
-			<p>
-				<a href="image/capture1.png"><img class="capture media_border" src="image/capture1.png" alt="Capture d'écran 1" loading="lazy" /></a>
-				<a href="image/capture2.png"><img class="capture media_border" src="image/capture2.png" alt="Capture d'écran 2" loading="lazy" /></a>
-				<a href="image/capture3.png"><img class="capture media_border" src="image/capture3.png" alt="Capture d'écran 3" loading="lazy" /></a>
-			</p>
+			<div class="boite_capture"><img id="grosse_img" src="image/capture1.png" class="media_border"/></div>
+			<div class="boite_a_mini">
+				<a href="image/capture1.png" class="mini_img active"><img class="capture media_border" src="image/capture1.png" alt="Capture d'écran 1" loading="lazy" /></a>
+				<a href="image/capture2.png" class="mini_img"><img class="capture media_border" src="image/capture2.png" alt="Capture d'écran 2" loading="lazy" /></a>
+				<a href="image/capture3.png" class="mini_img"><img class="capture media_border" src="image/capture3.png" alt="Capture d'écran 3" loading="lazy" /></a>
+				<a href="image/capture4.png" class="mini_img"><img class="capture media_border" src="image/capture4.png" alt="Capture d'écran 1" loading="lazy" /></a>
+				<a href="image/capture5.png" class="mini_img"><img class="capture media_border" src="image/capture5.png" alt="Capture d'écran 2" loading="lazy" /></a>
+				<a href="image/capture6.png" class="mini_img"><img class="capture media_border" src="image/capture6.png" alt="Capture d'écran 3" loading="lazy" /></a>
+				<a href="image/capture7.png" class="mini_img"><img class="capture media_border" src="image/capture7.png" alt="Capture d'écran 1" loading="lazy" /></a>
+				<a href="image/capture8.png" class="mini_img"><img class="capture media_border" src="image/capture8.png" alt="Capture d'écran 2" loading="lazy" /></a>
+			</div>
 
 
 
@@ -125,8 +122,8 @@
 			<h2 class="" id="installation">Installation</h2>
 			<p>Cette application n'est pas sur l'App Store d'Apple ou sur le Google Play Store. Il s'agit d'une application web. <b>Une fois connecté et sur votre tableau</b>, vous pouvez installer l'application en l'ajoutant sur votre écran d'accueil comme montré sur les captures d'écrans ci-dessous. Plus de détails sur la procédure à suivre: <a target="_blank" href="https://www.astuces-aide-informatique.info/11299/ajouter-site-sur-ecran-accueil-android-ios">installer une web-app</a>.</p>
 			<p>
-				<a href="image/install_iphone.png"><img class="capture media_border" src="image/install_iphone.png" alt="Capture d'installation sur iPhone" loading="lazy" /></a>
-				<a href="image/install_android.png"><img class="capture media_border" src="image/install_android.png" alt="Capture d'installation sur Android" loading="lazy" /></a>
+				<a href="image/install_iphone.png"><img width="27%" class=" media_border" src="image/install_iphone.png" alt="Capture d'installation sur iPhone" loading="lazy" /></a>
+				<a href="image/install_android.png"><img width="27%" class=" media_border" src="image/install_android.png" alt="Capture d'installation sur Android" loading="lazy" /></a>
 			</p>
 
 
@@ -162,23 +159,38 @@
 				<li><u>Droits des personnes concernées:</u> vous avez les droits d’accès, de rectification, d’effacement de vos données. L'interface de l'application vos permets d'exercer ces droits en toute autonomie.</li>
 			</ol>
 			</p>
-
+			<div class="espace"></div>
 		</div>
 		</div>
 		<div class="pieddepage">
-			<p>L'application est <b>Open Source</b> sous licence <b>Creative Commons</b> (CC BY-NC-SA) et est disponible sur <b>Github</b>. L'application est hebergée chez <b>OVH</b> en France et la disponibilité du serveur est surveillée par <b>updown.io</b>.</p>
-			<ul>
-				<li><a target="_blank" href="https://github.com/jean-io/moncycle.app">Code source sur Github</a></li>
-				<li><a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0">Licences CC BY-NC-SA</a></li>
-				<li><a target="_blank" href="https://status.moncycle.app">Disponiblité par updown.io</a></li>
-			</ul></p>
-			<!--<img src="https://licensebuttons.net/l/by-nc-sa/3.0/88x31.png" />-->
-			<p><a href="" id="contact_mail"></a></p>
+			<div>	
+				<img id="img_couple_foot" src="image/moncycle_app_couple_web.png" alt="couple souriant visionnant un télèphonne" loading="lazy" />
+			</div>
+			<div>
+				<p>L'application est <b>Open Source</b> sous licence <b>Creative Commons</b> (CC BY-NC-SA) et est disponible sur <b>Github</b>. L'application est hebergée chez <b>OVH</b> en France et la disponibilité du serveur est surveillée par <b>updown.io</b>. Dessin par <b>by.bm</b>.</p>
+				<img src="image/by-nc-sa.png" />
+			</div>
+			<div>
+				<h4>Liens utils</h4>
+				<a target='_blank' href='https://fr.tipeee.com/moncycleapp'>Faire un don sur Tipee</a><br />
+				<a target="_blank" href="https://github.com/jean-io/moncycle.app">Code source sur Github</a><br />
+				<a target="_blank" href="https://creativecommons.org/licenses/by-nc-sa/4.0">Licences CC BY-NC-SA</a><br />
+				<a target="_blank" href="https://status.moncycle.app">Disponiblité par updown.io</a><br />
+				<a target="_blank" href="https://by-bm.fr">Dessin par by.bm</a><br />
+				<a target="_blank" href="https://www.cnil.fr/fr/rgpd-de-quoi-parle-t-on">Vos drois RGPD par la CNIL</a>
+			</div>
+			<div>
+				<h4>Les méthodes</h4>
+				<a target="_blank" href="https://www.methode-billings.com/">Méthode Billings</a><br />
+				<a target="_blank" href="http://www.methodes-naturelles.fr/les_methodes_naturelles/la-methode-dauto-observation">Cyclamen</a><br />
+				<a target="_blank" href="https://symptothermie.info">SensiPlan</a><br />
+				<a target="_blank" href="https://www.fertilitycare.fr/">FertilityCare</a><br />
+			</div>
+			<div>
+				<h4>Nous contater</h4>
+				<a href="" id="contact_mail"></a><br /><br />
+				&#128231;
+			</div>
 		</div>
-		<script type="text/javascript">
-			var contact_mail = ['m','o','n','c','y','c','l','e','.','a','p','p','@','t','h','j','n','.','f','r'];
-			document.getElementById("contact_mail").innerHTML = contact_mail.join('');
-			document.getElementById("contact_mail").href = "mailto:" + contact_mail.join('');
-		</script>
 	</body>
 </html>

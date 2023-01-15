@@ -26,7 +26,8 @@ body {
 
 .acceuil {
 	width: 100%;
-	height: 100vh;
+	min-height: 100vh;
+	min-height: -webkit-fill-available;
 	position: relative;
 	top: 0;
 	z-index: 10;
@@ -36,7 +37,9 @@ body {
 	position: fixed;
 	z-index: 20;
 	width: 100%;
-	height: 100%;
+	min-height: 100vh;
+	min-height: -webkit-fill-available;
+
 }
 
 .animation .img_container {
@@ -58,7 +61,6 @@ body {
 	z-index: 50;
 	background-color: white;
 	position: relative;
-	padding-bottom: 1px;
 }
 
 .menu {
@@ -68,20 +70,6 @@ body {
 	height: 100px;
 	z-index: 100;
 	background-color: white;
-}
-
-.menu .liens {
-	text-align: center;
-}
-
-.menu .liens a {
-	text-decoration: none;
-	text-transform: uppercase;
-}
-
-.menu .liens a:hover,
-.menu .liens a:active {
-	text-decoration: underline;
 }
 
 .actions {
@@ -117,16 +105,32 @@ body {
 .pieddepage {
 	background-color: #1e824c;
 	color: white;
-	padding: 40px;
+	padding: 80px 40px;
 	position: relative;
 	z-index: 50;
+	text-align: center;
+}
+
+.pieddepage div {
+	width: 18%;
+	display: inline-block;
+	font-size: .8em;
+	vertical-align: top;
+}
+
+.pieddepage #img_couple_foot {
+	width: 80px;
 }
 
 .pieddepage a {
 	color: white;
 }
 
-h1, h2, .soustitre, button {
+.pieddepage h4 {
+	text-transform: uppercase;
+}
+
+h1, h2, h4, .soustitre, button {
 	font-family: Montserrat;
 }
 
@@ -230,7 +234,7 @@ ol li {
 }
 
 .capture {
-	width: 27%;
+	width: 55px;
 }
 
 video {
@@ -238,11 +242,16 @@ video {
 	height: 370px;
 }
 
+.chiffre {
+	text-align: center;
+}
+
 .chiffre_cle {
 	display: inline-block;
 	text-align: center;
-	margin: 5%;
-	max-width: 20%;
+	margin: 1%;
+	margin-bottom: 0;
+	max-width: 30%;
 	vertical-align: top;
 }
 
@@ -272,7 +281,7 @@ video {
 
 @media (prefers-color-scheme: dark) {
 
-	html, body {
+	html, body, .corp, .menu {
 		color: white;
 		background-color: black;
 	}
@@ -284,6 +293,12 @@ video {
 	.media_border {
 		border-color: #393939;
 	}
+
+	.actions a {
+		background-color: #191919;
+		border-color: #191919;
+	}
+
 }
 
 @media (max-width: 650px) {
@@ -294,6 +309,11 @@ video {
 		margin: 0 auto;
 	}
 
+}
+
+.espace {
+	width: 100%;
+	height: 150px;
 }
 
 .emo_fume {
@@ -328,7 +348,24 @@ video {
 	}
 }
 
-@media (max-width: 650px) {
+.boite_capture {
+	height: 60vh;
+	margin-bottom: 40px;
+}
+
+.boite_capture,
+.boite_a_mini {
+	text-align: center;
+	display: inline-block;
+	vertical-align: top;
+	width: 45%;
+}
+
+.boite_capture img {
+	height:100%;
+}
+
+@media (max-width: 700px) {
 
 	h1 {
 		font-size: 7vw;
@@ -344,11 +381,37 @@ video {
 
 	.menu {
 		height: 70px;
-		margin-top: -150px;
+		margin-top: -130px;
 	}
 
 	.animation .img_container {
 		bottom: 150px;
 	}
+
+
+	.pieddepage div {
+		width: 90%;
+		display:block;
+	}
+
+	.chiffre {
+		font-size: .65em;
+	}
+
+	.chiffre_cle span : {
+		font-size: 1.2em;
+	}
+
+	.boite_capture,
+	.boite_a_mini {
+		display: block;
+		width: 100%;
+	}
+}
+
+
+
+.boite_a_mini .active img {
+	border-color: #1e824c;
 }
 

@@ -44,7 +44,6 @@ $(document).ready(() => {
 
 		// mélange des emoticones
 		if (queu.length == 0) {
-		console.log(queu);
 			queu = emojis.slice();
 			queu.sort(() => Math.random() - 0.5);
 		} 
@@ -61,10 +60,29 @@ $(document).ready(() => {
 		$("body").append(emo);
 	
 		// suppression des vieux emoticones	
-		$('#emo_id' + (i-20)).remove();
+		$('#emo_id' + (i-10)).remove();
 		i += 1;
 	}, 1500);
 
+	// affichage de l'addresse mail
+	var contact_mail = ['m','o','n','c','y','c','l','e','.','a','p','p','@','t','h','j','n','.','f','r'];
+	document.getElementById("contact_mail").innerHTML = contact_mail.join('');
+	document.getElementById("contact_mail").href = "mailto:" + contact_mail.join('');
+	
+	// gestion des captures d'écran
+	$(".mini_img").click(function (event) {
+		event.preventDefault();
+		$("#grosse_img").attr('src', $(this).attr('href'));
+		$(".mini_img").removeClass("active");
+		$(this).addClass("active");
+	});
 
-	console.log("test");
+
+	// telechargement des dernières stats
+	$.ajax({url: "https://tableau.moncycle.app/pub_stat", success: function(result){
+		$("#stat_compte").text(result.moncycle_app_nb_compte);
+		$("#stat_cycle").text(result.moncycle_app_nb_cycle);
+		$("#stat_obs").text(result.moncycle_app_nb_total_observation);
+		console.log(result);
+	}});
 });
