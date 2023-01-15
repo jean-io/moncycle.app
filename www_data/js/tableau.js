@@ -162,11 +162,16 @@ bill = {
 		let text = "Entrer la date du premier jour du cycle à créer.";
 		if (!prepend) text = "Entrer la date du jour de reprise du suivi du cycle.";
 		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="titre">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">${text}<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" min="${min_date}" /> <input type="button" id="but_creer_cycle" value="✔️" /></div></div>`;	
+		let nocycle = `<div id="nocycle">Plus de cycle à afficher.</div>`;
 		if (prepend) {
 			$("#charger_cycle").prop("disabled", true);
 			$("#timeline").prepend(html);
+			$("#recap").prepend(nocycle);
 		}
-		else $("#timeline").append(html);
+		else {
+			$("#timeline").append(html);
+			$("#recap").append(nocycle);
+		}
 		$("#but_creer_cycle").click(function () {
 			let nouveau_cycle_date = $("#nouveau_cycle_date").val();
 			let max = bill.date.parse($("#nouveau_cycle_date").attr("max"));
@@ -187,6 +192,7 @@ bill = {
 					tous_les_cycles.push(nouveau_cycle_date);
 					$("#charger_cycle").prop("disabled", false);
 					$("#nouveau_cycle").remove();
+					$("#nocycle").remove();
 					bill.charger_cycle();
 				}		
 			}).fail(function (ret) {
@@ -259,8 +265,8 @@ bill = {
 		let cycle = $("<div>", {id: c_id, class: "cycle_recap"});
 		let c_date = bill.date.parse(c);
 		let c_fin = new Date(fin);
-		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
-		cycle.append(`<h5 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h5>`);
+		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]}. `;
+		cycle.append(`<h5 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]}. <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span> jours</h5>`);
 		cycle.append($("<div>", {id: "rc_contenu_" + c, class: "contenu"}));
 		return cycle;
 	},

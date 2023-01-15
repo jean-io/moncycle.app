@@ -120,6 +120,7 @@ catch (Exception $e){
 			<input type="submit" value="Connexion &#x1F511;" /></form>
 			<br /><br /><br />
 			<center><a class="decouverte" href="https://www.moncycle.app">&#x1F60D; découvrir moncycle.app</a></center>
+			<center><a class="decouverte" href="/connexion.php?email1=demo@moncycle.app&mdp=demo">&#x1F9D0; visiter la démonstration</a></center>
 			<br /><br /><br />
 		</div>
 

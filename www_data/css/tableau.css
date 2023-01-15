@@ -344,3 +344,9 @@ h2 {
 	font-family: 'Montserrat';
 }
 
+#nocycle {
+	text-align: center;
+	margin-top: 25px;
+	font-family: 'Montserrat';
+	color: #ac2433;
+}
