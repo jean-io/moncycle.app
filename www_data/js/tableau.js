@@ -80,11 +80,11 @@ bill = {
 	charger_actu : function() {
 		$.get("https://www.moncycle.app/actu.html", function(data) {
 			let html = $.parseHTML(data);
-			$("#actu_contennu").html(html);
-			let titre = $("#actu_contennu").find("h4").text();
+			$("#actu_contenu").html(html);
+			let titre = $("#actu_contenu").find("h4").text();
 			if (titre && localStorage.actu_lu != titre) $("#actu").show();
 			$("#fermer_actu").click(function () {
-				localStorage.actu_lu = $("#actu_contennu").find("h4").text();
+				localStorage.actu_lu = $("#actu_contenu").find("h4").text();
 				$("#actu").hide();
 			});
 		});	
@@ -177,7 +177,7 @@ bill = {
 			let max = bill.date.parse($("#nouveau_cycle_date").attr("max"));
 			let min = bill.date.parse($("#nouveau_cycle_date").attr("min"));
 			if (bill.date.parse(nouveau_cycle_date) > max || (!isNaN(min) && bill.date.parse(nouveau_cycle_date) < min)) {
-				alert("Erreur: la date du premier jour du cycle à créer ne doit pas être dans un cycle existant et doit être antérieur à auhjourd'hui.");
+				alert("Erreur: la date du premier jour du cycle à créer ne doit pas être dans un cycle existant et doit être antérieure à aujourd'hui.");
 				return;
 			}
 			$.post("observation.php", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
@@ -539,7 +539,7 @@ bill = {
 		let date = bill.date.parse($("#form_date").val());
 		date.setHours(9);
 		let jour = [bill.text.semaine[date.getDay()], date.getDate(), bill.text.mois_long[date.getMonth()], date.getFullYear()].join(" ");
-		if (confirm(`Voulez-vous vraiment supprimer definitivement les données de la journée du ${jour}?`)) {
+		if (confirm(`Voulez-vous vraiment supprimer définitivement les données de la journée du ${jour}?`)) {
 			$.post("observation.php", `suppr=${bill.date.str(date)}`).done(function(data){
 				if (data.err){
 					$("#form_err").val(data.err);

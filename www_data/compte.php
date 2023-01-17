@@ -133,7 +133,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<input type="radio" name="methode" value="3" id="m_fc"  <?php if ($_SESSION["compte"]["methode"]==3): ?>checked<?php endif; ?>/><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />	
 		<input type="radio" name="methode" value="1" id="m_temp"  <?php if ($_SESSION["compte"]["methode"]==1): ?>checked<?php endif; ?>/><label for="m_temp"><b>Symptothermie</b>: l'évolution de la glaire cervicale + les changements de température corporelle</label><br />	
 		<br />
-		<label for="i_email1">E-mail:</label> <br /><span class="label_info">Identifiant de connexion et envoie des cycles (non modifiable).</span><br />
+		<label for="i_email1">E-mail:</label> <br /><span class="label_info">Identifiant de connexion et envoi des cycles (non modifiable).</span><br />
 		<input id="i_email1" type="email" readonly name="email1" value="<?= $_SESSION['compte']['email1'] ?? '' ?>" /><br />
 		<br />
 		<label for="i_email2">2ème e-mail:</label> <br /><span class="label_info">Permet de recevoir les cycles sur une deuxième addresse.</span><br />
@@ -163,8 +163,8 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<input type="submit" value="&#x1F4BE; enregistrer" /><br />
 		</form><br />
 		<br />
-		<h2>A propos et contact</h2>
-		<p>Cette application est gratuite et sans publicité/vente de donnnées! Vous pouvez cependant contribuer au financement de l'application et aider le développeur via </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">tipeee.com/moncycleapp</a>.</p>
+		<h2>À propos et contact</h2>
+		<p>Cette application est gratuite et sans publicité/vente de données! Vous pouvez cependant contribuer au financement de l'application et aider le développeur via </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">tipeee.com/moncycleapp</a>.</p>
 		<p>Cette application est Open Source: le code est disponible sur <a href="https://github.com/jean-io/moncycle.app" target="_blank">github.com/jean-io/moncycle.app</a>.</p>
 		<p>Retrouvez toutes les informations de cette application sur <a href="https://www.moncycle.app" target="_blank">www.moncycle.app</a>.</p>
 		<p>Un bug? Besoin d'aide? Une question? Une suggestion? Une demande liée aux données personnelles utilisées? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a>.</p>
