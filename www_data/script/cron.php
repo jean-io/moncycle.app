@@ -77,7 +77,7 @@ foreach($cycles as $cyc) {
 
 			fclose($csv);
 
-			echo "cycle de $nb_j jours envoye a {$cyc["email1"]} (et {$cyc["email2"]}).";
+			echo "cycle de $nb_j jours envoyé à {$cyc["email1"]} (et {$cyc["email2"]}).";
 			echo PHP_EOL;
 		}
 	}
@@ -102,7 +102,7 @@ foreach($compte as $com) {
 
 	db_update_relance($db, $com["no_compte"], 1);
 
-	echo "relance envoye a {$com["email1"]} (et {$com["email2"]}).";
+	echo "relance envoyée à {$com["email1"]} (et {$com["email2"]}).";
 	echo PHP_EOL;
 }
 
