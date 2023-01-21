@@ -35,10 +35,13 @@ try {
 	$compte_existe = false;
 	if (isset($_POST["email1"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) $compte_existe = boolval(db_select_compte_existe($db,$_POST["email1"])[0]["compte_existe"]);
 
-	if (isset($_GET["creation_compte"]) && !$compte_existe && isset($_POST["prenom"]) && isset($_POST["email1"]) && isset($_POST["age"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
+	if (isset($_GET["creation_compte"]) && !$compte_existe) {
 
 		if (!CREATION_COMPTE) {
 			$output .= "La création de compte est temporairement désactivée. Veuillez nous excuser pour tout désagrément.";
+		}
+		elseif (!isset($_POST["prenom"]) || !isset($_POST["email1"]) || !isset($_POST["age"]) || !filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
+			$output .= "Toutes le données n'ont pas été saisies ou alors elles sont erronées.";
 		}
 		elseif (isset($_SESSION["captcha"]) && isset($_POST["captcha"]) && strlen($_POST["captcha"])>=1 && $_POST["captcha"]==$_SESSION["captcha"]) {
 			$methode = intval($_POST["methode"] ?? 0);
@@ -91,10 +94,10 @@ try {
 	}
 	elseif (isset($_GET["nouveau_motdepasse_svp"])) {
 		sleep(rand(1,5));
-		$succes = "Un nouveau mot de passe va vous être envoyé par mail (si ce compte existe). &#x2709;";
+		$succes = "Un nouveau mot de passe vous a été envoyé par mail (si ce compte existe). &#x2709;";
 	}
 	elseif (isset($_GET["creation_compte"])) {
-		$output .= "Un compte existe déjà pour cette addresse mail.";
+		$output .= "Un compte existe déjà pour cette adresse mail.";
 	}
 
 
