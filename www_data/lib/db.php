@@ -279,7 +279,7 @@ function db_select_nb_compte($db) {
 }
 
 function db_select_nb_compte_actif($db) {
-	$sql = "select count(distinct no_compte) as MONCYCLE_APP_NB_COMPTE_ACTIF from observation where date_obs >= DATE(NOW()) - INTERVAL 20 DAY and no_compte!=2";
+	$sql = "select count(distinct no_compte) as MONCYCLE_APP_NB_COMPTE_ACTIF from observation where date_obs >= DATE(NOW()) - INTERVAL 35 DAY and no_compte!=2";
 
 	$statement = $db->prepare($sql);
 	$statement->execute();
@@ -288,7 +288,7 @@ function db_select_nb_compte_actif($db) {
 }
 
 function db_select_nb_compte_actif_par_methode($db, $methode) {
-	$sql = "select count(distinct obs.no_compte) as MONCYCLE_APP_NB_COMPTE_ACTIF_METHODE from observation as obs left join compte as com on obs.no_compte = com.no_compte where date_obs >= DATE(NOW()) - INTERVAL 20 DAY and obs.no_compte!=2 and com.methode = :methode";
+	$sql = "select count(distinct obs.no_compte) as MONCYCLE_APP_NB_COMPTE_ACTIF_METHODE from observation as obs left join compte as com on obs.no_compte = com.no_compte where date_obs >= DATE(NOW()) - INTERVAL 35 DAY and obs.no_compte!=2 and com.methode = :methode";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":methode", $methode, PDO::PARAM_INT);
