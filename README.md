@@ -18,3 +18,8 @@ Détail de la licence 👉 [https://creativecommons.org/licenses/by-nc-sa/4.0/](
 
 Code légal 👉 [https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.fr](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.fr)
 
+### Installation
+
+Si vous souhaitez auto-héberger votre propre instance Moncycle.app, vous pouvez utiliser Yunohost 
+[![Install Moncycle with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=moncycle)
+
