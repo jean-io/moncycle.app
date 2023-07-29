@@ -84,21 +84,21 @@
 .day .rouge,
 .obs .rouge {
 	background-color: #ac2433;
-	border-color: #ac2433;
+	border-color: #821521;
 	color: #ac2433;
 }
 
 .day .vert,
 .obs .vert {
 	background-color: #1e824c;
-	border-color: #1e824c;
+	border-color: #16683c;
 	color: #1e824c;
 }
 
 .day .jaune,
 .obs .jaune {
 	background-color: #fbca0b;
-	border-color: #fbca0b;
+	border-color: #e3b607;
 	color: #fbca0b;
 }
 
