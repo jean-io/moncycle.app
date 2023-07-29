@@ -104,8 +104,9 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_m" value="M" /><label class="pas_temp" for="fc_m"><b>M</b> flux modéré</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_rl" value="L" /><label class="pas_temp" for="fc_rl"><b>L</b> flux léger</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_vl" value="VL" /><label class="pas_temp" for="fc_vl"><b>VL</b> flux vraiment léger</label><br class="pas_temp" />
-					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_b" value="B" /><label class="pas_temp" for="fc_b"><b>B</b> saignement brun (ou noir)</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_vh" value="VH" /><label class="pas_temp" for="fc_vh"><b>VH</b> flux vraiment abondant</label><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_regles" id="fc_nr" value="" checked /><label class="pas_temp" for="fc_nr">pas de règle</label><br class="pas_temp" />
+					<input class="pas_temp fc_form_note" type="checkbox" name="fc_regles_b" id="fc_b" value="B" /><label class="pas_temp" for="fc_b"><b>B</b> saignement brun (ou noir)</label><br class="pas_temp" />
 					<br />
 					<span class="categorie pas_temp">&#x1F441;&#xFE0F; Sensation & observation:</span><br class="pas_temp" />
 					<input class="pas_temp fc_form_note" type="radio" name="fc_sens" id="fc_0" value="0" /><label class="pas_temp" for="fc_0"><b>0</b> sec</label><br class="pas_temp" />

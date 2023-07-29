@@ -565,7 +565,7 @@ bill = {
 			bill.graph_update(data.cycle);
 		}
 	},	
-	fc_note_regex : /^((h|m|l|vl|b|H|M|L|VL|B)\s*)?(2W|10KL|10SL|10DL|10WL|2w|10kl|10sl|10dl|10wl|[024]|(([68]|10)\s*[BCGKLPYRbcgklpyr]{1,8}))?\s*([xX][123]|AD|ad)?(\s*[RrLl]?(ap|AP))?$/,
+	fc_note_regex : /^((h|m|l|vl|H|M|L|VL|VH)\s*(b|B)?\s*)?(2W|10KL|10SL|10DL|10WL|2w|10kl|10sl|10dl|10wl|[024]|(([68]|10)\s*[BCGKLPYRbcgklpyr]{1,8}))?\s*([xX][123]|AD|ad)?(\s*[RrLl]?(ap|AP))?$/,
 	fc_test_note : function() {
 		if (!$("#form_fc").val()) {	
 			$("#fc_msg").empty();
@@ -584,6 +584,7 @@ bill = {
 	},
 	fc_form2note : function() {
 		let note = $('input[name="fc_regles"]:checked').val();
+		note += $('input[name="fc_regles_b"]:checked').val() ? $('input[name="fc_regles_b"]:checked').val() : "";
 		if (note.length && !note.endsWith(' ')) note += " " ;
 		note += $('input[name="fc_sens"]:checked').val();
 		note += $(".fc_obs:checked").map(function(){ return this.value }).get().join("");
@@ -603,7 +604,7 @@ bill = {
 		else {
 			$("#fc_rl").prop("checked", false);
 		}
-		['10DL', '10SL', '10WL', 'RAP', 'LAP', 'X1', 'X2', 'X3', 'AD', 'AP', 'VL', '2W', '10', 'H', 'M', 'L', 'B', '0', '2', '4', '6', '8', 'C', 'G', 'K', 'P', 'Y', 'R'].forEach(c => {
+		['10DL', '10SL', '10WL', 'RAP', 'LAP', 'X1', 'X2', 'X3', 'AD', 'AP', 'VL', 'VH', '2W', '10', 'H', 'M', 'L', 'B', '0', '2', '4', '6', '8', 'C', 'G', 'K', 'P', 'Y', 'R'].forEach(c => {
 			if (note.includes(c)) {
 				$("#fc_" + c.toLowerCase()).prop("checked", true);
 				note = note.replace(c,'');
@@ -627,7 +628,7 @@ bill = {
 			if (note.includes(c)) no_rec=false;
 			note = note.replace(c,'');
 		});
-		['VL', 'H', 'M', 'L', 'B'].forEach(c => {
+		['VL', 'VH', 'H', 'M', 'L'].forEach(c => {
 			if (note.includes(c)) no_regle=false;
 			note = note.replace(c,'');
 		});
