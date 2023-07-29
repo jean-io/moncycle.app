@@ -14,6 +14,7 @@ COPY ./server_conf/moncycleapp_php.ini $PHP_INI_DIR/conf.d
 RUN mkdir -p /var/lib/php/session && mkdir -p /var/lib/php/soap_cache && chown -R www-data:www-data /var/lib/php/
 
 COPY ./www_data /var/www/html/
+COPY ./www_data/config.docker.php /var/www/html/config.php
 
 RUN bash /var/www/html/module/install.sh
 
