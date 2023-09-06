@@ -11,7 +11,7 @@ require_once "config.php";
 require_once "lib/date.php";
 require_once "lib/db.php";
 require_once "lib/doc.php";
-require_once "module/fpdf/fpdf.php";
+require_once "vendor/fpdf/fpdf/src/Fpdf/Fpdf.php";
 
 session_start();
 

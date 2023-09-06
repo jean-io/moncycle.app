@@ -16,10 +16,10 @@ require_once "../lib/mail.php";
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once '../module/phpmailer/src/Exception.php';
-require_once '../module/phpmailer/src/PHPMailer.php';
-require_once '../module/phpmailer/src/SMTP.php';
-require_once "../module/fpdf/fpdf.php";
+require_once '../vendor/phpmailer/phpmailer/src/Exception.php';
+require_once '../vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require_once '../vendor/phpmailer/phpmailer/src/SMTP.php';
+require_once "../vendor/fpdf/fpdf/src/Fpdf/Fpdf.php";
 
 
 

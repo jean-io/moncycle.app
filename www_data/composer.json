@@ -1,0 +1,11 @@
+{
+	"name": "jean-io/moncycle.app",
+	"description": "Application de suivi de cycle menstruel pour les méthodes naturelles de régulation de naissance.",
+	"homepage": "https://www.moncycle.app",
+	"license": "Creative Commons - CC BY-NC-SA",
+	"require": {
+		"phpmailer/phpmailer": "6.*",
+		"fpdf/fpdf" : "1.*",
+		"components/jquery" : "3.*"
+	}
+}

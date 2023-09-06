@@ -56,8 +56,8 @@ $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 <html lang="fr">
 	<head>
 		<?= file_get_contents("./vue/head.html") ?>
-		<script type="text/javascript" src="module/jquery.js?h=<?= hash_file("sha1", "./module/jquery.js") ?>"></script> 
-		<script type="text/javascript" src="module/chart.js?h=<?= hash_file("sha1", "./module/chart.js") ?>"></script> 
+		<script type="text/javascript" src="vendor/components/jquery/jquery.min.js?h=<?= hash_file("sha1", "./vendor/components/jquery/jquery.min.js") ?>"></script> 
+		<script type="text/javascript" src="vendor/chartjs/chart.js?h=<?= hash_file("sha1", "./vendor/chartjs/chart.js") ?>"></script> 
 		<script type="text/javascript">
 			const id_utilisateur = <?= $_SESSION["no"] ?>;
 			var tous_les_cycles = <?= json_encode($cycles); ?>;

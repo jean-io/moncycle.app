@@ -1,7 +1,9 @@
 docker-compose.yml
 www_data/config.php
 www_data/info.php
+www_data/vendor/*
 htpasswd
 sessions
 www_data/module
-
+*.bak
+*.bak.*

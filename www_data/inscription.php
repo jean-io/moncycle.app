@@ -14,9 +14,9 @@ require_once "config.php";
 require_once "lib/db.php";
 require_once "lib/sec.php";
 require_once "lib/mail.php";
-require_once 'module/phpmailer/src/Exception.php';
-require_once 'module/phpmailer/src/PHPMailer.php';
-require_once 'module/phpmailer/src/SMTP.php';
+require_once 'vendor/phpmailer/phpmailer/src/Exception.php';
+require_once 'vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require_once 'vendor/phpmailer/phpmailer/src/SMTP.php';
 
 session_start();
 

@@ -1,20 +1,34 @@
 FROM php:apache
 
-RUN apt-get update \
-    && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev  unzip \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
+RUN apt-get update
+RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev unzip
 
-#RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
+RUN mkdir -p /var/lib/php/session && mkdir -p /var/lib/php/soap_cache && mkdir -p /var/lib/php/composer
+RUN chown -R www-data:www-data /var/lib/php/
+
+# while https://github.com/chartjs/Chart.js/issues/11478 is not fixed
+RUN mkdir -p /var/www/html/vendor/chartjs/
+RUN curl -o /var/www/html/vendor/chartjs/chart.js https://cdn.jsdelivr.net/npm/chart.js
+
+ENV COMPOSER_HOME=/var/lib/php/composer
+
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+#RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 COPY ./server_conf/moncycleapp_apache.conf /etc/apache2/conf-enabled/
-COPY ./server_conf/moncycleapp_php.ini $PHP_INI_DIR/conf.d
-
-RUN mkdir -p /var/lib/php/session && mkdir -p /var/lib/php/soap_cache && chown -R www-data:www-data /var/lib/php/
-
 COPY ./www_data /var/www/html/
 COPY ./www_data/config.docker.php /var/www/html/config.php
 
-RUN bash /var/www/html/module/install.sh
+RUN chown -R www-data:www-data /var/www/html
+
+USER www-data
+
+RUN composer update
+
+USER root
+
+COPY ./server_conf/moncycleapp_php.ini $PHP_INI_DIR/conf.d
 
