@@ -8,7 +8,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-in
 RUN mkdir -p /var/lib/php/session && mkdir -p /var/lib/php/soap_cache && mkdir -p /var/lib/php/composer
 RUN chown -R www-data:www-data /var/lib/php/
 
-# while https://github.com/chartjs/Chart.js/issues/11478 is not fixed
+# worckaround while https://github.com/chartjs/Chart.js/issues/11478 is not fixed
 RUN mkdir -p /var/www/html/vendor/chartjs/
 RUN curl -o /var/www/html/vendor/chartjs/chart.js https://cdn.jsdelivr.net/npm/chart.js
 
