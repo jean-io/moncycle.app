@@ -138,7 +138,7 @@ bill = {
 		}
 	},
 	charger_observation : function(o_date) {
-		$.get("observation.php", { date: o_date }).done(function(data) {
+		$.get("api/observation.php", { date: o_date }).done(function(data) {
 			$(`#o-${data.date}`).replaceWith(bill.observation2timeline(data));
 			$(`#ro-${data.date}`).replaceWith(bill.observation2recap(data));
 			if (data.jour_sommet) bill.sommets[data.date] = [data.cycle, 0];
@@ -180,7 +180,7 @@ bill = {
 				alert("Erreur: la date du premier jour du cycle à créer ne doit pas être dans un cycle existant et doit être antérieure à aujourd'hui.");
 				return;
 			}
-			$.post("observation.php", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
+			$.post("api/observation.php", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
 				if (data.err){
 					console.error(data.err);
 				}
@@ -520,7 +520,7 @@ bill = {
 			sensations[o] += 1;
 		});
 		let d = $("#jour_form").serializeArray();
-		$.post("observation.php", $.param(d)).done(function(data){
+		$.post("api/observation.php", $.param(d)).done(function(data){
 			if (data.err){
 				$("#form_err").val(data.err);
 				console.error(data.err);
@@ -540,7 +540,7 @@ bill = {
 		date.setHours(9);
 		let jour = [bill.text.semaine[date.getDay()], date.getDate(), bill.text.mois_long[date.getMonth()], date.getFullYear()].join(" ");
 		if (confirm(`Voulez-vous vraiment supprimer définitivement les données de la journée du ${jour}?`)) {
-			$.post("observation.php", `suppr=${bill.date.str(date)}`).done(function(data){
+			$.post("api/observation.php", `suppr=${bill.date.str(date)}`).done(function(data){
 				if (data.err){
 					$("#form_err").val(data.err);
 					console.error(data.err);

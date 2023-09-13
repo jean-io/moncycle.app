@@ -7,9 +7,9 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
-require_once "config.php";
-require_once "lib/db.php";
-require_once "lib/date.php";
+require_once "../config.php";
+require_once "../lib/db.php";
+require_once "../lib/date.php";
 
 header('Content-Type: application/json');
 
