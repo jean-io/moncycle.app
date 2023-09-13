@@ -40,10 +40,21 @@ bill = {
 	a_le_focus: true,
 	date_chargement: null,
 	utilisateurs_beta : [5],
+	constante : {},
+	sensation : {},
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		bill.date_chargement = bill.date.str(bill.date.now());
-		bill.charger_cycle();
+		$.get("api/sensation.php", {}).done(function(data) {
+			bill.sensation = data;
+		}).fail(bill.redirection_connexion);
+		$.get("api/constante.php", {}).done(function(data) {
+			bill.constante = data;
+			bill.charger_cycle();
+			$("#nom").html(bill.constante.nom);
+			if (bill.constante.donateur) $("#nom").append(" &#x1F396;&#xFE0F;");
+			$(".main_button").css("display","inline-block");
+		}).fail(bill.redirection_connexion);
 		$("#charger_cycle").click(bill.charger_cycle);
 		$("#jour_form_close").click(bill.close_menu);
 		$("#jour_form_submit").click(bill.submit_menu);	
@@ -55,7 +66,7 @@ bill = {
 			$("#timeline").hide();
 			$("#but_micro").show();
 			$("#recap").show();
-			while (bill.cycle_curseur < Math.min(5, tous_les_cycles.length)) bill.charger_cycle();
+			while (bill.cycle_curseur < Math.min(5, bill.constante.tous_les_cycles.length)) bill.charger_cycle();
 		});
 		$("#but_micro").click(function () {
 			$("#but_macro").show();
@@ -75,7 +86,10 @@ bill = {
 		$(window).focus(function() {
 			if (bill.date.str(bill.date.now()) != bill.date_chargement) location.reload(false); 
 		})
-		if (bill.utilisateurs_beta.includes(id_utilisateur)) $(".beta").show();
+		if (bill.utilisateurs_beta.includes(bill.constante.id_utilisateur)) $(".beta").show();
+	},
+	redirection_connexion : function(err) {
+		if (err.status == 403) window.location.replace('/connexion');
 	},
 	charger_actu : function() {
 		$.get("https://www.moncycle.app/actu.html", function(data) {
@@ -90,25 +104,25 @@ bill = {
 		});	
 	},
 	charger_cycle : function() {
-		if (bill.cycle_curseur >= tous_les_cycles.length) {
+		if (bill.cycle_curseur >= bill.constante.tous_les_cycles.length) {
 			bill.form_nouveau_cycle();
 			return;
 		}
 		let c = bill.cycle_curseur;
 		bill.cycle_curseur += 1;
-		let date_cycle_str = tous_les_cycles[c];
+		let date_cycle_str = bill.constante.tous_les_cycles[c];
 		let date_fin = bill.date.now();
 		let fin_auj = true;
 		if (c>0) {
-			date_fin = new Date(bill.date.parse(tous_les_cycles[c-1]) - (1000*60*60*24));
+			date_fin = new Date(bill.date.parse(bill.constante.tous_les_cycles[c-1]) - (1000*60*60*24));
 			date_fin.setHours(9);
 			fin_auj = false;
 		}
 		let date_cycle = bill.date.parse(date_cycle_str);
 		date_cycle.setHours(9);
 		let form_nouv_cycle = false;
-		for (let i = 0; i < toutes_les_grossesses.length; i++) {
-			let gross = bill.date.parse(toutes_les_grossesses[i]);
+		for (let i = 0; i < bill.constante.toutes_les_grossesses.length; i++) {
+			let gross = bill.date.parse(bill.constante.toutes_les_grossesses[i]);
 			gross.setHours(9);
 			if (gross>=date_cycle && gross<=date_fin) {
 				date_fin = gross;
@@ -132,7 +146,7 @@ bill = {
 			$(`#rc-${date_cycle_str} .contenu`).append(bill.observation2recap(data));
 			bill.charger_observation(date_obs_str);
 		}
-		if (methode == 1) bill.cycle2graph(date_cycle_str);
+		if (bill.constante.methode == 1) bill.cycle2graph(date_cycle_str);
 		if (form_nouv_cycle) {
 			bill.form_nouveau_cycle(false);
 		}
@@ -141,21 +155,22 @@ bill = {
 		$.get("api/observation.php", { date: o_date }).done(function(data) {
 			$(`#o-${data.date}`).replaceWith(bill.observation2timeline(data));
 			$(`#ro-${data.date}`).replaceWith(bill.observation2recap(data));
+			$(`.pas_${bill.constante.methode_diminutif}`).css("display", "none");
 			if (data.jour_sommet) bill.sommets[data.date] = [data.cycle, 0];
 			else if (!data.jour_sommet && data.date in bill.sommets) delete bill.sommets[data.date];
 			bill.trois_jours();
 			bill.graph_preparation_data(data);
-		});
+		}).fail(bill.redirection_connexion);
 	},
 	form_nouveau_cycle: function (prepend=true) {
 		let max_date = bill.date.str(bill.date.now());
 		let min_date = "";
 		if (prepend && bill.cycle_curseur>0) {
-			max_date = tous_les_cycles[bill.cycle_curseur-1];
+			max_date = bill.constante.tous_les_cycles[bill.cycle_curseur-1];
 			max_date = bill.date.str(new Date(bill.date.parse(max_date) - (1000*60*60*24)));
 		}
 		else if (!prepend) {
-			let min_calc = bill.date.parse(toutes_les_grossesses[0]);
+			let min_calc = bill.date.parse(bill.constante.toutes_les_grossesses[0]);
 			min_calc.setDate(min_calc.getDate()+1);
 			min_date = bill.date.str(min_calc);
 		}
@@ -189,7 +204,7 @@ bill = {
 						location.reload(true);
 						return;
 					}
-					tous_les_cycles.push(nouveau_cycle_date);
+					bill.constante.tous_les_cycles.push(nouveau_cycle_date);
 					$("#charger_cycle").prop("disabled", false);
 					$("#nouveau_cycle").remove();
 					$("#nocycle").remove();
@@ -306,7 +321,7 @@ bill = {
 			bill.graphs[id].data.datasets[0].data = bill.graph_data[id];
 			bill.graphs[id].update();
 		}
-		if (!vide && methode==1) {
+		if (!vide && bill.constante.methode==1) {
 			let j_sommet = "";
 			for (const [s, data] of Object.entries(bill.sommets)) {
 				if (id == data[0]) j_sommet = s;
@@ -397,7 +412,7 @@ bill = {
 				observation.append(`<span class='g ${bill.gommette[color][1]}'>${contenu}</span>`);
 				tbd = false;
 			}
-			if (methode==1 && j.temperature) {
+			if (bill.constante.methode==1 && j.temperature) {
 				let temp = parseFloat(j.temperature);
 				let color = "#4169e1";
 				if (temp > 37.5) color = "#b469e1";
@@ -412,7 +427,7 @@ bill = {
 				}
 				tbd = false;
 			}
-			if (methode==3 && j.note_fc) {
+			if (bill.constante.methode==3 && j.note_fc) {
 				tbd = false;
 			}
 		}
@@ -447,11 +462,11 @@ bill = {
 		$("#jour_form")[0].reset();
 		$("#fc_msg").empty();
 		$("#form_date").val(j.date);
-		if (j.note_fc && methode==3) {
+		if (j.note_fc && bill.constante.methode==3) {
 			$("#form_fc").val(j.note_fc);
 			bill.fc_test_note();
 		}
-		if (j.fleche_fc && methode==3) $("#fc_f" + bill.fleche[j.fleche_fc][0]).prop('checked', true);
+		if (j.fleche_fc && bill.constante.methode==3) $("#fc_f" + bill.fleche[j.fleche_fc][0]).prop('checked', true);
 		if (gommette.includes(":)") && gommette.length>2) {
 			$("#go_" + bill.gommette[":)"][1]).prop('checked', true);
 			gommette = gommette.replace(":)", "");
@@ -461,7 +476,7 @@ bill = {
 		$("#form_h_temp").val(j.heure_temp);
 		$("#vos_obs").empty();
 		let n = 0;
-		Object.entries(sensations).sort((a,b) => b[1] - a[1]).forEach(function (o){
+		Object.entries(bill.sensation).sort((a,b) => b[1] - a[1]).forEach(function (o){
 			if (n<10) {
 				let ob_id = btoa(unescape(encodeURIComponent(o[0]))).replace(/[^A-Za-z0-9 -]/g, "");
 				let html = `<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${o[0]}" /><label for="ob_${ob_id}">${o[0]}</label><br />`;
@@ -516,8 +531,8 @@ bill = {
 		$("#ob_extra").val().split(',').forEach(function(o) {
 			o = o.trim().toLowerCase();
 			if (!o) return;
-			if (!(o in sensations)) sensations[o] = 0;
-			sensations[o] += 1;
+			if (!(o in bill.sensation)) bill.sensation[o] = 0;
+			bill.sensation[o] += 1;
 		});
 		let d = $("#jour_form").serializeArray();
 		$.post("api/observation.php", $.param(d)).done(function(data){
@@ -533,6 +548,7 @@ bill = {
 		}).fail(function (ret) {
 			console.error(ret.responseText); 
 			$("#form_err").val(ret.responseText);
+			bill.redirection_connexion(ret);
 		});
 	},
 	suppr_observation : function () {
@@ -552,6 +568,7 @@ bill = {
 			}).fail(function (ret) {
 				console.error(ret.responseText); 
 				$("#form_err").val(ret.responseText);
+				bill.redirection_connexion(ret);
 			});
 		}
 	},

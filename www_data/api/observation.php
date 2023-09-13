@@ -23,7 +23,9 @@ try {
 
 	// VERIFICATION DE LA BONNE OUVERTURE DE LA SESSION
 	if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
-		$result["err"] = "please login first";
+		http_response_code(403);
+		echo json_encode(["auth" => False, "err" => "accès interdit"]);
+		exit;
 	}
 
 
