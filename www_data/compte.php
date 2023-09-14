@@ -114,7 +114,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom"><?= $_SESSION["compte"]["nom"] ?? "Mon compte" ?></div>
-			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="connexion?deconnexion_svp" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
+			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="deconnexion" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $erreur? "<br /><br />" . $erreur : "" ?></span>
 			<?php if(boolval($_SESSION["compte"]["donateur"])): ?><p>🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p><?php endif; ?>
