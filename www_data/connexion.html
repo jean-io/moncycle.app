@@ -69,7 +69,10 @@
 						console.log(ret);
 						$("#connexion_but").prop("disabled", false);
 						ret.message += "<br />"
-						if (ret.auth == true) window.location.replace('/'); 
+						if (ret.auth == true) {
+							localStorage.jetton = ret.jetton;
+							window.location.replace('/');
+						}
 						else $("#message_err").html(ret.message);
 					});
 				});

@@ -44,6 +44,14 @@ bill = {
 	sensation : {},
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
+		if (localStorage.jetton && localStorage.jetton.length<=0) window.location.replace('/connexion');
+		/*$.ajaxSetup({
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+				'Authorization' : localStorage.jetton
+			}
+		});*/
 		bill.date_chargement = bill.date.str(bill.date.now());
 		$.get("api/sensation.php", {}).done(function(data) {
 			bill.sensation = data;
@@ -89,7 +97,10 @@ bill = {
 		if (bill.utilisateurs_beta.includes(bill.constante.id_utilisateur)) $(".beta").show();
 	},
 	redirection_connexion : function(err) {
-		if (err.status == 403) window.location.replace('/connexion');
+		if (err.status == 401 || err.status == 403 || err.status == 407) {	
+			window.localStorage.clear();
+			window.location.replace('/connexion');
+		}
 	},
 	charger_actu : function() {
 		$.get("https://www.moncycle.app/actu.html", function(data) {

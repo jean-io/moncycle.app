@@ -398,4 +398,16 @@ function db_update_relance ($db, $no_compte, $relance) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_insert_jetton($db, $no_compte, $nom, $pays, $jetton_str) {
+	$sql = "INSERT INTO `jetton` (`no_compte`, `nom`, `pays`, `jetton_str`) VALUES (:no_compte, :nom, :pays, :jetton_str)";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":nom", $nom, PDO::PARAM_STR);
+	$statement->bindValue(":pays", $pays, PDO::PARAM_STR);
+	$statement->bindValue(":jetton_str", $jetton_str, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
 

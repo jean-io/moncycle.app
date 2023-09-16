@@ -10,12 +10,14 @@
 require_once "../config.php";
 require_once "../lib/db.php";
 require_once "../lib/date.php";
+require_once "../lib/sec.php";
 
 session_start();
 
 header('Content-Type: application/json');
 
 $output = "";
+$jetton = "";
 
 try {
 
@@ -41,17 +43,20 @@ try {
 			$output .= "Compte désactivé. Contactez nous pour plus d'informations.";
 		}		
 		elseif (isset($compte["motdepasse"]) && password_verify($_POST["mdp"], $compte["motdepasse"])) {
-			$output .= "Connecté!";
-		
 			unset($compte["motdepasse"]);
+			unset($_POST["mdp"]);
+
 			$_SESSION["connected"] = true;
 			$_SESSION["compte"] = $compte;
 			$_SESSION["no"] = intval($compte["no_compte"] ?? -1);
 			$_SESSION["sess_refresh"] = date_sql(new DateTime());
 
+			$jetton = sec_motdepasse_aleatoire(512);
+
+			db_insert_jetton($db, $compte["no_compte"] ?? -1, $_POST["appareil"] ?? $_SERVER['HTTP_USER_AGENT'], "FR", $jetton);	
 			db_update_compte_connecte($db, $_SESSION["no"]);
 
-			exit;
+			$output .= "Connecté!";
 		}
 		else {
 			db_update_co_echoue($db, $_POST["email1"]);
@@ -74,6 +79,7 @@ catch (Exception $e){
 
 echo json_encode([
 	"auth" => (isset($_SESSION["connected"]) && $_SESSION["connected"] == true),
+	"jetton" => $jetton,
 	"message" => $output
 ]);
 
