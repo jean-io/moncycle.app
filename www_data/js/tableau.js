@@ -44,14 +44,7 @@ bill = {
 	sensation : {},
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
-		if (localStorage.jetton && localStorage.jetton.length<=0) window.location.replace('/connexion');
-		/*$.ajaxSetup({
-			headers: {
-				'Content-Type': 'application/json',
-				'Accept': 'application/json',
-				'Authorization' : localStorage.jetton
-			}
-		});*/
+		if (!localStorage.authok) window.location.replace('/connexion');
 		bill.date_chargement = bill.date.str(bill.date.now());
 		$.get("api/sensation.php", {}).done(function(data) {
 			bill.sensation = data;

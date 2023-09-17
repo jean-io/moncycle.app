@@ -56,6 +56,14 @@ try {
 			db_insert_jetton($db, $compte["no_compte"] ?? -1, $_POST["appareil"] ?? $_SERVER['HTTP_USER_AGENT'], "FR", $jetton);	
 			db_update_compte_connecte($db, $_SESSION["no"]);
 
+			$arr_cookie_options = array (
+				'expires' => strtotime('+5 years'), 
+				'path' => '/',
+				'secure' => true,
+				'httponly' => true,
+			);
+			setcookie("MONCYCLEAPP_JETTON", $jetton, $arr_cookie_options);
+
 			$output .= "Connecté!";
 		}
 		else {

@@ -70,7 +70,7 @@
 						$("#connexion_but").prop("disabled", false);
 						ret.message += "<br />"
 						if (ret.auth == true) {
-							localStorage.jetton = ret.jetton;
+							localStorage.authok = true;
 							window.location.replace('/');
 						}
 						else $("#message_err").html(ret.message);

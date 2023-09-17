@@ -11,6 +11,8 @@ require_once "config.php";
 require_once "lib/db.php";
 require_once "lib/date.php";
 
+setcookie("MONCYCLEAPP_JETTON", '', -1, '/');
+
 session_start();
 
 $_SESSION["connected"] = false;
