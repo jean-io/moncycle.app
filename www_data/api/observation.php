@@ -10,6 +10,7 @@
 require_once "../config.php";
 require_once "../lib/db.php";
 require_once "../lib/date.php";
+require_once "../lib/sec.php";
 
 header('Content-Type: application/json');
 
@@ -22,15 +23,20 @@ try {
 	$db = db_open();
 
 	// VERIFICATION DE LA BONNE OUVERTURE DE LA SESSION
-	if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
+	/*if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
 		http_response_code(403);
 		echo json_encode(["auth" => False, "err" => "accès interdit"]);
 		exit;
-	}
+	}*/
 
+	$compte = sec_auth_jetton();
+
+
+	exit;
 
 	// LECTURE D'UNE OBSERVATION
-	elseif (isset($_GET['date'])) {
+	if (isset($_GET['date'])) {
+	//elseif (isset($_GET['date'])) {
 
 		$result["command"] = "GET";
 

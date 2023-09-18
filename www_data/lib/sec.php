@@ -22,3 +22,15 @@ function sec_hash($text) {
 	return password_hash($text, PASSWORD_BCRYPT);
 }
 
+function sec_auth_jetton() {
+	if (isset($_COOKIE["MONCYCLEAPP_JETTON"])) {
+		$compte = db_select_compte_jetton($db, $_COOKIE["MONCYCLEAPP_JETTON"]);
+		if (isset($compte[0]) && isset($compte[0]["actif"]) && bool($compte[0]["actif"])) {
+			db_update_jetton_use($db, $compte[0]["no_jetton"]);
+			return $compte[0];
+		}
+	}
+	return null;	
+}
+
+

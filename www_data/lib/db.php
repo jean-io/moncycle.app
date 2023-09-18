@@ -411,3 +411,24 @@ function db_insert_jetton($db, $no_compte, $nom, $pays, $jetton_str) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_select_compte_jetton($db, $jetton_str) {
+	$sql = "SELECT J.no_compte, J.no_jetton, C.nom AS nom_compte, J.pays, J.nom AS nom_jetton, J.date_creation AS d_creation_jetton, J.date_use AS d_use_jetton, C.methode, C.age, C.email1, C.email2, C.nb_co_echoue, C.donateur, C.actif, C.relance, C.derniere_co_date, C.inscription_date, C.mdp_change_date, C.decouvert FROM `jetton` AS J INNER JOIN `compte` AS C ON J.no_compte=C.no_compte WHERE `jetton_str` = :jetton_str LIMIT 1";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":jetton_str", $jetton_str, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_update_jetton_use($db, $no_jetton){
+	$sql = "UPDATE `jetton` SET `date_use` = now() WHERE `no_jetton` = :no_jetton";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_jetton", $no_jetton, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
