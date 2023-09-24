@@ -158,6 +158,17 @@ function db_delete_compte($db, $no_compte){
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_delete_jetton($db, $no_jetton, $no_compte){
+	$sql = "DELETE FROM `jetton` WHERE `no_jetton` = :no_jetton AND `no_compte` = :no_compte";
+	
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_jetton", $no_jetton, PDO::PARAM_INT);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function db_delete_observation($db, $no_compte, $date){
 	$sql = "DELETE FROM observation WHERE no_compte = :no_compte AND date_obs = :date";
 	
@@ -364,6 +375,15 @@ function db_select_observation_count($db, $nbj) {
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":nbj", $nbj, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_NUM);
+}
+
+function db_select_jetton_compte($db) {
+	$sql = "select count(no_jetton) as MONCYCLE_APP_NB_JETTON from jetton";
+
+	$statement = $db->prepare($sql);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_NUM);

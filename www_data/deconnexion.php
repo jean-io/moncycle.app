@@ -9,11 +9,19 @@
 
 require_once "config.php";
 require_once "lib/db.php";
-require_once "lib/date.php";
+require_once "lib/sec.php";
+
+$db = db_open();
+
+$compte = sec_auth_jetton($db);
+
+if(!is_null($compte)) {
+	db_delete_jetton($db, $compte["no_jetton"], $compte["no_compte"]);
+}
+
 
 setcookie("MONCYCLEAPP_JETTON", '', -1, '/');
 
-header('Location: /');
 
 echo "deconexion OK";
 echo PHP_EOL;

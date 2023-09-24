@@ -12,15 +12,15 @@ require_once "../lib/db.php";
 
 header("Content-Type: text/plain");
 
-session_start();
-session_gc();
-session_destroy();
-
 $db = db_open();
 
 $nb_compte = db_select_nb_compte($db)[0][0];
 echo "moncycle_app_nb_compte ";
 echo $nb_compte;
+echo PHP_EOL;
+
+echo "moncycle_app_nb_session ";
+echo db_select_jetton_compte($db)[0][0];
 echo PHP_EOL;
 
 $nb_compte_actif = db_select_nb_compte_actif($db)[0][0];
@@ -102,6 +102,4 @@ echo "moncycle_app_nb_observation_30j ";
 echo db_select_observation_count($db, 30)[0][0];
 echo PHP_EOL;
 
-echo "moncycle_app_nb_session ";
-echo count(glob(session_save_path() . '/*'));
-echo PHP_EOL;
+
