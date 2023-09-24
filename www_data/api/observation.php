@@ -14,37 +14,24 @@ require_once "../lib/sec.php";
 
 header('Content-Type: application/json');
 
-session_start();
-
 $result = [];
 
 try {
-
 	$db = db_open();
 
-	// VERIFICATION DE LA BONNE OUVERTURE DE LA SESSION
-	/*if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
-		http_response_code(403);
-		echo json_encode(["auth" => False, "err" => "accès interdit"]);
-		exit;
-	}*/
-
-	$compte = sec_auth_jetton();
-
-
-	exit;
+	$compte = sec_auth_jetton($db);
+	sec_exit_si_non_connecte($compte);
 
 	// LECTURE D'UNE OBSERVATION
 	if (isset($_GET['date'])) {
-	//elseif (isset($_GET['date'])) {
 
 		$result["command"] = "GET";
 
 		$date = new DateTime($_GET['date']);
 		$result["date"] = date_sql($date);
 		
-		$output = db_select_observation($db, date_sql($date), $_SESSION["no"]);
-		$cycle = db_select_cycle($db, date_sql($date), $_SESSION["no"]);
+		$output = db_select_observation($db, date_sql($date), $compte["no_compte"]);
+		$cycle = db_select_cycle($db, date_sql($date), $compte["no_compte"]);
 		
 		$interval = date_diff(date_create($cycle[0]["cycle"]), date_create($result["date"]));
 		$result["pos"] = intval($interval->format('%a'))+1;
@@ -58,9 +45,9 @@ try {
 	// CREATION ET MISE A JOUR D'UNE OBSERVATION
 	elseif(isset($_POST['date'])) {
 
-		if (isset($_SESSION["compte"]["relance"]) && boolval($_SESSION["compte"]["relance"])) {
-			db_update_relance($db, $_SESSION["no"], 0);
-			$_SESSION["compte"]["relance"] = 0;
+		if (isset($compte["relance"]) && boolval($compte["relance"])) {
+			db_update_relance($db, $compte["no_compte"], 0);
+			$compte["relance"] = 0;
 		}
 
 		$result["command"] = "POST";
@@ -68,10 +55,10 @@ try {
 		$date = new DateTime($_POST['date']);
 		$result["date"] = date_sql($date);
 
-		$output = db_select_observation($db, date_sql($date), $_SESSION["no"]);
+		$output = db_select_observation($db, date_sql($date), $compte["no_compte"]);
 
 		if(!isset($output[0])){
-			db_insert_observation($db, date_sql($date), $_SESSION["no"]);
+			db_insert_observation($db, date_sql($date), $compte["no_compte"]);
 		}
 		
 		$sensation = [];
@@ -93,7 +80,7 @@ try {
 		$go  = $_POST["gommette"] ?? '';
 		$go .= $_POST["bebe"] ?? '';
 
-		db_update_observation ($db, date_sql($date), $_SESSION["no"], $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null);
+		db_update_observation ($db, date_sql($date), $compte["no_compte"], $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null);
 
 		$result["outcome"] = "ok";
 		$result["args"] = $_POST;
@@ -106,7 +93,7 @@ try {
 		$date = new DateTime($_POST['suppr']);
 		$result["date"] = date_sql($date);
 
-		db_delete_observation($db, $_SESSION["no"], date_sql($date));
+		db_delete_observation($db, $compte["no_compte"], date_sql($date));
 
 		$result["outcome"] = "ok";
 		$result["args"] = $_POST;

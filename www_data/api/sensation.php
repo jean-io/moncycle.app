@@ -10,20 +10,16 @@
 require_once "../config.php";
 require_once "../lib/db.php";
 require_once "../lib/date.php";
+require_once "../lib/sec.php";
 
 header('Content-Type: application/json');
 
-session_start();
-
-if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
-	http_response_code(403);
-	echo json_encode(["auth" => False, "err" => "accès interdit"]);
-	exit;
-}
-
 $db = db_open();
 
-$sensations_brut = db_select_sensations($db, $_SESSION["no"]);
+$compte = sec_auth_jetton($db);
+sec_exit_si_non_connecte($compte);
+
+$sensations_brut = db_select_sensations($db, $compte["no_compte"]);
 
 $sensations = [];
 foreach ($sensations_brut as $obj) {

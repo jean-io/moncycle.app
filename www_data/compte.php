@@ -11,21 +11,22 @@ require_once "config.php";
 require_once "lib/db.php";
 require_once "lib/sec.php";
 
-session_start();
+$db = db_open();
 
-if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
-	header('Location: connexion.php');
+$compte = sec_auth_jetton($db);
+
+if (is_null($compte)) {
+	header('Location: connexion');
+	http_response_code(401);
 	exit;
 }
-
-$db = db_open();
 
 $erreur = "";
 $succes = "";
 
 if (isset($_REQUEST["change_motdepasse"])) {
 	if (!empty($_POST["mdp1"])) {
-		db_udpate_motdepasse_par_nocompte($db, sec_hash($_POST["mdp1"]), $_SESSION["no"]);
+		db_udpate_motdepasse_par_nocompte($db, sec_hash($_POST["mdp1"]), $compte["no_compte"]);
 		$succes .= "Votre mot de passe a été changé. &#x270C;";
 	}
 	else {
@@ -39,27 +40,23 @@ if (isset($_REQUEST["modif_compte"]) && (empty($_POST["email2"]) || (!empty($_PO
 		$erreur .= "Erreur dans l'enregistrement de la méthode.";
 	}
 	else {
-		db_update_compte($db, $_POST["nom"], $_POST["email2"], $_POST["age"], $methode, $_SESSION["no"]);
+		db_update_compte($db, $_POST["nom"], $_POST["email2"], $_POST["age"], $methode, $compte["no_compte"]);
 
-		$compte = db_select_compte_par_nocompte($db, $_SESSION["no"])[0] ?? [];
-		unset($compte["motdepasse"]);
-		$_SESSION["compte"] = $compte;
+		$compte = sec_auth_jetton($db);
 
 		$succes .= "Vos informations ont été mises à jour. &#x1F44F;";
 	}
 }
 
 if (isset($_REQUEST["suppr_compte"]) && isset($_POST["boutton_suppr"])) {
-	db_delete_compte($db, $_SESSION["no"]);
-	$_SESSION["connected"] = false;
-
-	header('Location: connexion?deconnexion_svp');
+	db_delete_compte($db, $compte["no_compte"]);
+	header('Location: deconnexion');
 	exit;
 }
 
 if (isset($_REQUEST["mes_donnees_svp"])) {
-	$export_compte = db_select_compte_par_nocompte($db, $_SESSION["no"]);
-	$export_obs = db_select_all_observation($db, $_SESSION["no"]);
+	$export_compte = db_select_compte_par_nocompte($db, $compte["no_compte"]);
+	$export_obs = db_select_all_observation($db, $compte["no_compte"]);
 
 	header("content-type:application/csv;charset=UTF-8");
 	header('Content-Disposition: attachment; filename="export_moncycle_app.csv"');
@@ -67,7 +64,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 	$out = fopen('php://output', 'w');
 	fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
 
-	fputs($out,"Export des données MONCYCLE.APP de " . $_SESSION["compte"]["nom"] . PHP_EOL);
+	fputs($out,"Export des données MONCYCLE.APP de " . $compte["nom_compte"] . PHP_EOL);
 	fputs($out, PHP_EOL);
 
 	foreach ($export_compte[0] as $key => $value) {
@@ -113,36 +110,36 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
-			<div id="nom"><?= $_SESSION["compte"]["nom"] ?? "Mon compte" ?></div>
+			<div id="nom"><?= $compte["nom_compte"] ?? "Mon compte" ?></div>
 			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="deconnexion" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $erreur? "<br /><br />" . $erreur : "" ?></span>
-			<?php if(boolval($_SESSION["compte"]["donateur"])): ?><p>🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p><?php endif; ?>
-			<?php if($_SESSION["no"]==2): ?><p style="font-weight:bold">&#x1F6A8; Vous visualisez actuellement le compte de démonstration.<br /><br /><a style="color:#fbca0b" href='/inscription'><button type='button'>&#x1F680; créer votre compte</button></a></p><?php endif; ?>
+			<?php if(boolval($compte["donateur"])): ?><p>🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p><?php endif; ?>
+			<?php if($compte["no_compte"]==2): ?><p style="font-weight:bold">&#x1F6A8; Vous visualisez actuellement le compte de démonstration.<br /><br /><a style="color:#fbca0b" href='/inscription'><button type='button'>&#x1F680; créer votre compte</button></a></p><?php endif; ?>
 		</center>
 
 		<div class="contennu" id="timeline">
 		<h2>Modifier mes informations</h2>
 		<form action="?modif_compte" method="post"><br />
 		<label for="i_prenom">Prénom(s):</label><br />
-		<input type="text" id="i_prenom" required name="nom" value="<?= $_SESSION['compte']['nom'] ?? '' ?>" /><br />
+		<input type="text" id="i_prenom" required name="nom" value="<?= $compte["nom_compte"] ?? '' ?>" /><br />
 		<br />
 		J'ai besoin de suivre:<br />
 		<span class="label_info">Modifier ce choix ne génère aucune perte de données.</span><br />
-		<input type="radio" name="methode" value="2" id="m_glaire" <?php if ($_SESSION["compte"]["methode"]==2): ?>checked<?php endif; ?>  required /><label for="m_glaire"><b>Billings</b>: l'évolution de la glaire cervicale seule</label><br />	
-		<input type="radio" name="methode" value="3" id="m_fc"  <?php if ($_SESSION["compte"]["methode"]==3): ?>checked<?php endif; ?>/><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />	
-		<input type="radio" name="methode" value="1" id="m_temp"  <?php if ($_SESSION["compte"]["methode"]==1): ?>checked<?php endif; ?>/><label for="m_temp"><b>Symptothermie</b>: l'évolution de la glaire cervicale + les changements de température corporelle</label><br />	
+		<input type="radio" name="methode" value="2" id="m_glaire" <?php if ($compte["methode"]==2): ?>checked<?php endif; ?>  required /><label for="m_glaire"><b>Billings</b>: l'évolution de la glaire cervicale seule</label><br />	
+		<input type="radio" name="methode" value="3" id="m_fc"  <?php if ($compte["methode"]==3): ?>checked<?php endif; ?>/><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />	
+		<input type="radio" name="methode" value="1" id="m_temp"  <?php if ($compte["methode"]==1): ?>checked<?php endif; ?>/><label for="m_temp"><b>Symptothermie</b>: l'évolution de la glaire cervicale + les changements de température corporelle</label><br />	
 		<br />
 		<label for="i_email1">E-mail:</label> <br /><span class="label_info">Identifiant de connexion et envoi des cycles (non modifiable).</span><br />
-		<input id="i_email1" type="email" readonly name="email1" value="<?= $_SESSION['compte']['email1'] ?? '' ?>" /><br />
+		<input id="i_email1" type="email" readonly name="email1" value="<?= $compte['email1'] ?? '' ?>" /><br />
 		<br />
 		<label for="i_email2">2ème e-mail:</label> <br /><span class="label_info">Permet de recevoir les cycles sur une deuxième addresse.</span><br />
-		<input id="i_email2" type="email" name="email2" value="<?= $_SESSION['compte']['email2'] ?? '' ?>" /><br />
+		<input id="i_email2" type="email" name="email2" value="<?= $compte['email2'] ?? '' ?>" /><br />
 		<br />
 		<label for="i_anaissance">Année de naissance:</label><br />
 		<select id="i_anaissance" name="age" required>
 		<?php for ($i = date('Y')-(date('Y')%5)-75; $i < date('Y')-5; $i += 5) { ?>
-			<option <?= $i==($_SESSION["compte"]["age"]?? -1) ? "selected" : "" ?> value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>	
+			<option <?= $i==($compte["age"]?? -1) ? "selected" : "" ?> value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>	
 		<?php } ?>
 		</select><br />
 		<br />

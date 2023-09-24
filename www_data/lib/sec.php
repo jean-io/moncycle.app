@@ -22,10 +22,10 @@ function sec_hash($text) {
 	return password_hash($text, PASSWORD_BCRYPT);
 }
 
-function sec_auth_jetton() {
+function sec_auth_jetton($db) {
 	if (isset($_COOKIE["MONCYCLEAPP_JETTON"])) {
 		$compte = db_select_compte_jetton($db, $_COOKIE["MONCYCLEAPP_JETTON"]);
-		if (isset($compte[0]) && isset($compte[0]["actif"]) && bool($compte[0]["actif"])) {
+		if (isset($compte[0]) && isset($compte[0]["actif"]) && boolval($compte[0]["actif"])) {
 			db_update_jetton_use($db, $compte[0]["no_jetton"]);
 			return $compte[0];
 		}
@@ -33,4 +33,11 @@ function sec_auth_jetton() {
 	return null;	
 }
 
+function sec_exit_si_non_connecte($compte) {
+	if (is_null($compte)) {
+		http_response_code(401);
+		echo json_encode(["auth" => False, "err" => "Accès interdit! Connectez-vous."]);
+		exit;
+	}
+}
 

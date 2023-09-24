@@ -12,8 +12,6 @@ require_once "../lib/db.php";
 require_once "../lib/date.php";
 require_once "../lib/sec.php";
 
-session_start();
-
 header('Content-Type: application/json');
 
 $output = "";
@@ -21,12 +19,13 @@ $jetton = "";
 
 try {
 
-	if (isset($_SESSION["connected"]) && $_SESSION["connected"]) {
-		$output .= "Déja connecté.";
-	}
+	//if (isset($_SESSION["connected"]) && $_SESSION["connected"]) {
+	//	$output .= "Déja connecté.";
+	//}
 
 
-	elseif (isset($_POST["email1"]) && isset($_POST["mdp"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
+	//elseif (isset($_POST["email1"]) && isset($_POST["mdp"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
+	if (isset($_POST["email1"]) && isset($_POST["mdp"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 
 		$db = db_open();
 
@@ -46,15 +45,15 @@ try {
 			unset($compte["motdepasse"]);
 			unset($_POST["mdp"]);
 
-			$_SESSION["connected"] = true;
-			$_SESSION["compte"] = $compte;
-			$_SESSION["no"] = intval($compte["no_compte"] ?? -1);
-			$_SESSION["sess_refresh"] = date_sql(new DateTime());
+		//	$_SESSION["connected"] = true;
+		//	$_SESSION["compte"] = $compte;
+		//	$_SESSION["no"] = intval($compte["no_compte"] ?? -1);
+		//	$_SESSION["sess_refresh"] = date_sql(new DateTime());
 
 			$jetton = sec_motdepasse_aleatoire(512);
 
-			db_insert_jetton($db, $compte["no_compte"] ?? -1, $_POST["appareil"] ?? $_SERVER['HTTP_USER_AGENT'], "FR", $jetton);	
-			db_update_compte_connecte($db, $_SESSION["no"]);
+			db_insert_jetton($db, $compte["no_compte"], $_POST["appareil"] ?? $_SERVER['HTTP_USER_AGENT'], "FR", $jetton);	
+			db_update_compte_connecte($db, $compte["no_compte"]);
 
 			$arr_cookie_options = array (
 				'expires' => strtotime('+5 years'), 
@@ -86,7 +85,7 @@ catch (Exception $e){
 }
 
 echo json_encode([
-	"auth" => (isset($_SESSION["connected"]) && $_SESSION["connected"] == true),
+	"auth" => $jetton!='',
 	"jetton" => $jetton,
 	"message" => $output
 ]);

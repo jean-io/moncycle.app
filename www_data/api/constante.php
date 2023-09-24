@@ -10,37 +10,26 @@
 require_once "../config.php";
 require_once "../lib/db.php";
 require_once "../lib/date.php";
+require_once "../lib/sec.php";
 
 header('Content-Type: application/json');
 
-session_start();
-
-if (!isset($_SESSION["connected"]) || !$_SESSION["connected"]) {
-	http_response_code(403);
-	echo json_encode(["auth" => False, "err" => "accès interdit"]);
-	exit;
-}
-
 $db = db_open();
 
-if (!isset($_SESSION["sess_refresh"]) || $_SESSION["sess_refresh"] != date_sql(new DateTime())) {
-	$_SESSION["sess_refresh"] = date_sql(new DateTime());
-	$compte = db_select_compte_par_nocompte($db, $_SESSION["no"])[0] ?? [];
-	unset($compte["motdepasse"]);
-	$_SESSION["compte"] = $compte;
-}
+$compte = sec_auth_jetton($db);
+sec_exit_si_non_connecte($compte);
 
-$cycles = db_select_cycles($db, $_SESSION["no"]);
-$grossesses = db_select_grossesses($db, $_SESSION["no"]);
+$cycles = db_select_cycles($db, $compte["no_compte"]);
+$grossesses = db_select_grossesses($db, $compte["no_compte"]);
 
 $methode = [1 => "temp", 2 => "glaire", 3 => "fc"];
 
 echo json_encode([
-	"id_utilisateur" => $_SESSION["no"],
-	"methode" => $_SESSION["compte"]["methode"],
-	"methode_diminutif" => $methode[$_SESSION["compte"]["methode"]],
-	"nom" => $_SESSION["compte"]["nom"],
-	"donateur" => ($_SESSION["compte"]["donateur"] == 1), 
+	"id_utilisateur" => $compte["no_compte"],
+	"methode" => $compte["methode"],
+	"methode_diminutif" => $methode[$compte["methode"]],
+	"nom" => $compte["nom_compte"],
+	"donateur" => boolval($compte["donateur"]), 
 	"tous_les_cycles" => $cycles,
 	"toutes_les_grossesses" => $grossesses
 ]);
