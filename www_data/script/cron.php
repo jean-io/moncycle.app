@@ -34,8 +34,9 @@ echo PHP_EOL;
 
 $db = db_open();
 
-$cycles = db_select_cycles_recent($db);
+// ENVOIE DES MAILS CYCLES TERMINE
 
+$cycles = db_select_cycles_recent($db);
 
 foreach($cycles as $cyc) {
 	
@@ -83,6 +84,7 @@ foreach($cycles as $cyc) {
 	}
 }
 
+// RELANCE COMPTES INACTIF
 
 $compte = db_select_compte_inactif($db);
 
@@ -106,4 +108,9 @@ foreach($compte as $com) {
 	echo PHP_EOL;
 }
 
+// SUPPR DES JETTONS EXPIRES
+
+$ret = db_delete_vieux_jetton($db);
+echo $ret . " vieux jettons supprimés.";
+echo PHP_EOL;
 

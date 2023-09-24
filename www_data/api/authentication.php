@@ -19,12 +19,6 @@ $jetton = "";
 
 try {
 
-	//if (isset($_SESSION["connected"]) && $_SESSION["connected"]) {
-	//	$output .= "Déja connecté.";
-	//}
-
-
-	//elseif (isset($_POST["email1"]) && isset($_POST["mdp"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 	if (isset($_POST["email1"]) && isset($_POST["mdp"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 
 		$db = db_open();
@@ -45,12 +39,7 @@ try {
 			unset($compte["motdepasse"]);
 			unset($_POST["mdp"]);
 
-		//	$_SESSION["connected"] = true;
-		//	$_SESSION["compte"] = $compte;
-		//	$_SESSION["no"] = intval($compte["no_compte"] ?? -1);
-		//	$_SESSION["sess_refresh"] = date_sql(new DateTime());
-
-			$jetton = sec_motdepasse_aleatoire(512);
+			$jetton = sec_motdepasse_aleatoire(256);
 
 			db_insert_jetton($db, $compte["no_compte"], $_POST["appareil"] ?? $_SERVER['HTTP_USER_AGENT'], "FR", $jetton);	
 			db_update_compte_connecte($db, $compte["no_compte"]);

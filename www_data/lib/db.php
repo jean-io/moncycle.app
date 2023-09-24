@@ -155,7 +155,7 @@ function db_delete_compte($db, $no_compte){
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->execute();
 
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
+	return $statement->rowCount();
 }
 
 function db_delete_jetton($db, $no_jetton, $no_compte){
@@ -166,7 +166,7 @@ function db_delete_jetton($db, $no_jetton, $no_compte){
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->execute();
 
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
+	return $statement->rowCount();
 }
 
 function db_delete_observation($db, $no_compte, $date){
@@ -177,7 +177,16 @@ function db_delete_observation($db, $no_compte, $date){
 	$statement->bindValue(":date", $date, PDO::PARAM_STR);
 	$statement->execute();
 
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
+	return $statement->rowCount();
+}
+
+function db_delete_vieux_jetton($db) {
+	$sql = "DELETE FROM jetton WHERE (date_creation < (CURDATE() + INTERVAL - 365 DAY) OR date_use < (CURDATE() + INTERVAL - 40 DAY)) AND no_expire=0";
+
+	$statement = $db->prepare($sql);
+	$statement->execute();
+
+	return $statement->rowCount();
 }
 
 function db_select_all_observation($db, $no_compte) {
