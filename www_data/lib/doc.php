@@ -62,7 +62,7 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 		$pdf->SetTitle('bill_cycle_'. date_humain(new Datetime($cycle[0]["date_obs"]), '_') . '.pdf');
 		$pdf->AddPage();
 		$pdf->SetFont('Courier','B',16);
-		$pdf->Cell($pdf->GetPageWidth()-35,10,utf8_decode($nom), 0, 0, 'C');
+		$pdf->Cell($pdf->GetPageWidth()-35,10,mb_convert_encoding($nom, 'ISO-8859-1', 'UTF-8'), 0, 0, 'C');
 		$pdf->SetFont('Courier','',10);
 		$pdf->Ln();
 		$pdf->Cell($pdf->GetPageWidth()-35,5,sprintf("Cycle de %d jours du %s au %s", count($cycle), date_humain(new Datetime($cycle[0]["date_obs"])), date_humain(new Datetime(end($cycle)["date_obs"]))), 0, 0, 'C');
@@ -146,7 +146,7 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 			if (boolval($line["?"])) {
 				$pdf->SetFont('Courier','I',8);
 				$pdf->SetTextColor(100,100,100);
-				$pdf->Cell($pdf->GetStringWidth("jour non observé"),5,utf8_decode("jour non observé"));
+				$pdf->Cell($pdf->GetStringWidth("jour non observé"),5,mb_convert_encoding("jour non observé", 'ISO-8859-1', 'UTF-8'));
 				$pdf->SetFont('Courier','',10);
 				$pdf->SetTextColor(0,0,0);
 			}
@@ -193,8 +193,8 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 			}
 			if ($methode==3 && isset($line["note_fc"]) && !empty($line["note_fc"])) {
 				$pdf->SetFont('Arial','',10);
-				$w = $pdf->GetStringWidth(utf8_decode($line["note_fc"]))+1;
-				$pdf->Cell($w,5,utf8_decode($line["note_fc"]));
+				$w = $pdf->GetStringWidth(mb_convert_encoding($line["note_fc"], 'ISO-8859-1', 'UTF-8'))+1;
+				$pdf->Cell($w,5,mb_convert_encoding($line["note_fc"], 'ISO-8859-1', 'UTF-8'));
 				$pdf->SetFont('Courier','',10);
 			}
 			if ($methode==3 && isset($line["fleche_fc"]) && !empty($line["fleche_fc"])) {
@@ -208,8 +208,8 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 			if ($methode !=3 && isset($line["sensation"]) && !empty($line["sensation"])){
 				if ($methode==1) $pdf->SetFont('Courier','',8.5);
 				else $pdf->SetFont('Courier','',10);
-				$w = $pdf->GetStringWidth(utf8_decode($line["sensation"]))+1;
-				$pdf->Cell($w,5,utf8_decode($line["sensation"]));
+				$w = $pdf->GetStringWidth(mb_convert_encoding($line["sensation"], 'ISO-8859-1', 'UTF-8'))+1;
+				$pdf->Cell($w,5,mb_convert_encoding($line["sensation"], 'ISO-8859-1', 'UTF-8'));
 				$pdf->SetFont('Courier','',10);
 			}
 			$com_debut_x = $pdf->GetX();
@@ -221,8 +221,8 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetX($pdf->GetPageWidth()/2-12);
 				$pdf->SetFont('Courier','',9);
 				$pdf->SetTextColor(135, 67, 176);
-				$w = strval($temp) . utf8_decode("°");
-				if ($line["heure_temp"]) $w .= utf8_decode(" à ") .  str_replace(':', 'h', substr($line["heure_temp"],0,-3));
+				$w = strval($temp) . mb_convert_encoding("°", 'ISO-8859-1', 'UTF-8');
+				if ($line["heure_temp"]) $w .= mb_convert_encoding(" à ", 'ISO-8859-1', 'UTF-8') .  str_replace(':', 'h', substr($line["heure_temp"],0,-3));
 				$com_fin_x = $pdf->GetPageWidth()/2 - $pdf->GetStringWidth($w);
 				$pdf->SetX($com_fin_x);
 				$pdf->Cell($pdf->GetStringWidth($w),5,$w,0,0,'R');
@@ -256,15 +256,15 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 			$pdf->SetY($pdf->GetY()+0.5);
 			if (isset($line["commentaire"]) && $line["commentaire"]) {
 				$pdf->SetFont('Arial','I',7);
-				$w = $pdf->GetStringWidth(utf8_decode($line["commentaire"]));
+				$w = $pdf->GetStringWidth(mb_convert_encoding($line["commentaire"], 'ISO-8859-1', 'UTF-8'));
 				if ($w < ($com_fin_x-$com_debut_x)) {
 					$pdf->SetX($com_debut_x);
-					$pdf->Cell($w,5,utf8_decode($line["commentaire"]));
+					$pdf->Cell($w,5,mb_convert_encoding($line["commentaire"], 'ISO-8859-1', 'UTF-8'));
 				}
 				else {
 					$pdf->Ln();
 					$pdf->SetX($pdf->GetX()+16.5);
-					$pdf->MultiCell($pdf->GetPageWidth()-50,3,utf8_decode($line["commentaire"]));
+					$pdf->MultiCell($pdf->GetPageWidth()-50,3,mb_convert_encoding($line["commentaire"], 'ISO-8859-1', 'UTF-8'));
 					$com_long = true;
 				}
 				$pdf->SetFont('Courier','',10);

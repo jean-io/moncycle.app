@@ -14,12 +14,7 @@ require_once "lib/sec.php";
 $db = db_open();
 
 $compte = sec_auth_jetton($db);
-
-if (is_null($compte)) {
-	header('Location: connexion');
-	http_response_code(401);
-	exit;
-}
+sec_redirect_non_connecte($compte);
 
 $erreur = "";
 $succes = "";
