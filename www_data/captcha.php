@@ -7,12 +7,16 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
-session_start();
+require_once "config.php";
+require_once "lib/db.php";
+require_once "lib/sec.php";
+
+$db = db_open();
 
 $captcha_num = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789abcdefghijkmnpqrstuvwxyz';
 $captcha_num = substr(str_shuffle($captcha_num), 0, 6);
-$_SESSION["captcha"] = $captcha_num;
 
+if (isset($_COOKIE["MONCYCLEAPP_JETTON"]) && strlen($_COOKIE["MONCYCLEAPP_JETTON"])>0) db_update_jetton_captcha($db, $_COOKIE["MONCYCLEAPP_JETTON"], $captcha_num);
 
 $font_size = 20;
 $img_width = 150;

@@ -18,12 +18,38 @@ require_once 'vendor/phpmailer/phpmailer/src/Exception.php';
 require_once 'vendor/phpmailer/phpmailer/src/PHPMailer.php';
 require_once 'vendor/phpmailer/phpmailer/src/SMTP.php';
 
-session_start();
+$db = db_open();
 
-if (isset($_SESSION["connected"]) && $_SESSION["connected"] && $_SESSION["no"]!=2) {
+$compte = sec_auth_jetton($db);
+if (!is_null($compte)) {
 	header('Location: /');
+	echo "Déja connecté, redirection.";
 	exit;
 }
+
+$jetton = "";
+$captcha = null;
+
+if (isset($_COOKIE["MONCYCLEAPP_JETTON"]) && strlen($_COOKIE["MONCYCLEAPP_JETTON"])>0) {
+	$jetton = $_COOKIE["MONCYCLEAPP_JETTON"];
+	$db_ret = db_select_jetton_captcha($db, $jetton);
+	if (isset($db_ret[0]["no_jetton"])) {
+		db_update_jetton_use($db, $db_ret[0]["no_jetton"]);
+		$captcha = $db_ret[0]["captcha"]; 
+	}
+}
+else {
+	$jetton = sec_motdepasse_aleatoire(64);
+	db_insert_jetton($db, NULL, "CAPTCHA | " .  $_SERVER['HTTP_USER_AGENT'], "FR", $jetton, 3);
+	$arr_cookie_options = array (
+		'expires' => strtotime('+2 days'), 
+		'path' => '/',
+		'secure' => true,
+		'httponly' => true,
+	);
+	setcookie("MONCYCLEAPP_JETTON", $jetton, $arr_cookie_options);
+}
+
 
 $output = "";
 $succes = "";
@@ -43,7 +69,7 @@ try {
 		elseif (!isset($_POST["prenom"]) || !isset($_POST["email1"]) || !isset($_POST["age"]) || !filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 			$output .= "Toutes le données n'ont pas été saisies ou alors elles sont erronées.";
 		}
-		elseif (isset($_SESSION["captcha"]) && isset($_POST["captcha"]) && strlen($_POST["captcha"])>=1 && $_POST["captcha"]==$_SESSION["captcha"]) {
+		elseif (isset($_POST["captcha"]) && strlen(trim($_POST["captcha"]))>=1 && trim($_POST["captcha"])==$captcha) {
 			$methode = intval($_POST["methode"] ?? 0);
 			if ($methode<1 || $methode>3) $methode=1;
 

@@ -181,7 +181,7 @@ function db_delete_observation($db, $no_compte, $date){
 }
 
 function db_delete_vieux_jetton($db) {
-	$sql = "DELETE FROM jetton WHERE (date_creation < (CURDATE() + INTERVAL - 365 DAY) OR date_use < (CURDATE() + INTERVAL - 40 DAY)) AND no_expire=0";
+	$sql = "DELETE FROM jetton WHERE (date_creation < (CURDATE() + INTERVAL - 365 DAY) OR date_use < (CURDATE() + INTERVAL - 40 DAY)) AND expire>0";
 
 	$statement = $db->prepare($sql);
 	$statement->execute();
@@ -427,11 +427,12 @@ function db_update_relance ($db, $no_compte, $relance) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_insert_jetton($db, $no_compte, $nom, $pays, $jetton_str) {
-	$sql = "INSERT INTO `jetton` (`no_compte`, `nom`, `pays`, `jetton_str`) VALUES (:no_compte, :nom, :pays, :jetton_str)";
+function db_insert_jetton($db, $no_compte, $nom, $pays, $jetton_str, $expire=2) {
+	$sql = "INSERT INTO `jetton` (`no_compte`, `nom`, `pays`, `jetton_str`, `expire`) VALUES (:no_compte, :nom, :pays, :jetton_str, :expire)";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":expire", $expire, PDO::PARAM_INT);
 	$statement->bindValue(":nom", $nom, PDO::PARAM_STR);
 	$statement->bindValue(":pays", $pays, PDO::PARAM_STR);
 	$statement->bindValue(":jetton_str", $jetton_str, PDO::PARAM_STR);
@@ -450,6 +451,16 @@ function db_select_compte_jetton($db, $jetton_str) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_select_jetton_captcha($db, $jetton_str) {
+	$sql = "SELECT captcha, no_jetton FROM `jetton` WHERE `jetton_str` = :jetton_str LIMIT 1";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":jetton_str", $jetton_str, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function db_update_jetton_use($db, $no_jetton){
 	$sql = "UPDATE `jetton` SET `date_use` = now() WHERE `no_jetton` = :no_jetton";
 
@@ -460,4 +471,14 @@ function db_update_jetton_use($db, $no_jetton){
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_update_jetton_captcha($db, $jetton_str, $captcha){
+	$sql = "UPDATE `jetton` SET `date_use` = now(), `captcha` = :captcha WHERE `jetton_str` = :jetton_str";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":jetton_str", $jetton_str, PDO::PARAM_STR);
+	$statement->bindValue(":captcha", $captcha, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
 

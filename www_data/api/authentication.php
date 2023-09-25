@@ -41,7 +41,7 @@ try {
 
 			$jetton = sec_motdepasse_aleatoire(256);
 
-			db_insert_jetton($db, $compte["no_compte"], $_POST["appareil"] ?? $_SERVER['HTTP_USER_AGENT'], "FR", $jetton);	
+			db_insert_jetton($db, $compte["no_compte"], $_POST["appareil"] ?? ("AUTH | " . $_SERVER['HTTP_USER_AGENT']), "FR", $jetton);	
 			db_update_compte_connecte($db, $compte["no_compte"]);
 
 			$arr_cookie_options = array (
