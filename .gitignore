@@ -7,3 +7,4 @@ sessions
 www_data/module
 *.bak
 *.bak.*
+*.swp

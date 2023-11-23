@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "df62649b4149c3511c1ce5d21ed944e3",
+    "content-hash": "cc1e5841375113861ed62cc9aea31874",
     "packages": [
         {
             "name": "components/jquery",
-            "version": "3.6.0",
+            "version": "v3.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/components/jquery.git",
-                "reference": "6cf38ee1fd04b6adf8e7dda161283aa35be818c3"
+                "reference": "8edc7785239bb8c2ad2b83302b856a1d61de60e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/components/jquery/zipball/6cf38ee1fd04b6adf8e7dda161283aa35be818c3",
-                "reference": "6cf38ee1fd04b6adf8e7dda161283aa35be818c3",
+                "url": "https://api.github.com/repos/components/jquery/zipball/8edc7785239bb8c2ad2b83302b856a1d61de60e7",
+                "reference": "8edc7785239bb8c2ad2b83302b856a1d61de60e7",
                 "shasum": ""
             },
             "type": "component",
@@ -53,7 +53,7 @@
                 "source": "https://github.com/jquery/jquery",
                 "wiki": "http://docs.jquery.com/"
             },
-            "time": "2021-03-20T19:13:42+00:00"
+            "time": "2023-09-22T01:43:46+00:00"
         },
         {
             "name": "fpdf/fpdf",
@@ -107,51 +107,6 @@
                 "source": "https://github.com/coreydoughty/Fpdf/tree/1.86.0"
             },
             "time": "2023-07-04T16:41:45+00:00"
-        },
-        {
-            "name": "nnnick/chartjs",
-            "version": "v4.3.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/chartjs/Chart.js.git",
-                "reference": "095a9849f4e2c9a9acc134d107050b6d374fa1b8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/chartjs/Chart.js/zipball/095a9849f4e2c9a9acc134d107050b6d374fa1b8",
-                "reference": "095a9849f4e2c9a9acc134d107050b6d374fa1b8",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "release/2.0": "v2.0-dev"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "NICK DOWNIE",
-                    "email": "hello@nickdownie.com"
-                }
-            ],
-            "description": "Simple HTML5 charts using the canvas element.",
-            "homepage": "https://www.chartjs.org/",
-            "keywords": [
-                "JS",
-                "chart"
-            ],
-            "support": {
-                "issues": "https://github.com/chartjs/Chart.js/issues",
-                "source": "https://github.com/chartjs/Chart.js/tree/v4.3.3"
-            },
-            "time": "2023-08-02T23:11:12+00:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -232,6 +187,67 @@
                 }
             ],
             "time": "2023-08-29T08:26:30+00:00"
+        },
+        {
+            "name": "swagger-api/swagger-ui",
+            "version": "v5.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swagger-api/swagger-ui.git",
+                "reference": "cbfc3e949d3d9e2b71d566fb722cb3970036f593"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/cbfc3e949d3d9e2b71d566fb722cb3970036f593",
+                "reference": "cbfc3e949d3d9e2b71d566fb722cb3970036f593",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Anna Bodnia",
+                    "email": "anna.bodnia@gmail.com"
+                },
+                {
+                    "name": "Buu Nguyen",
+                    "email": "buunguyen@gmail.com"
+                },
+                {
+                    "name": "Josh Ponelat",
+                    "email": "jponelat@gmail.com"
+                },
+                {
+                    "name": "Kyle Shockey",
+                    "email": "kyleshockey1@gmail.com"
+                },
+                {
+                    "name": "Robert Barnwell",
+                    "email": "robert@robertismy.name"
+                },
+                {
+                    "name": "Sahar Jafari",
+                    "email": "shr.jafari@gmail.com"
+                }
+            ],
+            "description": " Swagger UI is a collection of HTML, Javascript, and CSS assets that dynamically generate beautiful documentation from a Swagger-compliant API.",
+            "homepage": "http://swagger.io",
+            "keywords": [
+                "api",
+                "documentation",
+                "openapi",
+                "specification",
+                "swagger",
+                "ui"
+            ],
+            "support": {
+                "issues": "https://github.com/swagger-api/swagger-ui/issues",
+                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.9.0"
+            },
+            "time": "2023-09-29T12:27:07+00:00"
         }
     ],
     "packages-dev": [],

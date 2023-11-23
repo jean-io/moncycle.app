@@ -6,6 +6,7 @@
 	"require": {
 		"phpmailer/phpmailer": "6.*",
 		"fpdf/fpdf" : "1.*",
-		"components/jquery" : "3.*"
+		"components/jquery" : "3.*",
+		"swagger-api/swagger-ui" : "5.*"
 	}
 }
