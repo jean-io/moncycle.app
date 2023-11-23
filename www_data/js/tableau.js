@@ -223,18 +223,19 @@ bill = {
 		$(".day .s").empty();
 		$(".obs .s").empty();
 		$(".day .s").removeClass("petit");				
-		for (const [s, data] of Object.entries(bill.sommets)) {
-			$(`#o-${s} .s`).html(bill.text.sommet);	
-			$(`#ro-${s} .s`).html(bill.text.sommet);	
+		for (const [s, data] of Object.entries(bill.sommets)) {	
 			let nb_j_sommet = [1, 2, 3, $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1];
 			nb_j_sommet.forEach(n => {
 				let s_date = bill.date.parse(s);
 				s_date.setDate(s_date.getDate()+n);		
 				let s_id = bill.date.str(s_date);
 				$(`#o-${s_id} .s`).html(`${bill.text.sommet}+${n}`);
-				$(`#o-${s_id} .s`).addClass("petit");	
+				$(`#o-${s_id} .s`).addClass("petit");
 				$(`#ro-${s_id} .s`).html(n);
 			});
+			$(`#o-${s} .s`).html(bill.text.sommet);	
+			$(`#ro-${s} .s`).html(bill.text.sommet);
+			$(`#o-${s} .s`).removeClass("petit");
 		}
 	},
 	ligne_sympto : function () {
