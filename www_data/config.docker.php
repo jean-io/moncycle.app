@@ -7,6 +7,8 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
+define("APP_URL", getenv("APP_URL") ?? "https://tableau.moncycle.app/");
+
 define("DB_HOST",     getenv("DB_HOST")     ?? "");
 define("DB_ID",       getenv("DB_ID")       ?? "");
 define("DB_NAME",     getenv("DB_NAME")     ?? "");
