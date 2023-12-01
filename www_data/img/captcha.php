@@ -7,9 +7,9 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
-require_once "config.php";
-require_once "lib/db.php";
-require_once "lib/sec.php";
+require_once "../config.php";
+require_once "../lib/db.php";
+require_once "../lib/sec.php";
 
 $db = db_open();
 
@@ -30,6 +30,6 @@ $image = imagecreate($img_width, $img_height);
 imagecolorallocate($image, 30, 130, 76); // couleur de fond
 $text_color = imagecolorallocate($image, 255, 255, 255); // couleur du texte
 
-imagettftext($image, $font_size, 0, 15, 30, $text_color, 'font/montserrat/static/Montserrat-Regular.ttf', $captcha_num);
+imagettftext($image, $font_size, 0, 15, 30, $text_color, '../font/montserrat/static/Montserrat-Regular.ttf', $captcha_num);
 imagejpeg($image);
 

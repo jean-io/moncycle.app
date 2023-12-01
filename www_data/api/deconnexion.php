@@ -7,9 +7,9 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
-require_once "config.php";
-require_once "lib/db.php";
-require_once "lib/sec.php";
+require_once "../config.php";
+require_once "../lib/db.php";
+require_once "../lib/sec.php";
 
 $db = db_open();
 
@@ -19,10 +19,14 @@ if(!is_null($compte)) {
 	db_delete_jetton($db, $compte["no_jetton"], $compte["no_compte"]);
 }
 
-
 setcookie("MONCYCLEAPP_JETTON", '', -1, '/');
 
+header('Content-Type: application/json');
+header('Location: /');
 
-echo "deconexion OK";
-echo PHP_EOL;
+echo json_encode([
+	"auth" => false,
+	"jetton" => '',
+	"message" => "deconexion OK"
+]);
 

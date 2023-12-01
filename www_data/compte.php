@@ -45,7 +45,7 @@ if (isset($_REQUEST["modif_compte"]) && (empty($_POST["email2"]) || (!empty($_PO
 
 if (isset($_REQUEST["suppr_compte"]) && isset($_POST["boutton_suppr"])) {
 	db_delete_compte($db, $compte["no_compte"]);
-	header('Location: deconnexion');
+	header('Location: /');
 	exit;
 }
 
@@ -106,7 +106,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom"><?= $compte["nom_compte"] ?? "Mon compte" ?></div>
-			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="deconnexion" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
+			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="api/deconnexion" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $erreur? "<br /><br />" . $erreur : "" ?></span>
 			<?php if(boolval($compte["donateur"])): ?><p>🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p><?php endif; ?>

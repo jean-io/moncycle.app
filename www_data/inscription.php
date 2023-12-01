@@ -184,7 +184,7 @@ catch (Exception $e){
 			<br />			
 			<label for="i_captcha">Captcha:</label><br />
 			<input name="captcha" id="i_captcha" type="text" maxlength="6" required placeholder="Entrer les six lettres ou chiffres affichés ci-dessous." /><br />
-			<img src="captcha.php" class="captcha" /><br />
+			<img src="../img/captcha.php" class="captcha" /><br />
 			<br />
 			<label for="i_comment">Comment avez-vous découvert moncycle.app? Un commentaire?</label><br />
 			<textarea required id="i_comment" name="decouvert" maxlength="255" placeholder="Dites nous tout!"><?= $_POST['decouvert'] ?? "" ?></textarea>
