@@ -104,13 +104,31 @@ foreach($compte as $com) {
 
 	db_update_relance($db, $com["no_compte"], 1);
 
-	echo "relance envoyée à {$com["email1"]} (et {$com["email2"]}).";
+	echo "relance envoyée à {$com["email1"]} (et {$com["email2"]})";
 	echo PHP_EOL;
 }
 
 // SUPPR DES JETTONS EXPIRES
 
 $ret = db_delete_vieux_jetton($db);
-echo $ret . " vieux jettons supprimés.";
+echo $ret . " vieux jettons supprimés";
 echo PHP_EOL;
 
+// RESET DES COMPTEURS DE STAT
+
+db_update_reset_stats($db, "pub_visite_jour");
+echo "stats du jour réinitialisées";
+
+$auj = getdate();
+
+if ($auj["wday"]==0) {
+	db_update_reset_stats($db, "pub_visite_hebdo");
+	echo ", stats de la semaine réinitialisées";
+}
+
+if ($auj["mday"]==1) {
+	db_update_reset_stats($db, "pub_visite_mensuel");
+	echo ", stats du mois réinitialisées";
+}
+
+echo PHP_EOL;

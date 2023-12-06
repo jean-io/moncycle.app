@@ -59,3 +59,12 @@ CREATE TABLE `jetton` (
   CONSTRAINT `observation_ibfk_2` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+CREATE TABLE `stats` (
+  `cle` varchar(255) NOT NULL,
+  `valeur` bigint(20) unsigned DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+INSERT INTO `stats` (`cle`, `valeur`) VALUES
+('pub_visite_mensuel',	0),
+('pub_visite_hebdo',	0),
+('pub_visite_jour',	0);

@@ -18,3 +18,6 @@ $stats["moncycle_app_nb_total_observation"] = round(db_select_total_observation_
 
 echo json_encode($stats, JSON_PRETTY_PRINT);
 
+db_update_increment_stats($db, "pub_visite_mensuel");
+db_update_increment_stats($db, "pub_visite_hebdo");
+db_update_increment_stats($db, "pub_visite_jour");

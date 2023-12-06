@@ -482,3 +482,32 @@ function db_update_jetton_captcha($db, $jetton_str, $captcha){
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_update_increment_stats($db, $cle){
+	$sql = "update stats set valeur = valeur+1 where cle like :cle";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":cle", $cle, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_select_stats($db, $cle) {
+	$sql = "select valeur from stats where cle=:cle";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":cle", $cle, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_NUM);
+}
+
+function db_update_reset_stats($db, $cle){
+	$sql = "update stats set valeur = 0 where cle like :cle";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":cle", $cle, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
