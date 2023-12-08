@@ -10,18 +10,18 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require_once "config.php";
-require_once "lib/db.php";
-require_once "lib/sec.php";
-require_once "lib/mail.php";
-require_once 'vendor/phpmailer/phpmailer/src/Exception.php';
-require_once 'vendor/phpmailer/phpmailer/src/PHPMailer.php';
-require_once 'vendor/phpmailer/phpmailer/src/SMTP.php';
+require_once "../config.php";
+require_once "../lib/db.php";
+require_once "../lib/sec.php";
+require_once "../lib/mail.php";
+require_once '../vendor/phpmailer/phpmailer/src/Exception.php';
+require_once '../vendor/phpmailer/phpmailer/src/PHPMailer.php';
+require_once '../vendor/phpmailer/phpmailer/src/SMTP.php';
 
 $db = db_open();
 
 $compte = sec_auth_jetton($db);
-if (!is_null($compte)) {
+if (!is_null($compte) && $compte["no_compte"]!=2) {
 	header('Location: /');
 	echo "Déja connecté, redirection.";
 	exit;
@@ -146,9 +146,9 @@ catch (Exception $e){
 -->
 <html lang="fr">
 	<head>
-		<?= file_get_contents("./vue/head.html") ?>
-		<link rel="stylesheet" href="css/commun.css?h=<?= hash_file("sha1", "./css/commun.css") ?>" />
-		<link rel="stylesheet" href="css/compte.css?h=<?= hash_file("sha1", "./css/compte.css") ?>" />
+		<?= file_get_contents("../vue/head.html") ?>
+		<link rel="stylesheet" href="../css/commun.css?h=<?= hash_file("sha1", "../css/commun.css") ?>" />
+		<link rel="stylesheet" href="../css/compte.css?h=<?= hash_file("sha1", "../css/compte.css") ?>" />
 
 	</head>
 	<body>
@@ -184,7 +184,7 @@ catch (Exception $e){
 			<br />			
 			<label for="i_captcha">Captcha:</label><br />
 			<input name="captcha" id="i_captcha" type="text" maxlength="6" required placeholder="Entrer les six lettres ou chiffres affichés ci-dessous." /><br />
-			<img src="../img/captcha.php" class="captcha" /><br />
+			<img src="captcha.php" class="captcha" /><br />
 			<br />
 			<label for="i_comment">Comment avez-vous découvert moncycle.app? Un commentaire?</label><br />
 			<textarea required id="i_comment" name="decouvert" maxlength="255" placeholder="Dites nous tout!"><?= $_POST['decouvert'] ?? "" ?></textarea>
