@@ -276,7 +276,7 @@ bill = {
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${bill.text.mois[c_fin.getMonth()]} `;
 		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${bill.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='export?cycle=${bill.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='export?cycle=${bill.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='api/export?cycle=${bill.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='api/export?cycle=${bill.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
 		cycle.append(`<div class='contenu' id='contenu-${c_id}'><div class='graph pas_glaire pas_fc' id='graph-${c_id}' ><canvas id='canvas-${c_id}'></canvas></div></div>`);
 		return cycle;
 	},
