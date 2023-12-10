@@ -7,10 +7,13 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
+require_once "../vendor/autoload.php";
 require_once "../config.php";
 require_once "../lib/db.php";
 require_once "../lib/date.php";
 require_once "../lib/sec.php";
+
+use OTPHP\TOTP;
 
 header('Content-Type: application/json');
 
@@ -34,31 +37,34 @@ try {
 		}
 		elseif (isset($compte["actif"]) && !boolval($compte["actif"])) {
 			$output .= "Compte désactivé. Contactez nous pour plus d'informations.";
-		}		
+		}
 		elseif (isset($compte["motdepasse"]) && password_verify($_POST["mdp"], $compte["motdepasse"])) {
 			unset($compte["motdepasse"]);
 			unset($_POST["mdp"]);
 
-			$jetton = sec_motdepasse_aleatoire(256);
+			$usr_totp_code = 0;
+			if (isset($_POST["code"]) && strlen($_POST["code"])>0) $usr_totp_code = intval(preg_replace('/\s+/','',$_POST["code"]));
 
-			db_insert_jetton($db, $compte["no_compte"], $_POST["appareil"] ?? ("AUTH | " . $_SERVER['HTTP_USER_AGENT']), "FR", $jetton);	
-			db_update_compte_connecte($db, $compte["no_compte"]);
+			if (!isset($compte["totp"]) || strlen($compte["totp"])==0) {
+				$jetton = sec_auth_succes($db, $compte);
+				$output .= "Connecté!";
+			}
+			elseif (isset($compte["totp"]) && strlen($compte["totp"])>0 && $usr_totp_code>0 && intval(TOTP::createFromSecret($compte["totp"])->now())==$usr_totp_code) {
+				unset($compte["totp"]);
+				unset($_POST["code"]);
 
-			$arr_cookie_options = array (
-				'expires' => strtotime('+5 years'), 
-				'path' => '/',
-				'secure' => true,
-				'httponly' => true,
-			);
-			setcookie("MONCYCLEAPP_JETTON", $jetton, $arr_cookie_options);
+				$jetton = sec_auth_succes($db, $compte);
+				$output .= "Connecté!";
+			}
+			else {
+				$output .= "Bon mot de passe mais code à usage unique mauvais ou manquant.";
+			}
 
-			$output .= "Connecté!";
 		}
 		else {
 			db_update_co_echoue($db, $_POST["email1"]);
 			$output .= "Mauvais mot de passe ou compte inexistant.";
 		}
-	
 	}
 	
 

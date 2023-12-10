@@ -54,5 +54,21 @@ function sec_redirect_non_connecte($compte) {
 	}
 }
 
+function sec_auth_succes($db, $compte, $appareil=null) {
+	$jetton = sec_motdepasse_aleatoire(256);
 
+	db_insert_jetton($db, $compte["no_compte"], $appareil ?? ("AUTH | " . $_SERVER['HTTP_USER_AGENT']), "FR", $jetton);	
+	db_update_compte_connecte($db, $compte["no_compte"]);
+
+	$arr_cookie_options = array (
+		'expires' => strtotime('+5 years'), 
+		'path' => '/',
+		'secure' => true,
+		'httponly' => true,
+	);
+
+	setcookie("MONCYCLEAPP_JETTON", $jetton, $arr_cookie_options);
+
+	return $jetton;
+}
 

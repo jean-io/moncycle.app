@@ -8,6 +8,7 @@ CREATE TABLE `compte` (
   `email1` varchar(255) COLLATE utf8mb4_bin NOT NULL,
   `email2` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `motdepasse` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `totp` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   `nb_co_echoue` smallint(5) unsigned NOT NULL DEFAULT 0,
   `donateur` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `actif` tinyint(1) unsigned NOT NULL DEFAULT 1,
