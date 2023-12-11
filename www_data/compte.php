@@ -101,6 +101,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<?= file_get_contents("./vue/head.html") ?>
 		<link rel="stylesheet" href="css/commun.css?h=<?= hash_file("sha1", "./css/commun.css") ?>" />
 		<link rel="stylesheet" href="css/compte.css?h=<?= hash_file("sha1", "./css/compte.css") ?>" />
+		<script type="text/javascript" src="vendor/components/jquery/jquery.min.js"></script> 
 	</head>
 	<body>
 		<center>
@@ -117,7 +118,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<h2>Modifier mes informations</h2>
 		<form action="?modif_compte" method="post"><br />
 		<label for="i_prenom">Prénom(s):</label><br />
-		<input type="text" id="i_prenom" required name="nom" value="<?= $compte["nom_compte"] ?? '' ?>" /><br />
+		<input class="auto_save" type="text" id="i_prenom" required name="nom" value="<?= $compte["nom_compte"] ?? '' ?>" /><br />
 		<br />
 		J'ai besoin de suivre:<br />
 		<span class="label_info">Modifier ce choix ne génère aucune perte de données.</span><br />
@@ -129,7 +130,7 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<input id="i_email1" type="email" readonly name="email1" value="<?= $compte['email1'] ?? '' ?>" /><br />
 		<br />
 		<label for="i_email2">2ème e-mail:</label> <br /><span class="label_info">Permet de recevoir les cycles sur une deuxième addresse.</span><br />
-		<input id="i_email2" type="email" name="email2" value="<?= $compte['email2'] ?? '' ?>" /><br />
+		<input id="i_email2" class="auto_save" type="email" name="email2" value="<?= $compte['email2'] ?? '' ?>" /><br />
 		<br />
 		<label for="i_anaissance">Année de naissance:</label><br />
 		<select id="i_anaissance" name="age" required>
@@ -165,9 +166,19 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<span class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est irréversible mais vous avez la possibilité de télécharger toutes vos données en amont de la suppression.</span><br />
 		<br />
 		<a href="?mes_donnees_svp"><input type="button" value="📦 Exporter mes données" /></a> <form method="post" action="?suppr_compte" onsubmit="return confirm('Êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irréversible.')"><input name="boutton_suppr" type="submit" class="rouge" value="⚠️ Supprimer mon compte" /></form>
-<br /><br /><br /><br /><br /><br />
-</div>
-
-
+		<br /><br /><br /><br /><br /><br />
+		</div>
+		<script>
+			$(document).ready(function(){
+				$(".auto_save").on( "keyup", function() {
+					$.post("../api/param", `${$(this).attr('name')}=${this.value}`).fail(function(data){
+						console.error(data);
+					}).done(function(data){
+						console.log(data);
+						if(data.hasOwnProperty("nom")) $("#nom").text(data.nom);;
+					});
+				});
+			});
+		</script>
 	</body>
 </html>

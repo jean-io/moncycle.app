@@ -9,3 +9,4 @@ www_data/module
 *.bak
 *.bak.*
 *.swp
+.DS_Store
