@@ -126,8 +126,8 @@ function db_update_compte($db, $nom, $mail2, $age, $methode, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_compte_param($db, $param, $value, $no_compte) {
-	$param_list = ["nom", "methode", "age", "email1", "email2", "motdepasse", "totp", "nb_co_echoue", "donateur", "actif", "relance", "derniere_co_date", "inscription_date", "mdp_change_date", "decouvert"];
+function db_update_compte_param_str($db, $param, $value, $no_compte) {
+	$param_list = ["nom", "email1", "email2", "motdepasse", "totp", "derniere_co_date", "inscription_date", "mdp_change_date", "decouvert"];
 	if (!in_array($param, $param_list, true)) return false;
 
 	$sql = "UPDATE compte SET " . $param . " = :cvalue WHERE no_compte = :no_compte";
@@ -135,6 +135,20 @@ function db_update_compte_param($db, $param, $value, $no_compte) {
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->bindValue(":cvalue", $value, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_update_compte_param_int($db, $param, $value, $no_compte) {
+	$param_list = ["methode", "age", "nb_co_echoue", "donateur", "actif", "relance"];
+	if (!in_array($param, $param_list, true)) return false;
+
+	$sql = "UPDATE compte SET " . $param . " = :cvalue WHERE no_compte = :no_compte";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":cvalue", $value, PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);

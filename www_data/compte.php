@@ -19,30 +19,6 @@ sec_redirect_non_connecte($compte);
 $erreur = "";
 $succes = "";
 
-if (isset($_REQUEST["change_motdepasse"])) {
-	if (!empty($_POST["mdp1"])) {
-		db_udpate_motdepasse_par_nocompte($db, sec_hash($_POST["mdp1"]), $compte["no_compte"]);
-		$succes .= "Votre mot de passe a été changé. &#x270C;";
-	}
-	else {
-		$erreur .= "Merci de renseigner un nouveau mot de passe.";
-	}
-}
-
-if (isset($_REQUEST["modif_compte"]) && (empty($_POST["email2"]) || (!empty($_POST["email2"]) && filter_var($_POST["email2"], FILTER_VALIDATE_EMAIL)) )) {
-	$methode = intval($_POST["methode"]);
-	if (!$methode || $methode<1 || $methode>3) {
-		$erreur .= "Erreur dans l'enregistrement de la méthode.";
-	}
-	else {
-		db_update_compte($db, $_POST["nom"], $_POST["email2"], $_POST["age"], $methode, $compte["no_compte"]);
-
-		$compte = sec_auth_jetton($db);
-
-		$succes .= "Vos informations ont été mises à jour. &#x1F44F;";
-	}
-}
-
 if (isset($_REQUEST["suppr_compte"]) && isset($_POST["boutton_suppr"])) {
 	db_delete_compte($db, $compte["no_compte"]);
 	header('Location: /');
@@ -110,21 +86,21 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="api/deconnexion" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $erreur? "<br /><br />" . $erreur : "" ?></span>
-			<?php if(boolval($compte["donateur"])): ?><p>🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p><?php endif; ?>
-			<?php if($compte["no_compte"]==2): ?><p style="font-weight:bold">&#x1F6A8; Vous visualisez actuellement le compte de démonstration.<br /><br /><a style="color:#fbca0b" href='/inscription'><button type='button'>&#x1F680; créer votre compte</button></a></p><?php endif; ?>
+			<p id="merci_don" style="display:none">🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p>
+			<p id="warning_demo" style="font-weight:bold; display:none">&#x1F6A8; Vous visualisez actuellement le compte de démonstration.<br /><br /><a style="color:#fbca0b" href='/inscription'><button type='button'>&#x1F680; créer votre compte</button></a></p>
 		</center>
 
 		<div class="contennu" id="timeline">
 		<h2>Modifier mes informations</h2>
-		<form action="?modif_compte" method="post"><br />
+		<form action="../api/param" method="post"><br />
 		<label for="i_prenom">Prénom(s):</label><br />
 		<input class="auto_save" type="text" id="i_prenom" required name="nom" value="<?= $compte["nom_compte"] ?? '' ?>" /><br />
 		<br />
 		J'ai besoin de suivre:<br />
 		<span class="label_info">Modifier ce choix ne génère aucune perte de données.</span><br />
-		<input type="radio" name="methode" value="2" id="m_glaire" <?php if ($compte["methode"]==2): ?>checked<?php endif; ?>  required /><label for="m_glaire"><b>Billings</b>: l'évolution de la glaire cervicale seule</label><br />	
-		<input type="radio" name="methode" value="3" id="m_fc"  <?php if ($compte["methode"]==3): ?>checked<?php endif; ?>/><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />	
-		<input type="radio" name="methode" value="1" id="m_temp"  <?php if ($compte["methode"]==1): ?>checked<?php endif; ?>/><label for="m_temp"><b>Symptothermie</b>: l'évolution de la glaire cervicale + les changements de température corporelle</label><br />	
+		<input type="radio" name="methode" value="2" class="auto_save" id="m_glaire" <?php if ($compte["methode"]==2): ?>checked<?php endif; ?>  required /><label for="m_glaire"><b>Billings</b>: l'évolution de la glaire cervicale seule</label><br />	
+		<input type="radio" name="methode" value="3" class="auto_save" id="m_fc"  <?php if ($compte["methode"]==3): ?>checked<?php endif; ?>/><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />	
+		<input type="radio" name="methode" value="1" class="auto_save" id="m_temp"  <?php if ($compte["methode"]==1): ?>checked<?php endif; ?>/><label for="m_temp"><b>Symptothermie</b>: l'évolution de la glaire cervicale + les changements de température corporelle</label><br />	
 		<br />
 		<label for="i_email1">E-mail:</label> <br /><span class="label_info">Identifiant de connexion et envoi des cycles (non modifiable).</span><br />
 		<input id="i_email1" type="email" readonly name="email1" value="<?= $compte['email1'] ?? '' ?>" /><br />
@@ -133,28 +109,32 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<input id="i_email2" class="auto_save" type="email" name="email2" value="<?= $compte['email2'] ?? '' ?>" /><br />
 		<br />
 		<label for="i_anaissance">Année de naissance:</label><br />
-		<select id="i_anaissance" name="age" required>
+		<select id="i_anaissance" name="age" class="auto_save" required>
 		<?php for ($i = date('Y')-(date('Y')%5)-75; $i < date('Y')-5; $i += 5) { ?>
 			<option <?= $i==($compte["age"]?? -1) ? "selected" : "" ?> value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>	
 		<?php } ?>
 		</select><br />
-		<br />
-		<input type="submit" value="&#x1F4BE; enregistrer" /></form>
+		<!-- <br />
+		<input type="submit" value="&#x1F4BE; enregistrer" /> -->
+		</form>
 		<br />
 		<br />
 		<br />
 		<h2>Changer mon mot de passe</h2>
-		<form action="?change_motdepasse" method="post">
-		<span class="label_info">Le mot de passe doit contenir au moins 8 caractères dont un chiffre et une majuscule.</span><br/>
+		<form id="form_mdp_change" action="?change_motdepasse" method="post">
+		<br />
+		<label for="mdp_old">Ancien mot de passe:</label><br />
+		<input type="password" name="mdp_old" required /><br />  
 		<br />
 		<label for="mdp1">Nouveau mot de passe:</label><br />
-		<input type="password" name="mdp1" required pattern="^(?=.*?[a-z])(?=.*?[0-9]).{7,}$" /><br />  
+		<input type="password" name="mdp1" id="i_mdp1" required pattern="^(?=.*?[a-z])(?=.*?[0-9]).{7,}$" /><br />
+		<span class="label_info">Le mot de passe doit contenir au moins 10 caractères dont un chiffre et une majuscule.</span><br/>
 		<br />
-		<!--<label for="mdp2">Confirmer mot de passe:</label><br />
-		<input type="password" name="mdp2" required /><br />
-		<br />-->
-		<input type="submit" value="&#x1F4BE; enregistrer" /><br />
-		</form><br />
+		<label for="mdp2">Confirmer votre nouveau mot de passe:</label><br />
+		<input type="password" name="mdp2" id="i_mdp2" required /><br />
+		<br />
+		<input id="but_mdp_change" type="submit" value="&#x1F4BE; enregistrer" /><br />
+		<span id="mdp_ret_msg" class=""></span><br /></form>
 		<br />
 		<h2>À propos et contact</h2>
 		<p>Cette application est gratuite et sans publicité/vente de données! Vous pouvez cependant contribuer au financement de l'application et aider le développeur via </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">tipeee.com/moncycleapp</a>.</p>
@@ -169,15 +149,62 @@ if (isset($_REQUEST["mes_donnees_svp"])) {
 		<br /><br /><br /><br /><br /><br />
 		</div>
 		<script>
+
+			var moncycle_app_usr = {};
+
 			$(document).ready(function(){
-				$(".auto_save").on( "keyup", function() {
+
+				// TELECHARGEMENT DES DONNES DES UTILISATEUR
+				$.get("api/constante.php", {}).done(function(data) {
+					moncycle_app_usr = data;
+					if(moncycle_app_usr.donateur) $("#merci_don").show();
+					if(moncycle_app_usr.id_utilisateur == 2) $("#warning_demo").show();
+					console.log(data);
+				});
+
+				// MISE A JOURS DES PARAMETTRE DU COMPTE
+				$(".auto_save").on("keyup change", function() {
 					$.post("../api/param", `${$(this).attr('name')}=${this.value}`).fail(function(data){
 						console.error(data);
 					}).done(function(data){
 						console.log(data);
-						if(data.hasOwnProperty("nom")) $("#nom").text(data.nom);;
+						if(data.hasOwnProperty("nom")) {
+							console.log(moncycle_app_usr);
+							$("#nom").text(data.nom);
+						}
 					});
 				});
+
+				// CHAGEMENT DU MOT DE PASSE
+				$("#form_mdp_change").on("submit", function(event) {
+					event.preventDefault();
+					if ($("#i_mdp1").val() != $("#i_mdp2").val()) {
+						$("#mdp_ret_msg").removeClass("vert");
+						$("#mdp_ret_msg").addClass("rouge");
+						$("#mdp_ret_msg").text("Erreur: le nouveau mot de passe et sa confirmation ne sont pas identiques.");
+						return;
+					}
+					$("#but_mdp_change").prop("disabled", true);
+					var form_data = $("#form_mdp_change").serializeArray();
+					$.post("../api/mdp_change", $.param(form_data)).done(function(ret){
+						console.log(ret);
+						$("#but_mdp_change").prop("disabled", false);
+						if (ret.change_ok) {
+							$("#mdp_ret_msg").removeClass("rouge");
+							$("#mdp_ret_msg").addClass("vert");
+							$("#mdp_ret_msg").text("Mot de passe changé avec succès.");
+						}
+						else {
+							$("#mdp_ret_msg").removeClass("vert");
+							$("#mdp_ret_msg").addClass("rouge");
+							$("#mdp_ret_msg").text(`Erreur: ${ret.msg}.`);
+						}
+					}).fail(function(ret){
+						console.error(ret);
+						$("#but_mdp_change").prop("disabled", false);
+					});
+				});
+
 			});
 		</script>
 	</body>

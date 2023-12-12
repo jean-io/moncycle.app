@@ -50,7 +50,7 @@ try {
 				$jetton = sec_auth_succes($db, $compte);
 				$output .= "Connecté!";
 			}
-			elseif (isset($compte["totp"]) && strlen($compte["totp"])>0 && $usr_totp_code>0 && intval(TOTP::createFromSecret($compte["totp"])->now())==$usr_totp_code) {
+			elseif ($usr_totp_code>0 && intval(TOTP::createFromSecret($compte["totp"])->now())==$usr_totp_code) {
 				unset($compte["totp"]);
 				unset($_POST["code"]);
 
@@ -67,7 +67,7 @@ try {
 			$output .= "Mauvais mot de passe ou compte inexistant.";
 		}
 	}
-	
+
 
 	else {
 		$output .= "Données manquantes.";
