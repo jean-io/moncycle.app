@@ -28,6 +28,10 @@ h2 {
 	background-color: white;
 }
 
+h2 span.net_stat {
+	font-weight: normal;
+}
+
 .rouge {
 	color: #ac2433;
 }
