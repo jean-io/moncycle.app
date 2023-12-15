@@ -142,7 +142,11 @@
 				<br />
 			</div>
 			<div id="jour_form_but">
-				<button type="button" id="jour_form_submit">✏️ enregistrer</button> <button type="button" id="jour_form_close">❌ fermer</button><br />
+				<button type="button" id="jour_form_submit" style="display: none;">✏️ enregistrer</button>
+				<button type="button" id="jour_form_close">❌ fermer</button>
+				<span style="display: none;" id="jour_form_saving">&nbsp;⏳&nbsp;enregistrement...</span>
+				<span class="vert" style="display: none;" id="jour_form_saved">&nbsp;✅&nbsp;enregistré</span>
+				<br />
 			</div>
 		</form>
 		<script type="text/javascript">

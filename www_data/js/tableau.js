@@ -58,8 +58,9 @@ moncycle_app = {
 		}).fail(moncycle_app.redirection_connexion);
 		$("#charger_cycle").click(moncycle_app.charger_cycle);
 		$("#jour_form_close").click(moncycle_app.close_menu);
-		$("#jour_form_submit").click(moncycle_app.submit_menu);	
-		$("#jour_form_suppr").click(moncycle_app.suppr_observation);	
+		$("#jour_form_submit").click(moncycle_app.submit_menu);
+		$("#jour_form input, #jour_form textarea").on("keyup change", moncycle_app.submit_menu);
+		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
 		$("#form_fc").keyup(moncycle_app.fc_test_note).change(moncycle_app.fc_test_note);
 		$("input.fc_form_note").change(moncycle_app.fc_form2note);
 		$("#but_macro").click(function () {
@@ -466,6 +467,8 @@ moncycle_app = {
 		$("#jour_form_titre").html(titre.join(" "));
 		$("#jour_form")[0].reset();
 		$("#fc_msg").empty();
+		$("#jour_form_saving").hide();
+		$("#jour_form_saved").hide();
 		$("#form_date").val(j.date);
 		if (j.note_fc && moncycle_app.constante.methode==3) {
 			$("#form_fc").val(j.note_fc);
@@ -484,7 +487,8 @@ moncycle_app = {
 		Object.entries(moncycle_app.sensation).sort((a,b) => b[1] - a[1]).forEach(function (o){
 			if (n<10) {
 				let ob_id = btoa(unescape(encodeURIComponent(o[0]))).replace(/[^A-Za-z0-9 -]/g, "");
-				let html = `<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${o[0]}" /><label for="ob_${ob_id}">${o[0]}</label><br />`;
+				let html = $(`<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${o[0]}" /><label for="ob_${ob_id}">${o[0]}</label><br />`);
+				html.on("keyup change", moncycle_app.submit_menu);
 				$("#vos_obs").append(html);
 			}
 			n += 1;	
@@ -531,8 +535,11 @@ moncycle_app = {
 		$("#timeline").removeClass("flou");
 		$("#recap").removeClass("flou");
 		$("#jour_form").hide();
+		if (moncycle_app.page_a_recharger) location.reload();
 	},
 	submit_menu : function () {
+		$("#jour_form_saving").show();
+		$("#jour_form_saved").hide();
 		$("#ob_extra").val().split(',').forEach(function(o) {
 			o = o.trim().toLowerCase();
 			if (!o) return;
@@ -541,17 +548,18 @@ moncycle_app = {
 		});
 		let d = $("#jour_form").serializeArray();
 		$.post("api/observation.php", $.param(d)).done(function(data){
+			$("#jour_form_saving").hide();
 			if (data.err){
 				$("#form_err").val(data.err);
 				console.error(data.err);
 			}
 			if (data.outcome == "ok") {
-				if (moncycle_app.page_a_recharger) location.reload();
+				$("#jour_form_saved").show();
 				moncycle_app.charger_observation(data.date);
-				moncycle_app.close_menu();
-			}		
+			}
 		}).fail(function (ret) {
-			console.error(ret.responseText); 
+			$("#jour_form_saving").hide();
+			console.error(ret.responseText);
 			$("#form_err").val(ret.responseText);
 			moncycle_app.redirection_connexion(ret);
 		});

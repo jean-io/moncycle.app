@@ -30,14 +30,14 @@ $(document).ready(function(){
 		$("#net_stat").text('⏳');
 		$.post("../api/param", `${$(this).attr('name')}=${this.value}`).fail(function(data){
 			console.error(data);
-			$("#net_stat").text('❌ erreur');
+			$("#net_stat").html('❌&nbsp;erreur');
 			$("#net_stat").addClass('rouge');
 			$("#net_stat").removeClass('vert');
 		}).done(function(data){
 			if(data.hasOwnProperty("nom")) {
 				$("#nom").text(data.nom);
 			}
-			$("#net_stat").text('✅ enregistré');
+			$("#net_stat").html('✅&nbsp;enregistré');
 			$("#net_stat").addClass('vert');
 			$("#net_stat").removeClass('rouge');
 		});
