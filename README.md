@@ -22,4 +22,4 @@ Code légal 👉 [https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.fr
 
 Si vous souhaitez auto-héberger votre propre instance Moncycle.app, vous pouvez utiliser:
 - [YunoHost](https://install-app.yunohost.org/?app=moncycle)
-- [Docker](https://install-app.yunohost.org/?app=moncycle)
+- [Docker](https://hub.docker.com/r/jeanio/moncycle.app)
