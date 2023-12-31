@@ -8,6 +8,7 @@
 
 .flou {
 	filter: blur(5px);
+	pointer-events: none;
 }
 
 .day {
@@ -193,24 +194,26 @@
 	width: 95%;
 }
 
-#jour_form_titre {
-	font-family: 'Montserrat';
-	margin-bottom: 5px;
+#jour_form_header {
 	position: sticky;
 	top: 0;
 	background-color: white;
-	padding: 10px 0 5px 0;
+	padding-top: 5px;
+}
+
+#jour_form_header .popup_enregistratement_status,
+#jour_form_header button {
+	font-size: .8em;
+}
+
+#jour_form_titre {
+	font-family: 'Montserrat';
+	padding: 5px 0 5px 0;
+	text-align: center;
 }
 
 #jour_form_titre span {
 	font-weight: lighter;
-}
-
-#jour_form_but {
-	position: sticky;
-	bottom: 0;
-	background-color: white;
-	padding: 5px 0;
 }
 
 .categorie {
@@ -241,8 +244,7 @@ h2 {
 		color: black;
 	}
 
-	#jour_form_titre,
-	#jour_form_but {
+	#jour_form_header {
 		background-color: black;
 	}
 
