@@ -174,10 +174,10 @@
 #jour_form, #temp_graph {
 	display: block;
 	position: fixed;
-	top: 50px;
-	bottom: 50px;
-	left: 25px;
-	right: 25px;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
 	overflow-y: scroll;
 	padding: 0 10px;
 	border-radius: 3px;
@@ -203,7 +203,7 @@
 
 #jour_form_header .popup_enregistratement_status,
 #jour_form_header button {
-	font-size: .8em;
+	font-size: .6em;
 }
 
 #jour_form_titre {
@@ -353,3 +353,6 @@ h2 {
 	color: #ac2433;
 }
 
+#jour_form_suppr {
+	font-size: .6em;
+}

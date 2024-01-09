@@ -74,9 +74,15 @@
 			<form id="f_totp_validation" action="../api/totp?activation" method="post">
 				<input type="hidden" value="" name="totp_secret" id="i_totp_secret" />
 				secret: <span id="totp_secret"></span><br />
-				<input type="number" name="tmp_code" placeholder="Entrez le code généré dans votre application" /><br />
+				<input type="number" name="tmp_code" class="input_compte_totp" placeholder="code TOTP" /><br />
 				<input type="submit" id="i_submit_otp" value="🔐 activer" />
 			</form>
+		</div>
+		<div id="totp_actif">
+			<p class="vert">✅ 🔐 Authentification multifacteur active.</p>
+			<p>Pour désactiver l'authentification multifacteur, entrez le code temporaire dans votre application:</p>
+			<input type="number" placeholder="code TOTP" class="input_compte_totp" />
+			<input type="button" value="Désactiver" />
 		</div>
 		<br /><br /><br />
 

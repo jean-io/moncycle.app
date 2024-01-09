@@ -6,6 +6,11 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
+.input_compte_totp {
+	text-align: center;
+	max-width: 100px;
+}
+
 input[type=text],
 input[type=email],
 input[type=number],

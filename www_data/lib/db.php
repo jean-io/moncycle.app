@@ -368,7 +368,7 @@ function db_select_nb_cycle_recent($db) {
 
 	$statement = $db->prepare($sql);
 	$statement->execute();
-       	return $statement->fetchAll(PDO::FETCH_NUM);
+	return $statement->fetchAll(PDO::FETCH_NUM);
 }
 
 function db_select_age_moyen($db) {
@@ -470,7 +470,7 @@ function db_insert_jetton($db, $no_compte, $nom, $pays, $jetton_str, $expire=2) 
 }
 
 function db_select_compte_jetton($db, $jetton_str) {
-	$sql = "SELECT J.no_compte, J.no_jetton, C.nom AS nom_compte, J.pays, J.nom AS nom_jetton, J.date_creation AS d_creation_jetton, J.date_use AS d_use_jetton, C.methode, C.age, C.email1, C.email2, C.nb_co_echoue, C.donateur, C.actif, C.relance, C.derniere_co_date, C.inscription_date, C.mdp_change_date, C.decouvert FROM `jetton` AS J INNER JOIN `compte` AS C ON J.no_compte=C.no_compte WHERE `jetton_str` = :jetton_str LIMIT 1";
+	$sql = "SELECT J.no_compte, J.no_jetton, C.nom AS nom_compte, J.pays, J.nom AS nom_jetton, J.date_creation AS d_creation_jetton, J.date_use AS d_use_jetton, C.methode, C.age, C.email1, C.email2, C.nb_co_echoue, C.donateur, C.actif, C.relance, C.derniere_co_date, C.inscription_date, C.mdp_change_date, C.decouvert, C.totp FROM `jetton` AS J INNER JOIN `compte` AS C ON J.no_compte=C.no_compte WHERE `jetton_str` = :jetton_str LIMIT 1";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":jetton_str", $jetton_str, PDO::PARAM_STR);
