@@ -44,6 +44,10 @@ echo "moncycle_app_pc_compte_actif ";
 echo round(($nb_compte_actif/$nb_compte)*100,1);
 echo PHP_EOL;
 
+echo "moncycle_app_nb_compte_avec_totp ";
+echo db_select_compte_avec_totp($db)[0][0];
+echo PHP_EOL;
+
 if ($nb_compte_actif<=0) exit;
 
 $nb_compte_actif_billings = db_select_nb_compte_actif_par_methode($db, 2)[0][0];
@@ -113,5 +117,4 @@ echo PHP_EOL;
 echo "moncycle_app_nb_observation_30j ";
 echo db_select_observation_count($db, 30)[0][0];
 echo PHP_EOL;
-
 

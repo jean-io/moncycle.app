@@ -23,7 +23,7 @@ $(document).ready(function(){
 			if (y==moncycle_app_usr.age) selected = 'selected';
 			$("#i_anaissance").append(`<option ${selected} value="${y}">entre ${y} et ${y+4}</option>`);
 		}
-		if (moncycle_app_usr.totp_actif < 3) $("#i_activate_otp").show();
+		if (moncycle_app_usr.totp_actif < 3) $("#totp_explications").show();
 		else $("#totp_actif").show();
 	}).fail(function (err) {
 		if (err.status == 401 || err.status == 403 || err.status == 407) {	
@@ -79,24 +79,35 @@ $(document).ready(function(){
 	// TOTP AUTH MULTI FACTEUR
 	$("#i_activate_otp").on("click", function(event) {
 		$("#i_activate_otp").prop("disabled", true);
+		$("#totp_err_msg").html("");
 		$.get("api/totp?init", {}).done(function(data) {
-			console.log(data);
-			$("#i_activate_otp").hide();
+			$("#i_activate_otp").prop("disabled", false);
+			$("#totp_explications").hide();
 			$("#totp_miseenpalce").show();
-			$("#totp_secret").text(data.init_secret);
+			$("#totp_auto_conf").attr("href", data.otpauth);
+			$("#totp_qrcode").html(data.qrcode);
+			$("#totp_copy_secret").on("click", function(event) {
+				navigator.clipboard.writeText(data.init_secret).then(function () {
+					$("#totp_copy_secret_ok").text("✅ copié");
+				}, function () {
+					alert('Failure to copy. Check permissions for clipboard');
+				});				
+			});
 		});
 	});
 
 	$("#f_totp_validation").on("submit", function(event) {
 		event.preventDefault();
+		$("#totp_err_msg").html("");
 		var form_data = $("#f_totp_validation").serializeArray();
+		$("#f_totp_validation").trigger("reset");
 		$.post("../api/totp?activation", $.param(form_data)).done(function(ret){
 			if (ret.totp_actif == TOTP_STATE_ACTIVE) {
 				$("#totp_miseenpalce").hide();
 				$("#totp_actif").show();
 			}
 			else {
-				$("#totp_err_msg").text(ret.msg);
+				$("#totp_err_msg").html("<b>❌&nbsp;erreur:</b> " + ret.msg);
 			}
 		}).fail(function(err) {
 			console.error(err);
@@ -105,15 +116,16 @@ $(document).ready(function(){
 
 	$("#f_totp_desac").on("submit", function(event) {
 		event.preventDefault();
+		$("#totp_err_msg").html("");
 		var form_data = $("#f_totp_desac").serializeArray();
+		$("#f_totp_desac").trigger("reset");
 		$.post("../api/totp?desactivation", $.param(form_data)).done(function(ret){
 			if (ret.totp_actif == TOTP_STATE_DISABLED) {
-				$("#i_activate_otp").show();
+				$("#totp_explications").show();
 				$("#totp_actif").hide();
 			}
 			else {
-				console.log(ret.msg);
-				$("#totp_err_msg").text(ret.msg);
+				$("#totp_err_msg").html("<b>❌&nbsp;erreur:</b> " + ret.msg);
 			}
 		}).fail(function(err) {
 			console.error(err);

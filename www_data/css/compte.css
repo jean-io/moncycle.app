@@ -42,3 +42,8 @@ form {
 .decouverte {
 	text-decoration: none;
 }
+
+.totp_activation_option {
+	font-weight: bold;
+	text-transform: uppercase;
+}

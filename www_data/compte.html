@@ -66,20 +66,27 @@
 		<br /><br /><br />
 
 
-
 		<h2>Authentification multifacteur <span class="net_stat" id=""></span></h2>
-		<p>
-			La double authentification est une méthode de sécurité qui demande à l'internaute de fournir deux types d'informations différentes pour prouver son identité.
-			Ainsi, pour accéder à votre tableau il vous sera demandé de saisir votre mot de passe et un code temporaire disponnible dans une applications sur votre télèphonne.
-			Ce système permet de renforcer la sécurité de vos données personnelles en cas de fuite ou de vol de votre mot de passe ou d'un mot de passe trop faible (entre autres).
-		</p>
-		<input type="button" id="i_activate_otp" value="🔐 activer l'authentification multifacteur" style="display: none;"/>
+		<div id="totp_explications" style="display: none;">
+			<p>
+				La double authentification est une méthode de sécurité qui demande à l'internaute de fournir deux types d'informations différentes pour prouver son identité.
+				Ainsi, pour accéder à votre tableau il vous sera demandé de saisir votre mot de passe et un code temporaire disponnible dans une applications sur votre télèphonne.
+				Ce système permet de renforcer la sécurité de vos données personnelles en cas de fuite ou de vol de votre mot de passe ou d'un mot de passe trop faible (entre autres).
+			</p>
+			<input type="button" id="i_activate_otp" value="🔐 activer l'authentification multifacteur" />
+		</div>
 		<div id="totp_miseenpalce" style="display: none;">
 			<form id="f_totp_validation" action="../api/totp?activation" method="post">
-				secret: <span id="totp_secret"></span><br />
-				<input type="number" name="tmp_code" class="input_compte_totp" placeholder="code TOTP" /><br />
+				<p>Configurez votre application d'authentification multifacteur. Vous n'avez pas encore d'application de ce type? téléchargez <a target="_blank" href="https://freeotp.github.io/">FreeOTP</a>.</p>
+				<p><span class="totp_activation_option">option 1: </span>si vous êtes sur votre télèphonne, cliquez sur le boutton ci-dessous pour une configuration automatique.</p>
+				<a id="totp_auto_conf"><button type="button">🤖 CONFIGURER</button></a>
+				<p><span class="totp_activation_option">option 2: </span>si vous êtes sur votre ordinateur, scannez le QR code ci-dessous depuis l'application depuis votre télèphonne.</p>
+				<div id="totp_qrcode"></div>
+				<p><span class="totp_activation_option">option 3: </span>copiez/collez manuellement le secret directement dans l'application.</p>
+				<button id="totp_copy_secret" type="button">📎 COPIER</button> <span class="vert" id="totp_copy_secret_ok"></span>
+				<p>Après avoir réalisé l'une de ces trois options, entrez le code généré par l'application:</p>
+				<input type="number" name="tmp_code" class="input_compte_totp" placeholder="code TOTP" />
 				<input type="submit" id="i_submit_otp" value="🔐 activer" />
-				<p class="rouge" id="totp_err_msg"></p>
 			</form>
 		</div>
 		<div id="totp_actif" style="display: none;">

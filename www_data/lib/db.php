@@ -561,3 +561,13 @@ function db_update_compte_totp_etat($db, $totp_etat, $no_compte) {
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
+
+function db_select_compte_avec_totp($db) {
+	$sql = "select count(no_compte) as MONCYCLE_APP_NB_COMPTE_AVEC_TOTP from compte where totp_etat=3 and no_compte!=2";
+
+	$statement = $db->prepare($sql);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_NUM);
+}
+

@@ -13,6 +13,10 @@ require_once "../lib/sec.php";
 require_once "../vendor/autoload.php";
 
 use OTPHP\TOTP;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 
 header('Content-Type: application/json');
 
@@ -28,10 +32,14 @@ if (isset($_GET["init"])) {
 	$totp = TOTP::generate();
 	$totp->setLabel($compte["email1"]);
 	$totp->setIssuer('MONCYCLE.APP');
-	$ret["init_secret"] = $totp->getSecret();
-	db_update_compte_totp_secret($db, $ret["init_secret"], $compte["no_compte"]);
+	$totp->setParameter('image', 'https://www.moncycle.app/image/moncycleapp512.jpg');
+	db_update_compte_totp_secret($db, $totp->getSecret(), $compte["no_compte"]);
 	db_update_compte_totp_etat($db, TOTP_STATE_INIT, $compte["no_compte"]);
+	$renderer = new ImageRenderer(new RendererStyle(150), new SvgImageBackEnd());
+	$writer = new Writer($renderer);
+	$ret["init_secret"] = $totp->getSecret();
 	$ret["otpauth"] = $totp->getProvisioningUri();
+	$ret["qrcode"] = $writer->writeString($totp->getProvisioningUri());
 	$ret["totp_actif"] = TOTP_STATE_INIT;
 }
 
@@ -46,7 +54,7 @@ if (isset($_GET["activation"])) {
 			$ret["totp_actif"] = TOTP_STATE_ACTIVE;
 		}
 		else {
-			$ret["msg"] = "le code renseigné ne correspond pas";
+			$ret["msg"] = "le code renseigné n'est pas correcte";
 		}
 
 	}
@@ -68,7 +76,7 @@ if (isset($_GET["desactivation"])) {
 			$ret["totp_actif"] = TOTP_STATE_DISABLED;
 		}
 		else {
-			$ret["msg"] = "le code renseigné ne correspond pas";
+			$ret["msg"] = "le code renseigné n'est pas correcte";
 		}
 
 	}

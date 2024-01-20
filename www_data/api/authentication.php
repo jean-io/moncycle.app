@@ -58,6 +58,7 @@ try {
 				$output .= "Connecté!";
 			}
 			else {
+				db_update_co_echoue($db, $_POST["email1"]);
 				$output .= "Bon mot de passe mais code à usage unique mauvais ou manquant.";
 			}
 
