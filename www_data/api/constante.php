@@ -35,6 +35,6 @@ echo json_encode([
 	"donateur" => boolval($compte["donateur"]), 
 	"tous_les_cycles" => $cycles,
 	"toutes_les_grossesses" => $grossesses,
-	"totp_actif" => (strlen($compte["totp"]) > 5)
+	"totp_actif" => $compte["totp_etat"]
 ]);
 

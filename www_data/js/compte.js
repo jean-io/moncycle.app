@@ -1,5 +1,10 @@
 var moncycle_app_usr = {};
 
+const TOTP_STATE_NEVER_USED = 0;
+const TOTP_STATE_DISABLED = 1;
+const TOTP_STATE_INIT = 2;
+const TOTP_STATE_ACTIVE = 3;
+
 $(document).ready(function(){
 
 	// TELECHARGEMENT DES DONNES DES UTILISATEUR
@@ -18,6 +23,8 @@ $(document).ready(function(){
 			if (y==moncycle_app_usr.age) selected = 'selected';
 			$("#i_anaissance").append(`<option ${selected} value="${y}">entre ${y} et ${y+4}</option>`);
 		}
+		if (moncycle_app_usr.totp_actif < 3) $("#i_activate_otp").show();
+		else $("#totp_actif").show();
 	}).fail(function (err) {
 		if (err.status == 401 || err.status == 403 || err.status == 407) {	
 			window.localStorage.clear();
@@ -83,7 +90,13 @@ $(document).ready(function(){
 		event.preventDefault();
 		var form_data = $("#f_totp_validation").serializeArray();
 		$.post("../api/totp?activation", $.param(form_data)).done(function(ret){
-			console.log(ret);
+			if (ret.totp_actif == TOTP_STATE_ACTIVE) {
+				$("#totp_miseenpalce").hide();
+				$("#totp_actif").show();
+			}
+			else {
+				$("#totp_err_msg").text(ret.msg);
+			}
 		}).fail(function(err) {
 			console.error(err);
 		});
