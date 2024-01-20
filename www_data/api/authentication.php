@@ -46,12 +46,12 @@ try {
 			$usr_totp_code = 0;
 			if (isset($_POST["code"]) && strlen($_POST["code"])>0) $usr_totp_code = intval(preg_replace('/\s+/','',$_POST["code"]));
 
-			if (!isset($compte["totp"]) || strlen($compte["totp"])==0) {
+			if ($compte["totp_etat"] != TOTP_STATE_ACTIVE) {
 				$jetton = sec_auth_succes($db, $compte);
 				$output .= "Connecté!";
 			}
-			elseif ($usr_totp_code>0 && intval(TOTP::createFromSecret($compte["totp"])->now())==$usr_totp_code) {
-				unset($compte["totp"]);
+			elseif ($usr_totp_code>0 && (TOTP::createFromSecret($compte["totp_secret"]))->verify($usr_totp_code)) {
+				unset($compte["totp_secret"]);
 				unset($_POST["code"]);
 
 				$jetton = sec_auth_succes($db, $compte);

@@ -7,6 +7,11 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
+define("TOTP_STATE_NEVER_USED", 0);
+define("TOTP_STATE_DISABLED", 1);
+define("TOTP_STATE_INIT", 2);
+define("TOTP_STATE_ACTIVE", 3);
+
 function sec_motdepasse_aleatoire($taille=12){
 	$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 	$pass = [];

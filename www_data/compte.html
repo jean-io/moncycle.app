@@ -68,22 +68,28 @@
 
 
 		<h2>Authentification multifacteur <span class="net_stat" id=""></span></h2>
-		<p>La double authentification permet de renforcer la sécurité de votre compte en cas de fuite ou de vol de votre mot de passe (entre autre...). Ça fonctionne avec l’ajout d’un facteur d’authentification via un code temporaire généré sur votre téléphone. Ce code est à renseigner sur la page de connexion à chaque fois que vous voulez accéder à votre compte.</p>
-		<input type="button" id="i_activate_otp" value="🔐 activer l'authentification multifacteur" />
+		<p>
+			La double authentification est une méthode de sécurité qui demande à l'internaute de fournir deux types d'informations différentes pour prouver son identité.
+			Ainsi, pour accéder à votre tableau il vous sera demandé de saisir votre mot de passe et un code temporaire disponnible dans une applications sur votre télèphonne.
+			Ce système permet de renforcer la sécurité de vos données personnelles en cas de fuite ou de vol de votre mot de passe ou d'un mot de passe trop faible (entre autres).
+		</p>
+		<input type="button" id="i_activate_otp" value="🔐 activer l'authentification multifacteur" style="display: none;"/>
 		<div id="totp_miseenpalce" style="display: none;">
 			<form id="f_totp_validation" action="../api/totp?activation" method="post">
-				<input type="hidden" value="" name="totp_secret" id="i_totp_secret" />
 				secret: <span id="totp_secret"></span><br />
 				<input type="number" name="tmp_code" class="input_compte_totp" placeholder="code TOTP" /><br />
 				<input type="submit" id="i_submit_otp" value="🔐 activer" />
 			</form>
 		</div>
-		<div id="totp_actif">
+		<div id="totp_actif" style="display: none;">
 			<p class="vert">✅ 🔐 Authentification multifacteur active.</p>
-			<p>Pour désactiver l'authentification multifacteur, entrez le code temporaire dans votre application:</p>
-			<input type="number" placeholder="code TOTP" class="input_compte_totp" />
-			<input type="button" value="Désactiver" />
+			<form id="f_totp_desac" action="../api/totp?desactivation" method="post">
+				<p>Pour désactiver l'authentification multifacteur, entrez le code temporaire dans votre application:</p>
+				<input type="number" name="tmp_code" placeholder="code TOTP" class="input_compte_totp" />
+				<input type="submit" value="Désactiver" />
+			</form>
 		</div>
+		<p class="rouge" id="totp_err_msg"></p>
 		<br /><br /><br />
 
 

@@ -127,7 +127,7 @@ function db_update_compte($db, $nom, $mail2, $age, $methode, $no_compte) {
 }
 
 function db_update_compte_param_str($db, $param, $value, $no_compte) {
-	$param_list = ["nom", "email1", "email2", "motdepasse", "totp", "derniere_co_date", "inscription_date", "mdp_change_date", "decouvert"];
+	$param_list = ["nom", "email1", "email2", "motdepasse", "totp_secret", "derniere_co_date", "inscription_date", "mdp_change_date", "decouvert"];
 	if (!in_array($param, $param_list, true)) return false;
 
 	$sql = "UPDATE compte SET " . $param . " = :cvalue WHERE no_compte = :no_compte";
@@ -470,7 +470,7 @@ function db_insert_jetton($db, $no_compte, $nom, $pays, $jetton_str, $expire=2) 
 }
 
 function db_select_compte_jetton($db, $jetton_str) {
-	$sql = "SELECT J.no_compte, J.no_jetton, C.nom AS nom_compte, J.pays, J.nom AS nom_jetton, J.date_creation AS d_creation_jetton, J.date_use AS d_use_jetton, C.methode, C.age, C.email1, C.email2, C.nb_co_echoue, C.donateur, C.actif, C.relance, C.derniere_co_date, C.inscription_date, C.mdp_change_date, C.decouvert, C.totp FROM `jetton` AS J INNER JOIN `compte` AS C ON J.no_compte=C.no_compte WHERE `jetton_str` = :jetton_str LIMIT 1";
+	$sql = "SELECT J.no_compte, J.no_jetton, C.nom AS nom_compte, J.pays, J.nom AS nom_jetton, J.date_creation AS d_creation_jetton, J.date_use AS d_use_jetton, C.methode, C.age, C.email1, C.email2, C.nb_co_echoue, C.donateur, C.actif, C.relance, C.derniere_co_date, C.inscription_date, C.mdp_change_date, C.decouvert, C.totp_secret, C.totp_etat FROM `jetton` AS J INNER JOIN `compte` AS C ON J.no_compte=C.no_compte WHERE `jetton_str` = :jetton_str LIMIT 1";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":jetton_str", $jetton_str, PDO::PARAM_STR);
@@ -535,6 +535,28 @@ function db_update_reset_stats($db, $cle){
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":cle", $cle, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_update_compte_totp_secret($db, $totp_secret, $no_compte) {
+	$sql = "UPDATE compte SET totp_secret = :cvalue WHERE no_compte = :no_compte";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":cvalue", $totp_secret, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_update_compte_totp_etat($db, $totp_etat, $no_compte) {
+	$sql = "UPDATE compte SET totp_etat = :cvalue WHERE no_compte = :no_compte";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":cvalue", $totp_etat, PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
