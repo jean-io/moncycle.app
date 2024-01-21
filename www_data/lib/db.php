@@ -112,20 +112,6 @@ function db_insert_compte($db, $nom, $methode, $age, $mail, $mdp, $decouvert) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_compte($db, $nom, $mail2, $age, $methode, $no_compte) {
-	$sql = "UPDATE compte SET nom = :nom, email2 = :email2, age = :age, methode = :methode WHERE no_compte = :no_compte";
-
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
-	$statement->bindValue(":nom", $nom, PDO::PARAM_STR);
-	$statement->bindValue(":email2", $mail2, PDO::PARAM_STR);
-	$statement->bindValue(":age", $age, PDO::PARAM_INT);
-	$statement->bindValue(":methode", $methode, PDO::PARAM_INT);
-	$statement->execute();
-
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
-}
-
 function db_update_compte_param_str($db, $param, $value, $no_compte) {
 	$param_list = ["nom", "email1", "email2", "motdepasse", "totp_secret", "derniere_co_date", "inscription_date", "mdp_change_date", "decouvert"];
 	if (!in_array($param, $param_list, true)) return false;
@@ -520,8 +506,8 @@ function db_select_tous_les_jetton($db, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_increment_stats($db, $cle){
-	$sql = "update stats set valeur = valeur+1 where cle like :cle";
+function db_update_increment_cle_valeur($db, $cle){
+	$sql = "update cle_valeur set valeur = valeur+1 where cle like :cle";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":cle", $cle, PDO::PARAM_STR);
@@ -530,8 +516,8 @@ function db_update_increment_stats($db, $cle){
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_select_stats($db, $cle) {
-	$sql = "select valeur from stats where cle=:cle";
+function db_select_cle_valeur($db, $cle) {
+	$sql = "select valeur from cle_valeur where cle=:cle";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":cle", $cle, PDO::PARAM_STR);
@@ -540,8 +526,8 @@ function db_select_stats($db, $cle) {
 	return $statement->fetchAll(PDO::FETCH_NUM);
 }
 
-function db_update_reset_stats($db, $cle){
-	$sql = "update stats set valeur = 0 where cle like :cle";
+function db_update_reset_cle_valeur($db, $cle){
+	$sql = "update cle_valeur set valeur = 0 where cle like :cle";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":cle", $cle, PDO::PARAM_STR);

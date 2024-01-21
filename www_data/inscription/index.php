@@ -146,15 +146,31 @@ catch (Exception $e){
 -->
 <html lang="fr">
 	<head>
-		<?= file_get_contents("../vue/head.html") ?>
-		<link rel="stylesheet" href="../css/commun.css?h=<?= hash_file("sha1", "../css/commun.css") ?>" />
-		<link rel="stylesheet" href="../css/compte.css?h=<?= hash_file("sha1", "../css/compte.css") ?>" />
-
+		<meta charset="utf-8" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<meta name="apple-mobile-web-app-title" content="moncycle.app" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="apple-touch-icon" href="/img/moncycleapp512.jpg" />
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
+		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
+		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
+		<title>moncycle.app</title>
+		<meta name="description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
+		<meta property="og:title" content="MONCYCLE.APP" />
+		<meta property="og:type" content="siteweb" />
+		<meta property="og:url" content="https://www.moncycle.app/" />
+		<meta property="og:image" content="/img/moncycleapp_apercu.jpg" />
+		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
+		<link rel="stylesheet" href="../css/commun.css" />
+		<link rel="stylesheet" href="../css/compte.css" />
 	</head>
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
-			<a href="/connexion?email1=<?= $_POST['email1'] ?? "" ?>"><button type="button" class="nav_button">Se connecter</button></a>
+			<a class="decouverte" href="https://www.moncycle.app"><button type="button" class="nav_button">découvrir moncycle.app 😍</button></a>
+			<a href="/connexion?email1=<?= $_POST['email1'] ?? "" ?>"><button type="button" class="nav_button">Se connecter 🔑</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $output? "<br /><br />" . $output : "" ?></span>
 		</center>
@@ -199,9 +215,8 @@ catch (Exception $e){
 			<label for="i_email1">E-mail:</label><br />
 			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail"  value="<?= $_REQUEST['email1'] ?? "" ?>" /><br />
 			<br />
-			<input type="submit" value="Recevoir un nouveau mot de passe &#x2709;" /></form>
+			<input type="submit" value="Recevoir un nouveau mot de passe 📩" /></form>
 			<br /><br /><br />
-			<center><a class="decouverte" href="https://www.moncycle.app">&#x1F60D; découvrir moncycle.app</a></center>
 			<br /><br /><br />
 		</div>
 

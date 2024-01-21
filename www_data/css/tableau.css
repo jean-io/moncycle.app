@@ -201,9 +201,8 @@
 	padding-top: 5px;
 }
 
-#jour_form_header .popup_enregistratement_status,
-#jour_form_header button {
-	font-size: .6em;
+#jour_form_header .popup_enregistratement_status {
+	font-size: .8em;
 }
 
 #jour_form_titre {

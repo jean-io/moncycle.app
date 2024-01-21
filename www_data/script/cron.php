@@ -116,18 +116,18 @@ echo PHP_EOL;
 
 // RESET DES COMPTEURS DE STAT
 
-db_update_reset_stats($db, "pub_visite_jour");
+db_update_reset_cle_valeur($db, "pub_visite_jour");
 echo "stats du jour réinitialisées";
 
 $auj = getdate();
 
 if ($auj["wday"]==0) {
-	db_update_reset_stats($db, "pub_visite_hebdo");
+	db_update_reset_cle_valeur($db, "pub_visite_hebdo");
 	echo ", stats de la semaine réinitialisées";
 }
 
 if ($auj["mday"]==1) {
-	db_update_reset_stats($db, "pub_visite_mensuel");
+	db_update_reset_cle_valeur($db, "pub_visite_mensuel");
 	echo ", stats du mois réinitialisées";
 }
 

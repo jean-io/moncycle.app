@@ -24,15 +24,15 @@ echo db_select_jetton_compte($db)[0][0];
 echo PHP_EOL;
 
 echo "moncycle_app_visite_mensuel ";
-echo db_select_stats($db, "pub_visite_mensuel")[0][0];
+echo db_select_cle_valeur($db, "pub_visite_mensuel")[0][0];
 echo PHP_EOL;
 
 echo "moncycle_app_visite_hebdo ";
-echo db_select_stats($db, "pub_visite_hebdo")[0][0];
+echo db_select_cle_valeur($db, "pub_visite_hebdo")[0][0];
 echo PHP_EOL;
 
 echo "moncycle_app_visite_jour ";
-echo db_select_stats($db, "pub_visite_jour")[0][0];
+echo db_select_cle_valeur($db, "pub_visite_jour")[0][0];
 echo PHP_EOL;
 
 $nb_compte_actif = db_select_nb_compte_actif($db)[0][0];
