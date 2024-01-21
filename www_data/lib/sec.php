@@ -77,3 +77,6 @@ function sec_auth_succes($db, $compte, $appareil=null) {
 	return $jetton;
 }
 
+function sec_offuscate_str($str) {
+	return substr($str, 0, 3) . " [masqué] " . substr($str, -3);
+}

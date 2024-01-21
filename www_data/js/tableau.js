@@ -239,23 +239,6 @@ moncycle_app = {
 			$(`#o-${s} .s`).removeClass("petit");
 		}
 	},
-	ligne_sympto : function () {
-		for (const [s, data] of Object.entries(moncycle_app.sommets)) {
-			let somme = 0;
-			let nb = 0;
-			for (let n=0; n<=6 ; n+=1) {
-				let s_date = moncycle_app.date.parse(s);
-				s_date.setDate(s_date.getDate()-n);		
-				let s_id = moncycle_app.date.str(s_date);
-				let temp = parseFloat($(`#o-${s_id} .t`).text());
-				if (!isNaN(temp)) {
-					somme += temp;
-					nb += 1;
-				}
-			}
-			moncycle_app.sommets[s] = [data[0], (somme/nb)+0.2];
-		};
-	},
 	cycle_aff_switch: function (id) {
 		let cache = JSON.parse(localStorage.cycle_cache || "[]");
 		if ($("#contenu-c-" + id).is(":hidden")) {
@@ -332,28 +315,8 @@ moncycle_app = {
 			for (const [s, data] of Object.entries(moncycle_app.sommets)) {
 				if (id == data[0]) j_sommet = s;
 			}
-			if (j_sommet) {
-				let date = moncycle_app.date.parse(j_sommet);
-				let data = {};
-				data[`${date.getDate()} ${moncycle_app.text.mois[date.getMonth()]}`] = moncycle_app.sommets[j_sommet][1];
-				date.setDate(date.getDate()-6);
-				data[`${date.getDate()} ${moncycle_app.text.mois[date.getMonth()]}`] = moncycle_app.sommets[j_sommet][1];
-				let graph_data = {
-					data: data,
-					fill: false,
-					borderColor: '#ac2433',
-					pointRadius: 0,
-					tension: 0,
-					borderDash: [2, 2]
-				};
-				if (moncycle_app.graphs[id].data.datasets.length<=1) moncycle_app.graphs[id].data.datasets.push(graph_data);
-				else moncycle_app.graphs[id].data.datasets[1].data = graph_data.data;
-				moncycle_app.graphs[id].update();
-			}
-			if (!j_sommet && moncycle_app.graphs[id].data.datasets.length>1) {
-				moncycle_app.graphs[id].data.datasets = moncycle_app.graphs[id].data.datasets.slice(0,1);
-				moncycle_app.graphs[id].update();
-			}
+			moncycle_app.graphs[id].data.datasets = moncycle_app.graphs[id].data.datasets.slice(0,1);
+			moncycle_app.graphs[id].update();
 		}
 	},
 	observation2recap : function(j) {
@@ -590,10 +553,7 @@ moncycle_app = {
 		let date = moncycle_app.date.parse(data.date);
 		let label = `${date.getDate()} ${moncycle_app.text.mois[date.getMonth()]}`;
 		moncycle_app.graph_data[data.cycle][label] = parseFloat(data.temperature);
-		if (moncycle_app.graphs[data.cycle]) {
-			moncycle_app.ligne_sympto();
-			moncycle_app.graph_update(data.cycle);
-		}
+		if (moncycle_app.graphs[data.cycle]) moncycle_app.graph_update(data.cycle);
 	},	
 	fc_note_regex : /^((h|m|l|vl|H|M|L|VL|VH)\s*(b|B)?\s*)?(2W|10KL|10SL|10DL|10WL|2w|10kl|10sl|10dl|10wl|[024]|(([68]|10)\s*[BCGKLPYRbcgklpyr]{1,8}))?\s*([xX][123]|AD|ad)?(\s*[RrLl]?(ap|AP))?$/,
 	fc_test_note : function() {

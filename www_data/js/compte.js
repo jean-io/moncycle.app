@@ -131,4 +131,22 @@ $(document).ready(function(){
 			console.error(err);
 		});
 	});
+
+	// SUPPRESSION DU COMPTE
+	$("#f_suppr_compte").on("submit", function(event) {
+		event.preventDefault();
+		var form_data = $("#f_suppr_compte").serializeArray();
+		if (!confirm(moncycle_app_usr.nom + ', êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irréversible. 😟')) return;
+		$.post("../api/suppr_compte", $.param(form_data)).done(function(ret){
+			if (ret.suppr) {
+				window.localStorage.clear();
+				alert(moncycle_app_usr.nom + ", votre compte a bien été supprimée. 😢💔");
+				window.location.replace('connexion');
+			}
+			else alert(moncycle_app_usr.nom + ", votre compte n'a pas été supprimé, veuillez nous contacter.");
+		}).fail(function(err) {
+			console.error(err);
+		});
+	});
+
 });

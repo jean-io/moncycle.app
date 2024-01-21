@@ -510,6 +510,16 @@ function db_update_jetton_captcha($db, $jetton_str, $captcha){
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_select_tous_les_jetton($db, $no_compte) {
+	$sql = "SELECT * FROM jetton where no_compte= :no_compte";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function db_update_increment_stats($db, $cle){
 	$sql = "update stats set valeur = valeur+1 where cle like :cle";
 
