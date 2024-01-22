@@ -225,6 +225,7 @@ ol li {
 .desc_emoji {
 	line-height: 1.5em;
 	display: inline-block;
+	margin: 0;
 	margin-left: 15px;
 }
 
@@ -251,6 +252,7 @@ video {
 	text-align: center;
 	margin: 1%;
 	margin-bottom: 0;
+	margin-top: 25px;
 	max-width: 30%;
 	vertical-align: top;
 }
