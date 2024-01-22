@@ -79,7 +79,7 @@ $(document).ready(() => {
 
 
 	// telechargement des dernières stats
-	$.ajax({url: "https://tableau.moncycle.app/pub_stat", success: function(result){
+	$.ajax({url: "https://tableau.moncycle.app/api/pub_stat", success: function(result){
 		$("#stat_compte").text(result.moncycle_app_nb_compte);
 		$("#stat_cycle").text(result.moncycle_app_nb_cycle);
 		$("#stat_obs").text(result.moncycle_app_nb_total_observation);
