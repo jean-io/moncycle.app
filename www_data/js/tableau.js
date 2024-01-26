@@ -68,7 +68,7 @@ moncycle_app = {
 			$("#timeline").hide();
 			$("#but_micro").show();
 			$("#recap").show();
-			while (moncycle_app.cycle_curseur < Math.min(5, moncycle_app.constante.tous_les_cycles.length)) moncycle_app.charger_cycle();
+			while (moncycle_app.cycle_curseur < Math.min(10, moncycle_app.constante.tous_les_cycles.length)) moncycle_app.charger_cycle();
 		});
 		$("#but_micro").click(function () {
 			$("#but_macro").show();
@@ -155,7 +155,7 @@ moncycle_app = {
 		}
 		moncycle_app.graph_preparation_data(dates_data_holder);
 		moncycle_app.charger_observation(dates_req.join(','));
-		if (moncycle_app.constante.methode == 1) moncycle_app.cycle2graph(date_cycle_str);
+		if (moncycle_app.constante.methode == 1 || moncycle_app.constante.methode == 4) moncycle_app.cycle2graph(date_cycle_str);
 		if (form_nouv_cycle) {
 			moncycle_app.form_nouveau_cycle(false);
 		}
@@ -165,10 +165,10 @@ moncycle_app = {
 			$.each(data, function (o_date, o_data) {
 				$(`#o-${o_date}`).replaceWith(moncycle_app.observation2timeline(o_data));
 				$(`#ro-${o_date}`).replaceWith(moncycle_app.observation2recap(o_data));
-				$(`.pas_${moncycle_app.constante.methode_diminutif}`).css("display", "none");
 				if (o_data.jour_sommet) moncycle_app.sommets[o_date] = [o_data.cycle, 0];
 				else if (!o_data.jour_sommet && o_date in moncycle_app.sommets) delete moncycle_app.sommets[o_date];
 			});
+			$(`.pas_${moncycle_app.constante.methode_diminutif}`).css("display", "none");
 			moncycle_app.trois_jours();
 			moncycle_app.graph_preparation_data(data);
 		}).fail(moncycle_app.redirection_connexion);
@@ -267,7 +267,7 @@ moncycle_app = {
 		let c_fin_text = `au ${c_fin.getDate()} ${moncycle_app.text.mois[c_fin.getMonth()]} `;
 		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
 		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='api/export?cycle=${moncycle_app.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='api/export?cycle=${moncycle_app.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
-		cycle.append(`<div class='contenu' id='contenu-${c_id}'><div class='graph pas_glaire pas_fc' id='graph-${c_id}' ><canvas id='canvas-${c_id}'></canvas></div></div>`);
+		cycle.append(`<div class='contenu' id='contenu-${c_id}'><div class='graph pas_bill pas_fc' id='graph-${c_id}' ><canvas id='canvas-${c_id}'></canvas></div></div>`);
 		return cycle;
 	},
 	cycle2recap : function (c, nb, fin) {
@@ -316,7 +316,7 @@ moncycle_app = {
 			moncycle_app.graphs[id].data.datasets[0].data = moncycle_app.graph_data[id];
 			moncycle_app.graphs[id].update();
 		}
-		if (!vide && moncycle_app.constante.methode==1) {
+		if (!vide && (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4)) {
 			let j_sommet = "";
 			for (const [s, data] of Object.entries(moncycle_app.sommets)) {
 				if (id == data[0]) j_sommet = s;
@@ -387,7 +387,7 @@ moncycle_app = {
 				observation.append(`<span class='g ${moncycle_app.gommette[color][1]}'>${contenu}</span>`);
 				tbd = false;
 			}
-			if (moncycle_app.constante.methode==1 && j.temperature) {
+			if ((moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4) && j.temperature) {
 				let temp = parseFloat(j.temperature);
 				let color = "#4169e1";
 				if (temp > 37.5) color = "#b469e1";
@@ -395,14 +395,14 @@ moncycle_app = {
 					let r = parseInt((1-(37.5-temp))*115)+65;
 					color = `rgb(${r}, 105, 225)`;
 				}
-				observation.append(`<span class='t pas_glaire pas_fc' style='background-color: ${color}'>${temp}</span>`);
+				observation.append(`<span class='t pas_bill pas_fc' style='background-color: ${color}'>${temp}</span>`);
 				if (j.heure_temp) {
 					let h = j.heure_temp.substring(0,5).replace(':','h');
-					observation.append(`<span class='th pas_glaire pas_fc' style='color: ${color}'> à ${h}</span>`);
+					observation.append(`<span class='th bill pas_fc pas_bill' style='color: ${color}'> à ${h}</span>`);
 				}
 				tbd = false;
 			}
-			if (moncycle_app.constante.methode==3 && j.note_fc) {
+			if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) {
 				tbd = false;
 			}
 		}
@@ -414,9 +414,9 @@ moncycle_app = {
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
 		observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		if (!j.jenesaispas) {
-			observation.append(`<span class='o pas_fc'>${j.sensation || ""}</span>`);
-			observation.append(`<span class='fc pas_temp pas_glaire'>${j.note_fc || ""}</span>`);
-			if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_temp pas_glaire'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
+			observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
+			observation.append(`<span class='fc pas_bill pas_bill_temp'>${j.note_fc || ""}</span>`);
+			if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
 		}
 		if (j.commentaire) {
 			let comment = j.commentaire.trim();
@@ -439,11 +439,11 @@ moncycle_app = {
 		$("#jour_form_saving").hide();
 		$("#jour_form_saved").hide();
 		$("#form_date").val(j.date_obs);
-		if (j.note_fc && moncycle_app.constante.methode==3) {
+		if (j.note_fc && (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4)) {
 			$("#form_fc").val(j.note_fc);
 			moncycle_app.fc_test_note();
 		}
-		if (j.fleche_fc && moncycle_app.constante.methode==3) $("#fc_f" + moncycle_app.fleche[j.fleche_fc][0]).prop('checked', true);
+		if (j.fleche_fc && (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4)) $("#fc_f" + moncycle_app.fleche[j.fleche_fc][0]).prop('checked', true);
 		if (gommette.includes(":)") && gommette.length>2) {
 			$("#go_" + moncycle_app.gommette[":)"][1]).prop('checked', true);
 			gommette = gommette.replace(":)", "");
@@ -507,6 +507,8 @@ moncycle_app = {
 		if (moncycle_app.page_a_recharger) location.reload();
 	},
 	submit_menu : function () {
+		moncycle_app.fc_form2note();
+		moncycle_app.fc_test_note();
 		$("#jour_form_saving").show();
 		$("#jour_form_saved").hide();
 		$("#ob_extra").val().split(',').forEach(function(o) {

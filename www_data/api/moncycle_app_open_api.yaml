@@ -226,11 +226,12 @@ paths:
                   description: deuxième addresse mail pour recevoir les cycles par mail sur une autre addresse
                 methode:
                   type: integer
-                  description: méthode de suivi (1. température, 2. Billings, 3. FertilityCare)
+                  description: méthode de suivi (1. Billings + température, 2. Billings, 3. FertilityCare, 4. FertilityCare + température)
                   enum:
                     - 1
                     - 2
                     - 3
+                    - 4
                 age:
                   type: integer
                   description: année (approximative) de naissance de la personne

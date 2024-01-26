@@ -7,7 +7,6 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
-use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 require_once "../config.php";
@@ -17,6 +16,11 @@ require_once "../lib/mail.php";
 require_once '../vendor/phpmailer/phpmailer/src/Exception.php';
 require_once '../vendor/phpmailer/phpmailer/src/PHPMailer.php';
 require_once '../vendor/phpmailer/phpmailer/src/SMTP.php';
+
+define('METHODE_BILLINGS_TEMP',      1);
+define('METHODE_BILLINGS',           2);
+define('METHODE_FERTILITYCARE',      3);
+define('METHODE_FERTILITYCARE_TEMP', 4);
 
 $db = db_open();
 
@@ -71,7 +75,11 @@ try {
 		}
 		elseif (isset($_POST["captcha"]) && strlen(trim($_POST["captcha"]))>=1 && trim($_POST["captcha"])==$captcha) {
 			$methode = intval($_POST["methode"] ?? 0);
-			if ($methode<1 || $methode>3) $methode=1;
+			if ($methode<METHODE_BILLINGS || $methode>METHODE_FERTILITYCARE) $methode=METHODE_BILLINGS;
+			if (intval($_POST["temp"] ?? 0)) {
+				if ($methode == METHODE_BILLINGS)      $methode = METHODE_BILLINGS_TEMP;
+				if ($methode == METHODE_FERTILITYCARE) $methode = METHODE_FERTILITYCARE_TEMP;
+			}
 
 			$pass_text = sec_motdepasse_aleatoire();
 			$pass_hash = sec_hash($pass_text);
@@ -129,7 +137,7 @@ try {
 
 }
 catch (Exception $e){
-	
+
 	$output .= $e->getMessage();
 
 }
@@ -181,11 +189,13 @@ catch (Exception $e){
 			<label for="i_prenom">Prénoms:</label><br />
 			<input name="prenom" type="text" maxlength="255" id="i_prenom" required placeholder='ex: "Alice et Benoît" ou "Charlotte"' value="<?= $_POST['prenom'] ?? "" ?>" /><br />
 			<br />
-			J'ai besoin de suivre:<br />
-			<input type="radio" name="methode" value="2" id="m_glaire" <?php if (($_POST["methode"] ?? 0) ==2): ?>checked<?php endif; ?> required /><label for="m_glaire"><b>Billings</b>: l'évolution de la glaire cervicale seule</label><br />	
-			<input type="radio" name="methode" value="3" id="m_fc" <?php if (($_POST["methode"] ?? 0) ==3): ?>checked<?php endif; ?>/><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />	
-			<input type="radio" name="methode" value="1" id="m_temp" <?php if (($_POST["methode"] ?? 0) ==1): ?>checked<?php endif; ?>/><label for="m_temp"><b>Symptothermie</b>: l'évolution de la glaire cervicale + les changements de température corporelle</label><br />	
-			<span class="label_info">Vous pourrez modifier ce choix dans la rubrique "mom compte" sans perte de données une fois votre compte créé.</span><br />
+			Méthode à suivre:<br />
+			<input type="radio" name="methode" value="2" id="m_glaire" <?php if (($_POST["methode"] ?? 0) ==2): ?>checked<?php endif; ?> required /><label for="m_glaire"><b>Billings</b>: l'évolution de la glaire cervicale seule</label><br />
+			<input type="radio" name="methode" value="3" id="m_fc" <?php if (($_POST["methode"] ?? 0) ==3): ?>checked<?php endif; ?>/><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />
+			<br />
+			<input type="checkbox" name="temp" value="1" id="m_temp" <?php if (($_POST["temp"] ?? 0) ==1): ?>checked<?php endif; ?>/><label for="m_temp"><b>Température</b>: suivre dans l'application les évolutions de la température corporelle en plus de Billings ou de FertilityCare.</label><br />
+			<br />
+			<span class="label_info">Si vous suivez une méthode symptothermique (Cyclamen, SensiPlan, ...), vous pouvez cocher "Billings" avec "température". Pour ces méthodes symptothermiques, l'application est incomplète car elle ne propose pas une interprétation des courbes de températures efficace. Vous pourrez modifier ce choix dans la rubrique "mon compte" sans perte de données une fois votre compte créé.</span><br />
 			<br />
 			<label for="i_email1">E-mail:</label><br />
 			<input name="email1" id="i_email1" type="email" maxlength="255" required placeholder="Entrer votre adresse mail."  value="<?= $_POST['email1'] ?? "" ?>" /><br />
@@ -194,10 +204,10 @@ catch (Exception $e){
 			<select name="age" id="i_anaissance" required placeholder="">
 			<option disabled selected class="placeholder">Sélectionner votre année de naissance</option>
 			<?php for ($i = date('Y')-(date('Y')%5)-75; $i < date('Y')-5; $i += 5) { ?>
-				<option <?= $i==($_POST["age"]?? -1) ? "selected" : "" ?>  value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>	
+				<option <?= $i==($_POST["age"]?? -1) ? "selected" : "" ?>  value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>
 			<?php } ?>
 			</select><br />
-			<br />			
+			<br />
 			<label for="i_captcha">Captcha:</label><br />
 			<input name="captcha" id="i_captcha" type="text" maxlength="6" required placeholder="Entrer les six lettres ou chiffres affichés ci-dessous." /><br />
 			<img src="captcha.php" class="captcha" /><br />

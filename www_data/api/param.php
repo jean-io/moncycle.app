@@ -32,7 +32,7 @@ if (isset($_POST["email2"]) && (empty($_POST["email2"]) || filter_var($_POST["em
 
 if (isset($_POST["methode"]) && !empty($_POST["methode"])) {
 	$methode = intval($_POST["methode"]);
-	if ($methode && $methode >=1 && $methode <= 3) {
+	if ($methode && $methode >=1 && $methode <= 4) {
 		db_update_compte_param_int($db, "methode", $methode, $compte["no_compte"]);
 		$mise_a_jour["methode"] = $methode;
 	}

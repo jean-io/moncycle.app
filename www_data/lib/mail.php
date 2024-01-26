@@ -34,7 +34,7 @@ function mail_body_creation_compte ($nom, $mdp, $mail1) {
 	Bienvenue sur moncycle.app!<br />
 	<br />
 	Voici votre mot de passe temporaire: <b style='font-family: monospace;'>{$mdp}</b><br />
-	Ce mot de passe est à changer dans la page "mon compte".<br />
+	Ce mot de passe est à changer dans la page "mon compte". Pour protéger vos données, pensez à activer l'authentification multifacteur.<br />
 	<br />
 	<a style='color: #1e824c' href='{$app_url_var}connexion?email1={$mail1}'>connectez-vous</a><br />
 	<br />
