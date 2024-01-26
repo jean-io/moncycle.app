@@ -141,16 +141,20 @@ moncycle_app = {
 		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function (e) {
 			moncycle_app.cycle_aff_switch($(this).attr("for"));
 		});
+		let dates_req = [];
+		let dates_data_holder = {};
 		for (let pas = 0; pas < nb_jours; pas++) {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
 			date_obs_str = moncycle_app.date.str(date_obs);
-			let data = {date: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
-			moncycle_app.graph_preparation_data(data);
+			let data = {date_obs: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
+			dates_data_holder[date_obs_str] = data;
 			$(`#c-${date_cycle_str} .contenu`).append(moncycle_app.observation2timeline(data));
 			$(`#rc-${date_cycle_str} .contenu`).append(moncycle_app.observation2recap(data));
-			moncycle_app.charger_observation(date_obs_str);
+			dates_req.push(date_obs_str);
 		}
+		moncycle_app.graph_preparation_data(dates_data_holder);
+		moncycle_app.charger_observation(dates_req.join(','));
 		if (moncycle_app.constante.methode == 1) moncycle_app.cycle2graph(date_cycle_str);
 		if (form_nouv_cycle) {
 			moncycle_app.form_nouveau_cycle(false);
@@ -158,11 +162,13 @@ moncycle_app = {
 	},
 	charger_observation : function(o_date) {
 		$.get("api/observation", { date: o_date }).done(function(data) {
-			$(`#o-${data.date}`).replaceWith(moncycle_app.observation2timeline(data));
-			$(`#ro-${data.date}`).replaceWith(moncycle_app.observation2recap(data));
-			$(`.pas_${moncycle_app.constante.methode_diminutif}`).css("display", "none");
-			if (data.jour_sommet) moncycle_app.sommets[data.date] = [data.cycle, 0];
-			else if (!data.jour_sommet && data.date in moncycle_app.sommets) delete moncycle_app.sommets[data.date];
+			$.each(data, function (o_date, o_data) {
+				$(`#o-${o_date}`).replaceWith(moncycle_app.observation2timeline(o_data));
+				$(`#ro-${o_date}`).replaceWith(moncycle_app.observation2recap(o_data));
+				$(`.pas_${moncycle_app.constante.methode_diminutif}`).css("display", "none");
+				if (o_data.jour_sommet) moncycle_app.sommets[o_date] = [o_data.cycle, 0];
+				else if (!o_data.jour_sommet && o_date in moncycle_app.sommets) delete moncycle_app.sommets[o_date];
+			});
 			moncycle_app.trois_jours();
 			moncycle_app.graph_preparation_data(data);
 		}).fail(moncycle_app.redirection_connexion);
@@ -320,7 +326,7 @@ moncycle_app = {
 		}
 	},
 	observation2recap : function(j) {
-		let o_date = moncycle_app.date.parse(j.date);
+		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "ro-" + moncycle_app.date.str(o_date);
 		let observation = $("<div>", {id: o_id, class: "obs"});
 		observation.click(moncycle_app.open_menu);
@@ -347,7 +353,7 @@ moncycle_app = {
 		return observation;
 	},
 	observation2timeline : function(j) {
-		let o_date = moncycle_app.date.parse(j.date);
+		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "o-" + moncycle_app.date.str(o_date);
 		let observation = $("<div>", {id: o_id, class: "day"});
 		observation.click(moncycle_app.open_menu);
@@ -423,7 +429,7 @@ moncycle_app = {
 	},
 	open_menu : function(e) {
 		let j = JSON.parse($("#" + $(this).attr('id') + " .data").text());
-		let o_date = moncycle_app.date.parse(j.date);
+		let o_date = moncycle_app.date.parse(j.date_obs);
 		let gommette = j.gommette? j.gommette : "";
 		let titre = [moncycle_app.text.semaine[o_date.getDay()], o_date.getDate(), moncycle_app.text.mois_long[o_date.getMonth()], o_date.getFullYear()];
 		titre.push(`<span>J${j.pos}</span>`);
@@ -432,7 +438,7 @@ moncycle_app = {
 		$("#fc_msg").empty();
 		$("#jour_form_saving").hide();
 		$("#jour_form_saved").hide();
-		$("#form_date").val(j.date);
+		$("#form_date").val(j.date_obs);
 		if (j.note_fc && moncycle_app.constante.methode==3) {
 			$("#form_fc").val(j.note_fc);
 			moncycle_app.fc_test_note();
@@ -549,11 +555,13 @@ moncycle_app = {
 		}
 	},
 	graph_preparation_data : function (data) {
-		if (moncycle_app.graph_data[data.cycle] == undefined) moncycle_app.graph_data[data.cycle] = {};
-		let date = moncycle_app.date.parse(data.date);
-		let label = `${date.getDate()} ${moncycle_app.text.mois[date.getMonth()]}`;
-		moncycle_app.graph_data[data.cycle][label] = parseFloat(data.temperature);
-		if (moncycle_app.graphs[data.cycle]) moncycle_app.graph_update(data.cycle);
+		$.each(data, function(o_date, o_data) {
+			if (moncycle_app.graph_data[o_data.cycle] == undefined) moncycle_app.graph_data[o_data.cycle] = {};
+			let date = moncycle_app.date.parse(o_date);
+			let label = `${date.getDate()} ${moncycle_app.text.mois[date.getMonth()]}`;
+			moncycle_app.graph_data[o_data.cycle][label] = parseFloat(o_data.temperature);
+			if (moncycle_app.graphs[o_data.cycle]) moncycle_app.graph_update(o_data.cycle);
+		});
 	},	
 	fc_note_regex : /^((h|m|l|vl|H|M|L|VL|VH)\s*(b|B)?\s*)?(2W|10KL|10SL|10DL|10WL|2w|10kl|10sl|10dl|10wl|[024]|(([68]|10)\s*[BCGKLPYRbcgklpyr]{1,8}))?\s*([xX][123]|AD|ad)?(\s*[RrLl]?(ap|AP))?$/,
 	fc_test_note : function() {

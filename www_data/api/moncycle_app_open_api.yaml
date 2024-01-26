@@ -296,16 +296,16 @@ paths:
     get:
       tags:
         - observations
-      summary: lecture d'une observation
+      summary: lecture d'observations
       parameters:
         - name: date
           in: query
-          description: date d'une observation au format YYYY-MM-DD
+          description: plusieurs dates (au moins une) au format YYYY-MM-DD séparré par des virgules
           required: true
           schema:
             type: string
             format: date
-            pattern: '^\d{4}-\d{2}-\d{2}$'
+            pattern: '^\s*\d{4}-\d{2}-\d{2}(\s*,\s*\d{4}-\d{2}-\d{2})*\s*$'
       responses:
         200:
           description: OK
@@ -458,29 +458,29 @@ components:
           description: union dans la journée
           enum :
             - 1
-            - null
-          default: null
+            - 0
+          default: 0
         jour_sommet:
           type: integer
           description: jour sommet dans le cycle
           enum :
             - 1
-            - null
-          default: null
+            - 0
+          default: 0
         jenesaispas:
           type: integer
           description: pas d'observation à cette date
           enum :
             - 1
-            - null
-          default: null
+            - 0
+          default: 0
         grossesse:
           type: integer
           description: début d'une grossesse
           enum :
             - 1
-            - null
-          default: null
+            - 0
+          default: 0
         commentaire:
           type: string
           description: commentaire libre lié à journée
