@@ -28,7 +28,7 @@ sec_exit_si_non_connecte($compte);
 $ret = [];
 $ret["totp_actif"] = $compte["totp_etat"];
 
-if (isset($_GET["init"])) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 	if ($compte["totp_etat"] == TOTP_STATE_ACTIVE) $ret["msg"] = "la double authentification est déja active";
 	else {
 		$totp = TOTP::generate();
@@ -46,7 +46,7 @@ if (isset($_GET["init"])) {
 	}
 }
 
-if (isset($_GET["activation"])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	if ($compte["totp_etat"] == TOTP_STATE_ACTIVE) $ret["msg"] = "la double authentification est déja active";
 	elseif (isset($_POST["tmp_code"]) && !empty($_POST["tmp_code"]) && intval($_POST["tmp_code"])>0) {
 		$otp_obj = TOTP::createFromSecret($compte["totp_secret"]);
@@ -64,11 +64,12 @@ if (isset($_GET["activation"])) {
 	}
 }
 
-if (isset($_GET["desactivation"])) {
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+	parse_str(file_get_contents('php://input'), $_DELETE);
 	if ($compte["totp_etat"] != TOTP_STATE_ACTIVE) $ret["msg"] = "la double authentification n'est pas active";
-	elseif (isset($_POST["tmp_code"]) && !empty($_POST["tmp_code"]) && intval($_POST["tmp_code"])>0) {
+	elseif (isset($_DELETE["tmp_code"]) && !empty($_DELETE["tmp_code"]) && intval($_DELETE["tmp_code"])>0) {
 		$otp_obj = TOTP::createFromSecret($compte["totp_secret"]);
-		if ($otp_obj->verify(intval($_POST["tmp_code"]))) {
+		if ($otp_obj->verify(intval($_DELETE["tmp_code"]))) {
 			db_update_compte_totp_etat($db, TOTP_STATE_DISABLED, $compte["no_compte"]);
 			db_update_compte_totp_secret($db, null, $compte["no_compte"]);
 			$ret["msg"] = "authentification multi-facteur désactivé";

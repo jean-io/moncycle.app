@@ -74,6 +74,8 @@ if ($_GET['type'] == "csv") {
 	fclose($out);
 }
 elseif ($_GET['type'] == "pdf") {
+	header("content-type:application/pdf");
+	header('Content-Disposition: attachment; filename="moncycle_app_'. date_sql($date) .'.pdf"');
 	$pdf = doc_cycle_vers_pdf ($cycle, $methode, $compte["nom_compte"]);
 	$pdf->Output('I', 'moncycle_app_'. date_humain($date, '_') . '.pdf');
 }

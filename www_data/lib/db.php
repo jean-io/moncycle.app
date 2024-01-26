@@ -79,7 +79,7 @@ function db_update_compte_connecte($db, $no_compte){
 
 function db_update_co_echoue($db, $mail){
 	$sql ="update compte set nb_co_echoue = nb_co_echoue + 1 where email1 like :email1";
-	
+
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":email1", $mail, PDO::PARAM_STR);
 	$statement->execute();
@@ -164,7 +164,7 @@ function db_udpate_motdepasse_par_nocompte($db, $mdp, $no_compte) {
 
 function db_delete_compte($db, $no_compte){
 	$sql = "DELETE FROM compte WHERE no_compte = :no_compte";
-	
+
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->execute();
@@ -174,7 +174,7 @@ function db_delete_compte($db, $no_compte){
 
 function db_delete_jetton($db, $no_jetton, $no_compte){
 	$sql = "DELETE FROM `jetton` WHERE `no_jetton` = :no_jetton AND `no_compte` = :no_compte";
-	
+
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_jetton", $no_jetton, PDO::PARAM_INT);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
@@ -185,7 +185,7 @@ function db_delete_jetton($db, $no_jetton, $no_compte){
 
 function db_delete_observation($db, $no_compte, $date){
 	$sql = "DELETE FROM observation WHERE no_compte = :no_compte AND date_obs = :date";
-	
+
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->bindValue(":date", $date, PDO::PARAM_STR);

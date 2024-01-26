@@ -128,7 +128,7 @@
 		<span class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est irréversible mais vous avez la possibilité de télécharger toutes vos données en amont de la suppression.</span><br />
 		<br />
 		<a href="api/mes_donnees_svp"><input type="button" value="📦 Exporter toutes mes données" /></a>
-		<form method="post" action="api/suppr_compte" id="f_suppr_compte">
+		<form method="delete" action="api/suppr_compte" id="f_suppr_compte">
 			<input name="ok_pour_supprimer" type="hidden" value="1" />
 			<input type="submit" class="rouge" value="⚠️ Supprimer définitivement mon compte" />
 		</form>

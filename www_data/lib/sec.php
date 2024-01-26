@@ -30,9 +30,8 @@ function sec_hash($text) {
 function sec_auth_jetton($db) {
 	$jetton = "";
 	if (isset($_COOKIE["MONCYCLEAPP_JETTON"]) && strlen($_COOKIE["MONCYCLEAPP_JETTON"])>0) $jetton = $_COOKIE["MONCYCLEAPP_JETTON"];
-	if (isset($_POST["MONCYCLEAPP_JETTON"]) && strlen($_POST["MONCYCLEAPP_JETTON"])>0) $jetton = $_POST["MONCYCLEAPP_JETTON"];
 	$head = getallheaders();
-	if (isset($head["authorization"]) && str_contains($head["authorization"], "Bearer ")) $jetton = explode(' ', trim($head["authorization"]), 2)[1];
+	if (isset($head["Authorization"]) && str_contains($head["Authorization"], "Bearer ")) $jetton = explode(' ', trim($head["Authorization"]), 2)[1];
 	if (strlen($jetton)>0) {
 		$compte = db_select_compte_jetton($db, $jetton);
 		if (isset($compte[0]) && isset($compte[0]["actif"]) && boolval($compte[0]["actif"])) {

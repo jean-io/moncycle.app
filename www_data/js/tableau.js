@@ -46,10 +46,10 @@ moncycle_app = {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		if (!localStorage.authok) window.location.replace('/connexion');
 		moncycle_app.date_chargement = moncycle_app.date.str(moncycle_app.date.now());
-		$.get("api/sensation.php", {}).done(function(data) {
+		$.get("api/sensation", {}).done(function(data) {
 			moncycle_app.sensation = data;
 		}).fail(moncycle_app.redirection_connexion);
-		$.get("api/constante.php", {}).done(function(data) {
+		$.get("api/constante", {}).done(function(data) {
 			moncycle_app.constante = data;
 			moncycle_app.charger_cycle();
 			$("#nom").html(moncycle_app.constante.nom);
@@ -76,12 +76,12 @@ moncycle_app = {
 			$("#but_micro").hide();
 			$("#recap").hide();
 		});
-		$("#form_h_temp").focus(function () {
-			if($("#form_h_temp").val().trim().length==0) {
+		$("#form_heure_temp").focus(function () {
+			if($("#form_heure_temp").val().trim().length==0) {
 				let d  = new Date();
 				let h = d.getHours();
 				let m = d.getMinutes();
-				$("#form_h_temp").val((h<10 ? "0"+h : h) + ":" + (m<10 ? "0"+m : m));
+				$("#form_heure_temp").val((h<10 ? "0"+h : h) + ":" + (m<10 ? "0"+m : m));
 			}
 		});
 		moncycle_app.charger_actu();
@@ -157,7 +157,7 @@ moncycle_app = {
 		}
 	},
 	charger_observation : function(o_date) {
-		$.get("api/observation.php", { date: o_date }).done(function(data) {
+		$.get("api/observation", { date: o_date }).done(function(data) {
 			$(`#o-${data.date}`).replaceWith(moncycle_app.observation2timeline(data));
 			$(`#ro-${data.date}`).replaceWith(moncycle_app.observation2recap(data));
 			$(`.pas_${moncycle_app.constante.methode_diminutif}`).css("display", "none");
@@ -200,7 +200,7 @@ moncycle_app = {
 				alert("Erreur: la date du premier jour du cycle à créer ne doit pas être dans un cycle existant et doit être antérieure à aujourd'hui.");
 				return;
 			}
-			$.post("api/observation.php", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
+			$.post("api/observation", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
 				if (data.err){
 					console.error(data.err);
 				}
@@ -444,7 +444,7 @@ moncycle_app = {
 		}
 		if (moncycle_app.gommette[gommette]) $("#go_" + moncycle_app.gommette[gommette][1]).prop('checked', true);
 		$("#form_temp").val(j.temperature);
-		$("#form_h_temp").val(j.heure_temp);
+		$("#form_heure_temp").val(j.heure_temp);
 		$("#vos_obs").empty();
 		let n = 0;
 		Object.entries(moncycle_app.sensation).sort((a,b) => b[1] - a[1]).forEach(function (o){
@@ -510,7 +510,7 @@ moncycle_app = {
 			moncycle_app.sensation[o] += 1;
 		});
 		let d = $("#jour_form").serializeArray();
-		$.post("api/observation.php", $.param(d)).done(function(data){
+		$.post("api/observation", $.param(d)).done(function(data){
 			$("#jour_form_saving").hide();
 			if (data.err){
 				$("#form_err").val(data.err);
@@ -532,7 +532,7 @@ moncycle_app = {
 		date.setHours(9);
 		let jour = [moncycle_app.text.semaine[date.getDay()], date.getDate(), moncycle_app.text.mois_long[date.getMonth()], date.getFullYear()].join(" ");
 		if (confirm(`Voulez-vous vraiment supprimer définitivement les données de la journée du ${jour}?`)) {
-			$.post("api/observation.php", `suppr=${moncycle_app.date.str(date)}`).done(function(data){
+			$.ajax({type : 'DELETE', "url" : "api/observation", "data" : `date=${moncycle_app.date.str(date)}`}).done(function(data){
 				if (data.err){
 					$("#form_err").val(data.err);
 					console.error(data.err);

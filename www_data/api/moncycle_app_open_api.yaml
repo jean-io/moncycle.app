@@ -1,0 +1,517 @@
+openapi: 3.0.3
+info:
+  title: MONCYCLE.APP API
+  description: |-
+    Documentation de l'API REST de moncycle.app! L'application fonction sur la base d'une timeline d'observations. 1 observation = 1 jour.
+    Ainsi la lecture d'un cycle ou sa modification se fait via le call API observation.
+    Un nouveau cycle est caracterisé par un attribut lié au premier jour du cycle en question.
+  license:
+    name: CC BY-NC-SA
+    url: https://creativecommons.org/licenses/by-nc-sa/4.0
+  version: "1.0"
+externalDocs:
+  description: Plus d'information sur moncyccle.app
+  url: hhttps://www.moncycle.app
+servers:
+  - url: .
+  - url: https://tableau.moncycle.app/api
+tags:
+  - name: géneral
+    description: informations général sur le serveur (pas d'infos perso)
+  - name: compte
+    description: connexion, modifier le compte, TOTP, ...
+  - name: observations
+    description: création, modification et lecture d'observations
+
+paths:
+
+
+  /pub_stat:
+    get:
+      tags:
+        - géneral
+      summary: lecture des statistiques publiques
+      responses:
+        200:
+          description: OK
+
+
+  /sante:
+    get:
+      tags:
+        - géneral
+      summary: etat de santé du serveur pour la supervision
+      responses:
+        200:
+          description: OK
+
+
+
+  /authentication:
+    post:
+      tags:
+        - compte
+      summary: création d'un jetton (clé d'API)
+      requestBody:
+        description: données d'identifications (email, mdp, TOTP)
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/auth'
+        required: true
+      responses:
+        200:
+          description: OK
+
+
+  /deconnexion:
+    get:
+      tags:
+        - compte
+      summary: suppression du jetton d'authentification
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+  /mdp_change:
+    post:
+      tags:
+        - compte
+      summary: changer le mot de passe
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - mdp_old
+                - mdp1
+              type: object
+              properties:
+                mdp_old:
+                  type: string
+                  description: ancien mot de passe
+                mdp1:
+                  type: string
+                  description: nouveau mot de passe
+        required: true
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+
+  /suppr_compte:
+    delete:
+      tags:
+        - compte
+      summary: supprimmer son compte
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - ok_pour_supprimer
+              type: object
+              properties:
+                ok_pour_supprimer:
+                  type: boolean
+                  description: voulez vraiment supprimer votre compte?
+        required: true
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+  /totp:
+
+
+    get:
+      tags:
+        - compte
+      summary: initialisation du secret TOTP pour activation
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+    post:
+      tags:
+        - compte
+      summary: activation du TOTP accès configuration de l'application
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - tmp_code
+              type: object
+              properties:
+                tmp_code:
+                  type: integer
+                  description: code généré dans l'application de TOTP
+        required: true
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+    delete:
+      tags:
+        - compte
+      summary: désactivation du TOTP pour le compte
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - tmp_code
+              type: object
+              properties:
+                tmp_code:
+                  type: integer
+                  description: code généré dans l'application de TOTP
+        required: true
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+  /param:
+    post:
+      tags:
+        - compte
+      summary: modification des informations du compte
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                nom:
+                  type: string
+                  description: les prénoms des personnes à qui appartient ce compte
+                email2:
+                  type: string
+                  description: deuxième addresse mail pour recevoir les cycles par mail sur une autre addresse
+                methode:
+                  type: integer
+                  description: méthode de suivi (1. température, 2. Billings, 3. FertilityCare)
+                  enum:
+                    - 1
+                    - 2
+                    - 3
+                age:
+                  type: integer
+                  description: année (approximative) de naissance de la personne
+        required: true
+      responses:
+        200:
+          description: OK - les champs correctements modifiés sont renvoyé dans la réponse
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+  /mes_donnees_svp:
+    get:
+      tags:
+        - compte
+      summary: export de toutes les données liées au compte au format CSV (pour la RGPD)
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+  /constante:
+    get:
+      tags:
+        - observations
+      summary: Lecture des informations clé du tableau
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+  /sensation:
+    get:
+      tags:
+        - observations
+      summary: Lecture de toutes les sensations et visuels déja renseignés
+      responses:
+        200:
+          description: OK - le chiffre correspond au nombre d'occurences
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+  /observation:
+
+
+    get:
+      tags:
+        - observations
+      summary: lecture d'une observation
+      parameters:
+        - name: date
+          in: query
+          description: date d'une observation au format YYYY-MM-DD
+          required: true
+          schema:
+            type: string
+            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/observation'
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+    post:
+      tags:
+        - observations
+      summary: écriture d'une observation
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/observation'
+        required: true
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+    delete:
+      tags:
+        - observations
+      summary: suppression d'une observation
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+                - date
+              properties:
+                date:
+                  type: string
+                  description: date d'une observation au format YYYY-MM-DD
+                  format: date
+                  pattern: '^\d{4}-\d{2}-\d{2}$'
+        required: true
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+  /export:
+    get:
+      tags:
+        - observations
+      summary: export au format CSV ou PDF d'un cycle
+      parameters:
+        - name: cycle
+          in: query
+          description: date d'une observation au format YYYY-MM-DD
+          required: true
+          schema:
+            type: string
+            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        - name: type
+          in: query
+          description: format du fichier à renvoyer
+          required: true
+          schema:
+            type: string
+            default: csv
+            enum:
+              - pdf
+              - csv
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+components:
+  schemas:
+
+
+    observation:
+      type: object
+      required:
+        - date
+      properties:
+        date:
+          type: string
+          description: date d'une observation au format YYYY-MM-DD
+          format: date
+          pattern: '^\d{4}-\d{2}-\d{2}$'
+        premier_jour:
+          type: integer
+          description: démarrage d'un cycle à cette date
+          enum :
+            - 1
+            - 0
+        gommette:
+          type: string
+          description: gommette de couleur (. rouge, I vert, = jaune)
+          enum :
+            - "."
+            - "I"
+            - "="
+        bebe:
+          type: string
+          description: bébé sur la gommette
+          enum :
+            - ":)"
+        note_fc:
+          type: string
+          description: note FertilityCare de la journée
+        fc_fle:
+          type: string
+          description: fleche lié à la note FertilityCare
+          enum :
+            - "↑"
+            - "↓"
+            - "→"
+        temp:
+          type: number
+          description: température corporelle
+        heure_temp:
+          type: string
+          description: timestamp de prise de la temperature
+        ob_extra:
+          type: string
+          description: sensations et visuels de la journée séparrés par des virgules
+        union_sex:
+          type: integer
+          description: union dans la journée
+          enum :
+            - 1
+            - null
+          default: null
+        jour_sommet:
+          type: integer
+          description: jour sommet dans le cycle
+          enum :
+            - 1
+            - null
+          default: null
+        jenesaispas:
+          type: integer
+          description: pas d'observation à cette date
+          enum :
+            - 1
+            - null
+          default: null
+        grossesse:
+          type: integer
+          description: début d'une grossesse
+          enum :
+            - 1
+            - null
+          default: null
+        commentaire:
+          type: string
+          description: commentaire libre lié à journée
+
+
+    auth:
+      required:
+        - email1
+        - mdp
+      type: object
+      properties:
+        email1:
+          type: string
+          example: demo@moncycle.app
+          description: addresse mail de connexion
+        mdp:
+          type: string
+          example: demo
+          description: mot de passe de connexion
+        code:
+          type: integer
+          description: code temporaire (TOTP)
+
+
+  securitySchemes:
+    HTTPtoken:
+      description: jetton dans l'entête HTTP Authorization
+      type: http
+      scheme: Bearer
+    HTTPcookie:
+      description: jetton dans un cookie HTTP
+      type: apiKey
+      in: cookie
+      name: MONCYCLEAPP_JETTON

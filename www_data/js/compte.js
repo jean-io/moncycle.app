@@ -80,7 +80,7 @@ $(document).ready(function(){
 	$("#i_activate_otp").on("click", function(event) {
 		$("#i_activate_otp").prop("disabled", true);
 		$("#totp_err_msg").html("");
-		$.get("api/totp?init", {}).done(function(data) {
+		$.get("api/totp", {}).done(function(data) {
 			$("#i_activate_otp").prop("disabled", false);
 			$("#totp_explications").hide();
 			$("#totp_miseenpalce").show();
@@ -101,7 +101,7 @@ $(document).ready(function(){
 		$("#totp_err_msg").html("");
 		var form_data = $("#f_totp_validation").serializeArray();
 		$("#f_totp_validation").trigger("reset");
-		$.post("../api/totp?activation", $.param(form_data)).done(function(ret){
+		$.post("../api/totp", $.param(form_data)).done(function(ret){
 			if (ret.totp_actif == TOTP_STATE_ACTIVE) {
 				$("#totp_miseenpalce").hide();
 				$("#totp_actif").show();
@@ -119,7 +119,7 @@ $(document).ready(function(){
 		$("#totp_err_msg").html("");
 		var form_data = $("#f_totp_desac").serializeArray();
 		$("#f_totp_desac").trigger("reset");
-		$.post("../api/totp?desactivation", $.param(form_data)).done(function(ret){
+		$.ajax({type : 'DELETE', "url" : "../api/totp?desactivation", "data" : $.param(form_data)}).done(function(ret){
 			if (ret.totp_actif == TOTP_STATE_DISABLED) {
 				$("#totp_explications").show();
 				$("#totp_actif").hide();
@@ -137,7 +137,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		var form_data = $("#f_suppr_compte").serializeArray();
 		if (!confirm(moncycle_app_usr.nom + ', êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irréversible. 😟')) return;
-		$.post("../api/suppr_compte", $.param(form_data)).done(function(ret){
+		$.ajax({type : 'DELETE', "url" : "../api/suppr_compte", "data" : $.param(form_data)}).done(function(ret){
 			if (ret.suppr) {
 				window.localStorage.clear();
 				alert(moncycle_app_usr.nom + ", votre compte a bien été supprimée. 😢💔");

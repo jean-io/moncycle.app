@@ -5,6 +5,9 @@ DELETE FROM `compte` WHERE `no_compte` = '2';
 INSERT INTO `compte` (`no_compte`, `nom`, `age`, `email1`, `motdepasse`, `actif`) VALUES
 (2, 'Démonstration', 1990, 'demo@moncycle.app', '$2y$10$hTn9Xjg4wk/ovWEY8BWXau.Y1ODRoX03c2zlp6Rnmib1yUcVpp0sC', 1);
 
+INSERT INTO `jetton` (`no_jetton`, `no_compte`, `nom`, `expire`, `pays`, `jetton_str`, `captcha`) VALUES
+(2,	2,	'DEMO AUTH TOKEN',	2,	'FR', 'AjSky1dacxKELNyICqaMrjh5IO7Aw9RUg6djzwe9x6DjIFWgmgAJzNjlAPRhfYTQq0AWlUm6EOy9BVfXFrX2o0zvV2ONXsUwBBjIMvKIA8rwTgVgqcLboHnaOa1EWkcEeVt55cUkzPO01AkAHQszBUuZgrJIQ3NS3GIXNzy5HM6aqgqdwrXvPgDUaoyrZ6ynN9aXSz1Rww2Y6ojgcQyUNEiA4LnIhBD082iXbdwommc3sHyQHoOnBjRs2pjXXtxu',	NULL);
+
 INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `jenesaispas`, `gommette`, `sensation`, `temperature`, `jour_sommet`, `union_sex`, `premier_jour`, `commentaire`) VALUES
 (1,	2,	CURDATE() + INTERVAL - (75-1) DAY,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	1,	''),
 (2,	2,	CURDATE() + INTERVAL - (75-2) DAY,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	''),

@@ -17,15 +17,17 @@ header('Content-Type: application/json');
 $result = [];
 
 try {
+	$result["command"] = $_SERVER['REQUEST_METHOD'];
+
+	if ($_SERVER['REQUEST_METHOD'] === 'DELETE') parse_str(file_get_contents('php://input'), $_DELETE);
+
 	$db = db_open();
 
 	$compte = sec_auth_jetton($db);
 	sec_exit_si_non_connecte($compte);
 
 	// LECTURE D'UNE OBSERVATION
-	if (isset($_GET['date'])) {
-
-		$result["command"] = "GET";
+	if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['date'])) {
 
 		$date = new DateTime($_GET['date']);
 		$result["date"] = date_sql($date);
@@ -43,14 +45,12 @@ try {
 	}
 
 	// CREATION ET MISE A JOUR D'UNE OBSERVATION
-	elseif(isset($_POST['date'])) {
+	elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date'])) {
 
 		if (isset($compte["relance"]) && boolval($compte["relance"])) {
 			db_update_relance($db, $compte["no_compte"], 0);
 			$compte["relance"] = 0;
 		}
-
-		$result["command"] = "POST";
 		
 		$date = new DateTime($_POST['date']);
 		$result["date"] = date_sql($date);
@@ -74,7 +74,7 @@ try {
 		if (isset($_POST["temp"]) && !empty(trim($_POST["temp"]))) {
 			$temp = floatval($_POST["temp"]);
 			if ($temp <= 0) $temp = null;
-			elseif (!empty($_POST["h_temp"])) $htemp = trim($_POST["h_temp"]);
+			elseif (!empty($_POST["heure_temp"])) $htemp = trim($_POST["heure_temp"]);
 		}
 
 		$go  = $_POST["gommette"] ?? '';
@@ -87,20 +87,18 @@ try {
 	}
 
 	// SUPPRESSION D'UNE OBSERVATION
-	elseif(isset($_POST['suppr'])) {
-		$result["command"] = "SUPPR";
-		
-		$date = new DateTime($_POST['suppr']);
+	elseif($_SERVER['REQUEST_METHOD'] == "DELETE" && isset($_DELETE['date'])) {
+		$date = new DateTime($_DELETE['date']);
 		$result["date"] = date_sql($date);
 
-		db_delete_observation($db, $compte["no_compte"], date_sql($date));
+		$_DELETE['nb_suppr'] = db_delete_observation($db, $compte["no_compte"], date_sql($date));
 
 		$result["outcome"] = "ok";
-		$result["args"] = $_POST;
+		$result["args"] = $_DELETE;
 	}
 
 	else {
-		$result["err"] = "missing an action and a date";
+		$result["err"] = "date manquante";
 	}
 
 	$db = null;
