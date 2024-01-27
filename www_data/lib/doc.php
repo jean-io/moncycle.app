@@ -10,10 +10,9 @@
 use Fpdf\Fpdf;
 
 function doc_preparation_jours_pour_affichage($data, $methode){
-	$nb_jours = 0;
 	$cycle = [];
 	$date_cursor = new DateTime($data[0]["date_obs"]);
-	$empty_line = array("?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '', "grossesse" => 0,"commentaire" => '');
+	$empty_line = array("date_obs" => '', "?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '', "grossesse" => 0,"commentaire" => '');
 	if ($methode == 1 || $methode == 4) {
 		$empty_line["temperature"] = '';
 		$empty_line["heure_temp"] = '';
@@ -34,6 +33,7 @@ function doc_preparation_jours_pour_affichage($data, $methode){
 			unset($line["note_fc"]);
 			unset($line["fleche_fc"]);
 		}
+		$empty_line["date_obs"] = $date_cursor->format('Y-m-d');
 		if ($methode != 1 && $methode != 2) unset($line["sensation"]);
 		if ($methode == 1 && empty(trim($line["gommette"])) && empty(trim($line["temperature"]))) $line = $empty_line;
 		if ($methode == 2 && empty(trim($line["gommette"]))) $line = $empty_line;
@@ -41,7 +41,6 @@ function doc_preparation_jours_pour_affichage($data, $methode){
 		if ($methode == 4 && empty(trim($line["note_fc"])) && empty(trim($line["temperature"]))) $line = $empty_line;
 		array_push($cycle, $line);
 		$date_cursor->modify('+1 day');
-		$nb_jours += 1;
 	}
 	return $cycle;
 }
@@ -49,11 +48,20 @@ function doc_preparation_jours_pour_affichage($data, $methode){
 function doc_cycle_vers_csv ($out, $cycle, $methode) {
 	$i = 1;
 	fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
-	if ($methode == 2) fputcsv($out,["jour","date","?","gommette","sensation","sommet", "unions", "commentaires"], CSV_SEP);
-	elseif ($methode == 3) fputcsv($out,["jour","date","?","température","sommet", "unions", "commentaires"], CSV_SEP);
-	else fputcsv($out,["jour","date","?","gommette","température", "heure temp","sensation","sommet", "unions", "commentaires"], CSV_SEP);
+	$csv_partition = [];
+	if ($methode == 1) $csv_partition = ["date_obs","?","gommette", "temperature", "heure_temp", "sensation", "sommet", "unions", "grossesse", "commentaire"];
+	if ($methode == 2) $csv_partition = ["date_obs","?","gommette", "sensation", "sommet", "unions", "grossesse", "commentaire"];
+	if ($methode == 3) $csv_partition = ["date_obs","?","note_fc","fleche_fc","gommette", "sommet", "unions", "grossesse", "commentaire"];
+	if ($methode == 4) $csv_partition = ["date_obs","?","note_fc","fleche_fc","gommette", "temperature", "heure_temp", "sommet", "unions", "grossesse", "commentaire"];
+	fputcsv($out,array_merge(["no"], $csv_partition), CSV_SEP);
 	foreach ($cycle as $line){
-		fputcsv($out,array_merge([$i], $line), CSV_SEP);
+		fputs($out, $i);
+		fputs($out, CSV_SEP);
+		foreach($csv_partition as $key) {
+			if (isset($line[$key])) fputs($out, $line[$key]);
+			fputs($out, CSV_SEP);
+		}
+		fputs($out, PHP_EOL);
 		$i += 1;
 	}
 }
