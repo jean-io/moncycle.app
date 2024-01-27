@@ -46,7 +46,7 @@ foreach($cycles as $cyc) {
 
 		$debut_cycle = $debut_cycle[0]["cycle"];
 		$cycle_complet = db_select_cycle_complet($db, $debut_cycle,  $cyc["cycle_complet"], $cyc["no_compte"]);
-		$cycle_complet = doc_ajout_jours_manquant($cycle_complet, $cyc["methode"]);
+		$cycle_complet = doc_preparation_jours_pour_affichage($cycle_complet, $cyc["methode"]);
 
 		$nb_j = count($cycle_complet);
 		
