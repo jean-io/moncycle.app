@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: MONCYCLE.APP API
   description: |-
-    Documentation de l'API REST de moncycle.app! L'application fonction sur la base d'une timeline d'observations. 1 observation = 1 jour.
+    Documentation de l'API REST de moncycle.app! L'application fonctionne sur la base d'une timeline d'observations. 1 observation = 1 jour.
     Ainsi la lecture d'un cycle ou sa modification se fait via le call API observation.
     Un nouveau cycle est caracterisé par un attribut lié au premier jour du cycle en question.
   license:
@@ -10,16 +10,16 @@ info:
     url: https://creativecommons.org/licenses/by-nc-sa/4.0
   version: "1.0"
 externalDocs:
-  description: Plus d'information sur moncyccle.app
+  description: Plus d'information sur moncycle.app
   url: hhttps://www.moncycle.app
 servers:
   - url: .
   - url: https://tableau.moncycle.app/api
 tags:
-  - name: géneral
-    description: informations général sur le serveur (pas d'infos perso)
+  - name: général
+    description: informations générales sur le serveur (pas d'infos persos)
   - name: compte
-    description: connexion, modifier le compte, TOTP, ...
+    description: connexion, modifications sur le compte, TOTP, ...
   - name: observations
     description: création, modification et lecture d'observations
 
@@ -40,7 +40,7 @@ paths:
     get:
       tags:
         - géneral
-      summary: etat de santé du serveur pour la supervision
+      summary: état de santé du serveur pour la supervision
       responses:
         200:
           description: OK
@@ -51,9 +51,9 @@ paths:
     post:
       tags:
         - compte
-      summary: création d'un jetton (clé d'API)
+      summary: création d'un jeton (clé d'API)
       requestBody:
-        description: données d'identifications (email, mdp, TOTP)
+        description: données d'identification (email, mdp, TOTP)
         content:
           application/x-www-form-urlencoded:
             schema:
@@ -68,7 +68,7 @@ paths:
     get:
       tags:
         - compte
-      summary: suppression du jetton d'authentification
+      summary: suppression du jeton d'authentification
       responses:
         200:
           description: OK
@@ -83,7 +83,7 @@ paths:
     post:
       tags:
         - compte
-      summary: changer le mot de passe
+      summary: changement du mot de passe
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -115,7 +115,7 @@ paths:
     delete:
       tags:
         - compte
-      summary: supprimmer son compte
+      summary: suppression du compte
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -126,7 +126,7 @@ paths:
               properties:
                 ok_pour_supprimer:
                   type: boolean
-                  description: voulez vraiment supprimer votre compte?
+                  description: voulez vraiment supprimer le compte?
         required: true
       responses:
         200:
@@ -220,10 +220,10 @@ paths:
               properties:
                 nom:
                   type: string
-                  description: les prénoms des personnes à qui appartient ce compte
+                  description: le prénom des personnes à qui ce compte appartient
                 email2:
                   type: string
-                  description: deuxième addresse mail pour recevoir les cycles par mail sur une autre addresse
+                  description: deuxième adresse mail pour recevoir les cycles par mail sur une autre addresse
                 methode:
                   type: integer
                   description: méthode de suivi (1. Billings + température, 2. Billings, 3. FertilityCare, 4. FertilityCare + température)
@@ -234,11 +234,11 @@ paths:
                     - 4
                 age:
                   type: integer
-                  description: année (approximative) de naissance de la personne
+                  description: année (approximative) de naissance des personnes
         required: true
       responses:
         200:
-          description: OK - les champs correctements modifiés sont renvoyé dans la réponse
+          description: OK - les champs correctement modifiés sont renvoyés dans la réponse
         401:
           description: authentification requise
       security:
@@ -265,7 +265,7 @@ paths:
     get:
       tags:
         - observations
-      summary: Lecture des informations clé du tableau
+      summary: Lecture des informations clés du tableau
       responses:
         200:
           description: OK
@@ -301,7 +301,7 @@ paths:
       parameters:
         - name: date
           in: query
-          description: plusieurs dates (au moins une) au format YYYY-MM-DD séparré par des virgules
+          description: plusieurs dates (au moins une) au format YYYY-MM-DD séparées par des virgules
           required: true
           schema:
             type: string
@@ -440,7 +440,7 @@ components:
           description: note FertilityCare de la journée
         fc_fle:
           type: string
-          description: fleche lié à la note FertilityCare
+          description: flèche liée à la note FertilityCare
           enum :
             - "↑"
             - "↓"
@@ -450,10 +450,10 @@ components:
           description: température corporelle
         heure_temp:
           type: string
-          description: timestamp de prise de la temperature
+          description: horodatage de prise de la temperature
         ob_extra:
           type: string
-          description: sensations et visuels de la journée séparrés par des virgules
+          description: sensations et visuels de la journée séparés par des virgules
         union_sex:
           type: integer
           description: union dans la journée
@@ -496,7 +496,7 @@ components:
         email1:
           type: string
           example: demo@moncycle.app
-          description: addresse mail de connexion
+          description: addresse e-mail de connexion
         mdp:
           type: string
           example: demo
@@ -508,11 +508,11 @@ components:
 
   securitySchemes:
     HTTPtoken:
-      description: jetton dans l'entête HTTP Authorization
+      description: jeton dans l'entête HTTP Authorization
       type: http
       scheme: Bearer
     HTTPcookie:
-      description: jetton dans un cookie HTTP
+      description: jeton dans un cookie HTTP
       type: apiKey
       in: cookie
       name: MONCYCLEAPP_JETTON

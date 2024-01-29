@@ -37,7 +37,7 @@ try {
 			$output .= "E-mail et/ou mot de passe manquant.";
 		}
 		elseif (isset($compte["actif"]) && !boolval($compte["actif"])) {
-			$output .= "Compte désactivé. Contactez nous pour plus d'informations.";
+			$output .= "Compte désactivé. Contactez-nous pour plus d'informations.";
 		}
 		elseif (isset($compte["motdepasse"]) && password_verify($_POST["mdp"], $compte["motdepasse"])) {
 			unset($compte["motdepasse"]);
