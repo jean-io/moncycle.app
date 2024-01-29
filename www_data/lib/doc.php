@@ -35,10 +35,8 @@ function doc_preparation_jours_pour_affichage($data, $methode){
 		}
 		$empty_line["date_obs"] = $date_cursor->format('Y-m-d');
 		if ($methode != 1 && $methode != 2) unset($line["sensation"]);
-		if ($methode == 1 && empty(trim($line["gommette"])) && empty(trim($line["temperature"]))) $line = $empty_line;
-		if ($methode == 2 && empty(trim($line["gommette"]))) $line = $empty_line;
-		if ($methode == 3 && empty(trim($line["note_fc"]))) $line = $empty_line;
-		if ($methode == 4 && empty(trim($line["note_fc"])) && empty(trim($line["temperature"]))) $line = $empty_line;
+		if (($methode == 1 || $methode == 4) && empty(trim($line["gommette"])) && empty(trim($line["temperature"]))) $line = $empty_line;
+		if (($methode == 2 || $methode == 3) && empty(trim($line["gommette"]))) $line = $empty_line;
 		array_push($cycle, $line);
 		$date_cursor->modify('+1 day');
 	}
