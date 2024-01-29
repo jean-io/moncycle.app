@@ -27,6 +27,6 @@ header('Location: /');
 echo json_encode([
 	"auth" => false,
 	"jetton" => '',
-	"message" => "deconexion OK"
+	"message" => "déconnexion OK"
 ]);
 

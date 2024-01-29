@@ -140,7 +140,7 @@ $(document).ready(function(){
 		$.ajax({type : 'DELETE', "url" : "../api/suppr_compte", "data" : $.param(form_data)}).done(function(ret){
 			if (ret.suppr) {
 				window.localStorage.clear();
-				alert(moncycle_app_usr.nom + ", votre compte a bien été supprimée. 😢💔");
+				alert(moncycle_app_usr.nom + ", votre compte a bien été supprimé. 😢💔");
 				window.location.replace('connexion');
 			}
 			else alert(moncycle_app_usr.nom + ", votre compte n'a pas été supprimé, veuillez nous contacter.");

@@ -28,7 +28,7 @@ if (isset($_GET['cycle'])) {
 	$result["date"] = date_sql($date);
 }
 else {
-	print("Date du cycle non indique.");
+	print("Date du cycle non indiquée.");
 	exit;
 }
 

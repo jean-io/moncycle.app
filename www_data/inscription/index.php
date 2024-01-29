@@ -68,10 +68,10 @@ try {
 	if (isset($_GET["creation_compte"]) && !$compte_existe) {
 
 		if (!CREATION_COMPTE) {
-			$output .= "La création de compte est temporairement désactivée. Veuillez nous excuser pour tout désagrément.";
+			$output .= "La création de compte est temporairement désactivée. Veuillez nous excuser pour le désagrément.";
 		}
 		elseif (!isset($_POST["prenom"]) || !isset($_POST["email1"]) || !isset($_POST["age"]) || !filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
-			$output .= "Toutes le données n'ont pas été saisies ou alors elles sont erronées.";
+			$output .= "Toutes les données n'ont pas été saisies ou sont erronées.";
 		}
 		elseif (isset($_POST["captcha"]) && strlen(trim($_POST["captcha"]))>=1 && trim($_POST["captcha"])==$captcha) {
 			$methode = intval($_POST["methode"] ?? 0);
@@ -86,7 +86,7 @@ try {
 
 			db_insert_compte($db, $_POST["prenom"], $methode, $_POST["age"], $_POST["email1"],$pass_hash, $_POST["decouvert"] ?? null);
 
-			$succes = "Félicitation <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par mail.";
+			$succes = "Félicitation <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par e-mail.";
 
 			$mail = mail_init();
 			$mail->addAddress($_POST["email1"], $_POST["email1"]);
@@ -215,7 +215,7 @@ catch (Exception $e){
 			<label for="i_comment">Comment avez-vous découvert moncycle.app? Un commentaire?</label><br />
 			<textarea required id="i_comment" name="decouvert" maxlength="255" placeholder="Dites nous tout!"><?= $_POST['decouvert'] ?? "" ?></textarea>
 			<br />
-			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" <?php if (boolval($_POST["monito"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_monito">Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficulté dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'applique. &#x1F4DD;</label></p>
+			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" <?php if (boolval($_POST["monito"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_monito">Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficulté dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'utilise. &#x1F4DD;</label></p>
 			<p><input type="checkbox" required id="jc_gratuit" name="gratuit" value="1" <?php if (boolval($_POST["gratuit"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_gratuit">Je comprends que moncycle.app est gratuit et sans publicité/vente de données! Je suis d'accord avec <a target="_blank" href="https://www.moncycle.app/#rgpd">la politique de gestion des données</a> conformément à la RGPD. Je peux cependant contribuer au financement de l'application et aider le développeur via la </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">page Tipeee de moncycle.app</a>. &#x1F4B6;</p>
 			<br />
 			<input type="submit" value="Créer mon compte &#x1F942;&#x1F37E;" /></form>

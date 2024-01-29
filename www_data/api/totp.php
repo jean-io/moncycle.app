@@ -29,7 +29,7 @@ $ret = [];
 $ret["totp_actif"] = $compte["totp_etat"];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-	if ($compte["totp_etat"] == TOTP_STATE_ACTIVE) $ret["msg"] = "la double authentification est déja active";
+	if ($compte["totp_etat"] == TOTP_STATE_ACTIVE) $ret["msg"] = "la double authentification est déjà active";
 	else {
 		$totp = TOTP::generate();
 		$totp->setLabel($compte["email1"]);
@@ -47,16 +47,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	if ($compte["totp_etat"] == TOTP_STATE_ACTIVE) $ret["msg"] = "la double authentification est déja active";
+	if ($compte["totp_etat"] == TOTP_STATE_ACTIVE) $ret["msg"] = "la double authentification est déjà active";
 	elseif (isset($_POST["tmp_code"]) && !empty($_POST["tmp_code"]) && intval($_POST["tmp_code"])>0) {
 		$otp_obj = TOTP::createFromSecret($compte["totp_secret"]);
 		if ($otp_obj->verify(intval($_POST["tmp_code"]))) {
 			db_update_compte_totp_etat($db, TOTP_STATE_ACTIVE, $compte["no_compte"]);
-			$ret["msg"] = "authentification multi-facteur activé";
+			$ret["msg"] = "authentification multi-facteur activée";
 			$ret["totp_actif"] = TOTP_STATE_ACTIVE;
 		}
 		else {
-			$ret["msg"] = "le code renseigné n'est pas correcte";
+			$ret["msg"] = "le code renseigné n'est pas correct";
 		}
 	}
 	else {
@@ -72,11 +72,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 		if ($otp_obj->verify(intval($_DELETE["tmp_code"]))) {
 			db_update_compte_totp_etat($db, TOTP_STATE_DISABLED, $compte["no_compte"]);
 			db_update_compte_totp_secret($db, null, $compte["no_compte"]);
-			$ret["msg"] = "authentification multi-facteur désactivé";
+			$ret["msg"] = "authentification multi-facteur désactivée";
 			$ret["totp_actif"] = TOTP_STATE_DISABLED;
 		}
 		else {
-			$ret["msg"] = "le code renseigné n'est pas correcte";
+			$ret["msg"] = "le code renseigné n'est pas correct";
 		}
 	}
 	else {
