@@ -44,7 +44,7 @@
 		<div class="contennu" id="timeline">
 			<h2>Connexion à votre compte</h2>
 			<span class="rouge" id="message_err"></span>
-			<form method="post" action="api/authentication" id="connexion_form"><br />
+			<form method="post" action="api/authentification" id="connexion_form"><br />
 			<label for="i_email1">E-mail:</label><br />
 			<input name="email1" id="i_email1" type="email" required placeholder="adresse mail de connexion"  value="" /><br />
 			<br />
@@ -68,7 +68,7 @@
 					event.preventDefault();
 					$("#connexion_but").prop("disabled", true);
 					var form_data = $("#connexion_form").serializeArray();
-					$.post("api/authentication", $.param(form_data)).done(function(ret){
+					$.post("api/authentification", $.param(form_data)).done(function(ret){
 						console.log(ret);
 						$("#connexion_but").prop("disabled", false);
 						ret.message += "<br />"
