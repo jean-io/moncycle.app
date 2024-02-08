@@ -18,6 +18,8 @@ $db = db_open();
 $compte = sec_auth_jetton($db);
 sec_exit_si_non_connecte($compte);
 
+if ($_SERVER['REQUEST_METHOD'] === 'DELETE') parse_str(file_get_contents('php://input'), $_DELETE);
+
 $mise_a_jour = [];
 
 if (isset($_POST["nom"])) {
@@ -43,6 +45,26 @@ if (isset($_POST["age"]) && !empty($_POST["age"])) {
 	if ($age && $age >=1) {
 		db_update_compte_param_int($db, "age", $age, $compte["no_compte"]);
 		$mise_a_jour["age"] = $age;
+	}
+}
+
+if (isset($_DELETE["mdp_pour_supprimer"])) {
+
+	if (strlen($_DELETE["mdp_pour_supprimer"])>0){
+		$compte = db_select_compte_par_mail($db, $compte["email1"])[0] ?? [];
+		
+		if (isset($compte["motdepasse"]) && password_verify($_DELETE["mdp_pour_supprimer"], $compte["motdepasse"])) {
+			// SUPPRESSION DU COMPTE
+			db_delete_compte($db, $compte["no_compte"]);
+			setcookie("MONCYCLEAPP_JETTON", '', -1, '/');
+			$mise_a_jour = ["suppr" => true, "msg" => "compte supprimé"];
+		}
+		else {
+			$mise_a_jour = ["suppr" => false, "msg" => "mauvais mot de passe"];
+		}
+	}
+	else {
+		$mise_a_jour = ["suppr" => false, "msg" => "mot de passe manquant"];
 	}
 }
 

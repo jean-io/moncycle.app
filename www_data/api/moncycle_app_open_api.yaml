@@ -10,7 +10,7 @@ info:
     url: https://creativecommons.org/licenses/by-nc-sa/4.0
   version: "1.0"
 externalDocs:
-  description: Plus d'information sur moncycle.app
+  description: www.moncycle.app
   url: hhttps://www.moncycle.app
 servers:
   - url: .
@@ -111,33 +111,6 @@ paths:
 
 
 
-  /suppr_compte:
-    delete:
-      tags:
-        - compte
-      summary: suppression du compte utilisateur
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              required:
-                - mdp_pour_supprimer
-              type: object
-              properties:
-                mdp_pour_supprimer:
-                  type: string
-                  description: mot de passe du compte
-        required: true
-      responses:
-        200:
-          description: OK
-        401:
-          description: authentification requise
-      security:
-        - HTTPcookie: []
-        - HTTPtoken: []
-
-
   /totp:
 
 
@@ -207,7 +180,11 @@ paths:
         - HTTPtoken: []
 
 
-  /param:
+
+  /compte:
+
+
+
     post:
       tags:
         - compte
@@ -244,6 +221,34 @@ paths:
       security:
         - HTTPcookie: []
         - HTTPtoken: []
+
+
+
+    delete:
+      tags:
+        - compte
+      summary: suppression du compte utilisateur
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - mdp_pour_supprimer
+              type: object
+              properties:
+                mdp_pour_supprimer:
+                  type: string
+                  description: mot de passe du compte
+        required: true
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
 
 
   /mes_donnees_svp:

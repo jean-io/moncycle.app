@@ -35,7 +35,7 @@ $(document).ready(function(){
 	// MISE A JOURS DES PARAMETTRE DU COMPTE
 	$(".auto_save").on("keyup change", function() {
 		$("#net_stat").text('⏳');
-		$.post("../api/param", `${$(this).attr('name')}=${this.value}`).fail(function(data){
+		$.post("../api/compte", `${$(this).attr('name')}=${this.value}`).fail(function(data){
 			console.error(data);
 			$("#net_stat").html('❌&nbsp;erreur');
 			$("#net_stat").addClass('rouge');
@@ -137,7 +137,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		var form_data = $("#f_suppr_compte").serializeArray();
 		if (!confirm(moncycle_app_usr.nom + ', êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irréversible. 😟')) return;
-		$.ajax({type : 'DELETE', "url" : "../api/suppr_compte", "data" : $.param(form_data)}).done(function(ret){
+		$.ajax({type : 'DELETE', "url" : "../api/compte", "data" : $.param(form_data)}).done(function(ret){
 			if (ret.suppr) {
 				window.localStorage.clear();
 				alert(moncycle_app_usr.nom + ", votre compte a bien été supprimé. 😢💔");
