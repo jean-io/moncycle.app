@@ -24,11 +24,21 @@ sec_exit_si_non_connecte($compte);
 
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') parse_str(file_get_contents('php://input'), $_DELETE);
 
-if (isset($_DELETE["ok_pour_supprimer"]) && boolval($_DELETE["ok_pour_supprimer"])) {
-	db_delete_compte($db, $compte["no_compte"]);
-	setcookie("MONCYCLEAPP_JETTON", '', -1, '/');
-	echo json_encode(["suppr" => true]);
+if (isset($_DELETE["mdp_pour_supprimer"]) && strlen($_DELETE["mdp_pour_supprimer"])>0) {
+
+	$compte = db_select_compte_par_mail($db, $compte["email1"])[0] ?? [];
+
+	if (isset($compte["motdepasse"]) && password_verify($_DELETE["mdp_pour_supprimer"], $compte["motdepasse"])) {
+		// SUPPRESSION DU COMPTE
+		db_delete_compte($db, $compte["no_compte"]);
+		setcookie("MONCYCLEAPP_JETTON", '', -1, '/');
+		echo json_encode(["suppr" => true, "msg" => "compte supprimé"]);
+	}
+	else {
+		echo json_encode(["suppr" => false, "msg" => "mauvais mot de passe"]);
+	}
+
 }
 else {
-	echo json_encode(["suppr" => false]);
+	echo json_encode(["suppr" => false, "msg" => "mot de passe manquant"]);
 }

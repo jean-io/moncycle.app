@@ -148,6 +148,14 @@ textarea:focus {
 	border-color: #1e824c;
 }
 
+input:focus.rouge,
+select:focus.rouge,
+button:focus.rouge,
+textarea:focus.rouge {
+	outline: none;
+	border-color: #ac2433;
+}
+
 input:disabled,
 input[type=email]:read-only,
 input[type=email]:-moz-read-only,
@@ -192,12 +200,30 @@ textarea:disabled {
 		border-color: #191919;
 	}
 	
+	input[type=text].rouge,
+	input[type=number].rouge,
+	input[type=time].rouge,
+	input[type=password].rouge,
+	input[type=email].rouge,
+	select.rouge,
+	textarea.rouge {
+		color: #ac2433;
+	}
+
 	input:focus,
 	select:focus,
 	button:focus,
 	textarea:focus {
 		outline: none;
 		border-color: #1e824c;
+	}
+
+	input:focus.rouge,
+	select:focus.rouge,
+	button:focus.rouge,
+	textarea:focus.rouge {
+		outline: none;
+		border-color: #ac2433;
 	}
 
 	input[type=email]:read-only,

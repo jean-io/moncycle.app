@@ -143,7 +143,7 @@ $(document).ready(function(){
 				alert(moncycle_app_usr.nom + ", votre compte a bien été supprimé. 😢💔");
 				window.location.replace('connexion');
 			}
-			else alert(moncycle_app_usr.nom + ", votre compte n'a pas été supprimé, veuillez nous contacter.");
+			else alert(moncycle_app_usr.nom + ", votre compte n'a pas été supprimé: " + ret.msg);
 		}).fail(function(err) {
 			console.error(err);
 		});

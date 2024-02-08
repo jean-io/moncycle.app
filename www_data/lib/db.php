@@ -10,9 +10,9 @@
 function db_open() {
 	$db = new PDO("mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME, DB_ID, DB_PASSWORD);
 
-	static $sql = "SET NAMES utf8mb4;";
+	$sql = "SET NAMES utf8mb4;";
 	$statement = $db->prepare($sql);
-	static $statement->execute();
+	$statement->execute();
 
 	return $db;
 }

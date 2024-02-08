@@ -29,7 +29,7 @@ paths:
   /pub_stat:
     get:
       tags:
-        - géneral
+        - général
       summary: lecture des statistiques publiques
       responses:
         200:
@@ -39,7 +39,7 @@ paths:
   /sante:
     get:
       tags:
-        - géneral
+        - général
       summary: état de santé du serveur pour la supervision
       responses:
         200:
@@ -115,18 +115,18 @@ paths:
     delete:
       tags:
         - compte
-      summary: suppression du compte
+      summary: suppression du compte utilisateur
       requestBody:
         content:
           application/x-www-form-urlencoded:
             schema:
               required:
-                - ok_pour_supprimer
+                - mdp_pour_supprimer
               type: object
               properties:
-                ok_pour_supprimer:
-                  type: boolean
-                  description: voulez vraiment supprimer le compte?
+                mdp_pour_supprimer:
+                  type: string
+                  description: mot de passe du compte
         required: true
       responses:
         200:

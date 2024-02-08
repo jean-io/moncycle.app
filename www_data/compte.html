@@ -125,12 +125,18 @@
 		<p>Retrouvez toutes les informations de cette application sur <a href="https://www.moncycle.app" target="_blank">www.moncycle.app</a>.</p>
 		<p>Un bug? Besoin d'aide? Une question? Une suggestion? Une demande liée aux données personnelles utilisées? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a>.</p>
 		<br /><br /><br />
-		<h2 class="rouge">Zone de danger</h2>
-		<span class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est irréversible mais vous avez la possibilité de télécharger toutes vos données avant la suppression.</span><br />
+		<h2>Exporter toutes les données</h2>
+		<p>Comme demandé par la RGPD, vous avez la possibilité d’exporter l’ensemble des données liées à votre compte. Cet export sera au format CSV. Vous avez la possibilité d’exporter chaque cycle au format PDF ou CSV dans la vue MAXI.</p>
 		<br />
 		<a href="api/mes_donnees_svp"><input type="button" value="📦 Exporter toutes mes données" /></a>
+		<br /><br /><br />
+		<h2 class="rouge">Zone de danger</h2>
+		<p class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est irréversible mais vous avez la possibilité de télécharger toutes vos données avant la suppression.</p>
+		<br />
 		<form method="delete" action="api/suppr_compte" id="f_suppr_compte">
-			<input name="ok_pour_supprimer" type="hidden" value="1" />
+			<label class="rouge" for="mdp_pour_supprimer">Entrez votre mot de passe pour supprimer votre compte:</label><br />
+			<input class="rouge" name="mdp_pour_supprimer" name="mdp_pour_supprimer" type="password" placeholder="mot de passe" /><br />
+			<br />
 			<input type="submit" class="rouge" value="⚠️ Supprimer définitivement mon compte" />
 		</form>
 		<br /><br /><br /><br /><br /><br /><br /><br /><br />
