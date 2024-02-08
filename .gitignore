@@ -10,4 +10,5 @@ www_data/module
 *.bak
 *.bak.*
 *.swp
+*.pw
 .DS_Store

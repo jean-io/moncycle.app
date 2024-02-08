@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  moncycle.app:
+    hostname: 'MONCYCLE-APP-CONTAINER'
+    container_name: moncycle_app
+    image: jeanio/moncycle.app
+    ports:
+      - "8080:80/tcp"
+    environment:
+      TZ: 'France/Paris'
+      VIRTUAL_HOST: 'YOUR.DOMAINE.NAME'
+      APP_URL: 'https://YOUR.DOMAINE.NAME'
+      DB_HOST: maria_db_hostname
+      DB_ID: maria_db_login_id
+      DB_NAME: maria_db_name
+      DB_PORT: 3306
+      DB_PASSWORD_FILE: /run/secrets/db_password
+      SMTP_HOST: smtp_server_host_name
+      SMTP_PORT: 465
+      SMTP_MAIL: smtp_email_and_mogin_id
+      SMTP_PASSWORD_FILE: /run/secrets/smtp_password
+    secrets:
+      - db_password
+      - smtp_password
+    restart: unless-stopped
+
+secrets:
+    db_password:
+      file: /path/to/your/db/password/file
+    smtp_password:
+      file: /path/to/your/smtp/password/file
