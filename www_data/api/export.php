@@ -41,7 +41,12 @@ if (!isset($_GET['type']) || !in_array($_GET['type'], $available_type)) {
 }
 
 // RECUPERATION DE LA DATE DE DEBUT ET DE FIN DU CYCLE
-$result["cycle_debut"] = new DateTime(db_select_cycle($db, date_sql($date), $compte["no_compte"])[0]["cycle"]);
+$sql_ret = db_select_cycle($db, date_sql($date), $compte["no_compte"]);
+if (sizeof($sql_ret)<=0) {
+	echo "Pas de donées pour créer un fichier PDF.";
+	exit;
+}
+$result["cycle_debut"] = new DateTime($sql_ret[0]["cycle"]);
 $cycle_end = db_select_cycle_end($db, date_sql($date), $compte["no_compte"]);
 if (isset($cycle_end[0]["cycle_end"])) {
 	$date_tmp = new DateTime($cycle_end[0]["cycle_end"]);
@@ -74,7 +79,9 @@ if ($_GET['type'] == "csv") {
 elseif ($_GET['type'] == "pdf") {
 	header("content-type:application/pdf");
 	header('Content-Disposition: attachment; filename="moncycle_app_'. date_sql($date) .'.pdf"');
-	$pdf = doc_cycle_vers_pdf ($cycle, $compte["methode"], $compte["nom_compte"]);
-	$pdf->Output('I', 'moncycle_app_'. date_humain($date, '_') . '.pdf');
+	$pdf = null;
+	if ($compte["methode"] == 3) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["nom_compte"], date_sql($result["cycle_debut"]), date_sql($result["cycle_fin"]));
+	else $pdf = doc_cycle_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"]);
+	$pdf->Output('I', 'moncycle_app_'. date_humain($date) . '.pdf');
 }
 
