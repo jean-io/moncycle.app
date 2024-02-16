@@ -5,7 +5,7 @@ RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev unzip
 
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
 
-RUN mkdir -p /var/lib/php/session && mkdir -p /var/lib/php/soap_cache && mkdir -p /var/lib/php/composer
+RUN mkdir -p mkdir -p /var/lib/php/soap_cache && mkdir -p /var/lib/php/composer
 RUN chown -R www-data:www-data /var/lib/php/
 
 # worckaround while https://github.com/chartjs/Chart.js/issues/11478 is not fixed

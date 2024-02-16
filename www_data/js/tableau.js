@@ -297,7 +297,7 @@ moncycle_app = {
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${moncycle_app.text.mois[c_fin.getMonth()]} `;
 		let c_title = $(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		let c_action = $(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='api/export?cycle=${moncycle_app.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='api/export?cycle=${moncycle_app.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		let c_action = $(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='api/export?start_date=${moncycle_app.date.str(c_date)}&end_date=${moncycle_app.date.str(fin)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='api/export?start_date=${moncycle_app.date.str(c_date)}&end_date=${moncycle_app.date.str(fin)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
 		let c_graph = $(`<div class='graph pas_bill pas_fc' id='graph-${c_id}' style='display:none' ><canvas id='canvas-${c_id}'></canvas></div>`);
 		let c_content = $(`<div class='contenu' id='contenu-${c_id}'></div>`);
 		cycle.append(c_title);

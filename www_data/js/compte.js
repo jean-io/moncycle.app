@@ -132,6 +132,18 @@ $(document).ready(function(){
 		});
 	});
 
+	// EXPORT PDF
+	$("#i_start_date").attr("max", new Date().toISOString().substr(0, 10));
+	$("#i_end_date").attr("max", new Date().toISOString().substr(0, 10));
+	$("#f_export_complexe").on("submit", function(event) {
+		event.preventDefault();
+		var start_date = $("#i_start_date").val();
+		var end_date = $("#i_end_date").val();
+		if (start_date == "" || end_date == "") $("#export_err").html("<br /><b>❌&nbsp;erreur:</b> dates vides.");
+		else if (new Date(start_date) >= new Date(end_date)) $("#export_err").html("<br /><b>❌&nbsp;erreur:</b> la 1ère date doit être antérieur à la 2ème.");
+		else window.location.replace(`api/export?type=pdf&start_date=${start_date}&end_date=${end_date}`);
+	});
+
 	// SUPPRESSION DU COMPTE
 	$("#f_suppr_compte").on("submit", function(event) {
 		event.preventDefault();

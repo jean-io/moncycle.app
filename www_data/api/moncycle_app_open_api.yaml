@@ -25,6 +25,15 @@ tags:
 
 paths:
 
+  /version:
+    get:
+      tags:
+        - général
+      summary: version du serveur et de l'API
+      responses:
+        200:
+          description: OK
+
 
   /pub_stat:
     get:
@@ -380,9 +389,17 @@ paths:
         - observations
       summary: export au format CSV ou PDF d'un cycle
       parameters:
-        - name: cycle
+        - name: start_date
           in: query
-          description: date d'une observation au format YYYY-MM-DD
+          description: date du premier jour à exporter au format YYYY-MM-DD
+          required: true
+          schema:
+            type: string
+            format: date
+            pattern: '^\d{4}-\d{2}-\d{2}$'
+        - name: end_date
+          in: query
+          description: date du dernier jour à exporter au format  YYYY-MM-DD
           required: true
           schema:
             type: string

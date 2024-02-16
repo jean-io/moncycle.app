@@ -12,7 +12,7 @@ use Fpdf\Fpdf;
 function doc_preparation_jours_pour_affichage($data, $methode){
 	$cycle = [];
 	$date_cursor = new DateTime($data[0]["date_obs"]);
-	$empty_line = array("date_obs" => '', "?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '', "grossesse" => 0,"commentaire" => '');
+	$empty_line = array("date_obs" => '', "premier_jour" => "", "?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '', "grossesse" => 0,"commentaire" => '');
 	if ($methode == 1 || $methode == 4) {
 		$empty_line["temperature"] = '';
 		$empty_line["heure_temp"] = '';
@@ -68,10 +68,10 @@ function doc_cycle_vers_csv ($out, $cycle, $methode) {
 	$i = 1;
 	fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
 	$csv_partition = [];
-	if ($methode == 1) $csv_partition = ["date_obs","?","gommette", "temperature", "heure_temp", "sensation", "sommet", "unions", "grossesse", "commentaire"];
-	if ($methode == 2) $csv_partition = ["date_obs","?","gommette", "sensation", "sommet", "unions", "grossesse", "commentaire"];
-	if ($methode == 3) $csv_partition = ["date_obs","?","note_fc","fleche_fc","gommette", "sommet", "unions", "grossesse", "commentaire"];
-	if ($methode == 4) $csv_partition = ["date_obs","?","note_fc","fleche_fc","gommette", "temperature", "heure_temp", "sommet", "unions", "grossesse", "commentaire"];
+	if ($methode == 1) $csv_partition = ["date_obs","premier_jour","?","gommette", "temperature", "heure_temp", "sensation", "sommet", "unions", "grossesse", "commentaire"];
+	if ($methode == 2) $csv_partition = ["date_obs","premier_jour","?","gommette", "sensation", "sommet", "unions", "grossesse", "commentaire"];
+	if ($methode == 3) $csv_partition = ["date_obs","premier_jour","?","note_fc","fleche_fc","gommette", "sommet", "unions", "grossesse", "commentaire"];
+	if ($methode == 4) $csv_partition = ["date_obs","premier_jour","?","note_fc","fleche_fc","gommette", "temperature", "heure_temp", "sommet", "unions", "grossesse", "commentaire"];
 	fputcsv($out,array_merge(["no"], $csv_partition), CSV_SEP);
 	foreach ($cycle as $line){
 		fputs($out, $i);
@@ -93,7 +93,7 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 		$pdf->Cell($pdf->GetPageWidth()-35,10,iconv('UTF-8', 'windows-1252', $nom), 0, 0, 'C');
 		$pdf->SetFont('Courier','',10);
 		$pdf->Ln();
-		$pdf->Cell($pdf->GetPageWidth()-35,5,sprintf("Cycle de %d jours du %s au %s", count($cycle), date_humain(new Datetime($cycle[0]["date_obs"])), date_humain(new Datetime(end($cycle)["date_obs"]))), 0, 0, 'C');
+		$pdf->Cell($pdf->GetPageWidth()-35,5,sprintf("Tableau de %d jours du %s au %s", count($cycle), date_humain(new Datetime($cycle[0]["date_obs"])), date_humain(new Datetime(end($cycle)["date_obs"]))), 0, 0, 'C');
 		$pdf->Ln();
 		$pdf->SetTextColor(30, 130, 76);
 		$pdf->Link($pdf->GetX(), $pdf->GetY(), $pdf->GetPageWidth()-25, 6, "https://www.moncycle.app");
@@ -123,6 +123,7 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 		$prev_temp_y = 0;
 		$com_long = false;
 		foreach ($cycle as $line){
+			if (boolval($line["premier_jour"])) $i = 1;
 			if($pdf->GetPageHeight()-$pdf->GetY()<=30){
 				$pdf->AddPage();
 				$prev_temp_x = 0;
@@ -134,7 +135,13 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 			$com_long = false;
 			$pdf->SetFont('Courier','',8);
 			$pdf->SetTextColor(150,150,150);
-			$pdf->Cell(8,5,$i, 0, 0, 'C');
+			if (boolval($line["premier_jour"])) {
+				$pdf->SetFillColor(0,0,0);
+				$pdf->SetDrawColor(0,0,0);
+				$pdf->SetTextColor(255,255,255);
+				$pdf->Cell(8,5,$i, 1, 0, 'C', true);
+			}
+			else $pdf->Cell(8,5,$i, 0, 0, 'C');
 			$pdf->SetFont('Courier','',10);
 			$pdf->SetTextColor(0,0,0);
 			if (isset($line["gommette"]) && !boolval($line["?"])) {
@@ -161,12 +168,18 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				if ($line["gommette"] == ":)") {
 					$pdf->SetTextColor(30, 130, 76);
 					$pdf->SetDrawColor(150,150,150);
-					$pdf->Cell(5,5,"(:",1,0,'C', true);
+					$xx = $pdf->GetX();
+					$yy = $pdf->GetY();
+					$pdf->Cell(5,5,"",1,0,'C', true);
+					$pdf->Image("../img/baby.png", $xx+0.25, $yy+0.25, 4.5, 4.5);
 					$pdf->SetTextColor(0,0,0);
 				}
 				elseif (str_contains($line["gommette"], ":)")) {
 					$pdf->SetTextColor(255,255,255);
-					$pdf->Cell(5,5,"(:",1,0,'C', true);
+					$xx = $pdf->GetX();
+					$yy = $pdf->GetY();
+					$pdf->Cell(5,5,"",1,0,'C', true);
+					$pdf->Image("../img/baby.png", $xx+0.25, $yy+0.25, 4.5, 4.5);
 					$pdf->SetTextColor(0,0,0);
 				}
 				else $pdf->Cell(5,5,"",1,0,'C', true);
@@ -201,16 +214,11 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 					}
 					else {
 						$pdf->SetFont("ZapfDingbats");	
-						$pdf->Cell(8,5,chr(115).chr(115)); // /\/\
+						$pdf->Cell(8,5,chr(115)); // /\/\
 					}
 					$s = 1;
 				}
 				elseif ($s<=3) {
-					if ($methode==3 || $methode == 4) $pdf->Cell(3,5,"p");
-					else {
-						$pdf->SetFont("ZapfDingbats");	
-						$pdf->Cell(3,5,chr(115)); // /\
-					}
 					$pdf->SetFont('Courier','',10);
 					$pdf->Cell(5,5,"+". $s); 
 					$s += 1;

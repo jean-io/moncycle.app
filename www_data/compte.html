@@ -41,6 +41,22 @@
 		</center>
 
 		<div class="contennu" id="timeline">
+
+
+
+			<h2>Exporter les données</h2>
+			<p>Vous avez la possibilité d’exporter une partie de vos observations au format PDF. Cela permet d'avoir plusieurs cycles sur un même document. Comme demandé par la RGPD, vous avez aussi la possibilité d’exporter l’ensemble des données liées à votre compte. Cet export sera au format CSV.</p>
+			<br >
+			<form method="get" action="api/export" id="f_export_complexe">
+			Exporter du <input id="i_start_date" name="start_date" type="date" /> au <input id="i_end_date" name="end_date" type="date" />. <input type="submit" value="📄 Créer PDF" />
+			<span class="rouge" id="export_err"></span>
+			</form>
+			<br /><br />
+			<a href="api/mes_donnees_svp"><input type="button" value="📦 Exporter toutes mes données" /></a>
+			<br /><br /><br />
+	
+	
+			
 		<h2>Modifier mes informations <span class="net_stat" id="net_stat"></span></h2>
 		<form action="../api/param" method="post"><br />
 		<label for="i_prenom">Prénom(s):</label><br />
@@ -65,6 +81,7 @@
 		<input type="submit" value="💾 enregistrer" /> -->
 		</form>
 		<br /><br /><br />
+
 
 
 		<h2>Authentification multifacteur <span class="net_stat" id=""></span></h2>
@@ -125,11 +142,9 @@
 		<p>Retrouvez toutes les informations de cette application sur <a href="https://www.moncycle.app" target="_blank">www.moncycle.app</a>.</p>
 		<p>Un bug? Besoin d'aide? Une question? Une suggestion? Une demande liée aux données personnelles utilisées? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a>.</p>
 		<br /><br /><br />
-		<h2>Exporter toutes les données</h2>
-		<p>Comme demandé par la RGPD, vous avez la possibilité d’exporter l’ensemble des données liées à votre compte. Cet export sera au format CSV. Vous avez la possibilité d’exporter chaque cycle au format PDF ou CSV dans la vue MAXI.</p>
-		<br />
-		<a href="api/mes_donnees_svp"><input type="button" value="📦 Exporter toutes mes données" /></a>
-		<br /><br /><br />
+
+
+
 		<h2 class="rouge">Zone de danger</h2>
 		<p class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est irréversible mais vous avez la possibilité de télécharger toutes vos données avant la suppression.</p>
 		<br />
