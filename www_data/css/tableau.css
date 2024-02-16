@@ -54,6 +54,7 @@
 	text-align: center;
 	border: 1px solid black;
 	border-radius: 2px;
+	margin-right: 5px;
 }
 
 .day .e {
@@ -74,6 +75,20 @@
 
 .day .fc {
 	font-family: "Montserrat";
+	font-weight: bold;
+}
+
+.day .fc .note_not_imp {
+	vertical-align: top;
+	font-weight: normal;
+	margin: 0;
+}
+
+.day .fc .note_rouge {
+	color: #ac2433;
+	vertical-align: top;
+	font-weight: normal;
+	margin: 0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -324,14 +339,15 @@ h2 {
 	display: inline-block;
 	vertical-align: middle;
 	cursor: pointer;
-	width: 2.5%;
+	width: 2.857%;
 }
 
 .cycle_recap .obs span {
 	display: block;
-	height: 11px;
+	height: 10px;
+	padding-top: 1px;
 	width: 100%;
-	font-size: 6px;
+	font-size: 6.5px;
 	text-align: center;
 	vertical-align: middle;
 }
@@ -348,9 +364,14 @@ h2 {
 	text-align: center;
 	margin-top: 25px;
 	font-family: 'Montserrat';
-	color: #ac2433;
 }
 
 #jour_form_suppr {
 	font-size: .6em;
+}
+
+.but_j_nav {
+	display: block;
+	float: right;
+	margin-left: 5px;
 }

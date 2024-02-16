@@ -51,6 +51,8 @@
 		<form id="jour_form" class="popup" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
 			<div id="jour_form_header">
+				<button type="button" id="jour_form_prev" class="but_j_nav">J -1</button>
+				<button type="button" id="jour_form_next" class="but_j_nav">J +1</button>
 				<button type="button" id="jour_form_close">← retour</button>
 				<span class="popup_enregistratement_status" style="display: none;" id="jour_form_saving">&nbsp;⏳&nbsp;enregistrement...</span>
 				<span class="popup_enregistratement_status vert" style="display: none;" id="jour_form_saved">&nbsp;✅&nbsp;enregistré</span>
@@ -69,7 +71,7 @@
 					<input class="fc_form_note" type="radio" name="fc_regles" id="fc_rl" value="L" /><label for="fc_rl"><b>L</b> flux léger</label><br />
 					<input class="fc_form_note" type="radio" name="fc_regles" id="fc_vl" value="VL" /><label for="fc_vl"><b>VL</b> flux vraiment léger</label><br />
 					<input class="fc_form_note" type="radio" name="fc_regles" id="fc_vh" value="VH" /><label for="fc_vh"><b>VH</b> flux vraiment abondant</label><br />
-					<input class="fc_form_note" type="radio" name="fc_regles" id="fc_nr" value="" checked /><label for="fc_nr">pas de règle</label><br />
+					<input class="fc_form_note" type="radio" name="fc_regles" id="fc_nr" value="" checked /><label for="fc_nr">pas de flux</label><br />
 					<input class="fc_form_note" type="checkbox" name="fc_regles_b" id="fc_b" value="B" /><label for="fc_b"><b>B</b> saignement brun (ou noir)</label><br />
 					<br />
 					<span class="categorie pas_temp">&#x1F441;&#xFE0F; Sensation & observation:</span><br />

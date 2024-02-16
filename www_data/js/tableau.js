@@ -42,6 +42,8 @@ moncycle_app = {
 	utilisateurs_beta : [5],
 	constante : {},
 	sensation : {},
+	observation : {},
+	timeline_asc : true,
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		if (!localStorage.authok) window.location.replace('/connexion');
@@ -51,24 +53,26 @@ moncycle_app = {
 		}).fail(moncycle_app.redirection_connexion);
 		$.get("api/constante", {}).done(function(data) {
 			moncycle_app.constante = data;
-			moncycle_app.charger_cycle();
+			moncycle_app.remplir_page_de_cycle();
 			$("#nom").html(moncycle_app.constante.nom);
 			if (moncycle_app.constante.donateur) $("#nom").append(" &#x1F396;&#xFE0F;");
 			$(".main_button").css("display","inline-block");
+			if (moncycle_app.timeline_asc) $("#charger_cycle").hide();
 		}).fail(moncycle_app.redirection_connexion);
+		if (moncycle_app.timeline_asc) $("#charger_cycle").hide();
 		$("#charger_cycle").click(moncycle_app.charger_cycle);
 		$("#jour_form_close").click(moncycle_app.close_menu);
 		$("#jour_form_submit").click(moncycle_app.submit_menu);
+		$("#jour_form_next").click(moncycle_app.open_menu);
+		$("#jour_form_prev").click(moncycle_app.open_menu);
 		$("#jour_form input, #jour_form textarea").on("keyup change", moncycle_app.submit_menu);
 		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
-		$("#form_fc").keyup(moncycle_app.fc_test_note).change(moncycle_app.fc_test_note);
-		$("input.fc_form_note").change(moncycle_app.fc_form2note);
 		$("#but_macro").click(function () {
 			$("#but_macro").hide();
 			$("#timeline").hide();
 			$("#but_micro").show();
 			$("#recap").show();
-			while (moncycle_app.cycle_curseur < Math.min(10, moncycle_app.constante.tous_les_cycles.length)) moncycle_app.charger_cycle();
+			moncycle_app.remplir_page_de_cycle();
 		});
 		$("#but_micro").click(function () {
 			$("#but_macro").show();
@@ -84,11 +88,22 @@ moncycle_app = {
 				$("#form_heure_temp").val((h<10 ? "0"+h : h) + ":" + (m<10 ? "0"+m : m));
 			}
 		});
+		$(window).scroll(function() {
+			if(moncycle_app.timeline_asc && $(window).scrollTop() + $(window).height() +50 >= $(document).height()){
+				moncycle_app.charger_cycle();
+			}
+		});
 		moncycle_app.charger_actu();
 		$(window).focus(function() {
 			if (moncycle_app.date.str(moncycle_app.date.now()) != moncycle_app.date_chargement) location.reload(false); 
 		})
 		if (moncycle_app.utilisateurs_beta.includes(moncycle_app.constante.id_utilisateur)) $(".beta").show();
+	},
+	remplir_page_de_cycle : function() {
+		while ($(window).height() == $(document).height() && moncycle_app.cycle_curseur < moncycle_app.constante.tous_les_cycles.length) {
+			moncycle_app.charger_cycle();
+		}
+		if ($(window).height() == $(document).height()) moncycle_app.form_nouveau_cycle();
 	},
 	redirection_connexion : function(err) {
 		if (err.status == 401 || err.status == 403 || err.status == 407) {	
@@ -134,9 +149,16 @@ moncycle_app = {
 				if (fin_auj) form_nouv_cycle = true;
 			}
 		}
+		if (form_nouv_cycle && moncycle_app.timeline_asc) moncycle_app.form_nouveau_cycle(false);
 		let nb_jours = parseInt(Math.round((date_fin-date_cycle)/(1000*60*60*24)+1));
-		$("#timeline").prepend(moncycle_app.cycle2timeline(date_cycle_str, nb_jours, date_fin));
-		$("#recap").prepend(moncycle_app.cycle2recap(date_cycle_str, nb_jours, date_fin));
+		if (moncycle_app.timeline_asc) {
+			$("#timeline").append(moncycle_app.cycle2timeline(date_cycle_str, nb_jours, date_fin));
+			$("#recap").append(moncycle_app.cycle2recap(date_cycle_str, nb_jours, date_fin));
+		}
+		else {
+			$("#timeline").prepend(moncycle_app.cycle2timeline(date_cycle_str, nb_jours, date_fin));
+			$("#recap").prepend(moncycle_app.cycle2recap(date_cycle_str, nb_jours, date_fin));
+		}
 		if (JSON.parse(localStorage.cycle_cache || "[]").includes(date_cycle_str)) moncycle_app.cycle_aff_switch(date_cycle_str);
 		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function (e) {
 			moncycle_app.cycle_aff_switch($(this).attr("for"));
@@ -149,20 +171,21 @@ moncycle_app = {
 			date_obs_str = moncycle_app.date.str(date_obs);
 			let data = {date_obs: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
 			dates_data_holder[date_obs_str] = data;
-			$(`#c-${date_cycle_str} .contenu`).append(moncycle_app.observation2timeline(data));
+			moncycle_app.observation[date_obs_str] = data;
+			if (moncycle_app.timeline_asc) $(`#c-${date_cycle_str} .contenu`).prepend(moncycle_app.observation2timeline(data));
+			else $(`#c-${date_cycle_str} .contenu`).append(moncycle_app.observation2timeline(data));
 			$(`#rc-${date_cycle_str} .contenu`).append(moncycle_app.observation2recap(data));
 			dates_req.push(date_obs_str);
 		}
 		moncycle_app.graph_preparation_data(dates_data_holder);
 		moncycle_app.charger_observation(dates_req.join(','));
 		if (moncycle_app.constante.methode == 1 || moncycle_app.constante.methode == 4) moncycle_app.cycle2graph(date_cycle_str);
-		if (form_nouv_cycle) {
-			moncycle_app.form_nouveau_cycle(false);
-		}
+		if (form_nouv_cycle && !moncycle_app.timeline_asc) moncycle_app.form_nouveau_cycle(false);
 	},
 	charger_observation : function(o_date) {
 		$.get("api/observation", { date: o_date }).done(function(data) {
 			$.each(data, function (o_date, o_data) {
+				moncycle_app.observation[o_date] = o_data;
 				$(`#o-${o_date}`).replaceWith(moncycle_app.observation2timeline(o_data));
 				$(`#ro-${o_date}`).replaceWith(moncycle_app.observation2recap(o_data));
 				if (o_data.jour_sommet) moncycle_app.sommets[o_date] = [o_data.cycle, 0];
@@ -173,7 +196,10 @@ moncycle_app = {
 			moncycle_app.graph_preparation_data(data);
 		}).fail(moncycle_app.redirection_connexion);
 	},
+	form_nouveau_cycle_active: false,
 	form_nouveau_cycle: function (prepend=true) {
+		if (moncycle_app.form_nouveau_cycle_active) return;
+		moncycle_app.form_nouveau_cycle_active = true;
 		let max_date = moncycle_app.date.str(moncycle_app.date.now());
 		let min_date = "";
 		if (prepend && moncycle_app.cycle_curseur>0) {
@@ -188,8 +214,9 @@ moncycle_app = {
 		let text = "Entrer la date du premier jour du cycle à créer.";
 		if (!prepend) text = "Entrer la date du jour de reprise du suivi du cycle.";
 		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="titre">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">${text}<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" min="${min_date}" /> <input type="button" id="but_creer_cycle" value="✔️" /></div></div>`;	
-		let nocycle = `<div id="nocycle">Plus de cycle à afficher.</div>`;
-		if (prepend) {
+		let nocycle = `<div id="nocycle">Tous les cycles sont affichées.</div>`;
+		if (moncycle_app.cycle_curseur == 0) nocycle = `<div id="nocycle">Dans la page MAXI vous avez la possibilité de créer un nouveau cycle.</div>`;
+		if (prepend && !moncycle_app.timeline_asc) {
 			$("#charger_cycle").prop("disabled", true);
 			$("#timeline").prepend(html);
 			$("#recap").prepend(nocycle);
@@ -217,6 +244,7 @@ moncycle_app = {
 					}
 					moncycle_app.constante.tous_les_cycles.push(nouveau_cycle_date);
 					$("#charger_cycle").prop("disabled", false);
+					moncycle_app.form_nouveau_cycle_active = false;
 					$("#nouveau_cycle").remove();
 					$("#nocycle").remove();
 					moncycle_app.charger_cycle();
@@ -249,15 +277,18 @@ moncycle_app = {
 		let cache = JSON.parse(localStorage.cycle_cache || "[]");
 		if ($("#contenu-c-" + id).is(":hidden")) {
 			$("#contenu-c-" + id).show();
+			if(parseInt($("#graph-c-" + id).attr("vide"))!=1) $("#graph-c-" + id).show();
 			$("#but-contenu-c-" + id).html("&#x1F440; Masquer");
 			if (cache.includes(id)) cache.splice(cache.indexOf(id) , 1);
 		}
 		else {
 			$("#contenu-c-" + id).hide();
+			$("#graph-c-" + id).hide();
 			$("#but-contenu-c-" + id).html("&#x1F440; Afficher");
 			if (!cache.includes(id)) cache.push(id);
 		}
 		localStorage.cycle_cache = JSON.stringify(cache);
+		if (moncycle_app.timeline_asc) moncycle_app.remplir_page_de_cycle();
 	},
 	cycle2timeline : function (c, nb, fin) {
 		let c_id = "c-" + c;
@@ -265,9 +296,14 @@ moncycle_app = {
 		let c_date = moncycle_app.date.parse(c);
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${moncycle_app.text.mois[c_fin.getMonth()]} `;
-		cycle.append(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		cycle.append(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='api/export?cycle=${moncycle_app.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='api/export?cycle=${moncycle_app.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
-		cycle.append(`<div class='contenu' id='contenu-${c_id}'><div class='graph pas_bill pas_fc' id='graph-${c_id}' ><canvas id='canvas-${c_id}'></canvas></div></div>`);
+		let c_title = $(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
+		let c_action = $(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='api/export?cycle=${moncycle_app.date.str(c_date)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='api/export?cycle=${moncycle_app.date.str(c_date)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		let c_graph = $(`<div class='graph pas_bill pas_fc' id='graph-${c_id}' style='display:none' ><canvas id='canvas-${c_id}'></canvas></div>`);
+		let c_content = $(`<div class='contenu' id='contenu-${c_id}'></div>`);
+		cycle.append(c_title);
+		cycle.append(c_action);
+		cycle.append(c_graph);
+		cycle.append(c_content);
 		return cycle;
 	},
 	cycle2recap : function (c, nb, fin) {
@@ -305,14 +341,11 @@ moncycle_app = {
 	},
 	graph_update : function(id) {
 		let vide = true;
-		for (let k in moncycle_app.graph_data[id]) {
-			if (vide && !isNaN(moncycle_app.graph_data[id][k])) vide = false;
-		}
-		if (vide) {
-			$("#graph-c-" + id).hide();
-		}
+		for (let k in moncycle_app.graph_data[id]) if (vide && !isNaN(moncycle_app.graph_data[id][k])) vide = false;
+		$("#graph-c-" + id).attr("vide", vide ? 1 : 0);
+		if (vide) $("#graph-c-" + id).hide();
 		else {
-			$("#graph-c-" + id).show();
+			if (!$("#contenu-c-" + id).is(":hidden")) $("#graph-c-" + id).show();
 			moncycle_app.graphs[id].data.datasets[0].data = moncycle_app.graph_data[id];
 			moncycle_app.graphs[id].update();
 		}
@@ -328,9 +361,8 @@ moncycle_app = {
 	observation2recap : function(j) {
 		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "ro-" + moncycle_app.date.str(o_date);
-		let observation = $("<div>", {id: o_id, class: "obs"});
+		let observation = $("<div>", {id: o_id, class: "obs", date: moncycle_app.date.str(o_date)});
 		observation.click(moncycle_app.open_menu);
-		observation.append(`<span class='data' style='display:none'>${JSON.stringify(j)}</span>`);
 		let color = "bleu";
 		let index_couleur = j.gommette;
 		let bebe = (j.gommette == ":)");
@@ -355,9 +387,8 @@ moncycle_app = {
 	observation2timeline : function(j) {
 		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "o-" + moncycle_app.date.str(o_date);
-		let observation = $("<div>", {id: o_id, class: "day"});
+		let observation = $("<div>", {id: o_id, class: "day", date : moncycle_app.date.str(o_date)});
 		observation.click(moncycle_app.open_menu);
-		observation.append(`<span class='data' style='display:none'>${JSON.stringify(j)}</span>`);
 		observation.append(`<span class='d'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);	
 		observation.append(`<span class='j'>${j.pos}</span>`);
 		if (j.chargement) {
@@ -414,8 +445,9 @@ moncycle_app = {
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
 		observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		if (!j.jenesaispas) {
+			let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
 			observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
-			observation.append(`<span class='fc pas_bill pas_bill_temp'>${j.note_fc || ""}</span>`);
+			observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_note_fc}</span>`);
 			if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
 		}
 		if (j.commentaire) {
@@ -428,12 +460,31 @@ moncycle_app = {
 		return observation;
 	},
 	open_menu : function(e) {
-		let j = JSON.parse($("#" + $(this).attr('id') + " .data").text());
-		let o_date = moncycle_app.date.parse(j.date_obs);
+		let o_date = moncycle_app.date.parse($(this).attr('date'));
+		let j = moncycle_app.observation[$(this).attr('date')];
 		let gommette = j.gommette? j.gommette : "";
 		let titre = [moncycle_app.text.semaine[o_date.getDay()], o_date.getDate(), moncycle_app.text.mois_long[o_date.getMonth()], o_date.getFullYear()];
 		titre.push(`<span>J${j.pos}</span>`);
 		$("#jour_form_titre").html(titre.join(" "));
+		let arrow = {"next" : '↑', "prev" : '↓'};
+		if (!moncycle_app.timeline_asc) arrow = {"next" : '↓', "prev" : '↑'};
+		$("#jour_form_prev").text(arrow["prev"] + " J" + (j.pos-1));
+		$("#jour_form_next").text(arrow["next"] + " J" + (j.pos+1));
+		let date_cursor = new Date(j.date_obs);
+		date_cursor.setDate(date_cursor.getDate()+1);
+		let str_date_cursor = moncycle_app.date.str(date_cursor);
+		if (moncycle_app.observation[str_date_cursor] && !moncycle_app.observation[str_date_cursor].premier_jour) {
+			$("#jour_form_next").attr("date", str_date_cursor);
+			$("#jour_form_next").show();
+		}
+		else $("#jour_form_next").hide();
+		date_cursor.setDate(date_cursor.getDate()-2);
+		str_date_cursor = moncycle_app.date.str(date_cursor);
+		if (j.pos-1 > 0 && moncycle_app.observation[str_date_cursor]) {
+			$("#jour_form_prev").attr("date", str_date_cursor);
+			$("#jour_form_prev").show();
+		}
+		else $("#jour_form_prev").hide();
 		$("#jour_form")[0].reset();
 		$("#fc_msg").empty();
 		$("#jour_form_saving").hide();
@@ -441,6 +492,7 @@ moncycle_app = {
 		$("#form_date").val(j.date_obs);
 		if (j.note_fc && (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4)) {
 			$("#form_fc").val(j.note_fc);
+			moncycle_app.fc_note2form();
 			moncycle_app.fc_test_note();
 		}
 		if (j.fleche_fc && (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4)) $("#fc_f" + moncycle_app.fleche[j.fleche_fc][0]).prop('checked', true);
@@ -507,7 +559,8 @@ moncycle_app = {
 		if (moncycle_app.page_a_recharger) location.reload();
 	},
 	submit_menu : function () {
-		moncycle_app.fc_form2note();
+		if (this.id == "form_fc") moncycle_app.fc_note2form();
+		else moncycle_app.fc_form2note();
 		moncycle_app.fc_test_note();
 		$("#jour_form_saving").show();
 		$("#jour_form_saved").hide();
@@ -580,7 +633,6 @@ moncycle_app = {
 			$("#fc_msg").addClass("rouge");
 			$("#fc_msg").removeClass("vert");
 		}
-		moncycle_app.fc_note2form();
 	},
 	fc_form2note : function() {
 		let note = $('input[name="fc_regles"]:checked').val();
@@ -593,7 +645,23 @@ moncycle_app = {
 		if (note.length && !note.endsWith(' ')) note += " ";
 		note += $('input[name="fc_dou"]:checked').val();
 		$("#form_fc").val(note.trim());
-		moncycle_app.fc_test_note();
+		return note;
+	},
+	fc_note2html (note) {
+		const should_be_red = ['VL', 'VH', 'H', 'M', 'B'];
+		const less_important = ['RAP', 'LAP', 'AP', 'X1', 'X2', 'X3', 'AD',];
+		note = note.toUpperCase();
+		less_important.forEach(c => {
+			note = note.replace(c,`<span class='note_not_imp'>${c}</span>`);
+		});
+		should_be_red.forEach(c => {
+			note = note.replace(c,`<span class='note_rouge'>${c}</span>`);
+		});
+		if (note.startsWith('L')) {
+			note = note.slice(1);
+			note = `<span class='note_rouge'>L</span>` + note;
+		}
+		return note;
 	},
 	fc_note2form : function() {
 		let note = $("#form_fc").val().trim().toUpperCase();
@@ -640,6 +708,7 @@ moncycle_app = {
 		if (no_sens) $("#fc_sr").prop("checked", true);
 		if (no_rec) $("#fc_rr").prop("checked", true);
 		if (no_dou) $("#fc_rp").prop("checked", true);
+		return note;
 	},
 	date : {
 		now : function () {
