@@ -167,11 +167,15 @@ moncycle_app = {
 		});
 		let dates_req = [];
 		let dates_data_holder = {};
+		let sotred_obs = {}
+		if (localStorage.observation) sotred_obs = JSON.parse(localStorage.observation);
 		for (let pas = 0; pas < nb_jours; pas++) {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
-			date_obs_str = moncycle_app.date.str(date_obs);
-			let data = {date_obs: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
+			let date_obs_str = moncycle_app.date.str(date_obs);
+			let data = null;
+			if (sotred_obs[date_obs_str]) data = sotred_obs[date_obs_str];
+			else data = {date_obs: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
 			dates_data_holder[date_obs_str] = data;
 			moncycle_app.observation[date_obs_str] = data;
 			if (moncycle_app.timeline_asc) $(`#c-${date_cycle_str} .contenu`).prepend(moncycle_app.observation2timeline(data));
@@ -186,13 +190,17 @@ moncycle_app = {
 	},
 	charger_observation : function(o_date) {
 		$.get("api/observation", { date: o_date }).done(function(data) {
+			let sotred_obs = {};
+			if (localStorage.observation) sotred_obs = JSON.parse(localStorage.observation);
 			$.each(data, function (o_date, o_data) {
 				moncycle_app.observation[o_date] = o_data;
+				sotred_obs[o_date] = o_data;
 				$(`#o-${o_date}`).replaceWith(moncycle_app.observation2timeline(o_data));
 				$(`#ro-${o_date}`).replaceWith(moncycle_app.observation2recap(o_data));
 				if (o_data.jour_sommet) moncycle_app.sommets[o_date] = [o_data.cycle, 0];
 				else if (!o_data.jour_sommet && o_date in moncycle_app.sommets) delete moncycle_app.sommets[o_date];
 			});
+			localStorage.observation = JSON.stringify(sotred_obs);
 			$(`.pas_${moncycle_app.constante.methode_diminutif}`).css("display", "none");
 			moncycle_app.trois_jours();
 			moncycle_app.graph_preparation_data(data);
@@ -461,9 +469,14 @@ moncycle_app = {
 		}
 		return observation;
 	},
-	open_menu : function(e) {
-		let o_date = moncycle_app.date.parse($(this).attr('date'));
-		let j = moncycle_app.observation[$(this).attr('date')];
+	menu_opened_date : null,
+	open_menu : function(e, date = null) {
+		let o_date;
+		if (date) o_date = moncycle_app.date.parse(date);
+		else o_date = moncycle_app.date.parse($(this).attr('date'));
+		date = moncycle_app.date.str(o_date);
+		moncycle_app.menu_opened_date = date;
+		let j = moncycle_app.observation[moncycle_app.menu_opened_date];
 		let gommette = j.gommette? j.gommette : "";
 		let titre = [moncycle_app.text.semaine[o_date.getDay()], o_date.getDate(), moncycle_app.text.mois_long[o_date.getMonth()], o_date.getFullYear()];
 		titre.push(`<span>J${j.pos}</span>`);
@@ -558,6 +571,7 @@ moncycle_app = {
 		$("#timeline").removeClass("flou");
 		$("#recap").removeClass("flou");
 		$("#jour_form").hide();
+		moncycle_app.menu_opened_date = null;
 		if (moncycle_app.page_a_recharger) location.reload();
 	},
 	submit_menu : function () {

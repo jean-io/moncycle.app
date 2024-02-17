@@ -171,8 +171,8 @@ catch (Exception $e){
 		<meta property="og:url" content="https://www.moncycle.app/" />
 		<meta property="og:image" content="/img/moncycleapp_apercu.jpg" />
 		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
-		<link rel="stylesheet" href="../css/commun.css" />
-		<link rel="stylesheet" href="../css/compte.css" />
+		<link rel="stylesheet" href="../css/commun.css?v=<?= filemtime('../css/commun.css') ?>" />
+		<link rel="stylesheet" href="../css/compte.css?v=<?= filemtime('../css/compte.css') ?>" />
 	</head>
 	<body>
 		<center>

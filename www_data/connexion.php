@@ -26,9 +26,9 @@
 		<meta property="og:url" content="https://www.moncycle.app/" />
 		<meta property="og:image" content="/img/moncycleapp_apercu.jpg" />
 		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
-		<script type="text/javascript" src="vendor/components/jquery/jquery.min.js"></script> 
-		<link rel="stylesheet" href="css/commun.css" />
-		<link rel="stylesheet" href="css/compte.css" />
+		<script type="text/javascript" src="vendor/components/jquery/jquery.min.js?v=<?= filemtime('vendor/components/jquery/jquery.min.js') ?>"></script> 
+		<link rel="stylesheet" href="css/commun.css?v=<?= filemtime('css/commun.css') ?>" />
+		<link rel="stylesheet" href="css/compte.css?v=<?= filemtime('css/compte.css') ?>" />
 		<style>
 			.contennu {
 				max-width: 300px;

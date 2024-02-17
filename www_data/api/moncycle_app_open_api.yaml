@@ -212,7 +212,7 @@ paths:
                   description: deuxième adresse mail pour recevoir les cycles par mail sur une autre addresse
                 methode:
                   type: integer
-                  description: méthode de suivi (1. Billings + température, 2. Billings, 3. FertilityCare, 4. FertilityCare + température)
+                  description: méthode de suivi (1 = Billings + température, 2 = Billings, 3 = FertilityCare, 4 = FertilityCare + température)
                   enum:
                     - 1
                     - 2
@@ -221,6 +221,18 @@ paths:
                 age:
                   type: integer
                   description: année (approximative) de naissance des personnes
+                timeline_asc:
+                  type: integer
+                  description: ordre d'affichage des observation. 1 = ajourd'hui en début du tableau, 0 = aujourd'hui à la fin du tableau
+                  enum:
+                    - 1
+                    - 0
+                recherche:
+                  type: integer
+                  description: accord pour contribuer de manière anonyme à la recherche. 1 = oui, 0 = non
+                  enum:
+                    - 1
+                    - 0
         required: true
       responses:
         200:

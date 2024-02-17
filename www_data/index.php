@@ -26,11 +26,11 @@
 		<meta property="og:url" content="https://www.moncycle.app/" />
 		<meta property="og:image" content="/img/moncycleapp_apercu.jpg" />
 		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
-		<script type="text/javascript" src="vendor/components/jquery/jquery.min.js"></script> 
-		<script type="text/javascript" src="vendor/chartjs/chart.js"></script> 
-		<script type="text/javascript" src="js/tableau.js"></script>
-		<link rel="stylesheet" href="css/commun.css" />
-		<link rel="stylesheet" href="css/tableau.css" />
+		<script type="text/javascript" src="vendor/components/jquery/jquery.min.js?v=<?= filemtime('vendor/components/jquery/jquery.min.js') ?>"></script> 
+		<script type="text/javascript" src="vendor/chartjs/chart.js?v=<?= filemtime('vendor/chartjs/chart.js') ?>"></script> 
+		<script type="text/javascript" src="js/tableau.js?v=<?= filemtime('js/tableau.js') ?>"></script>
+		<link rel="stylesheet" href="css/commun.css?v=<?= filemtime('css/commun.css') ?>" />
+		<link rel="stylesheet" href="css/tableau.css?v=<?= filemtime('css/tableau.css') ?>" />
 	</head>
 	<body>
 		<center>
