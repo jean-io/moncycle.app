@@ -10,13 +10,22 @@ $(document).ready(function(){
 	// TELECHARGEMENT DES DONNES DES UTILISATEUR
 	$.get("api/constante", {}).done(function(data) {
 		moncycle_app_usr = data;
+		$("#f_info_pref")[0].reset();
 		$("#nom").text(moncycle_app_usr.nom);
 		$("#i_prenom").val(moncycle_app_usr.nom);
+		$("#tech_info_no").text(moncycle_app_usr.id_utilisateur);
 		if(moncycle_app_usr.donateur) $("#merci_don").show();
 		if(moncycle_app_usr.id_utilisateur == 2) $("#warning_demo").show();
+		$("#tech_info_id").text(moncycle_app_usr.email1);
 		$("#i_email1").val(moncycle_app_usr.email1);
 		$("#i_email2").val(moncycle_app_usr.email2);
 		$(`#m_${moncycle_app_usr.methode}`).attr("checked", "");
+		if (moncycle_app_usr.recherche) $("#i_recherche").prop('checked', true);
+		if (moncycle_app_usr.timeline_asc) $("#i_timeline_asc").prop('checked', true);
+		let d = new Date(moncycle_app_usr.date_inscription);
+		let m = d.getMonth()+1;
+		let j = d.getDate();
+		$("#tech_info_insc").text([j<10 ? "0"+j : j, m<10 ? "0"+m : m, d.getFullYear()].join("/"));
 		const cette_annee = (new Date()).getFullYear();
 		for (let y = (cette_annee - cette_annee%5)-75; y < cette_annee-5; y += 5) {
 			var selected = ""
@@ -31,20 +40,30 @@ $(document).ready(function(){
 			window.location.replace('/connexion');
 		}
 	});
+	$.get("api/version", {}).done(function(data) {
+		$("#tech_info_ver").text(data.version ?? "?");
+	}).fail(function (err) {
+		if (err.status == 401 || err.status == 403 || err.status == 407) {	
+			window.localStorage.clear();
+			window.location.replace('/connexion');
+		}
+	});
 
 	// MISE A JOURS DES PARAMETTRE DU COMPTE
 	$(".auto_save").on("keyup change", function() {
 		$("#net_stat").text('⏳');
-		$.post("../api/compte", `${$(this).attr('name')}=${this.value}`).fail(function(data){
+		let val = this.value;
+		if ($(this)[0].type="checkbox") val = $(this)[0].checked ? 1 : 0;
+		$.post("../api/compte", `${$(this).attr('name')}=${val}`).fail(function(data){
 			console.error(data);
-			$("#net_stat").html('❌&nbsp;erreur');
+			$("#net_stat").html(' ❌&nbsp;erreur');
 			$("#net_stat").addClass('rouge');
 			$("#net_stat").removeClass('vert');
 		}).done(function(data){
 			if(data.hasOwnProperty("nom")) {
 				$("#nom").text(data.nom);
 			}
-			$("#net_stat").html('✅&nbsp;enregistré');
+			$("#net_stat").html(' ✅&nbsp;enregistré');
 			$("#net_stat").addClass('vert');
 			$("#net_stat").removeClass('rouge');
 		});

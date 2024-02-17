@@ -97,8 +97,8 @@ function db_select_compte_existe($db, $mail) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_insert_compte($db, $nom, $methode, $age, $mail, $mdp, $decouvert) {
-	static $sql = "INSERT INTO compte (nom, methode, age, email1, motdepasse, decouvert) VALUES (:nom, :methode, :age, :email1, :motdepasse, :decouvert)";
+function db_insert_compte($db, $nom, $methode, $age, $mail, $mdp, $decouvert, $recherche) {
+	static $sql = "INSERT INTO compte (nom, methode, age, email1, motdepasse, decouvert, recherche) VALUES (:nom, :methode, :age, :email1, :motdepasse, :decouvert, :recherche)";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":nom", $nom, PDO::PARAM_STR);
@@ -107,6 +107,7 @@ function db_insert_compte($db, $nom, $methode, $age, $mail, $mdp, $decouvert) {
 	$statement->bindValue(":email1", $mail, PDO::PARAM_STR);
 	$statement->bindValue(":motdepasse", $mdp, PDO::PARAM_STR);
 	$statement->bindValue(":decouvert", $decouvert, PDO::PARAM_STR);
+	$statement->bindValue(":recherche", $recherche, PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -127,7 +128,7 @@ function db_update_compte_param_str($db, $param, $value, $no_compte) {
 }
 
 function db_update_compte_param_int($db, $param, $value, $no_compte) {
-	$param_list = ["methode", "age", "nb_co_echoue", "donateur", "actif", "relance"];
+	$param_list = ["methode", "age", "nb_co_echoue", "donateur", "actif", "relance", "timeline_asc", "recherche"];
 	if (!in_array($param, $param_list, true)) return false;
 
 	static $sql = "UPDATE compte SET " . $param . " = :cvalue WHERE no_compte = :no_compte";
@@ -456,7 +457,7 @@ function db_insert_jetton($db, $no_compte, $nom, $pays, $jetton_str, $expire=2) 
 }
 
 function db_select_compte_jetton($db, $jetton_str) {
-	static $sql = "SELECT J.no_compte, J.no_jetton, C.nom AS nom_compte, J.pays, J.nom AS nom_jetton, J.date_creation AS d_creation_jetton, J.date_use AS d_use_jetton, C.methode, C.age, C.email1, C.email2, C.nb_co_echoue, C.donateur, C.actif, C.relance, C.derniere_co_date, C.inscription_date, C.mdp_change_date, C.decouvert, C.totp_secret, C.totp_etat FROM `jetton` AS J INNER JOIN `compte` AS C ON J.no_compte=C.no_compte WHERE `jetton_str` = :jetton_str LIMIT 1";
+	static $sql = "SELECT J.no_compte, J.no_jetton, C.nom AS nom_compte, J.pays, J.nom AS nom_jetton, J.date_creation AS d_creation_jetton, J.date_use AS d_use_jetton, C.methode, C.age, C.email1, C.email2, C.nb_co_echoue, C.donateur, C.actif, C.relance, C.derniere_co_date, C.inscription_date, C.mdp_change_date, C.decouvert, C.totp_secret, C.totp_etat, C.recherche, C.timeline_asc FROM `jetton` AS J INNER JOIN `compte` AS C ON J.no_compte=C.no_compte WHERE `jetton_str` = :jetton_str LIMIT 1";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":jetton_str", $jetton_str, PDO::PARAM_STR);

@@ -53,11 +53,13 @@ moncycle_app = {
 		}).fail(moncycle_app.redirection_connexion);
 		$.get("api/constante", {}).done(function(data) {
 			moncycle_app.constante = data;
+			moncycle_app.timeline_asc = data.timeline_asc;
 			moncycle_app.remplir_page_de_cycle();
 			$("#nom").html(moncycle_app.constante.nom);
 			if (moncycle_app.constante.donateur) $("#nom").append(" &#x1F396;&#xFE0F;");
 			$(".main_button").css("display","inline-block");
 			if (moncycle_app.timeline_asc) $("#charger_cycle").hide();
+			else $("#charger_cycle").show();
 		}).fail(moncycle_app.redirection_connexion);
 		if (moncycle_app.timeline_asc) $("#charger_cycle").hide();
 		$("#charger_cycle").click(moncycle_app.charger_cycle);

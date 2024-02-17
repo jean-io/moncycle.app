@@ -48,6 +48,19 @@ if (isset($_POST["age"]) && !empty($_POST["age"])) {
 	}
 }
 
+if (isset($_POST["timeline_asc"])) {
+	$timeline_asc = boolval($_POST["timeline_asc"]);
+	$tet = db_update_compte_param_int($db, "timeline_asc", $timeline_asc ? 1 : 0, $compte["no_compte"]);
+	$mise_a_jour["timeline_asc"] = $timeline_asc;
+	$mise_a_jour["test"] = $tet;
+}
+
+if (isset($_POST["recherche"])) {
+	$recherche = boolval($_POST["recherche"]);
+	db_update_compte_param_int($db, "recherche", $recherche ? 1 : 0, $compte["no_compte"]);
+	$mise_a_jour["recherche"] = $recherche;
+}
+
 if (isset($_DELETE["mdp_pour_supprimer"])) {
 
 	if (strlen($_DELETE["mdp_pour_supprimer"])>0){

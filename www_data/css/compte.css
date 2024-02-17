@@ -47,3 +47,17 @@ form {
 	font-weight: bold;
 	text-transform: uppercase;
 }
+
+.tech_info {
+	color: #bbbbbb;
+}
+
+@media (prefers-color-scheme: dark) {
+	.tech_info {
+		color: #373737;
+	}
+}
+
+.tech_info span {
+	font-weight: bold;
+}

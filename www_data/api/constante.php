@@ -32,7 +32,10 @@ echo json_encode([
 	"methode_diminutif" => $methode[$compte["methode"]],
 	"age" => $compte["age"],
 	"nom" => $compte["nom_compte"],
-	"donateur" => boolval($compte["donateur"]), 
+	"date_inscription" => $compte["inscription_date"],
+	"donateur" => boolval($compte["donateur"]),
+	"recherche" => boolval($compte["recherche"]), 
+	"timeline_asc" => boolval($compte["timeline_asc"]), 
 	"tous_les_cycles" => $cycles,
 	"toutes_les_grossesses" => $grossesses,
 	"totp_actif" => $compte["totp_etat"]
