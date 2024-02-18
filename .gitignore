@@ -12,3 +12,4 @@ www_data/module
 *.swp
 *.pw
 .DS_Store
+.vscode

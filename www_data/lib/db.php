@@ -236,8 +236,8 @@ function db_insert_observation ($db, $date, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $htemp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $grossesse=null, $commentaire=null) {
-	static $sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, fleche_fc = :fleche_fc, temperature = :temp, heure_temp = :htemp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, grossesse = :grossesse, commentaire = :commentaire WHERE date_obs = :date AND no_compte = :no_compte";
+function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $htemp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $grossesse=null, $commentaire=null, $compteur=null) {
+	static $sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, fleche_fc = :fleche_fc, temperature = :temp, heure_temp = :htemp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, grossesse = :grossesse, commentaire = :commentaire, compteur = :compteur WHERE date_obs = :date AND no_compte = :no_compte";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":gommette", $gommette, PDO::PARAM_STR);
@@ -254,6 +254,7 @@ function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=n
 	$statement->bindValue(":grossesse", $grossesse, PDO::PARAM_INT);
 	$statement->bindValue(":date", $date, PDO::PARAM_STR);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":compteur", $compteur, PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);

@@ -140,9 +140,11 @@
 				</div>
 				<div>
 					<span class="categorie">Evénements:</span><br />
-					<input type="checkbox" name="premier_jour" id="ev_premier_jour" class="ev_reload" value="1" /><label for="ev_premier_jour">📅 nouveau cycle à cette date</label><br />
+					<input type="checkbox" name="premier_jour" id="ev_premier_jour" class="ev_reload" value="1" /><label for="ev_premier_jour">📆 nouveau cycle à cette date</label><br />
 					<input type="checkbox" name="union_sex" id="ev_union" value="1" /><label for="ev_union">❤️ union</label><br />
-					<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ <span class="pas_fc pas_fc_temp">jour sommet</span><span class="pas_bill pas_bill_temp">pic</span></label><br />
+					<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">🏔️ <span class="pas_fc pas_fc_temp">jour sommet</span><span class="pas_bill pas_bill_temp">pic</span></label><br />
+					<input type="checkbox" id="ev_compteur_actif" value="1" class="pas_fc pas_fc_temp"/><label for="ev_compteur_actif" class="pas_fc pas_fc_temp">⏰ compteur de </label><input id="ev_compteur_nb" type="number" value="3" class="pas_fc pas_fc_temp" /><label for="compteur_actif" class="pas_fc pas_fc_temp"> jours</label><br class="pas_fc pas_fc_temp" />
+					<input type="hidden" id="ev_hidden_compteur" name="compteur" value="0" />
 					<input type="checkbox" name="jenesaispas" id="ev_jesaispas" value="1" /><label for="ev_jesaispas">🤷‍♀️ jour non observé <span class='note'>?</span></label><br />
 					<input type="checkbox" name="grossesse" id="ev_grossesse" class="ev_reload" value="1" /><label for="ev_grossesse">&#x1F930; grossesse</label><br />
 					<br />

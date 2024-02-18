@@ -146,6 +146,11 @@
 	font-family: monospace;
 }
 
+.obs .n,
+.day .n {
+	color: #1e824c;
+}
+
 .day .o {
 
 }
@@ -375,3 +380,9 @@ h2 {
 	float: right;
 	margin-left: 5px;
 }
+
+#ev_compteur_nb {
+	text-align: center;
+	width: 35px;
+}
+

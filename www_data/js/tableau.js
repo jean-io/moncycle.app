@@ -27,12 +27,13 @@ moncycle_app = {
 		chargement : "⏳ chargement",
 		a_aujourdhui : "à auj.",
 		union : "❤️",
-		sommet : "⛰️",
+		sommet : "🏔️",
 		mois : ["jan", "fév", "mars", "avr", "mai", "juin", "juil", "août", "sep", "oct", "nov", "déc"],
 		mois_long : ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
 		semaine : ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
 	},
-	sommets : {},
+	sommets : [],
+	compteurs : {},
 	page_a_recharger: false,
 	graph_data : {},
 	graphs : {},
@@ -88,6 +89,7 @@ moncycle_app = {
 				let h = d.getHours();
 				let m = d.getMinutes();
 				$("#form_heure_temp").val((h<10 ? "0"+h : h) + ":" + (m<10 ? "0"+m : m));
+				moncycle_app.submit_menu();
 			}
 		});
 		$(window).scroll(function() {
@@ -197,8 +199,10 @@ moncycle_app = {
 				sotred_obs[o_date] = o_data;
 				$(`#o-${o_date}`).replaceWith(moncycle_app.observation2timeline(o_data));
 				$(`#ro-${o_date}`).replaceWith(moncycle_app.observation2recap(o_data));
-				if (o_data.jour_sommet) moncycle_app.sommets[o_date] = [o_data.cycle, 0];
-				else if (!o_data.jour_sommet && o_date in moncycle_app.sommets) delete moncycle_app.sommets[o_date];
+				if (o_data.jour_sommet && $.inArray(o_date, moncycle_app.sommets)<0) moncycle_app.sommets.push(o_date);
+				else if (!o_data.jour_sommet && $.inArray(o_date, moncycle_app.sommets)>=0) moncycle_app.sommets.splice($.inArray(o_date, moncycle_app.sommets), 1);
+				if (o_data.compteur) moncycle_app.compteurs[o_date] = o_data.compteur;
+				else if (!o_data.compteur && o_date in moncycle_app.compteurs) delete moncycle_app.compteurs[o_date];
 			});
 			localStorage.observation = JSON.stringify(sotred_obs);
 			$(`.pas_${moncycle_app.constante.methode_diminutif}`).css("display", "none");
@@ -267,12 +271,15 @@ moncycle_app = {
 	trois_jours : function() {
 		$(".day .s").empty();
 		$(".obs .s").empty();
-		$(".day .s").removeClass("petit");				
-		for (const [s, data] of Object.entries(moncycle_app.sommets)) {	
-			let nb_j_sommet = [1, 2, 3, $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1];
-			nb_j_sommet.forEach(n => {
+		$(".obs .s").show();
+		$(".day .s").removeClass("petit");
+		moncycle_app.sommets.forEach(s => {
+			let last = 3;
+			if (!moncycle_app.timeline_asc) last = $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1;
+			else last = $(`#o-${s}`).index();
+			[1, 2, 3, last].forEach(n => {
 				let s_date = moncycle_app.date.parse(s);
-				s_date.setDate(s_date.getDate()+n);		
+				s_date.setDate(s_date.getDate()+n);
 				let s_id = moncycle_app.date.str(s_date);
 				$(`#o-${s_id} .s`).html(`${moncycle_app.text.sommet}+${n}`);
 				$(`#o-${s_id} .s`).addClass("petit");
@@ -281,7 +288,28 @@ moncycle_app = {
 			$(`#o-${s} .s`).html(moncycle_app.text.sommet);	
 			$(`#ro-${s} .s`).html(moncycle_app.text.sommet);
 			$(`#o-${s} .s`).removeClass("petit");
-		}
+		});
+		if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) return;
+		$(".day .n").empty();
+		$(".obs .n").empty();
+		$(".obs .n").hide();
+		$.each(moncycle_app.compteurs,function(d,c){ 
+			console.log(d + " : " + c);
+			for (let i = 0; i < c; i++) {
+				let s_date = moncycle_app.date.parse(d);
+				s_date.setDate(s_date.getDate()+i);
+				let s_id = moncycle_app.date.str(s_date);
+				console.log(s_id);
+				$(`#o-${s_id} .n`).html(`+${i+1}`);
+				$(`#o-${s_id} .n`).addClass("petit");
+				if (($(`#ro-${s_id} .s`).text()).length==0) {
+					$(`#ro-${s_id} .n`).html(i+1);
+					$(`#ro-${s_id} .n`).show();
+					$(`#ro-${s_id} .s`).hide();
+				}
+				
+			}
+		});
 	},
 	cycle_aff_switch: function (id) {
 		let cache = JSON.parse(localStorage.cycle_cache || "[]");
@@ -360,10 +388,6 @@ moncycle_app = {
 			moncycle_app.graphs[id].update();
 		}
 		if (!vide && (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4)) {
-			let j_sommet = "";
-			for (const [s, data] of Object.entries(moncycle_app.sommets)) {
-				if (id == data[0]) j_sommet = s;
-			}
 			moncycle_app.graphs[id].data.datasets = moncycle_app.graphs[id].data.datasets.slice(0,1);
 			moncycle_app.graphs[id].update();
 		}
@@ -390,6 +414,7 @@ moncycle_app = {
 			color = "bleu";
 		}
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
+		observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
 		observation.append(`<span class=''>${car_du_bas}</span>`);
 		return observation;
@@ -450,9 +475,11 @@ moncycle_app = {
 		if (tbd) {
 			observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
 			observation.append(`<span class='s'></span>`);
+			observation.append(`<span class='n'></span>`);
 			return observation;
 		}
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
+		observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		if (!j.jenesaispas) {
 			let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
@@ -546,6 +573,11 @@ moncycle_app = {
 		else $("#ev_premier_jour").attr('initial', false);
 		if (j.union_sex) $("#ev_union").prop('checked', true);
 		if (j.jour_sommet) $("#ev_jour_sommet").prop('checked', true);
+		if (j.compteur && j.compteur > 0) {
+			$("#ev_compteur_actif").prop('checked', true);
+			$("#ev_compteur_nb").val(j.compteur);
+			$("#ev_hidden_compteur").val(j.compteur)
+		}
 		if (j.jenesaispas) $("#ev_jesaispas").prop('checked', true);
 		if (j.grossesse) $("#ev_grossesse").prop('checked', true);
 		$("#ev_grossesse").attr('initial', new Boolean(j.grossesse));
@@ -578,6 +610,8 @@ moncycle_app = {
 		if (this.id == "form_fc") moncycle_app.fc_note2form();
 		else moncycle_app.fc_form2note();
 		moncycle_app.fc_test_note();
+		if ($("#ev_compteur_actif")[0].checked) $("#ev_hidden_compteur").val($("#ev_compteur_nb").val());
+		else $("#ev_hidden_compteur").val(0);
 		$("#jour_form_saving").show();
 		$("#jour_form_saved").hide();
 		$("#ob_extra").val().split(',').forEach(function(o) {

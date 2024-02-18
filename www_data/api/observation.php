@@ -105,7 +105,10 @@ try {
 			$go  = $_POST["gommette"] ?? '';
 			$go .= $_POST["bebe"] ?? '';
 
-			db_update_observation ($db, $date, $compte["no_compte"], $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null);
+			$compteur = null;
+			if (isset($_POST["compteur"]) && intval($_POST["compteur"])>0) $compteur = intval($_POST["compteur"]);
+
+			db_update_observation($db, $date, $compte["no_compte"], $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null, $compteur);
 
 			$result["outcome"] = "ok";
 
