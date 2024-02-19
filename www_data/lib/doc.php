@@ -12,7 +12,7 @@ use Fpdf\Fpdf;
 function doc_preparation_jours_pour_affichage($data, $methode){
 	$cycle = [];
 	$date_cursor = new DateTime($data[0]["date_obs"]);
-	$empty_line = array("date_obs" => '', "premier_jour" => "", "?" => '1',"gommette" => '',"sensation" => '',"sommet" => '',"unions" => '', "grossesse" => 0,"commentaire" => '');
+	$empty_line = array("date_obs" => '', "premier_jour" => "", "?" => '1',"gommette" => '',"sensation" => '',"sommet" => '', "compteur" => '',"unions" => '', "grossesse" => 0,"commentaire" => '');
 	if ($methode == 1 || $methode == 4) {
 		$empty_line["temperature"] = '';
 		$empty_line["heure_temp"] = '';
@@ -68,8 +68,8 @@ function doc_cycle_vers_csv ($out, $cycle, $methode) {
 	$i = 1;
 	fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
 	$csv_partition = [];
-	if ($methode == 1) $csv_partition = ["date_obs","premier_jour","?","gommette", "temperature", "heure_temp", "sensation", "sommet", "unions", "grossesse", "commentaire"];
-	if ($methode == 2) $csv_partition = ["date_obs","premier_jour","?","gommette", "sensation", "sommet", "unions", "grossesse", "commentaire"];
+	if ($methode == 1) $csv_partition = ["date_obs","premier_jour","?","gommette", "temperature", "heure_temp", "sensation", "sommet", "compteur", "unions", "grossesse", "commentaire"];
+	if ($methode == 2) $csv_partition = ["date_obs","premier_jour","?","gommette", "sensation", "sommet", "compteur", "unions", "grossesse", "commentaire"];
 	if ($methode == 3) $csv_partition = ["date_obs","premier_jour","?","note_fc","fleche_fc","gommette", "sommet", "unions", "grossesse", "commentaire"];
 	if ($methode == 4) $csv_partition = ["date_obs","premier_jour","?","note_fc","fleche_fc","gommette", "temperature", "heure_temp", "sommet", "unions", "grossesse", "commentaire"];
 	fputcsv($out,array_merge(["no"], $csv_partition), CSV_SEP);
@@ -85,11 +85,11 @@ function doc_cycle_vers_csv ($out, $cycle, $methode) {
 	}
 }
 
-function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
+function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 		$pdf = new Fpdf('P','mm','A4');
 		$pdf->SetTitle('bill_cycle_'. date_humain(new Datetime($cycle[0]["date_obs"]), '_') . '.pdf');
 		$pdf->AddPage();
-		$pdf->SetFont('Courier','B',16);
+		$pdf->SetFont('Courier','B',12);
 		$pdf->Cell($pdf->GetPageWidth()-35,10,doc_txt($nom), 0, 0, 'C');
 		$pdf->SetFont('Courier','',10);
 		$pdf->Ln();
@@ -97,13 +97,14 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 		$pdf->Ln();
 		$pdf->SetTextColor(30, 130, 76);
 		$pdf->Link($pdf->GetX(), $pdf->GetY(), $pdf->GetPageWidth()-25, 6, "https://www.moncycle.app");
-		$pdf->Cell($pdf->GetPageWidth()-35,5,"suivi avec MONCYCLE.APP", 0, 0, 'C');
+		$pdf->Cell($pdf->GetPageWidth()-35,5,"MONCYCLE.APP", 0, 0, 'C');
 		$pdf->SetTextColor(0,0,0);
+		$pdf->Ln();
 		$pdf->Ln();
 
 		$temp_max = 0;
 		$temp_mini = 100;
-		if ($methode==1 || $methode==4) {
+		if ($methode==1) {
 			foreach ($cycle as $line){
 				if (isset($line["temperature"]) && !empty($line["temperature"])) {
 					$temp = floatval($line["temperature"]);
@@ -119,29 +120,49 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 
 		$i = 1;
 		$s = -1;
+		$compteur_n = 100;
+		$compteur_max = -1;
 		$prev_temp_x = 0;
 		$prev_temp_y = 0;
 		$com_long = false;
+		$col = 0;
+		$top_y = $top_y = $pdf->GetY();
 		foreach ($cycle as $line){
 			if (boolval($line["premier_jour"])) $i = 1;
-			if($pdf->GetPageHeight()-$pdf->GetY()<=30){
-				$pdf->AddPage();
+			if ($col == 0) $col = 1;
+			elseif($pdf->GetPageHeight()-$pdf->GetY()<=30 || boolval($line["premier_jour"])){
 				$prev_temp_x = 0;
 				$prev_temp_y = 0;
+				if ($methode == 2 && $col == 1) {
+					$col = 2;
+					$pdf->SetXY($pdf->GetPageWidth()/2,$top_y);
+				}
+				else {
+					$pdf->AddPage();
+					$top_y = $pdf->GetY();
+					$col = 1;
+				}
 			}
-			elseif (!$com_long) {
-				$pdf->Ln();
-			} 
+			elseif (!$com_long) $pdf->Ln();
+			if ($col == 2) $pdf->SetX($pdf->GetPageWidth()/2);
 			$com_long = false;
-			$pdf->SetFont('Courier','',8);
-			$pdf->SetTextColor(150,150,150);
+			$pdf->SetFont('Courier','',6);
 			if (boolval($line["premier_jour"])) {
 				$pdf->SetFillColor(0,0,0);
 				$pdf->SetDrawColor(0,0,0);
 				$pdf->SetTextColor(255,255,255);
+				$pdf->Cell(11, 5, date_humain(new DateTime($line["date_obs"])), 1, 0, 'C', true);
+				$pdf->SetFont('Courier','',8);
 				$pdf->Cell(8,5,$i, 1, 0, 'C', true);
 			}
-			else $pdf->Cell(8,5,$i, 0, 0, 'C');
+			else {
+				$pdf->SetTextColor(200,200,200);
+				$pdf->Cell(11, 5, date_humain(new DateTime($line["date_obs"])), 0, 0, 'C',);
+				$pdf->SetTextColor(0,0,0);
+				$pdf->SetFont('Courier','',8);
+				$pdf->Cell(8,5,$i, 0, 0, 'C');
+			}
+			$pdf->SetX($pdf->GetX()+0.5);
 			$pdf->SetFont('Courier','',10);
 			$pdf->SetTextColor(0,0,0);
 			if (isset($line["gommette"]) && !boolval($line["?"])) {
@@ -167,7 +188,7 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				}
 				if ($line["gommette"] == ":)") {
 					$pdf->SetTextColor(30, 130, 76);
-					$pdf->SetDrawColor(150,150,150);
+					$pdf->SetDrawColor(220,220,220);
 					$xx = $pdf->GetX();
 					$yy = $pdf->GetY();
 					$pdf->Cell(5,5,"",1,0,'C', true);
@@ -185,37 +206,25 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				else $pdf->Cell(5,5,"",1,0,'C', true);
 			}
 			if (boolval($line["?"])) {
-				$pdf->SetFont('Courier','I',8);
+				$pdf->SetFont('Arial','I',8);
 				$pdf->SetTextColor(100,100,100);
-				$pdf->Cell($pdf->GetStringWidth("jour non observé"),5,doc_txt("jour non observé"));
+				$pdf->Cell($pdf->GetStringWidth(doc_txt("jour non observé"))+0.25,5,doc_txt("jour non observé"));
 				$pdf->SetFont('Courier','',10);
 				$pdf->SetTextColor(0,0,0);
 			}
 			if(intval($line["unions"])) {
 				$pdf->SetTextColor(172,36,51);
-				if ($methode == 3 || $methode == 4) { 
-					$pdf->SetFont("Arial");	
-					$pdf->Cell(4,5,"U");
-				}
-				else {
-					$pdf->SetFont("ZapfDingbats");	
-					$pdf->Cell(4,5,chr(164)); // <3
-				}
+				$pdf->SetFont("ZapfDingbats");	
+				$pdf->Cell(4,5,chr(164)); // <3
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',10);
 			}
-			else $pdf->Cell(4,5,"");
+			// else $pdf->Cell(4,5,"");
 			if(intval($line["sommet"]) || $s>0) {
 				$pdf->SetTextColor(139,69,19);
 				if(intval($line["sommet"])) {
-					if ($methode == 3 || $methode == 4) {
-						$pdf->SetFont("Arial");	
-						$pdf->Cell(4,5,"P");
-					}
-					else {
-						$pdf->SetFont("ZapfDingbats");	
-						$pdf->Cell(8,5,chr(115)); // /\/\
-					}
+					$pdf->SetFont("ZapfDingbats");	
+					$pdf->Cell(5,5,chr(115)); // /\/\
 					$s = 1;
 				}
 				elseif ($s<=3) {
@@ -227,23 +236,22 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',10);
 			}
-			if (($methode==3 || $methode==4) && isset($line["note_fc"]) && !empty($line["note_fc"])) {
-				$pdf->SetFont('Arial','',10);
-				$w = $pdf->GetStringWidth(doc_txt($line["note_fc"]))+1;
-				$pdf->Cell($w,5,doc_txt($line["note_fc"]));
-				$pdf->SetFont('Courier','',10);
-			}
-			if (($methode==3 || $methode==4) && isset($line["fleche_fc"]) && !empty($line["fleche_fc"])) {
-				$fleche = array("↑" => chr(173), "↓" => chr(175), "→" => chr(174), "←" => chr(172));
-				$pdf->SetFont("Symbol");
-				$pdf->SetTextColor(135, 67, 176);
-				$pdf->Cell(4,5,$fleche[$line["fleche_fc"]] ?? "");
+			if(intval($line["compteur"]) || $compteur_n>0) {
+				$pdf->SetTextColor(30,130,76);
+				if(intval($line["compteur"])) {
+					$compteur_n = 1;
+					$compteur_max = $line["compteur"];
+				}
+				if ($compteur_n<=$compteur_max) {
+					$pdf->SetFont('Courier','',10);
+					$pdf->Cell(5,5,"+". $compteur_n); 
+					$compteur_n += 1;
+				}
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',10);
 			}
-			if (($methode==1 || $methode==2) && isset($line["sensation"]) && !empty($line["sensation"])){
-				if ($methode==1) $pdf->SetFont('Courier','',8.5); // !!!!!!!!
-				else $pdf->SetFont('Courier','',10);
+			if (isset($line["sensation"]) && !empty($line["sensation"])){
+				$pdf->SetFont('Arial','',8.5);
 				$w = $pdf->GetStringWidth(doc_txt($line["sensation"]))+1;
 				$pdf->Cell($w,5,doc_txt($line["sensation"]));
 				$pdf->SetFont('Courier','',10);
@@ -252,7 +260,7 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 			$com_fin_x = -1;	
 			if (isset($line["temperature"]) && !empty($line["temperature"]) && !boolval($line["?"])) {
 				$temp = floatval($line["temperature"]);
-				$largeur = 65;
+				$largeur = 70;
 				$disptemp = $temp;
 				$pdf->SetX($pdf->GetPageWidth()/2-12);
 				$pdf->SetFont('Courier','',9);
@@ -282,11 +290,9 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				$prev_temp_y = 0;
 			}
 			if ($com_fin_x<=0) {
-				$com_fin_x = $pdf->GetPageWidth()-35;
+				if ($col == 2 || $methode ==1) $com_fin_x = $pdf->GetPageWidth();
+				else $com_fin_x = $pdf->GetPageWidth()/2;
 			}
-			$pdf->SetFont('Courier','I',7);
-			$pdf->SetTextColor(100,100,100);
-		 	$pdf->Text($pdf->GetPageWidth()-35,$pdf->GetY()+3.5,date_humain(new DateTime($line["date_obs"])));
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFont('Courier','',10);
 			$pdf->SetY($pdf->GetY()+0.5);
@@ -299,15 +305,14 @@ function doc_cycle_vers_pdf ($cycle, $methode, $nom) {
 				}
 				else {
 					$pdf->Ln();
-					$pdf->SetX($pdf->GetX()+16.5);
-					$pdf->MultiCell($pdf->GetPageWidth()-50,3,doc_txt($line["commentaire"]));
-					
+					if ($col == 2) $pdf->SetX($pdf->GetPageWidth()/2);
+					$pdf->SetX($pdf->GetX());
+					$pdf->MultiCell($pdf->GetPageWidth()/2-11,3,doc_txt($line["commentaire"]));
 					$com_long = true;
 				}
 				$pdf->SetFont('Courier','',10);
 			}
-			if ($line["grossesse"]) {	
-				//$pdf->Ln();
+			if ($line["grossesse"]) {
 				$pdf->SetFont('Courier','',12);
 				$pdf->Cell($pdf->GetPageWidth()-35, 10,"GROSSESSE",1,0,'C');
 			}
@@ -376,14 +381,14 @@ function doc_cycle_fc_vers_pdf ($cycle, $nom, $start_date, $end_date) {
 
 		$pdf->SetDrawColor($grid_gray,$grid_gray,$grid_gray);
 
-		$page_title = doc_txt(" - observations du $h_start_date au $h_end_date - document créé le $h_current_date - page $page_no sur $total_nb_page - suivi avec");
+		$page_title = doc_txt(" - observations du $h_start_date au $h_end_date - document créé le $h_current_date - page $page_no sur $total_nb_page - ");
 		$pdf->SetFont('Courier','B',10);
 		$pdf->Cell($pdf->GetStringWidth(doc_txt($nom)),$line_height, doc_txt($nom), 0, 0, 'L');
 		$pdf->SetFont('Courier','',10);
 		$pdf->Cell($pdf->GetStringWidth($page_title),$line_height, $page_title, 0, 0, 'L');
 		$pdf->SetTextColor(30, 130, 76);
 		$pdf->SetFont('Courier','B',10);
-		$pdf->Cell($pdf->GetStringWidth(" MONCYCLE.APP"),$line_height, " MONCYCLE.APP", 0, 0, 'L', false, "https://www.moncycle.app/");
+		$pdf->Cell($pdf->GetStringWidth(" MONCYCLE.APP"),$line_height, "MONCYCLE.APP", 0, 0, 'L', false, "https://www.moncycle.app/");
 		$pdf->SetTextColor(0, 0, 0);
 		$pdf->SetFont('Courier','',8);
 		$pdf->Ln();

@@ -502,6 +502,10 @@ components:
             - 1
             - 0
           default: 0
+        compteur:
+          type: integer
+          description: ajoute un compteur d'un nombre de jour variable à partir de cette date
+          default: 0
         jenesaispas:
           type: integer
           description: pas d'observation à cette date

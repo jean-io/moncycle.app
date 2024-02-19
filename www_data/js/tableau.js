@@ -293,13 +293,11 @@ moncycle_app = {
 		$(".day .n").empty();
 		$(".obs .n").empty();
 		$(".obs .n").hide();
-		$.each(moncycle_app.compteurs,function(d,c){ 
-			console.log(d + " : " + c);
+		$.each(moncycle_app.compteurs,function(d,c){
 			for (let i = 0; i < c; i++) {
 				let s_date = moncycle_app.date.parse(d);
 				s_date.setDate(s_date.getDate()+i);
 				let s_id = moncycle_app.date.str(s_date);
-				console.log(s_id);
 				$(`#o-${s_id} .n`).html(`+${i+1}`);
 				$(`#o-${s_id} .n`).addClass("petit");
 				if (($(`#ro-${s_id} .s`).text()).length==0) {

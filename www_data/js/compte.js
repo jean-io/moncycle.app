@@ -53,7 +53,7 @@ $(document).ready(function(){
 	$(".auto_save").on("keyup change", function() {
 		$("#net_stat").text('⏳');
 		let val = this.value;
-		if ($(this)[0].type="checkbox") val = $(this)[0].checked ? 1 : 0;
+		if ($(this)[0].type=="checkbox") val = $(this)[0].checked ? 1 : 0;
 		$.post("../api/compte", `${$(this).attr('name')}=${val}`).fail(function(data){
 			console.error(data);
 			$("#net_stat").html(' ❌&nbsp;erreur');

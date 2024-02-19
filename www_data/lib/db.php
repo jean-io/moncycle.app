@@ -294,7 +294,7 @@ function db_select_cycle_grossesse($db, $date, $no_compte) {
 }
 
 function db_select_cycle_complet($db, $date_start, $date_end, $no_compte) {
-	static $sql = "SELECT date_obs, COALESCE(jenesaispas,'') as '?', COALESCE(note_fc,'') as note_fc, COALESCE(fleche_fc,'') as fleche_fc, gommette, COALESCE(temperature,'') as temperature, COALESCE(heure_temp,'') as heure_temp, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(union_sex, '') as 'unions', COALESCE(grossesse, '') as 'grossesse', commentaire, COALESCE(premier_jour, 0) as 'premier_jour' FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
+	static $sql = "SELECT date_obs, COALESCE(jenesaispas,'') as '?', COALESCE(note_fc,'') as note_fc, COALESCE(fleche_fc,'') as fleche_fc, gommette, COALESCE(temperature,'') as temperature, COALESCE(heure_temp,'') as heure_temp, COALESCE(sensation,'') as sensation, COALESCE(jour_sommet, '') as sommet, COALESCE(compteur, '') as compteur, COALESCE(union_sex, '') as 'unions', COALESCE(grossesse, '') as 'grossesse', commentaire, COALESCE(premier_jour, 0) as 'premier_jour' FROM observation WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_compte = :no_compte ORDER BY date_obs ASC";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":date_start", $date_start, PDO::PARAM_STR);
