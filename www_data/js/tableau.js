@@ -68,7 +68,7 @@ moncycle_app = {
 		$("#jour_form_submit").click(moncycle_app.submit_menu);
 		$("#jour_form_next").click(moncycle_app.open_menu);
 		$("#jour_form_prev").click(moncycle_app.open_menu);
-		$("#jour_form input, #jour_form textarea").on("keyup change", moncycle_app.submit_menu);
+		$("#jour_form input, #jour_form textarea").on("change", moncycle_app.submit_menu);
 		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
 		$("#but_macro").click(function () {
 			$("#but_macro").hide();
@@ -107,6 +107,7 @@ moncycle_app = {
 		while ($(window).height() == $(document).height() && moncycle_app.cycle_curseur < moncycle_app.constante.tous_les_cycles.length) {
 			moncycle_app.charger_cycle();
 		}
+		moncycle_app.charger_cycle();
 		if ($(window).height() == $(document).height()) moncycle_app.form_nouveau_cycle();
 	},
 	redirection_connexion : function(err) {
@@ -237,7 +238,7 @@ moncycle_app = {
 		}
 		else {
 			$("#timeline").append(html);
-			$("#recap").append(nocycle);
+			if (moncycle_app.cycle_curseur == 0) $("#recap").append(nocycle);
 		}
 		$("#but_creer_cycle").click(function () {
 			let nouveau_cycle_date = $("#nouveau_cycle_date").val();
@@ -605,13 +606,14 @@ moncycle_app = {
 		if (moncycle_app.page_a_recharger) location.reload();
 	},
 	submit_menu : function () {
+		$("#jour_form_saving").show();
+		$("#jour_form_saved").hide();
+		let o_data = moncycle_app.menu_opened_date;
 		if (this.id == "form_fc") moncycle_app.fc_note2form();
 		else moncycle_app.fc_form2note();
 		moncycle_app.fc_test_note();
 		if ($("#ev_compteur_actif")[0].checked) $("#ev_hidden_compteur").val($("#ev_compteur_nb").val());
 		else $("#ev_hidden_compteur").val(0);
-		$("#jour_form_saving").show();
-		$("#jour_form_saved").hide();
 		$("#ob_extra").val().split(',').forEach(function(o) {
 			o = o.trim().toLowerCase();
 			if (!o) return;

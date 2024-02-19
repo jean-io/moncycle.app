@@ -3,7 +3,8 @@ FROM php:apache
 RUN apt-get update
 RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev unzip
 
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install -j$(nproc) gd pdo pdo_mysql opcache
 
 RUN mkdir -p mkdir -p /var/lib/php/soap_cache && mkdir -p /var/lib/php/composer
 RUN chown -R www-data:www-data /var/lib/php/
@@ -12,6 +13,7 @@ RUN chown -R www-data:www-data /var/lib/php/
 RUN mkdir -p /var/www/html/vendor/chartjs/
 RUN curl -o /var/www/html/vendor/chartjs/chart.js https://cdn.jsdelivr.net/npm/chart.js
 
+ENV PHP_CACHE=1
 ENV COMPOSER_HOME=/var/lib/php/composer
 
 #RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"

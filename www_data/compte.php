@@ -52,7 +52,7 @@
 			<span class="rouge" id="export_err"></span>
 			</form>
 			<br /><br />
-			<a href="api/mes_donnees_svp"><input type="button" value="📦 Exporter toutes mes données" /></a>
+			<a href="api/mes_donnees_svp"><input type="button" value="📦 Exporter brut de tout mon compte" /></a>
 			<br /><br /><br />
 	
 
@@ -66,10 +66,10 @@
 			<br />
 			J'ai besoin de suivre:<br />
 			<span class="label_info">Modifier ce choix ne génère aucune perte de données.</span><br />
-			<input type="radio" name="methode" value="2" class="auto_save" id="m_2" required /><label for="m_2"><u>Billings</u>: l'évolution de la glaire cervicale seule.</label><br />
-			<input type="radio" name="methode" value="1" class="auto_save" id="m_1"  /><label for="m_1"><u>Billings + température</u>: l'évolution de la glaire cervicale avec suivi des évolutions de la température corporelle.</label><br />
-			<input type="radio" name="methode" value="3" class="auto_save" id="m_3" /><label for="m_3"><u>FertilityCare</u>: l'évolution de la glaire cervicale avec notation FertilityCare</label><br />
-			<input type="radio" name="methode" value="4" class="auto_save" id="m_4" /><label for="m_4"><u>FertilityCare + température</u>: l'évolution de la glaire cervicale avec notation FertilityCare et suivi des évolutions de la température corporelle.</label><br />
+			<input type="radio" name="methode" value="2" class="auto_save" id="m_2" required /><label for="m_2"><b>Billings</b>: l'évolution de la glaire cervicale seule.</label><br />
+			<input type="radio" name="methode" value="1" class="auto_save" id="m_1"  /><label for="m_1"><b>Billings + température</b>: l'évolution de la glaire cervicale avec suivi des évolutions de la température corporelle.</label><br />
+			<input type="radio" name="methode" value="3" class="auto_save" id="m_3" /><label for="m_3"><b>FertilityCare</b>: l'évolution de la glaire cervicale avec notation FertilityCare</label><br />
+			<input type="radio" name="methode" value="4" class="auto_save" id="m_4" /><label for="m_4"><b>FertilityCare + température</b>: l'évolution de la glaire cervicale avec notation FertilityCare et suivi des évolutions de la température corporelle.</label><br />
 			<br />
 			<input class="auto_save" value="1" type="checkbox" id="i_recherche" name="recherche"/> <label for="i_recherche">Autoriser des exports de la base de données avec des cycles anonymisés pour la recherche sur les méthodes naturelles.</label><br />
 			<br />

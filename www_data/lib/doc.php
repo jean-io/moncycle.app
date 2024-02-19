@@ -12,6 +12,7 @@ use Fpdf\Fpdf;
 function doc_preparation_jours_pour_affichage($data, $methode){
 	$cycle = [];
 	$date_cursor = new DateTime($data[0]["date_obs"]);
+	$today = new DateTime();
 	$empty_line = array("date_obs" => '', "premier_jour" => "", "?" => '1',"gommette" => '',"sensation" => '',"sommet" => '', "compteur" => '',"unions" => '', "grossesse" => 0,"commentaire" => '');
 	if ($methode == 1 || $methode == 4) {
 		$empty_line["temperature"] = '';
@@ -23,9 +24,9 @@ function doc_preparation_jours_pour_affichage($data, $methode){
 		unset($empty_line["sensation"]);
 	}
 	foreach ($data as $line){
-		while ($date_cursor->format('Y-m-d') != $line["date_obs"]) {
+		while ($date_cursor->format('Y-m-d') !== trim($line["date_obs"]) && $date_cursor < $today) {
 			$empty_line["date_obs"] = $date_cursor->format('Y-m-d');
-			array_push($cycle, $empty_line);
+			$cycle[] = $empty_line;
 			$date_cursor->modify('+1 day');
 		}
 		if ($methode != 1 && $methode != 4) unset($line["temperature"]);
@@ -322,7 +323,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 	}
 
 
-function doc_cycle_fc_vers_pdf ($cycle, $nom, $start_date, $end_date) {
+function doc_cycle_fc_vers_pdf($cycle, $nom) {
 	$first_col_width = 16;
 	$nb_days_per_line = 35;
 	$nb_lines_per_page = 8;
@@ -346,8 +347,8 @@ function doc_cycle_fc_vers_pdf ($cycle, $nom, $start_date, $end_date) {
 		'=:)' => ['BBJ', 255, 255, 9],
 	];
 
-	$h_start_date = date_humain(new Datetime($start_date));
-	$h_end_date = date_humain(new Datetime($end_date));
+	$h_start_date = date_humain(new Datetime($cycle[0]["date_obs"]));
+	$h_end_date = date_humain(new Datetime(end($cycle)["date_obs"]));
 	$h_current_date = date_humain(new Datetime());
 
 	$pdf = new Fpdf('L','mm','A3');

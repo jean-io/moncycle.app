@@ -63,6 +63,13 @@ if (!isset($_GET['type']) || !in_array($_GET['type'], $available_type)) {
 // RECUPERATION DU CYCLE
 $data = db_select_cycle_complet($db, $result["start_date"],$result["end_date"], $compte["no_compte"]);
 
+// VERIFICATION SI IL Y A DE LA DONNEE
+if (!isset($data[0])) {
+	http_response_code(400);
+	print("ERREUR: il n'y a pas d'observation pour la période demandée.");
+	exit;
+}
+
 // AJOUT DES JOURS MANQUANTS DU CYCLE
 $cycle = doc_preparation_jours_pour_affichage($data, $compte["methode"]);
 
@@ -79,7 +86,7 @@ elseif ($_GET['type'] == "pdf") {
 	header("content-type:application/pdf");
 	header('Content-Disposition: attachment; filename="moncycle_app_'. date_sql($date) .'.pdf"');
 	$pdf = null;
-	if ($compte["methode"] == 3 || $compte["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["nom_compte"], $result["start_date"], $result["end_date"]);
+	if ($compte["methode"] == 3 || $compte["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["nom_compte"]);
 	else $pdf = doc_cycle_bill_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"]);
 	$pdf->Output('I', 'moncycle_app_'. date_humain($date) . '.pdf');
 }

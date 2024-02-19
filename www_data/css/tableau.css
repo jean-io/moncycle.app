@@ -19,7 +19,7 @@
 	
 .day span {
 	display: inline-block;
-	vertical-align: sub;
+	vertical-align: middle;
 	margin-right: 3px;
 }
 
@@ -149,6 +149,7 @@
 .obs .n,
 .day .n {
 	color: #1e824c;
+	font-family: monospace;
 }
 
 .day .o {
@@ -354,7 +355,7 @@ h2 {
 	width: 100%;
 	font-size: 6.5px;
 	text-align: center;
-	vertical-align: middle;
+	font-family: monospace;
 }
 
 .cycle_recap h5 {

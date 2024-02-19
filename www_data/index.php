@@ -54,9 +54,9 @@
 				<button type="button" id="jour_form_prev" class="but_j_nav">J -1</button>
 				<button type="button" id="jour_form_next" class="but_j_nav">J +1</button>
 				<button type="button" id="jour_form_close">← retour</button>
+				<button type="button" id="jour_form_submit">✏️</button>
 				<span class="popup_enregistratement_status" style="display: none;" id="jour_form_saving">&nbsp;⏳&nbsp;enregistrement...</span>
 				<span class="popup_enregistratement_status vert" style="display: none;" id="jour_form_saved">&nbsp;✅&nbsp;enregistré</span>
-				<button type="button" id="jour_form_submit" style="display: none;">✏️ enregistrer</button>
 				<div id="jour_form_titre" class="bold uppercase"></div>
 			</div>
 			<div>

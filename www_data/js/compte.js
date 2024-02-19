@@ -15,7 +15,7 @@ $(document).ready(function(){
 		$("#i_prenom").val(moncycle_app_usr.nom);
 		$("#tech_info_no").text(moncycle_app_usr.id_utilisateur);
 		if(moncycle_app_usr.donateur) $("#merci_don").show();
-		if(moncycle_app_usr.id_utilisateur == 2) $("#warning_demo").show();
+		if(moncycle_app_usr.id_utilisateur == 2 || moncycle_app_usr.id_utilisateur == 3) $("#warning_demo").show();
 		$("#tech_info_id").text(moncycle_app_usr.email1);
 		$("#i_email1").val(moncycle_app_usr.email1);
 		$("#i_email2").val(moncycle_app_usr.email2);

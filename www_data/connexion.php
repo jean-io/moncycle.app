@@ -56,8 +56,9 @@
 			<br />
 			<input type="submit" value="Connexion &#x1F511;" id="connexion_but"/></form>
 			<br /><br /><br />
+			<center><a class="decouverte" id="but_demo_bill" href="/connexion">compte de démo <b>Billings</b> 🥸</a></center>
+			<center><a class="decouverte" id="but_demo_fc" href="/connexion">compte de démo <b>FertilityCare</b> 🧐</a></center>
 			<center><a class="decouverte" href="https://www.moncycle.app">découvrir moncycle.app 😍</a></center>
-			<center><a class="decouverte" id="but_demo" href="/connexion?email1=demo@moncycle.app&mdp=demo">utiliser le compte de démo 🥸</a></center>
 			<br /><br /><br />
 		</div>
 
@@ -81,9 +82,15 @@
 				});
 				const email1 = (new URLSearchParams(window.location.search)).get("email1");
 				$("#i_email1").val(email1);
- 				$("#but_demo").on("click", function(event) {
+ 				$("#but_demo_bill").on("click", function(event) {
 					event.preventDefault();
-					$("#i_email1").val("demo@moncycle.app");
+					$("#i_email1").val("demo.bill@moncycle.app");
+					$("#i_mdp").val("demo");
+					$("#connexion_form").submit();
+				});
+				$("#but_demo_fc").on("click", function(event) {
+					event.preventDefault();
+					$("#i_email1").val("demo.fc@moncycle.app");
 					$("#i_mdp").val("demo");
 					$("#connexion_form").submit();
 				});

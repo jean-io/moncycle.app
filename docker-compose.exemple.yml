@@ -20,6 +20,7 @@ services:
       SMTP_PORT: 465
       SMTP_MAIL: smtp_email_and_mogin_id
       SMTP_PASSWORD_FILE: /run/secrets/smtp_password
+      PHP_CACHE: 1
     secrets:
       - db_password
       - smtp_password
