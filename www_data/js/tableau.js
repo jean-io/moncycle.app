@@ -314,7 +314,7 @@ moncycle_app = {
 		let cache = JSON.parse(localStorage.cycle_cache || "[]");
 		if ($("#contenu-c-" + id).is(":hidden")) {
 			$("#contenu-c-" + id).show();
-			if(parseInt($("#graph-c-" + id).attr("vide"))!=1) $("#graph-c-" + id).show();
+			if(parseInt($("#graph-c-" + id).attr("vide"))!=1 && (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4)) $("#graph-c-" + id).show();
 			$("#but-contenu-c-" + id).html("&#x1F440; Masquer");
 			if (cache.includes(id)) cache.splice(cache.indexOf(id) , 1);
 		}

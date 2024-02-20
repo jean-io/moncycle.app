@@ -154,7 +154,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetTextColor(255,255,255);
 				$pdf->Cell(11, 5, date_humain(new DateTime($line["date_obs"])), 1, 0, 'C', true);
 				$pdf->SetFont('Courier','',8);
-				$pdf->Cell(8,5,$i, 1, 0, 'C', true);
+				$pdf->Cell(8,5,"1er", 1, 0, 'C', true);
 			}
 			else {
 				$pdf->SetTextColor(200,200,200);
@@ -209,7 +209,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 			if (boolval($line["?"])) {
 				$pdf->SetFont('Arial','I',8);
 				$pdf->SetTextColor(100,100,100);
-				$pdf->Cell($pdf->GetStringWidth(doc_txt("jour non observé"))+0.25,5,doc_txt("jour non observé"));
+				$pdf->Cell($pdf->GetStringWidth(doc_txt("jour non observé "))+0.25,5,doc_txt("jour non observé "));
 				$pdf->SetFont('Courier','',10);
 				$pdf->SetTextColor(0,0,0);
 			}
