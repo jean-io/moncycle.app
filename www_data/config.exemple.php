@@ -25,3 +25,4 @@ define("CONNEXION_COMPTE", false);
 
 define("CSV_SEP", ";");
 
+define("PHP_SECURE_COOKIES", true);

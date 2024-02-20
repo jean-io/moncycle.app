@@ -33,3 +33,4 @@ define("CONNEXION_COMPTE", getenv("CONNEXION_COMPTE") ? filter_var(getenv("CONNE
 
 define("CSV_SEP", getenv("CSV_SEP") ?? ";");
 
+define("PHP_SECURE_COOKIES", getenv("PHP_SECURE_COOKIES")=="Off" ? false : true);

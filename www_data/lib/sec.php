@@ -67,7 +67,7 @@ function sec_auth_succes($db, $compte, $appareil=null) {
 	$arr_cookie_options = array (
 		'expires' => strtotime('+5 years'), 
 		'path' => '/',
-		'secure' => true,
+		'secure' => PHP_SECURE_COOKIES,
 		'httponly' => true,
 	);
 

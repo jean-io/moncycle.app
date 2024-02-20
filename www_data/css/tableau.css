@@ -119,16 +119,18 @@
 }
 
 .day .bebe {
-	border-color: #c8c8c8;
+	border-color: #b6b6b6;
 	background-color: white;
 }
 
-.obs .bebe {
-	background-color: #eee;
+.obs .bebe  {
+	border-color: #e4e4e4;
+	background-color: #f6f5f5;
 }
 
 .obs .bleu {
 	background-color: #00200e;
+	border-color: #00200e;
 	color: white;
 }
 
@@ -267,6 +269,11 @@ h2 {
 		background-color: black;
 	}
 
+	.day .bebe,
+	.obs .bebe  {
+		border-color: #b6b6b6;
+	}
+
 }
 
 .nouveau_cycle_form {
@@ -343,19 +350,34 @@ h2 {
 
 .cycle_recap .obs {
 	display: inline-block;
-	vertical-align: middle;
 	cursor: pointer;
 	width: 2.857%;
+	line-height: 10px;
 }
 
 .cycle_recap .obs span {
-	display: block;
+	display: inline-block;
 	height: 10px;
-	padding-top: 1px;
 	width: 100%;
 	font-size: 6.5px;
 	text-align: center;
 	font-family: monospace;
+	overflow: hidden;
+}
+
+.cycle_recap .obs span.g {
+	border-width: 1px 0;
+	border-style: solid;
+}
+
+.cycle_recap .obs:first-child span.g {
+	border-left-style: solid;
+	border-left-width: 1px;
+}
+
+.cycle_recap .obs:last-child span.g {
+	border-right-style: solid;
+	border-right-width: 1px;
 }
 
 .cycle_recap h5 {

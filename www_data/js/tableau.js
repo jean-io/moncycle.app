@@ -415,7 +415,7 @@ moncycle_app = {
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
 		observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
-		observation.append(`<span class=''>${car_du_bas}</span>`);
+		observation.append(`<span class='c'>${car_du_bas}</span>`);
 		return observation;
 	},
 	observation2timeline : function(j) {
