@@ -69,6 +69,7 @@ moncycle_app = {
 		$("#jour_form_next").click(moncycle_app.open_menu);
 		$("#jour_form_prev").click(moncycle_app.open_menu);
 		$("#jour_form input, #jour_form textarea").on("change", moncycle_app.submit_menu);
+		$("#form_fc").on("keyup", moncycle_app.fc_note2form);
 		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
 		$("#but_macro").click(function () {
 			$("#but_macro").hide();

@@ -25,7 +25,7 @@ define('METHODE_FERTILITYCARE_TEMP', 4);
 $db = db_open();
 
 $compte = sec_auth_jetton($db);
-if (!is_null($compte) && $compte["no_compte"]!=2) {
+if (!is_null($compte) && $compte["no_compte"]!=2 && $compte["no_compte"]!=3) {
 	header('Location: /');
 	echo "Déja connecté, redirection.";
 	exit;
