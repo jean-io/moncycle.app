@@ -167,7 +167,6 @@
 					Version du serveur/API : <span id="tech_info_ver">v8</span>
 				</p>
 			</center>
-			<br /><br /><br /><br /><br /><br /><br /><br /><br />
 			</div>
 	</body>
 </html>

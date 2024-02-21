@@ -154,7 +154,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetTextColor(255,255,255);
 				$pdf->Cell(11, 5, date_humain(new DateTime($line["date_obs"])), 1, 0, 'C', true);
 				$pdf->SetFont('Courier','',8);
-				$pdf->Cell(8,5,"1er", 1, 0, 'C', true);
+				$pdf->Cell(8,5,"1erJ", 1, 0, 'C', true);
 			}
 			else {
 				$pdf->SetTextColor(200,200,200);
