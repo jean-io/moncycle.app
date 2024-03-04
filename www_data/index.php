@@ -61,6 +61,15 @@
 			</div>
 			<div>
 				<br />
+				<div>
+					<span class="categorie">Gommettes:</span><br />
+					<input type="radio" name="gommette" id="go_vide" value="" checked /><label for="go_vide">pas de couleur (blanc)</label><br />
+					<input type="radio" name="gommette" id="go_rouge" value="." /><label for="go_rouge">🟥 rouge <span class='note'>.</span></label><br />
+					<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 vert <span class='note'>I</span></label><br />
+					<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 jaune <span class='note'>=</span></label><br />
+					<input type="checkbox" name="bebe" id="go_bebe" value=":)" /><label for="go_bebe">👶 bébé <span class='note'>:)</span></label><br />
+					<br />
+				</div>
 				<div class="pas_bill pas_bill_temp">
 					<span class="categorie pas_temp">Note FertilityCare:</span> <span id="fc_msg"></span><br />
 					<input type="text" autocapitalize="characters" name="note_fc" id="form_fc" style="width: 95%" placeholder="note FC" /><br />	
@@ -114,15 +123,6 @@
 					<input class="fc_form_note" type="radio" name="fc_fle" id="fc_fb" value="↓" /><label for="fc_fb">&#x2B07;&#xFE0F;</label>
 					<input class="fc_form_note" type="radio" name="fc_fle" id="fc_fd" value="→" /><label for="fc_fd">&#x27A1;&#xFE0F;</label>
 					<input class="fc_form_note" type="radio" name="fc_fle" id="fc_fr" value="" checked /><label class="" for="fc_fr">aucune</label><br />
-					<br />
-				</div>
-				<div>
-					<span class="categorie">Gommettes:</span><br />
-					<input type="radio" name="gommette" id="go_vide" value="" checked /><label for="go_vide">pas de couleur (blanc)</label><br />
-					<input type="radio" name="gommette" id="go_rouge" value="." /><label for="go_rouge">🟥 rouge <span class='note'>.</span></label><br />
-					<input type="radio" name="gommette" id="go_vert" value="I" /><label for="go_vert">🟩 vert <span class='note'>I</span></label><br />
-					<input type="radio" name="gommette" id="go_jaune" value="=" /><label for="go_jaune">🟨 jaune <span class='note'>=</span></label><br />
-					<input type="checkbox" name="bebe" id="go_bebe" value=":)" /><label for="go_bebe">👶 bébé <span class='note'>:)</span></label><br />
 					<br />
 				</div>
 				<div class="pas_bill pas_fc">

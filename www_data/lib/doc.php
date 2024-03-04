@@ -119,7 +119,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 			}
 		}
 
-		$i = 1;
+		$i = -1;
 		$s = -1;
 		$compteur_n = 100;
 		$compteur_max = -1;
@@ -161,7 +161,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->Cell(11, 5, date_humain(new DateTime($line["date_obs"])), 0, 0, 'C',);
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',8);
-				$pdf->Cell(8,5,$i, 0, 0, 'C');
+				$pdf->Cell(8,5,$i>0 ? $i : "?", 0, 0, 'C');
 			}
 			$pdf->SetX($pdf->GetX()+0.5);
 			$pdf->SetFont('Courier','',10);
@@ -317,7 +317,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetFont('Courier','',12);
 				$pdf->Cell($pdf->GetPageWidth()-35, 10,"GROSSESSE",1,0,'C');
 			}
-			$i += 1;
+			if ($i>0) $i += 1;
 		}
 		return $pdf;
 	}

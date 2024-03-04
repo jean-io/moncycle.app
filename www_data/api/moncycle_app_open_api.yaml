@@ -533,7 +533,7 @@ components:
       properties:
         email1:
           type: string
-          example: demo@moncycle.app
+          example: demo.bill@moncycle.app
           description: addresse e-mail de connexion
         mdp:
           type: string

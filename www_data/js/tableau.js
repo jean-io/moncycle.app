@@ -413,6 +413,7 @@ moncycle_app = {
 			car_du_milieu = "?";		
 			color = "bleu";
 		}
+		observation.append(`<span class='j'>${j.pos}</span>`);
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
 		if (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==2) observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);

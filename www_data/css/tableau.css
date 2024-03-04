@@ -76,6 +76,7 @@
 .day .fc {
 	font-family: "Montserrat";
 	font-weight: bold;
+	font-size: .8em;
 }
 
 .day .fc .note_not_imp {
@@ -89,12 +90,6 @@
 	vertical-align: top;
 	font-weight: normal;
 	margin: 0;
-}
-
-@media (prefers-color-scheme: dark) {
-	.day .g {
-		border-color: white;
-	}
 }
 
 .day .rouge,
@@ -259,23 +254,6 @@ h2 {
 	padding-top: 3px;
 }
 
-@media (prefers-color-scheme: dark) {
-	h2 a {
-		background-color: white;
-		color: black;
-	}
-
-	#jour_form_header {
-		background-color: black;
-	}
-
-	.day .bebe,
-	.obs .bebe  {
-		border-color: #b6b6b6;
-	}
-
-}
-
 .nouveau_cycle_form {
 	margin-left: 10px;	
 }
@@ -316,7 +294,6 @@ h2 {
 	border: 1px dotted #1e824c;
 	border-radius: 8px;
 }
-
 
 .cycle .graph {
 	width: 100%;
@@ -365,6 +342,12 @@ h2 {
 	overflow: hidden;
 }
 
+.cycle_recap .obs span.j {
+	color:#e4e4e4;
+	font-weight: bold;
+	vertical-align: bottom;
+}
+
 .cycle_recap .obs span.g {
 	border-width: 1px 0;
 	border-style: solid;
@@ -409,3 +392,24 @@ h2 {
 	width: 35px;
 }
 
+@media (prefers-color-scheme: dark) {
+
+	h2 a {
+		background-color: white;
+		color: black;
+	}
+
+	#jour_form_header {
+		background-color: black;
+	}
+
+	.day .bebe,
+	.obs .bebe  {
+		border-color: #b6b6b6;
+	}
+
+
+	.cycle_recap .obs span.j {
+		color:#343434;
+	}
+}
