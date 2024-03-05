@@ -7,7 +7,7 @@
 ** https://www.moncycle.app
 ** https://github.com/jean-io/moncycle.app
 -->
-<html lang="fr">
+<html manifest="/manifest.php">
 	<head>
 		<title>moncycle.app</title>
 		<meta charset="utf-8" />

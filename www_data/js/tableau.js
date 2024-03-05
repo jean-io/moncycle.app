@@ -49,13 +49,23 @@ moncycle_app = {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		if (!localStorage.authok) window.location.replace('/connexion');
 		moncycle_app.date_chargement = moncycle_app.date.str(moncycle_app.date.now());
+		if (localStorage.constante != null) {
+			moncycle_app.constante = JSON.parse(localStorage.constante);
+			moncycle_app.timeline_asc = moncycle_app.constante.timeline_asc;
+			moncycle_app.remplir_page_de_cycle();
+		}
+		if (localStorage.sensation != null) {
+			moncycle_app.sensation = JSON.parse(localStorage.sensation);
+		}
 		$.get("api/sensation", {}).done(function(data) {
 			moncycle_app.sensation = data;
+			localStorage.sensation = JSON.stringify(data);
 		}).fail(moncycle_app.redirection_connexion);
 		$.get("api/constante", {}).done(function(data) {
 			moncycle_app.constante = data;
+			localStorage.constante = JSON.stringify(data);
 			moncycle_app.timeline_asc = data.timeline_asc;
-			moncycle_app.remplir_page_de_cycle();
+			if (moncycle_app.cycle_curseur == 0) moncycle_app.remplir_page_de_cycle();
 			$("#nom").html(moncycle_app.constante.nom);
 			if (moncycle_app.constante.donateur) $("#nom").append(" &#x1F396;&#xFE0F;");
 			$(".main_button").css("display","inline-block");
@@ -510,13 +520,13 @@ moncycle_app = {
 		}
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
 		observation.append(`<span class='n'></span>`);
-		observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		if (!j.jenesaispas) {
 			let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
 			observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
 			observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_note_fc}</span>`);
 			if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
 		}
+		observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		if (j.commentaire) {
 			let comment = j.commentaire.trim();
 			while (comment.includes('\n')) {
