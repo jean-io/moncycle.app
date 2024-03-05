@@ -351,6 +351,7 @@ h2 {
 .cycle_recap .obs span.g {
 	border-width: 1px 0;
 	border-style: solid;
+	color: #370006;
 }
 
 .cycle_recap .obs:first-child span.g {
@@ -361,6 +362,10 @@ h2 {
 .cycle_recap .obs:last-child span.g {
 	border-right-style: solid;
 	border-right-width: 1px;
+}
+
+.cycle_recap .obs span.fc {
+	height: 9px;
 }
 
 .cycle_recap h5 {

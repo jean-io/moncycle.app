@@ -409,6 +409,22 @@ moncycle_app = {
 		let car_du_bas = j.union_sex ? moncycle_app.text.union : "";
 		if (j.err && j.err.includes("no data")) car_du_bas = moncycle_app.text.a_renseigner.substring(0,2);
 		let car_du_milieu = bebe ? moncycle_app.gommette[":)"][0] : "";
+		let recap_note = j.note_fc;
+		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) {
+			recap_note = recap_note.toUpperCase();
+			recap_note = recap_note.replace('RAP','').replace('LAP','').replace('AD','').replace('AP','').replace('B','');
+		}
+		else recap_note = "";
+		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && car_du_milieu == "" && j.note_fc) {
+			const should_be_red = ['VL', 'L', 'VH', 'H', 'M'];
+			should_be_red.forEach(c => {
+				recap_note = recap_note.trim();
+				if (recap_note.indexOf(c) == 0) {
+					car_du_milieu += c.slice(-1);
+					recap_note = recap_note.replace(c,'');
+				}
+			});
+		}
 		if (j.jenesaispas) {
 			car_du_milieu = "?";		
 			color = "bleu";
@@ -417,6 +433,19 @@ moncycle_app = {
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
 		if (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==2) observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
+		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && !j.jenesaispas && j.note_fc){
+			recap_note = recap_note.replace('X1','').replace('X2','').replace('X3','');
+			let fc_glaire = recap_note.match(/\d+/);
+			if (fc_glaire) recap_note = recap_note.replace(fc_glaire[0], '');
+			observation.append(`<span class='fc'>${fc_glaire? fc_glaire[0] : ""}</span>`);
+			recap_note = recap_note.trim().replace(/\s+/g, '')
+			if (recap_note.length>2) recap_note='*';
+			observation.append(`<span class='fc'>${recap_note}</span>`);
+		}
+		else if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) {
+			observation.append(`<span class='fc'></span>`);
+			observation.append(`<span class='fc'></span>`);
+		}
 		observation.append(`<span class='c'>${car_du_bas}</span>`);
 		return observation;
 	},
