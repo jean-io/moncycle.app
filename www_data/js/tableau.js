@@ -49,9 +49,9 @@ moncycle_app = {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		if (!localStorage.authok) window.location.replace('/connexion');
 		moncycle_app.date_chargement = moncycle_app.date.str(moncycle_app.date.now());
-		if (localStorage.constante != null) {
+		if (localStorage.constante != null && localStorage.timeline_asc != null) {
 			moncycle_app.constante = JSON.parse(localStorage.constante);
-			moncycle_app.timeline_asc = moncycle_app.constante.timeline_asc;
+			moncycle_app.timeline_asc = JSON.parse(localStorage.timeline_asc);
 			moncycle_app.remplir_page_de_cycle();
 		}
 		if (localStorage.sensation != null) {
@@ -65,6 +65,7 @@ moncycle_app = {
 			moncycle_app.constante = data;
 			localStorage.constante = JSON.stringify(data);
 			moncycle_app.timeline_asc = data.timeline_asc;
+			localStorage.timeline_asc = JSON.stringify(data.timeline_asc);
 			if (moncycle_app.cycle_curseur == 0) moncycle_app.remplir_page_de_cycle();
 			$("#nom").html(moncycle_app.constante.nom);
 			if (moncycle_app.constante.donateur) $("#nom").append(" &#x1F396;&#xFE0F;");

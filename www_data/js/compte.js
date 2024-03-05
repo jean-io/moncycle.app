@@ -52,6 +52,7 @@ $(document).ready(function(){
 	// MISE A JOURS DES PARAMETTRE DU COMPTE
 	$(".auto_save").on("keyup change", function() {
 		$("#net_stat").text('⏳');
+		localStorage.timeline_asc = $("#i_timeline_asc").prop('checked');
 		let val = this.value;
 		if ($(this)[0].type=="checkbox") val = $(this)[0].checked ? 1 : 0;
 		$.post("../api/compte", `${$(this).attr('name')}=${val}`).fail(function(data){
