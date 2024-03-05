@@ -420,7 +420,7 @@ moncycle_app = {
 			should_be_red.forEach(c => {
 				recap_note = recap_note.trim();
 				if (recap_note.indexOf(c) == 0) {
-					car_du_milieu += c.slice(-1);
+					car_du_milieu += c;
 					recap_note = recap_note.replace(c,'');
 				}
 			});

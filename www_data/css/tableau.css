@@ -352,6 +352,7 @@ h2 {
 	border-width: 1px 0;
 	border-style: solid;
 	color: #370006;
+	font-weight: bold;
 }
 
 .cycle_recap .obs:first-child span.g {
@@ -365,13 +366,15 @@ h2 {
 }
 
 .cycle_recap .obs span.fc {
-	height: 9px;
+	height: 8px;
+	font-weight: bold;
+	vertical-align: top;
 }
 
 .cycle_recap h5 {
 	margin: 0;
 	margin-left: 20px;
-	margin-top: 20px;
+	margin-top: 10px;
 	font-weight: normal;
 	font-family: 'Montserrat';
 }

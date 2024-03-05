@@ -477,7 +477,7 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 				}
 
 				if (strlen($fc_tiers)>0) $fc_tiers .= ' ';
-				if (boolval($cycle[$obs_index]["unions"] ?? false)) $fc_tiers .= 'U';
+				if (boolval($cycle[$obs_index]["unions"] ?? false)) $fc_tiers .= 'I';
 
 				$pdf->SetDrawColor($cell_carac[1]/$color_coef,$cell_carac[2]/$color_coef,$cell_carac[3]/$color_coef);
 
