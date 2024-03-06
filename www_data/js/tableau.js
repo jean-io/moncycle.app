@@ -662,6 +662,7 @@ moncycle_app = {
 			if (!(o in moncycle_app.sensation)) moncycle_app.sensation[o] = 0;
 			moncycle_app.sensation[o] += 1;
 		});
+		localStorage.sensation = JSON.stringify(moncycle_app.sensation);
 		let d = $("#jour_form").serializeArray();
 		$.post("api/observation", $.param(d)).done(function(data){
 			$("#jour_form_saving").hide();

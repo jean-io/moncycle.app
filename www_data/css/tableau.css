@@ -135,9 +135,9 @@
 	font-weight: 600;
 }
 
-.day .u {
+/* .day .u {
 
-}
+} */
 
 .day .s {
 	font-family: monospace;
@@ -149,9 +149,9 @@
 	font-family: monospace;
 }
 
-.day .o {
+/* .day .o {
 
-}
+} */
 
 .day .c {
 	font-size: .7em;
@@ -334,7 +334,7 @@ h2 {
 
 .cycle_recap .obs span {
 	display: inline-block;
-	height: 10px;
+	height: 9px;
 	width: 100%;
 	font-size: 6.5px;
 	text-align: center;
@@ -352,6 +352,11 @@ h2 {
 	border-width: 1px 0;
 	border-style: solid;
 	color: #370006;
+	height: 10px;
+	vertical-align: sub;
+}
+
+.cycle_recap .obs span.rouge {
 	font-weight: bold;
 }
 
@@ -368,7 +373,7 @@ h2 {
 .cycle_recap .obs span.fc {
 	height: 8px;
 	font-weight: bold;
-	vertical-align: top;
+	/* vertical-align: top; */
 }
 
 .cycle_recap h5 {
