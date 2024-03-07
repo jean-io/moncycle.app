@@ -123,7 +123,7 @@
 	background-color: #f6f5f5;
 }
 
-.obs .bleu {
+.obs .jcpas {
 	background-color: #00200e;
 	border-color: #00200e;
 	color: white;
@@ -357,6 +357,20 @@ h2 {
 	vertical-align: sub;
 }
 
+.cycle_recap .obs span.jcpas {
+	color: white;
+	font-weight: bold;
+	padding: 0;
+	height: 10px;
+}
+
+.cycle_recap .obs span.vide {
+	border-width: 1px 0;
+	border-style: solid;
+	border-color: #ffeda8;
+	background-color: #fff6d4;
+}
+
 .cycle_recap .obs span.rouge {
 	font-weight: bold;
 	padding: 0;
@@ -429,5 +443,10 @@ h2 {
 
 	.cycle_recap .obs span.j {
 		color:#343434;
+	}
+
+	.cycle_recap .obs span.vide {
+		border-color: #2f2600;
+		background-color: #241d00;
 	}
 }

@@ -408,7 +408,7 @@ moncycle_app = {
 		let o_id = "ro-" + moncycle_app.date.str(o_date);
 		let observation = $("<div>", {id: o_id, class: "obs", date: moncycle_app.date.str(o_date)});
 		observation.click(moncycle_app.open_menu);
-		let color = "bleu";
+		let color = "vide";
 		let index_couleur = j.gommette;
 		let bebe = (j.gommette == ":)");
 		if (j.gommette && j.gommette.includes(':)') && j.gommette.length>2) {
@@ -417,9 +417,9 @@ moncycle_app = {
 			bebe = true;
 		}
 		if (moncycle_app.gommette[index_couleur]) color = moncycle_app.gommette[index_couleur][1]; 
-		let car_du_bas = j.union_sex ? moncycle_app.text.union : "";
-		if (j.err && j.err.includes("no data")) car_du_bas = moncycle_app.text.a_renseigner.substring(0,2);
 		let car_du_milieu = bebe ? moncycle_app.gommette[":)"][0] : "";
+		let car_du_bas = j.union_sex ? moncycle_app.text.union : "";
+		if (j.err && j.err.includes("no data")) car_du_milieu = moncycle_app.text.a_renseigner.substring(0,2);
 		let recap_note = j.note_fc;
 		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) {
 			recap_note = recap_note.toUpperCase();
@@ -438,7 +438,7 @@ moncycle_app = {
 		}
 		if (j.jenesaispas) {
 			car_du_milieu = "?";		
-			color = "bleu";
+			color = "jcpas";
 		}
 		observation.append(`<span class='j'>${j.pos}</span>`);
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
