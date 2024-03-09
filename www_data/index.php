@@ -37,7 +37,7 @@
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom">chargement<br /><br />&#x23F3;</div>
 			<button type="button" id="charger_cycle" class="nav_button main_button">☝️ Cycle précedent</button>
-			<button id="but_macro" class="nav_button main_button">&#x1F50D; Vue mini</button><button id="but_micro" style="display:none" class="nav_button">&#x1F50D; Vue maxi</button>
+			<button id="but_mini_maxi" class="nav_button main_button">&#x1F50D; Vue mini</button>
 			<a href="compte"><button type="button" class="nav_button main_button">👨‍💻 Mon compte</button></a>
 			<noscript><p class="rouge">Cette application a besoin de Javascript pour fonctionner.</p></noscript>
 		</center>
@@ -49,7 +49,7 @@
 		<div class="contennu macro" id="recap" style="display:none">
 			<div id="regle_num"><span>1</span><span class="pair">2</span><span>3</span><span class="pair">4</span><span>5</span><span class="pair">6</span><span>7</span><span class="pair">8</span><span>9</span><span class="pair">10</span><span>11</span><span class="pair">12</span><span>13</span><span class="pair">14</span><span>15</span><span class="pair">16</span><span>17</span><span class="pair">18</span><span>19</span><span class="pair">20</span><span>21</span><span class="pair">22</span><span>23</span><span class="pair">24</span><span>25</span><span class="pair">26</span><span>27</span><span class="pair">28</span><span>29</span><span class="pair">30</span><span>31</span><span class="pair">32</span><span>33</span><span class="pair">34</span><span>35</span></div>
 		</div>
-		<div class="contennu micro" id="timeline"></div>
+		<div class="contennu micro" id="timeline" style="display:none"></div>
 		<form id="jour_form" class="popup" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />
 			<div id="jour_form_header">

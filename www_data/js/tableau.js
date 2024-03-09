@@ -83,19 +83,10 @@ moncycle_app = {
 		$("#jour_form input, #jour_form textarea").on("change", moncycle_app.submit_menu);
 		$("#form_fc").on("keyup", moncycle_app.fc_note2form);
 		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
-		$("#but_macro").click(function () {
-			$("#but_macro").hide();
-			$("#timeline").hide();
-			$("#but_micro").show();
-			$("#recap").show();
-			moncycle_app.remplir_page_de_cycle();
-		});
-		$("#but_micro").click(function () {
-			$("#but_macro").show();
-			$("#timeline").show();
-			$("#but_micro").hide();
-			$("#recap").hide();
-		});
+		$("#but_mini_maxi").click(moncycle_app.mini_maxi_switch);
+		if (localStorage.mini_maxi == "maxi") moncycle_app.mini_maxi = "mini";
+		else moncycle_app.mini_maxi = "maxi"
+		moncycle_app.mini_maxi_switch();
 		$("#form_heure_temp").focus(function () {
 			if($("#form_heure_temp").val().trim().length==0) {
 				let d  = new Date();
@@ -115,6 +106,25 @@ moncycle_app = {
 			if (moncycle_app.date.str(moncycle_app.date.now()) != moncycle_app.date_chargement) location.reload(false); 
 		})
 		if (moncycle_app.utilisateurs_beta.includes(moncycle_app.constante.id_utilisateur)) $(".beta").show();
+	},
+	mini_maxi : "mini",
+	mini_maxi_switch : function () {
+		if (moncycle_app.mini_maxi=="maxi"){
+			$("#timeline").hide();
+			$("#recap").show();
+			$("#but_mini_maxi").text("🔭 Vue maxi");
+			moncycle_app.mini_maxi="mini";
+			localStorage.mini_maxi="mini";
+			if ($("#recap").children().length<=1) moncycle_app.remplir_page_de_cycle();
+		}
+		else {
+			$("#timeline").show();
+			$("#recap").hide();
+			$("#but_mini_maxi").text("🔬 Vue mini");
+			moncycle_app.mini_maxi="maxi";
+			localStorage.mini_maxi="maxi";
+			if ($("#timeline").children().length<=1) moncycle_app.remplir_page_de_cycle();
+		}
 	},
 	remplir_page_de_cycle : function() {
 		while ($(window).height() == $(document).height() && moncycle_app.cycle_curseur < moncycle_app.constante.tous_les_cycles.length) {
