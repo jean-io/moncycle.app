@@ -23,6 +23,7 @@ moncycle_app = {
 	text : {
 		je_sais_pas: "❔ jour non observé",
 		grossesse: "🤰 grossesse",
+		grossesse_court: "🤰",
 		a_renseigner : "👋 à renseigner",
 		chargement : "⏳ chargement",
 		a_aujourdhui : "à auj.",
@@ -436,6 +437,10 @@ moncycle_app = {
 				}
 			});
 		}
+		if (j.grossesse) {
+			color = "vide";
+			car_du_milieu = moncycle_app.text.grossesse_court;
+		}
 		if (j.jenesaispas) {
 			car_du_milieu = "?";		
 			color = "jcpas";
@@ -475,58 +480,60 @@ moncycle_app = {
 			observation.append(`<span class='e'>${moncycle_app.text.grossesse}</span>`);
 			tbd = false;
 		}
-		else if (j.jenesaispas) {
-			observation.append(`<span class='p'>${moncycle_app.text.je_sais_pas}</span>`);
-			tbd = false;
-		}
 		else {
-			if (j.gommette) {
-				let contenu = "o";
-				let color = j.gommette;
-				if (j.gommette.includes(':)') && j.gommette.length>2){
-					contenu = moncycle_app.gommette[":)"][0];
-					color = j.gommette.replace(":)", "");
-				}
-				else {
-					contenu = moncycle_app.gommette[j.gommette][0];
-				}
-				observation.append(`<span class='g ${moncycle_app.gommette[color][1]}'>${contenu}</span>`);
+			if (j.jenesaispas) {
+				observation.append(`<span class='p'>${moncycle_app.text.je_sais_pas}</span>`);
 				tbd = false;
 			}
-			if ((moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4) && j.temperature) {
-				let temp = parseFloat(j.temperature);
-				let color = "#4169e1";
-				if (temp > 37.5) color = "#b469e1";
-				else if (temp <= 37.5 && temp >= 36.5) {
-					let r = parseInt((1-(37.5-temp))*115)+65;
-					color = `rgb(${r}, 105, 225)`;
+			else {
+				if (j.gommette) {
+					let contenu = "o";
+					let color = j.gommette;
+					if (j.gommette.includes(':)') && j.gommette.length>2){
+						contenu = moncycle_app.gommette[":)"][0];
+						color = j.gommette.replace(":)", "");
+					}
+					else {
+						contenu = moncycle_app.gommette[j.gommette][0];
+					}
+					observation.append(`<span class='g ${moncycle_app.gommette[color][1]}'>${contenu}</span>`);
+					tbd = false;
 				}
-				observation.append(`<span class='t pas_bill pas_fc' style='background-color: ${color}'>${temp}</span>`);
-				if (j.heure_temp) {
-					let h = j.heure_temp.substring(0,5).replace(':','h');
-					observation.append(`<span class='th bill pas_fc pas_bill' style='color: ${color}'> à ${h}</span>`);
+				if ((moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4) && j.temperature) {
+					let temp = parseFloat(j.temperature);
+					let color = "#4169e1";
+					if (temp > 37.5) color = "#b469e1";
+					else if (temp <= 37.5 && temp >= 36.5) {
+						let r = parseInt((1-(37.5-temp))*115)+65;
+						color = `rgb(${r}, 105, 225)`;
+					}
+					observation.append(`<span class='t pas_bill pas_fc' style='background-color: ${color}'>${temp}</span>`);
+					if (j.heure_temp) {
+						let h = j.heure_temp.substring(0,5).replace(':','h');
+						observation.append(`<span class='th bill pas_fc pas_bill' style='color: ${color}'> à ${h}</span>`);
+					}
+					tbd = false;
 				}
-				tbd = false;
+				if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) {
+					tbd = false;
+				}
 			}
-			if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) {
-				tbd = false;
+			if (tbd) {
+				observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
+				observation.append(`<span class='s'></span>`);
+				observation.append(`<span class='n'></span>`);
+				return observation;
 			}
-		}
-		if (tbd) {
-			observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
-			observation.append(`<span class='s'></span>`);
+			observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
 			observation.append(`<span class='n'></span>`);
-			return observation;
+			if (!j.jenesaispas) {
+				let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
+				observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
+				observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_note_fc}</span>`);
+				if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
+			}
+			observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		}
-		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
-		observation.append(`<span class='n'></span>`);
-		if (!j.jenesaispas) {
-			let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
-			observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
-			observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_note_fc}</span>`);
-			if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
-		}
-		observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		if (j.commentaire) {
 			let comment = j.commentaire.trim();
 			while (comment.includes('\n')) {

@@ -36,8 +36,17 @@ function doc_preparation_jours_pour_affichage($data, $methode){
 		}
 		$empty_line["date_obs"] = $date_cursor->format('Y-m-d');
 		if ($methode != 1 && $methode != 2) unset($line["sensation"]);
-		if (($methode == 1 || $methode == 4) && empty(trim($line["gommette"])) && empty(trim($line["temperature"]))) $line = $empty_line;
-		if (($methode == 2 || $methode == 3) && empty(trim($line["gommette"]))) $line = $empty_line;
+		if ($line["grossesse"]) {
+			$comment = $line["commentaire"];
+			$line = $empty_line;
+			$line["grossesse"] = 1;
+			$line["?"] = 0;
+			$line["commentaire"] = $comment;
+		}
+		else {
+			if (($methode == 1 || $methode == 4) && empty(trim($line["gommette"])) && empty(trim($line["temperature"]))) $line = $empty_line;
+			if (($methode == 2 || $methode == 3) && empty(trim($line["gommette"]))) $line = $empty_line;
+		}
 		array_push($cycle, $line);
 		$date_cursor->modify('+1 day');
 	}
@@ -163,136 +172,141 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->SetFont('Courier','',8);
 				$pdf->Cell(8,5,$i>0 ? $i : "?", 0, 0, 'C');
 			}
-			$pdf->SetX($pdf->GetX()+0.5);
-			$pdf->SetFont('Courier','',10);
-			$pdf->SetTextColor(0,0,0);
-			if (isset($line["gommette"]) && !boolval($line["?"])) {
-				if(str_contains($line["gommette"], ".")) {
-					$pdf->SetFillColor(172,36,51);
-					$pdf->SetDrawColor(172,36,51);
-				}
-				elseif(str_contains($line["gommette"], "I")){
-					$pdf->SetFillColor(30,130,76);
-					$pdf->SetDrawColor(30,130,76);
-				}
-				elseif(str_contains($line["gommette"], "?")){
-					$pdf->SetFillColor(220,220,220);
-					$pdf->SetDrawColor(220,220,220);
-				}
-				elseif(str_contains($line["gommette"], "=")) {
-					$pdf->SetFillColor(251,202,11);
-					$pdf->SetDrawColor(251,202,11);
-				}
-				else {
-					$pdf->SetFillColor(255,255,255);
-					$pdf->SetDrawColor(255,255,255);
-				}
-				if ($line["gommette"] == ":)") {
-					$pdf->SetTextColor(30, 130, 76);
-					$pdf->SetDrawColor(220,220,220);
-					$xx = $pdf->GetX();
-					$yy = $pdf->GetY();
-					$pdf->Cell(5,5,"",1,0,'C', true);
-					$pdf->Image("../img/baby.png", $xx+0.25, $yy+0.25, 4.5, 4.5);
-					$pdf->SetTextColor(0,0,0);
-				}
-				elseif (str_contains($line["gommette"], ":)")) {
-					$pdf->SetTextColor(255,255,255);
-					$xx = $pdf->GetX();
-					$yy = $pdf->GetY();
-					$pdf->Cell(5,5,"",1,0,'C', true);
-					$pdf->Image("../img/baby.png", $xx+0.25, $yy+0.25, 4.5, 4.5);
-					$pdf->SetTextColor(0,0,0);
-				}
-				else $pdf->Cell(5,5,"",1,0,'C', true);
-			}
-			if (boolval($line["?"])) {
-				$pdf->SetFont('Arial','I',8);
-				$pdf->SetTextColor(100,100,100);
-				$pdf->Cell($pdf->GetStringWidth(doc_txt("jour non observé "))+0.25,5,doc_txt("jour non observé "));
-				$pdf->SetFont('Courier','',10);
-				$pdf->SetTextColor(0,0,0);
-			}
-			if(intval($line["unions"])) {
-				$pdf->SetTextColor(172,36,51);
-				$pdf->SetFont("ZapfDingbats");	
-				$pdf->Cell(4,5,chr(164)); // <3
-				$pdf->SetTextColor(0,0,0);
-				$pdf->SetFont('Courier','',10);
-			}
-			// else $pdf->Cell(4,5,"");
-			if(intval($line["sommet"]) || $s>0) {
-				$pdf->SetTextColor(139,69,19);
-				if(intval($line["sommet"])) {
-					$pdf->SetFont("ZapfDingbats");	
-					$pdf->Cell(5,5,chr(115)); // /\/\
-					$s = 1;
-				}
-				elseif ($s<=3) {
-					$pdf->SetFont('Courier','',10);
-					$pdf->Cell(5,5,"+". $s); 
-					$s += 1;
-				}
-				else $s = -1;
-				$pdf->SetTextColor(0,0,0);
-				$pdf->SetFont('Courier','',10);
-			}
-			if(intval($line["compteur"]) || $compteur_n>0) {
-				$pdf->SetTextColor(30,130,76);
-				if(intval($line["compteur"])) {
-					$compteur_n = 1;
-					$compteur_max = $line["compteur"];
-				}
-				if ($compteur_n<=$compteur_max) {
-					$pdf->SetFont('Courier','',10);
-					$pdf->Cell(5,5,"+". $compteur_n); 
-					$compteur_n += 1;
-				}
-				$pdf->SetTextColor(0,0,0);
-				$pdf->SetFont('Courier','',10);
-			}
-			if (isset($line["sensation"]) && !empty($line["sensation"])){
-				$pdf->SetFont('Arial','',8.5);
-				$w = $pdf->GetStringWidth(doc_txt($line["sensation"]))+1;
-				$pdf->Cell($w,5,doc_txt($line["sensation"]));
-				$pdf->SetFont('Courier','',10);
-			}
-			$com_debut_x = $pdf->GetX();
-			$com_fin_x = -1;	
-			if (isset($line["temperature"]) && !empty($line["temperature"]) && !boolval($line["?"])) {
-				$temp = floatval($line["temperature"]);
-				$largeur = 70;
-				$disptemp = $temp;
-				$pdf->SetX($pdf->GetPageWidth()/2-12);
-				$pdf->SetFont('Courier','',9);
-				$pdf->SetTextColor(135, 67, 176);
-				$w = strval($temp) . doc_txt("°");
-				if ($line["heure_temp"]) $w .= doc_txt(" à ") .  str_replace(':', 'h', substr($line["heure_temp"],0,-3));
-				$com_fin_x = $pdf->GetPageWidth()/2 - $pdf->GetStringWidth($w);
-				$pdf->SetX($com_fin_x);
-				$pdf->Cell($pdf->GetStringWidth($w),5,$w,0,0,'R');
-				$pdf->SetFont('Courier','',10);
-				$pdf->SetTextColor(0,0,0);
-				$pdf->SetDrawColor(200,200,200);
-				$pdf->SetX($pdf->GetPageWidth()/2);
-				$pdf->Line($pdf->GetX(),$pdf->GetY()+2.5,$pdf->GetX()+$largeur,$pdf->GetY()+2.5);
-				$trace = (($disptemp-$temp_mini)/($temp_max-$temp_mini))*$largeur;
-				$pdf->SetFillColor(135, 67, 176);
-				$pdf->Rect($pdf->GetX()+$trace,$pdf->GetY()+2,1,1,"F");
-				if ($prev_temp_x!=0 && $prev_temp_y!=0) {
-					$pdf->SetDrawColor(135, 67, 176);
-					$pdf->Line($prev_temp_x,$prev_temp_y,$pdf->GetX()+$trace+0.5,$pdf->GetY()+2.5);
-				}
-				$prev_temp_x = $pdf->GetX()+$trace+0.5;
-				$prev_temp_y = $pdf->GetY()+2.5;
+			if ($line["grossesse"]) {
+				$pdf->SetFont('Courier','',12);
+				$pdf->Cell($pdf->GetStringWidth("GROSSESSE"),5,"GROSSESSE");
 			}
 			else {
-				$prev_temp_x = 0;
-				$prev_temp_y = 0;
-			}
-			if ($com_fin_x<=0) {
-				if ($col == 2 || $methode ==1) $com_fin_x = $pdf->GetPageWidth();
-				else $com_fin_x = $pdf->GetPageWidth()/2;
+				$pdf->SetX($pdf->GetX()+0.5);
+				$pdf->SetFont('Courier','',10);
+				$pdf->SetTextColor(0,0,0);
+				if (isset($line["gommette"]) && !boolval($line["?"])) {
+					if(str_contains($line["gommette"], ".")) {
+						$pdf->SetFillColor(172,36,51);
+						$pdf->SetDrawColor(172,36,51);
+					}
+					elseif(str_contains($line["gommette"], "I")){
+						$pdf->SetFillColor(30,130,76);
+						$pdf->SetDrawColor(30,130,76);
+					}
+					elseif(str_contains($line["gommette"], "?")){
+						$pdf->SetFillColor(220,220,220);
+						$pdf->SetDrawColor(220,220,220);
+					}
+					elseif(str_contains($line["gommette"], "=")) {
+						$pdf->SetFillColor(251,202,11);
+						$pdf->SetDrawColor(251,202,11);
+					}
+					else {
+						$pdf->SetFillColor(255,255,255);
+						$pdf->SetDrawColor(255,255,255);
+					}
+					if ($line["gommette"] == ":)") {
+						$pdf->SetTextColor(30, 130, 76);
+						$pdf->SetDrawColor(220,220,220);
+						$xx = $pdf->GetX();
+						$yy = $pdf->GetY();
+						$pdf->Cell(5,5,"",1,0,'C', true);
+						$pdf->Image("../img/baby.png", $xx+0.25, $yy+0.25, 4.5, 4.5);
+						$pdf->SetTextColor(0,0,0);
+					}
+					elseif (str_contains($line["gommette"], ":)")) {
+						$pdf->SetTextColor(255,255,255);
+						$xx = $pdf->GetX();
+						$yy = $pdf->GetY();
+						$pdf->Cell(5,5,"",1,0,'C', true);
+						$pdf->Image("../img/baby.png", $xx+0.25, $yy+0.25, 4.5, 4.5);
+						$pdf->SetTextColor(0,0,0);
+					}
+					else $pdf->Cell(5,5,"",1,0,'C', true);
+				}
+				if (boolval($line["?"])) {
+					$pdf->SetFont('Arial','I',8);
+					$pdf->SetTextColor(100,100,100);
+					$pdf->Cell($pdf->GetStringWidth(doc_txt("jour non observé "))+0.25,5,doc_txt("jour non observé "));
+					$pdf->SetFont('Courier','',10);
+					$pdf->SetTextColor(0,0,0);
+				}
+				if(intval($line["sommet"]) || $s>0) {
+					$pdf->SetTextColor(139,69,19);
+					if(intval($line["sommet"])) {
+						$pdf->SetFont("ZapfDingbats");	
+						$pdf->Cell(5,5,chr(115)); // /\/\
+						$s = 1;
+					}
+					elseif ($s<=3) {
+						$pdf->SetFont('Courier','',10);
+						$pdf->Cell(5,5,"+". $s); 
+						$s += 1;
+					}
+					else $s = -1;
+					$pdf->SetTextColor(0,0,0);
+					$pdf->SetFont('Courier','',10);
+				}
+				if(intval($line["compteur"]) || $compteur_n>0) {
+					$pdf->SetTextColor(30,130,76);
+					if(intval($line["compteur"])) {
+						$compteur_n = 1;
+						$compteur_max = $line["compteur"];
+					}
+					if ($compteur_n<=$compteur_max) {
+						$pdf->SetFont('Courier','',10);
+						$pdf->Cell(5,5,"+". $compteur_n); 
+						$compteur_n += 1;
+					}
+					$pdf->SetTextColor(0,0,0);
+					$pdf->SetFont('Courier','',10);
+				}
+				if (isset($line["sensation"]) && !empty($line["sensation"]) && !boolval($line["?"])){
+					$pdf->SetFont('Arial','',8.5);
+					$w = $pdf->GetStringWidth(doc_txt($line["sensation"]))+1;
+					$pdf->Cell($w,5,doc_txt($line["sensation"]));
+					$pdf->SetFont('Courier','',10);
+				}
+				if(intval($line["unions"])) {
+					$pdf->SetTextColor(172,36,51);
+					$pdf->SetFont("ZapfDingbats");	
+					$pdf->Cell(4,5,chr(164)); // <3
+					$pdf->SetTextColor(0,0,0);
+					$pdf->SetFont('Courier','',10);
+				}
+				$com_debut_x = $pdf->GetX();
+				$com_fin_x = -1;	
+				if (isset($line["temperature"]) && !empty($line["temperature"]) && !boolval($line["?"])) {
+					$temp = floatval($line["temperature"]);
+					$largeur = 70;
+					$disptemp = $temp;
+					$pdf->SetX($pdf->GetPageWidth()/2-12);
+					$pdf->SetFont('Courier','',9);
+					$pdf->SetTextColor(135, 67, 176);
+					$w = strval($temp) . doc_txt("°");
+					if ($line["heure_temp"]) $w .= doc_txt(" à ") .  str_replace(':', 'h', substr($line["heure_temp"],0,-3));
+					$com_fin_x = $pdf->GetPageWidth()/2 - $pdf->GetStringWidth($w);
+					$pdf->SetX($com_fin_x);
+					$pdf->Cell($pdf->GetStringWidth($w),5,$w,0,0,'R');
+					$pdf->SetFont('Courier','',10);
+					$pdf->SetTextColor(0,0,0);
+					$pdf->SetDrawColor(200,200,200);
+					$pdf->SetX($pdf->GetPageWidth()/2);
+					$pdf->Line($pdf->GetX(),$pdf->GetY()+2.5,$pdf->GetX()+$largeur,$pdf->GetY()+2.5);
+					$trace = (($disptemp-$temp_mini)/($temp_max-$temp_mini))*$largeur;
+					$pdf->SetFillColor(135, 67, 176);
+					$pdf->Rect($pdf->GetX()+$trace,$pdf->GetY()+2,1,1,"F");
+					if ($prev_temp_x!=0 && $prev_temp_y!=0) {
+						$pdf->SetDrawColor(135, 67, 176);
+						$pdf->Line($prev_temp_x,$prev_temp_y,$pdf->GetX()+$trace+0.5,$pdf->GetY()+2.5);
+					}
+					$prev_temp_x = $pdf->GetX()+$trace+0.5;
+					$prev_temp_y = $pdf->GetY()+2.5;
+				}
+				else {
+					$prev_temp_x = 0;
+					$prev_temp_y = 0;
+				}
+				if ($com_fin_x<=0) {
+					if ($col == 2 || $methode ==1) $com_fin_x = $pdf->GetPageWidth();
+					else $com_fin_x = $pdf->GetPageWidth()/2;
+				}
 			}
 			$pdf->SetTextColor(0,0,0);
 			$pdf->SetFont('Courier','',10);
@@ -312,10 +326,6 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 					$com_long = true;
 				}
 				$pdf->SetFont('Courier','',10);
-			}
-			if ($line["grossesse"]) {
-				$pdf->SetFont('Courier','',12);
-				$pdf->Cell($pdf->GetPageWidth()-35, 10,"GROSSESSE",1,0,'C');
 			}
 			if ($i>0) $i += 1;
 		}
@@ -450,8 +460,8 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 
 				$obs_forgotten = boolval($cycle[$num_cell]["?"] ?? false);
 				if ($obs_forgotten) $cycle[$obs_index]["gommette"] = '?';
-
 				$cell_carac = $symbol_convert_table[$cycle[$obs_index]["gommette"] ?? ""];
+				if (isset($cycle[$obs_index]["grossesse"]) && $cycle[$obs_index]["grossesse"]) $symbol_convert_table[""];
 				$peak_text = "";
 				$date_exploded = explode('-', $cycle[$obs_index]["date_obs"] ?? "");
 				$note_fc = doc_parse_fc_note($cycle[$obs_index]["note_fc"] ?? "");
@@ -501,13 +511,19 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 				$pdf->SetXY($x+$cell_width*$j, $y+$line_height);
 
 				// CELLULE BEBE
+				$pdf->SetFont('Courier','',5);
+				$pdf->SetTextColor(255, 127, 0);
 				$xx = $pdf->GetX();
 				$yy = $pdf->GetY();
-				$pdf->Cell($cell_width,$stamp_height,doc_txt(""), 'B', 0, 'C', true);
+				$text = "";
+				if (isset($cycle[$obs_index]["grossesse"]) && $cycle[$obs_index]["grossesse"]) $text = "GROSSESSE";
+				$pdf->Cell($cell_width,$stamp_height,doc_txt($text), 'B', 0, 'C', true);
 				if (str_contains($cell_carac[0], 'BB')) $pdf->Image("../img/baby.png", $xx+$img_seize/2, $yy+1, $img_seize, $img_seize);
 				$pdf->SetXY($x+$cell_width*$j, $y+$line_height+$stamp_height);
+				$pdf->SetTextColor(0, 0, 0);
 
 				// CELLULE PIC
+				$pdf->SetFont('Courier','',6);
 				$pdf->Cell($cell_width,$line_height,doc_txt(isset($date_exploded[2]) ? $peak_text : ''), 'B', 0, 'C', true);
 				$pdf->SetXY($x+$cell_width*$j, $y+$line_height*2+$stamp_height);
 				$pdf->SetDrawColor(255/$color_coef,255/$color_coef,255/$color_coef);
