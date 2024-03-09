@@ -46,7 +46,9 @@
 			<div id="actu_contenu"></div>
 			<button type="button" id="fermer_actu">OK merci &#x1F44D;</button>
 		</div>
-		<div class="contennu macro" id="recap" style="display:none"></div>
+		<div class="contennu macro" id="recap" style="display:none">
+			<div id="regle_num"><span>1</span><span class="pair">2</span><span>3</span><span class="pair">4</span><span>5</span><span class="pair">6</span><span>7</span><span class="pair">8</span><span>9</span><span class="pair">10</span><span>11</span><span class="pair">12</span><span>13</span><span class="pair">14</span><span>15</span><span class="pair">16</span><span>17</span><span class="pair">18</span><span>19</span><span class="pair">20</span><span>21</span><span class="pair">22</span><span>23</span><span class="pair">24</span><span>25</span><span class="pair">26</span><span>27</span><span class="pair">28</span><span>29</span><span class="pair">30</span><span>31</span><span class="pair">32</span><span>33</span><span class="pair">34</span><span>35</span></div>
+		</div>
 		<div class="contennu micro" id="timeline"></div>
 		<form id="jour_form" class="popup" style="display:none">
 			<input type="hidden" id="form_date" name="date" value="" />

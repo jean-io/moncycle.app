@@ -328,8 +328,12 @@ h2 {
 .cycle_recap .obs {
 	display: inline-block;
 	cursor: pointer;
-	width: 2.857%;
 	line-height: 10px;
+}
+
+#regle_num span,
+.cycle_recap .obs {
+	width: 2.857%; /* 100% / 35j */
 }
 
 .cycle_recap .obs span {
@@ -340,12 +344,6 @@ h2 {
 	text-align: center;
 	font-family: monospace;
 	overflow: hidden;
-}
-
-.cycle_recap .obs span.j {
-	color:#e4e4e4;
-	font-weight: bold;
-	vertical-align: bottom;
 }
 
 .cycle_recap .obs span.g {
@@ -391,16 +389,14 @@ h2 {
 	font-weight: bold;
 }
 
-.cycle_recap h5 {
+.cycle_recap h5,
+#regle_explication {
 	margin: 0;
 	margin-left: 20px;
-	margin-top: 15px;
+	margin-top: 12px;
 	font-weight: normal;
 	font-family: 'Montserrat';
-}
-
-.cycle_recap:first-child h5 {
-	margin-top: 30px;
+	font-size: 13px;
 }
 
 #nocycle {
@@ -424,6 +420,38 @@ h2 {
 	width: 35px;
 }
 
+#regle_num {
+	display: block;
+	position: sticky;
+	height: 10px;
+	line-height: 10px;
+	padding: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin: 20px 0;
+	background-color: white;
+}
+
+#regle_num span {
+	display: inline-block;
+	height: 10px;
+	font-size: 7px;
+	text-align: center;
+	font-family: monospace;
+	overflow: hidden;
+	background-color: #f1f1f1;
+}
+
+#regle_num span.pair {
+	background-color: #d2d2d2;
+}
+
+#regle_explication {
+	margin-top: 20px;
+	margin-bottom: 8px;
+}
+
 @media (prefers-color-scheme: dark) {
 
 	h2 a {
@@ -431,6 +459,7 @@ h2 {
 		color: black;
 	}
 
+	#regle_num,
 	#jour_form_header {
 		background-color: black;
 	}
@@ -448,5 +477,13 @@ h2 {
 	.cycle_recap .obs span.vide {
 		border-color: #2f2600;
 		background-color: #241d00;
+	}
+
+	#regle_num span {
+		background-color: #4c4c4c;
+	}
+	
+	#regle_num span.pair {
+		background-color: #292929;
 	}
 }
