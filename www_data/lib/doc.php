@@ -29,6 +29,8 @@ function doc_preparation_jours_pour_affichage($data, $methode){
 			$cycle[] = $empty_line;
 			$date_cursor->modify('+1 day');
 		}
+		if ($line["premier_jour"]) $line["premier_jour"] = 1;
+		else $line["premier_jour"] = "";
 		if ($methode != 1 && $methode != 4) unset($line["temperature"]);
 		if ($methode != 3 && $methode != 4) {
 			unset($line["note_fc"]);
