@@ -84,8 +84,8 @@ moncycle_app = {
 		$("#form_fc").on("keyup", moncycle_app.fc_note2form);
 		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
 		$("#but_mini_maxi").click(moncycle_app.mini_maxi_switch);
-		if (localStorage.mini_maxi == "maxi") moncycle_app.mini_maxi = "mini";
-		else moncycle_app.mini_maxi = "maxi"
+		if (localStorage.mini_maxi == "mini") moncycle_app.mini_maxi = "maxi";
+		else moncycle_app.mini_maxi = "mini";
 		moncycle_app.mini_maxi_switch();
 		$("#form_heure_temp").focus(function () {
 			if($("#form_heure_temp").val().trim().length==0) {

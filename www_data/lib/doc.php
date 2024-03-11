@@ -234,7 +234,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 				if(intval($line["sommet"]) || $s>0) {
 					$pdf->SetTextColor(139,69,19);
 					if(intval($line["sommet"])) {
-						$pdf->SetFont("ZapfDingbats");	
+						$pdf->SetFont("ZapfDingbats");
 						$pdf->Cell(5,5,chr(115)); // /\/\
 						$s = 1;
 					}

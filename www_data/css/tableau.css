@@ -463,14 +463,17 @@ h2 {
 .cycle_recap .obs:last-child span.pink {
 	border-right-width: 0;
 	border-right: 0;
+	font-weight: bold;
+	height: 10px;
+	padding-top: 0;
 }
 
 .cycle_recap .o_gross {
 	border-radius: 3px;
 }
 
-.o_gross {
-	padding-top: 4px;
+#timeline .o_gross {
+	padding-top: 5px;
 }
 
 @media (min-width: 601px) {
@@ -520,7 +523,7 @@ h2 {
 	.o_gross .j,
 	.cycle_recap .obs span.pink {
 		background-color: #3c0006;
-		color: #ffe8e8;
+		color: #faa;
 		border-color: #3c0006;
 	}
 }
