@@ -16,7 +16,7 @@
 	cursor: pointer;
 	min-height: 28.5px;
 }
-	
+
 .day span {
 	display: inline-block;
 	vertical-align: middle;
@@ -452,6 +452,35 @@ h2 {
 	margin-bottom: 8px;
 }
 
+.o_gross,
+.o_gross .j,
+.cycle_recap .obs span.pink {
+	background-color: #ffecee;
+	color: #821521;
+	border-color: #ffecee;
+}
+
+.cycle_recap .obs:last-child span.pink {
+	border-right-width: 0;
+	border-right: 0;
+}
+
+.cycle_recap .o_gross {
+	border-radius: 3px;
+}
+
+.o_gross {
+	padding-top: 4px;
+}
+
+@media (min-width: 601px) {
+
+	.o_gross {
+		border-radius: 3px;
+	}
+
+}
+
 @media (prefers-color-scheme: dark) {
 
 	h2 a {
@@ -485,5 +514,13 @@ h2 {
 	
 	#regle_num span.pair {
 		background-color: #292929;
+	}
+
+	.o_gross,
+	.o_gross .j,
+	.cycle_recap .obs span.pink {
+		background-color: #3c0006;
+		color: #ffe8e8;
+		border-color: #3c0006;
 	}
 }

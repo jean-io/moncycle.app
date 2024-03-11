@@ -173,8 +173,12 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 				$pdf->Cell(8,5,$i>0 ? $i : "?", 0, 0, 'C');
 			}
 			if ($line["grossesse"]) {
+				$pdf->SetTextColor(130, 21, 33);
+				$pdf->SetFillColor(255, 236, 238);
+				$pdf->SetDrawColor(255, 236, 238);
 				$pdf->SetFont('Courier','',12);
-				$pdf->Cell($pdf->GetStringWidth("GROSSESSE"),5,"GROSSESSE");
+				$pdf->Cell($pdf->GetStringWidth("GROSSESSE")+5,5,"GROSSESSE", 1, 0, 'C', true);
+				$com_debut_x = $pdf->GetX();
 			}
 			else {
 				$pdf->SetX($pdf->GetX()+0.5);
@@ -352,9 +356,10 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 		'I' => ['V', 45, 102, 23],
 		'=' => ['J', 255, 255, 9],
 		':)' => ['BBB', 255, 255, 255],
-		'.:)' => ['BBR', 190, 0, 4],
+		'.:)' => ['BBR', 190, 0, 0],
 		'I:)' => ['BBV', 130, 187, 106],
 		'=:)' => ['BBJ', 255, 255, 9],
+		'G' => ['G', 255, 236, 238]
 	];
 
 	$h_start_date = date_humain(new Datetime($cycle[0]["date_obs"]));
@@ -456,12 +461,15 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 				$first_day_of_cycle = boolval($cycle[$num_cell]["premier_jour"] ?? false);
 				$obs_index = $num_cell;
 
+				if (isset($cycle[$obs_index]["grossesse"]) && $cycle[$obs_index]["grossesse"]) $pdf->SetTextColor(130, 21, 33);
+				else $pdf->SetTextColor(0, 0, 0);
+
 				if ($first_day_of_cycle && $num_cell>0 && $j>0) $obs_index = null;
 
 				$obs_forgotten = boolval($cycle[$num_cell]["?"] ?? false);
 				if ($obs_forgotten) $cycle[$obs_index]["gommette"] = '?';
 				$cell_carac = $symbol_convert_table[$cycle[$obs_index]["gommette"] ?? ""];
-				if (isset($cycle[$obs_index]["grossesse"]) && $cycle[$obs_index]["grossesse"]) $symbol_convert_table[""];
+				if (isset($cycle[$obs_index]["grossesse"]) && $cycle[$obs_index]["grossesse"]) $cell_carac =  $symbol_convert_table["G"];
 				$peak_text = "";
 				$date_exploded = explode('-', $cycle[$obs_index]["date_obs"] ?? "");
 				$note_fc = doc_parse_fc_note($cycle[$obs_index]["note_fc"] ?? "");
@@ -512,7 +520,6 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 
 				// CELLULE BEBE
 				$pdf->SetFont('Courier','',5);
-				$pdf->SetTextColor(255, 127, 0);
 				$xx = $pdf->GetX();
 				$yy = $pdf->GetY();
 				$text = "";
@@ -520,7 +527,6 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 				$pdf->Cell($cell_width,$stamp_height,doc_txt($text), 'B', 0, 'C', true);
 				if (str_contains($cell_carac[0], 'BB')) $pdf->Image("../img/baby.png", $xx+$img_seize/2, $yy+1, $img_seize, $img_seize);
 				$pdf->SetXY($x+$cell_width*$j, $y+$line_height+$stamp_height);
-				$pdf->SetTextColor(0, 0, 0);
 
 				// CELLULE PIC
 				$pdf->SetFont('Courier','',6);

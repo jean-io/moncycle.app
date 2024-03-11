@@ -417,7 +417,9 @@ moncycle_app = {
 	observation2recap : function(j) {
 		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "ro-" + moncycle_app.date.str(o_date);
-		let observation = $("<div>", {id: o_id, class: "obs", date: moncycle_app.date.str(o_date)});
+		let o_class = "obs";
+		if (j.grossesse) o_class += " o_gross";
+		let observation = $("<div>", {id: o_id, class: o_class, date: moncycle_app.date.str(o_date)});
 		observation.click(moncycle_app.open_menu);
 		let color = "vide";
 		let index_couleur = j.gommette;
@@ -448,8 +450,9 @@ moncycle_app = {
 			});
 		}
 		if (j.grossesse) {
-			color = "vide";
-			car_du_milieu = moncycle_app.text.grossesse_court;
+			color = "pink";
+			car_du_milieu = "G"
+			car_du_bas = moncycle_app.text.grossesse_court;
 		}
 		if (j.jenesaispas) {
 			car_du_milieu = "?";		
@@ -477,7 +480,9 @@ moncycle_app = {
 	observation2timeline : function(j) {
 		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "o-" + moncycle_app.date.str(o_date);
-		let observation = $("<div>", {id: o_id, class: "day", date : moncycle_app.date.str(o_date)});
+		let o_class = "day";
+		if (j.grossesse) o_class += " o_gross";
+		let observation = $("<div>", {id: o_id, class: o_class, date : moncycle_app.date.str(o_date)});
 		observation.click(moncycle_app.open_menu);
 		observation.append(`<span class='d'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);	
 		observation.append(`<span class='j'>${j.pos}</span>`);
@@ -488,6 +493,7 @@ moncycle_app = {
 		let tbd = true;
 		if (j.grossesse) {
 			observation.append(`<span class='e'>${moncycle_app.text.grossesse}</span>`);
+			observation.append(`<span class='s'></span>`);
 			tbd = false;
 		}
 		else {
