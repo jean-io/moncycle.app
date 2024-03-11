@@ -28,7 +28,8 @@ moncycle_app = {
 		chargement : "⏳ chargement",
 		a_aujourdhui : "à auj.",
 		union : "❤️",
-		sommet : "🏔️",
+		sommet_bill : "⛰️",
+		sommet_fc : "PIC",
 		mois : ["jan", "fév", "mars", "avr", "mai", "juin", "juil", "août", "sep", "oct", "nov", "déc"],
 		mois_long : ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
 		semaine : ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
@@ -297,6 +298,8 @@ moncycle_app = {
 		$(".obs .s").empty();
 		$(".obs .s").show();
 		$(".day .s").removeClass("petit");
+		let txt_sommet = moncycle_app.text.sommet_bill;
+		if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) txt_sommet = moncycle_app.text.sommet_fc;
 		moncycle_app.sommets.forEach(s => {
 			let last = 3;
 			if (!moncycle_app.timeline_asc) last = $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1;
@@ -305,12 +308,12 @@ moncycle_app = {
 				let s_date = moncycle_app.date.parse(s);
 				s_date.setDate(s_date.getDate()+n);
 				let s_id = moncycle_app.date.str(s_date);
-				$(`#o-${s_id} .s`).html(`${moncycle_app.text.sommet}+${n}`);
+				$(`#o-${s_id} .s`).html(`${txt_sommet}+${n}`);
 				$(`#o-${s_id} .s`).addClass("petit");
 				$(`#ro-${s_id} .s`).html(n);
 			});
-			$(`#o-${s} .s`).html(moncycle_app.text.sommet);	
-			$(`#ro-${s} .s`).html(moncycle_app.text.sommet);
+			$(`#o-${s} .s`).html(txt_sommet);	
+			$(`#ro-${s} .s`).html(txt_sommet);
 			$(`#o-${s} .s`).removeClass("petit");
 		});
 		if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) return;
@@ -458,7 +461,7 @@ moncycle_app = {
 			car_du_milieu = "?";		
 			color = "jcpas";
 		}
-		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
+		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
 		if (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==2) observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
 		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && !j.jenesaispas && j.note_fc){
@@ -481,6 +484,8 @@ moncycle_app = {
 		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "o-" + moncycle_app.date.str(o_date);
 		let o_class = "day";
+		if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) o_class += " o_fc";
+		else o_class += " o_bill";
 		if (j.grossesse) o_class += " o_gross";
 		let observation = $("<div>", {id: o_id, class: o_class, date : moncycle_app.date.str(o_date)});
 		observation.click(moncycle_app.open_menu);
@@ -515,6 +520,10 @@ moncycle_app = {
 					observation.append(`<span class='g ${moncycle_app.gommette[color][1]}'>${contenu}</span>`);
 					tbd = false;
 				}
+				let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
+				observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_note_fc}</span>`);
+				observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
+				observation.append(`<span class='n'></span>`);
 				if ((moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4) && j.temperature) {
 					let temp = parseFloat(j.temperature);
 					let color = "#4169e1";
@@ -530,9 +539,7 @@ moncycle_app = {
 					}
 					tbd = false;
 				}
-				if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) {
-					tbd = false;
-				}
+				if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) tbd = false;
 			}
 			if (tbd) {
 				observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
@@ -540,12 +547,8 @@ moncycle_app = {
 				observation.append(`<span class='n'></span>`);
 				return observation;
 			}
-			observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet : ""}</span>`);
-			observation.append(`<span class='n'></span>`);
 			if (!j.jenesaispas) {
-				let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
 				observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
-				observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_note_fc}</span>`);
 				if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
 			}
 			observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);

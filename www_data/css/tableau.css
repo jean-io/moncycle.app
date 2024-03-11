@@ -139,8 +139,15 @@
 
 } */
 
-.day .s {
-	font-family: monospace;
+.o_bill .s {
+	vertical-align: top;
+}
+
+.o_fc .s {
+	font-family: "Montserrat";
+	font-weight: bold;
+	color: #883f00;
+	font-size: .8em;
 }
 
 .obs .n,
@@ -149,9 +156,9 @@
 	font-family: monospace;
 }
 
-/* .day .o {
-
-} */
+.day .o {
+	font-size: .9em;
+}
 
 .day .c {
 	font-size: .7em;
@@ -176,8 +183,10 @@
 	font-size: .7em;
 }
 
-.petit {
-	font-size: .8em;
+.day .petit {
+	font-size: .5em;
+	font-weight: normal;
+	vertical-align: middle;
 }
 
 .bold {
