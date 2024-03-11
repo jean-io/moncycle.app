@@ -53,7 +53,7 @@ foreach($cycles as $cyc) {
 		if ($nb_j>=5) {
 
 			$pdf = null;
-			if ($cyc["methode"] == 3 || $cyc["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle_complet, $cyc["nom"]);
+			if ($cyc["methode"] == 3 || $cyc["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle_complet, $cyc["methode"], $cyc["nom"]);
 			else $pdf = doc_cycle_bill_vers_pdf ($cycle_complet, $cyc["methode"], $cyc["nom"]);
 
 			$csv = fopen('php://memory','rw');

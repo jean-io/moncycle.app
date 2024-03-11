@@ -86,7 +86,7 @@ elseif ($_GET['type'] == "pdf") {
 	header("content-type:application/pdf");
 	header('Content-Disposition: attachment; filename="moncycle_app_'. date_sql($date) .'.pdf"');
 	$pdf = null;
-	if ($compte["methode"] == 3 || $compte["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["nom_compte"]);
+	if ($compte["methode"] == 3 || $compte["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"]);
 	else $pdf = doc_cycle_bill_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"]);
 	$pdf->Output('I', 'moncycle_app_'. date_humain($date) . '.pdf');
 }

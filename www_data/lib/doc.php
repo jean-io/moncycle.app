@@ -337,7 +337,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 	}
 
 
-function doc_cycle_fc_vers_pdf($cycle, $nom) {
+function doc_cycle_fc_vers_pdf($cycle, $methode, $nom) {
 	$first_col_width = 16;
 	$nb_days_per_line = 35;
 	$nb_lines_per_page = 8;
@@ -361,6 +361,8 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 		'=:)' => ['BBJ', 255, 255, 9],
 		'G' => ['G', 255, 236, 238]
 	];
+
+	if ($methode == 4) $nb_lines_per_page -= 1;
 
 	$h_start_date = date_humain(new Datetime($cycle[0]["date_obs"]));
 	$h_end_date = date_humain(new Datetime(end($cycle)["date_obs"]));
@@ -447,6 +449,10 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 			$pdf->Ln();
 			$pdf->Cell($first_col_width,$line_height,doc_txt("AUTRE INFO"), "B", 0, 'R');
 			$pdf->Ln();
+			if ($methode == 4) {
+				$pdf->Cell($first_col_width,$line_height,doc_txt("TEMPERATURE"), "B", 0, 'R');
+				$pdf->Ln();
+			}
 			$pdf->Cell($first_col_width,$line_height,doc_txt("COMMENTAIRE"), "", 0, 'R');
 			$pdf->Ln();
 
@@ -568,8 +574,18 @@ function doc_cycle_fc_vers_pdf($cycle, $nom) {
 					$pdf->Cell($cell_width,$line_height,'', 'B', 0, 'C');
 				}
 
+				// CELLULE TEMPERATURE
+				if ($methode == 4) {
+					$pdf->SetXY($x+$cell_width*$j, $y+$line_height*6+$stamp_height);
+					$pdf->SetFont('Courier','',3.8);
+					$temp = "";
+					if (isset($cycle[$obs_index]["temperature"]) && !empty($cycle[$obs_index]["temperature"])) $temp = $cycle[$obs_index]["temperature"];
+					if (isset($cycle[$obs_index]["heure_temp"]) && !empty($cycle[$obs_index]["heure_temp"])) $temp .= " à " . substr($cycle[$obs_index]["heure_temp"], 0, 5);
+					$pdf->Cell($cell_width,$line_height,doc_txt($temp), 'B', 0, 'C');
+				}
+
 				// CELLULE COMMENTAIRE
-				$pdf->SetXY($x+$cell_width*$j, $y+$line_height*6+$stamp_height);
+				$pdf->SetXY($x+$cell_width*$j, $y+$line_height*(6 + intval($methode == 4))+$stamp_height);
 				$pdf->SetFont('Courier','',3);
 				$xx = $pdf->GetX();
 				$yy = $pdf->GetY();
