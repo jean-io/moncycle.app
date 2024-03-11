@@ -464,7 +464,7 @@ moncycle_app = {
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
 		if (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==2) observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
-		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && !j.jenesaispas && j.note_fc){
+		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && !j.grossesse && !j.jenesaispas && j.note_fc){
 			recap_note = recap_note.replace('X1','').replace('X2','').replace('X3','');
 			let fc_glaire = recap_note.match(/\d+/);
 			if (fc_glaire) recap_note = recap_note.replace(fc_glaire[0], '');
