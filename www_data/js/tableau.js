@@ -339,21 +339,20 @@ moncycle_app = {
 		});
 	},
 	cycle_aff_switch: function (id) {
-		console.log(id);
 		let cache = JSON.parse(localStorage.cycle_cache || "[]");
-		if ($("#contenu-c-" + id).is(":hidden")) {
-			console.log("testA");
+		if ($("#contenu-c-" + id).attr("o_hidden")=="yes") {
 			$("#contenu-c-" + id).show();
 			if(parseInt($("#graph-c-" + id).attr("vide"))!=1 && (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4)) $("#graph-c-" + id).show();
 			$("#but-contenu-c-" + id).html("👀 Masquer");
 			if (cache.includes(id)) cache.splice(cache.indexOf(id) , 1);
+			$("#contenu-c-" + id).attr("o_hidden", "no");
 		}
 		else {
-			console.log("testB");
 			$("#contenu-c-" + id).hide();
 			$("#graph-c-" + id).hide();
 			$("#but-contenu-c-" + id).html("👀 Afficher");
 			if (!cache.includes(id)) cache.push(id);
+			$("#contenu-c-" + id).attr("o_hidden", "yes");
 		}
 		localStorage.cycle_cache = JSON.stringify(cache);
 		if (moncycle_app.timeline_asc) moncycle_app.remplir_page_de_cycle();
