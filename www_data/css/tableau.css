@@ -135,25 +135,33 @@
 	font-weight: 600;
 }
 
-/* .day .u {
-
-} */
-
-.o_bill .s {
-	vertical-align: top;
-}
-
 .o_fc .s {
 	font-family: "Montserrat";
 	font-weight: bold;
-	color: #883f00;
 	font-size: .8em;
 }
 
 .obs .n,
-.day .n {
-	color: #1e824c;
+.day .n,
+.day .s,
+.obs .s {
 	font-family: monospace;
+	font-size: .9em;
+}
+
+.day .n,
+.obs .n {
+	color: #1e824c;
+}
+
+.day .s,
+.obs .s {
+	color: #8B4513;
+}
+
+.day .j_pic {
+	font-size: 1.3em;
+	vertical-align: top;
 }
 
 .day .o {
@@ -181,12 +189,6 @@
 
 .day .th {
 	font-size: .7em;
-}
-
-.day .petit {
-	font-size: .5em;
-	font-weight: normal;
-	vertical-align: middle;
 }
 
 .bold {
@@ -463,7 +465,9 @@ h2 {
 
 .o_gross,
 .o_gross .j,
-.cycle_recap .obs span.pink {
+.cycle_recap .obs span.pink,
+.o_gross .s,
+.o_gross .n {
 	background-color: #ffecee;
 	color: #821521;
 	border-color: #ffecee;
@@ -530,7 +534,9 @@ h2 {
 
 	.o_gross,
 	.o_gross .j,
-	.cycle_recap .obs span.pink {
+	.cycle_recap .obs span.pink,
+	.o_gross .s,
+	.o_gross .n {
 		background-color: #3c0006;
 		color: #faa;
 		border-color: #3c0006;

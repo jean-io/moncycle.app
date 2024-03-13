@@ -106,7 +106,6 @@ moncycle_app = {
 		$(window).focus(function() {
 			if (moncycle_app.date.str(moncycle_app.date.now()) != moncycle_app.date_chargement) location.reload(false); 
 		})
-		if (moncycle_app.utilisateurs_beta.includes(moncycle_app.constante.id_utilisateur)) $(".beta").show();
 	},
 	mini_maxi : "mini",
 	mini_maxi_switch : function () {
@@ -116,7 +115,6 @@ moncycle_app = {
 			$("#but_mini_maxi").text("🔭 Vue maxi");
 			moncycle_app.mini_maxi="mini";
 			localStorage.mini_maxi="mini";
-			if ($("#recap").children().length<=1) moncycle_app.remplir_page_de_cycle();
 		}
 		else {
 			$("#timeline").show();
@@ -124,15 +122,19 @@ moncycle_app = {
 			$("#but_mini_maxi").text("🔬 Vue mini");
 			moncycle_app.mini_maxi="maxi";
 			localStorage.mini_maxi="maxi";
-			if ($("#timeline").children().length<=1) moncycle_app.remplir_page_de_cycle();
 		}
+		if (moncycle_app.cycle_curseur == 0) moncycle_app.remplir_page_de_cycle();
 	},
 	remplir_page_de_cycle : function() {
-		while ($(window).height() == $(document).height() && moncycle_app.cycle_curseur < moncycle_app.constante.tous_les_cycles.length) {
+		if (!moncycle_app.constante || !moncycle_app.constante.tous_les_cycles) return;
+		if (moncycle_app.timeline_asc) {
+			while ($(window).height() == $(document).height() && moncycle_app.cycle_curseur < moncycle_app.constante.tous_les_cycles.length) {
+				moncycle_app.charger_cycle();
+			}
 			moncycle_app.charger_cycle();
+			if ($(window).height() == $(document).height()) moncycle_app.form_nouveau_cycle();
 		}
-		moncycle_app.charger_cycle();
-		if ($(window).height() == $(document).height()) moncycle_app.form_nouveau_cycle();
+		else moncycle_app.charger_cycle();
 	},
 	redirection_connexion : function(err) {
 		if (err.status == 401 || err.status == 403 || err.status == 407) {	
@@ -186,10 +188,10 @@ moncycle_app = {
 		}
 		else {
 			$("#timeline").prepend(moncycle_app.cycle2timeline(date_cycle_str, nb_jours, date_fin));
-			$("#recap").prepend(moncycle_app.cycle2recap(date_cycle_str, nb_jours, date_fin));
+			$("#regle_num").after(moncycle_app.cycle2recap(date_cycle_str, nb_jours, date_fin));
 		}
 		if (JSON.parse(localStorage.cycle_cache || "[]").includes(date_cycle_str)) moncycle_app.cycle_aff_switch(date_cycle_str);
-		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function (e) {
+		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function () {
 			moncycle_app.cycle_aff_switch($(this).attr("for"));
 		});
 		let dates_req = [];
@@ -258,7 +260,7 @@ moncycle_app = {
 		if (prepend && !moncycle_app.timeline_asc) {
 			$("#charger_cycle").prop("disabled", true);
 			$("#timeline").prepend(html);
-			$("#recap").prepend(nocycle);
+			$("#regle_num").after(nocycle);
 		}
 		else {
 			$("#timeline").append(html);
@@ -278,6 +280,8 @@ moncycle_app = {
 				}
 				if (data.outcome == "ok"){
 					if (!prepend) {
+						localStorage.removeItem("observation");
+						localStorage.removeItem("constante");
 						location.reload(true);
 						return;
 					}
@@ -297,7 +301,7 @@ moncycle_app = {
 		$(".day .s").empty();
 		$(".obs .s").empty();
 		$(".obs .s").show();
-		$(".day .s").removeClass("petit");
+		$(".day .s").removeClass("j_pic");
 		let txt_sommet = moncycle_app.text.sommet_bill;
 		if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) txt_sommet = moncycle_app.text.sommet_fc;
 		moncycle_app.sommets.forEach(s => {
@@ -308,13 +312,13 @@ moncycle_app = {
 				let s_date = moncycle_app.date.parse(s);
 				s_date.setDate(s_date.getDate()+n);
 				let s_id = moncycle_app.date.str(s_date);
-				$(`#o-${s_id} .s`).html(`${txt_sommet}+${n}`);
-				$(`#o-${s_id} .s`).addClass("petit");
+				$(`#o-${s_id} .s`).html(`+${n}`);
 				$(`#ro-${s_id} .s`).html(n);
 			});
-			$(`#o-${s} .s`).html(txt_sommet);	
+			$(`#o-${s} .s`).html(txt_sommet);
 			$(`#ro-${s} .s`).html(txt_sommet);
-			$(`#o-${s} .s`).removeClass("petit");
+			$(`#o-${s} .s`).addClass("j_pic");
+			$(`#ro-${s} .s`).addClass("j_pic");
 		});
 		if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) return;
 		$(".day .n").empty();
@@ -326,28 +330,29 @@ moncycle_app = {
 				s_date.setDate(s_date.getDate()+i);
 				let s_id = moncycle_app.date.str(s_date);
 				$(`#o-${s_id} .n`).html(`+${i+1}`);
-				$(`#o-${s_id} .n`).addClass("petit");
 				if (($(`#ro-${s_id} .s`).text()).length==0) {
 					$(`#ro-${s_id} .n`).html(i+1);
 					$(`#ro-${s_id} .n`).show();
 					$(`#ro-${s_id} .s`).hide();
 				}
-				
 			}
 		});
 	},
 	cycle_aff_switch: function (id) {
+		console.log(id);
 		let cache = JSON.parse(localStorage.cycle_cache || "[]");
 		if ($("#contenu-c-" + id).is(":hidden")) {
+			console.log("testA");
 			$("#contenu-c-" + id).show();
 			if(parseInt($("#graph-c-" + id).attr("vide"))!=1 && (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4)) $("#graph-c-" + id).show();
-			$("#but-contenu-c-" + id).html("&#x1F440; Masquer");
+			$("#but-contenu-c-" + id).html("👀 Masquer");
 			if (cache.includes(id)) cache.splice(cache.indexOf(id) , 1);
 		}
 		else {
+			console.log("testB");
 			$("#contenu-c-" + id).hide();
 			$("#graph-c-" + id).hide();
-			$("#but-contenu-c-" + id).html("&#x1F440; Afficher");
+			$("#but-contenu-c-" + id).html("👀 Afficher");
 			if (!cache.includes(id)) cache.push(id);
 		}
 		localStorage.cycle_cache = JSON.stringify(cache);
@@ -461,6 +466,7 @@ moncycle_app = {
 			car_du_milieu = "?";		
 			color = "jcpas";
 		}
+		if (car_du_milieu=="" && j.gommette=="") car_du_milieu = moncycle_app.text.a_renseigner.substring(0,2);
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
 		if (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==2) observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
@@ -499,6 +505,7 @@ moncycle_app = {
 		if (j.grossesse) {
 			observation.append(`<span class='e'>${moncycle_app.text.grossesse}</span>`);
 			observation.append(`<span class='s'></span>`);
+			observation.append(`<span class='n'></span>`);
 			tbd = false;
 		}
 		else {
@@ -522,8 +529,6 @@ moncycle_app = {
 				}
 				let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
 				observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_note_fc}</span>`);
-				observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
-				observation.append(`<span class='n'></span>`);
 				if ((moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4) && j.temperature) {
 					let temp = parseFloat(j.temperature);
 					let color = "#4169e1";
@@ -543,10 +548,10 @@ moncycle_app = {
 			}
 			if (tbd) {
 				observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
-				observation.append(`<span class='s'></span>`);
-				observation.append(`<span class='n'></span>`);
 				return observation;
 			}
+			observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
+			observation.append(`<span class='n'></span>`);
 			if (!j.jenesaispas) {
 				observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
 				if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
@@ -670,7 +675,11 @@ moncycle_app = {
 		$("#recap").removeClass("flou");
 		$("#jour_form").hide();
 		moncycle_app.menu_opened_date = null;
-		if (moncycle_app.page_a_recharger) location.reload();
+		if (moncycle_app.page_a_recharger) {
+			localStorage.removeItem("observation");
+			localStorage.removeItem("constante");
+			location.reload();
+		}
 	},
 	submit_menu : function () {
 		$("#jour_form_saving").show();
@@ -711,7 +720,9 @@ moncycle_app = {
 		date.setHours(9);
 		let jour = [moncycle_app.text.semaine[date.getDay()], date.getDate(), moncycle_app.text.mois_long[date.getMonth()], date.getFullYear()].join(" ");
 		if (confirm(`Voulez-vous vraiment supprimer définitivement les données de la journée du ${jour}?`)) {
-			$.ajax({type : 'DELETE', "url" : "api/observation", "data" : `date=${moncycle_app.date.str(date)}`}).done(function(data){
+			let date_id = moncycle_app.date.str(date);
+			if (moncycle_app.observation[date_id]["premier_jour"] || moncycle_app.observation[date_id]["grossesse"]) moncycle_app.page_a_recharger = true;
+			$.ajax({type : 'DELETE', "url" : "api/observation", "data" : `date=${date_id}`}).done(function(data){
 				if (data.err){
 					$("#form_err").val(data.err);
 					console.error(data.err);
