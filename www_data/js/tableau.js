@@ -112,14 +112,14 @@ moncycle_app = {
 		if (moncycle_app.mini_maxi=="maxi"){
 			$("#timeline").hide();
 			$("#recap").show();
-			$("#but_mini_maxi").text("🔭 Vue maxi");
+			$("#but_mini_maxi").text("🔬 Vue maxi");
 			moncycle_app.mini_maxi="mini";
 			localStorage.mini_maxi="mini";
 		}
 		else {
 			$("#timeline").show();
 			$("#recap").hide();
-			$("#but_mini_maxi").text("🔬 Vue mini");
+			$("#but_mini_maxi").text("🔭 Vue mini");
 			moncycle_app.mini_maxi="maxi";
 			localStorage.mini_maxi="maxi";
 		}
