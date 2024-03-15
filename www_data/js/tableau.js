@@ -51,13 +51,11 @@ moncycle_app = {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		if (!localStorage.auth) window.location.replace('/connexion');
 		moncycle_app.date_chargement = moncycle_app.date.str(moncycle_app.date.now());
-		if (localStorage.constante != null && localStorage.timeline_asc != null) {
-			moncycle_app.constante = JSON.parse(localStorage.constante);
-			moncycle_app.timeline_asc = JSON.parse(localStorage.timeline_asc);
-			moncycle_app.remplir_page_de_cycle();
-		}
 		if (localStorage.sensation != null) {
 			moncycle_app.sensation = JSON.parse(localStorage.sensation);
+		}
+		if (localStorage.constante != null) {
+			moncycle_app.constante = JSON.parse(localStorage.constante);
 		}
 		$.get("api/sensation", {}).done(function(data) {
 			moncycle_app.sensation = data;
@@ -75,6 +73,11 @@ moncycle_app = {
 			if (moncycle_app.timeline_asc) $("#charger_cycle").hide();
 			else $("#charger_cycle").show();
 		}).fail(moncycle_app.redirection_connexion);
+		if (localStorage.constante != null && localStorage.timeline_asc != null) {
+			moncycle_app.constante = JSON.parse(localStorage.constante);
+			moncycle_app.timeline_asc = JSON.parse(localStorage.timeline_asc);
+			moncycle_app.remplir_page_de_cycle();
+		}
 		if (moncycle_app.timeline_asc) $("#charger_cycle").hide();
 		$("#charger_cycle").click(moncycle_app.charger_cycle);
 		$("#jour_form_close").click(moncycle_app.close_menu);
