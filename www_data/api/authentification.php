@@ -20,6 +20,7 @@ header('Content-Type: application/json');
 
 $output = "";
 $jetton = "";
+$no_compte = 0;
 
 try {
 
@@ -49,13 +50,15 @@ try {
 			if ($compte["totp_etat"] != TOTP_STATE_ACTIVE) {
 				$jetton = sec_auth_succes($db, $compte);
 				$output .= "Connecté!";
+				$no_compte = $compte["no_compte"];
 			}
 			elseif ($usr_totp_code>0 && (TOTP::createFromSecret($compte["totp_secret"]))->verify($usr_totp_code)) {
 				unset($compte["totp_secret"]);
 				unset($_POST["code"]);
 
 				$jetton = sec_auth_succes($db, $compte);
-				$output .= "Connecté!";
+				$output .= "Connecté! (avec TOTP)";
+				$no_compte = $compte["no_compte"];
 			}
 			else {
 				db_update_co_echoue($db, $_POST["email1"]);
@@ -83,6 +86,7 @@ catch (Exception $e){
 
 echo json_encode([
 	"auth" => $jetton!='',
+	"no_compte" => $no_compte,
 	"jetton" => $jetton,
 	"message" => $output
 ]);

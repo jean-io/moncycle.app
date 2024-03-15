@@ -63,38 +63,48 @@
 		</div>
 
 		<script>
-			window.localStorage.clear();
-			$(document).ready(function(){
- 				$("#connexion_form").on("submit", function(event) {
-					event.preventDefault();
-					$("#connexion_but").prop("disabled", true);
-					var form_data = $("#connexion_form").serializeArray();
-					$.post("api/authentification", $.param(form_data)).done(function(ret){
-						console.log(ret);
-						$("#connexion_but").prop("disabled", false);
-						ret.message += "<br />"
-						if (ret.auth == true) {
-							localStorage.authok = true;
-							window.location.replace('..');
-						}
-						else $("#message_err").html(ret.message);
+			window.addEventListener("storage", function () {
+				if (parseInt(localStorage.auth)>0) {
+				window.location.replace('..');
+			}
+			}, false);
+			if (parseInt(localStorage.auth)>0) {
+				window.location.replace('..');
+			}
+			else {
+				window.localStorage.clear();
+				$(document).ready(function(){
+					$("#connexion_form").on("submit", function(event) {
+						event.preventDefault();
+						$("#connexion_but").prop("disabled", true);
+						var form_data = $("#connexion_form").serializeArray();
+						$.post("api/authentification", $.param(form_data)).done(function(ret){
+							console.log(ret);
+							$("#connexion_but").prop("disabled", false);
+							ret.message += "<br />"
+							if (ret.auth == true) {
+								localStorage.auth = ret.no_compte;
+								window.location.replace('..');
+							}
+							else $("#message_err").html(ret.message);
+						});
+					});
+					const email1 = (new URLSearchParams(window.location.search)).get("email1");
+					$("#i_email1").val(email1);
+					$("#but_demo_bill").on("click", function(event) {
+						event.preventDefault();
+						$("#i_email1").val("demo.bill@moncycle.app");
+						$("#i_mdp").val("demo");
+						$("#connexion_form").submit();
+					});
+					$("#but_demo_fc").on("click", function(event) {
+						event.preventDefault();
+						$("#i_email1").val("demo.fc@moncycle.app");
+						$("#i_mdp").val("demo");
+						$("#connexion_form").submit();
 					});
 				});
-				const email1 = (new URLSearchParams(window.location.search)).get("email1");
-				$("#i_email1").val(email1);
- 				$("#but_demo_bill").on("click", function(event) {
-					event.preventDefault();
-					$("#i_email1").val("demo.bill@moncycle.app");
-					$("#i_mdp").val("demo");
-					$("#connexion_form").submit();
-				});
-				$("#but_demo_fc").on("click", function(event) {
-					event.preventDefault();
-					$("#i_email1").val("demo.fc@moncycle.app");
-					$("#i_mdp").val("demo");
-					$("#connexion_form").submit();
-				});
-			});
+			}
 		</script>
 	</body>
 </html>

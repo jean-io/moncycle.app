@@ -49,7 +49,7 @@ moncycle_app = {
 	timeline_asc : true,
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
-		if (!localStorage.authok) window.location.replace('/connexion');
+		if (!localStorage.auth) window.location.replace('/connexion');
 		moncycle_app.date_chargement = moncycle_app.date.str(moncycle_app.date.now());
 		if (localStorage.constante != null && localStorage.timeline_asc != null) {
 			moncycle_app.constante = JSON.parse(localStorage.constante);
@@ -102,10 +102,15 @@ moncycle_app = {
 				moncycle_app.charger_cycle();
 			}
 		});
-		moncycle_app.charger_actu();
 		$(window).focus(function() {
-			if (moncycle_app.date.str(moncycle_app.date.now()) != moncycle_app.date_chargement) location.reload(false); 
+			if (moncycle_app.date.str(moncycle_app.date.now()) != moncycle_app.date_chargement) location.reload(false);
+			return false;
 		})
+		window.addEventListener("storage", function () {
+			if (this.localStorage.auth != moncycle_app.constante.id_utilisateur) window.location.href = window.location.href;
+			return false;
+		}, false);
+		moncycle_app.charger_actu();
 	},
 	mini_maxi : "mini",
 	mini_maxi_switch : function () {
@@ -124,6 +129,7 @@ moncycle_app = {
 			localStorage.mini_maxi="maxi";
 		}
 		if (moncycle_app.cycle_curseur == 0) moncycle_app.remplir_page_de_cycle();
+		if (moncycle_app.timeline_asc && $(document).height()<=$(window).height()) moncycle_app.remplir_page_de_cycle();
 	},
 	remplir_page_de_cycle : function() {
 		if (!moncycle_app.constante || !moncycle_app.constante.tous_les_cycles) return;
@@ -188,7 +194,7 @@ moncycle_app = {
 		}
 		else {
 			$("#timeline").prepend(moncycle_app.cycle2timeline(date_cycle_str, nb_jours, date_fin));
-			$("#regle_num").after(moncycle_app.cycle2recap(date_cycle_str, nb_jours, date_fin));
+			$("#recap").prepend(moncycle_app.cycle2recap(date_cycle_str, nb_jours, date_fin));
 		}
 		if (JSON.parse(localStorage.cycle_cache || "[]").includes(date_cycle_str)) moncycle_app.cycle_aff_switch(date_cycle_str);
 		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function () {
@@ -260,7 +266,7 @@ moncycle_app = {
 		if (prepend && !moncycle_app.timeline_asc) {
 			$("#charger_cycle").prop("disabled", true);
 			$("#timeline").prepend(html);
-			$("#regle_num").after(nocycle);
+			$("#recap").prepend(nocycle);
 		}
 		else {
 			$("#timeline").append(html);
@@ -282,7 +288,7 @@ moncycle_app = {
 					if (!prepend) {
 						localStorage.removeItem("observation");
 						localStorage.removeItem("constante");
-						location.reload(true);
+						location.reload(false);
 						return;
 					}
 					moncycle_app.constante.tous_les_cycles.push(nouveau_cycle_date);
@@ -694,7 +700,7 @@ moncycle_app = {
 		if (moncycle_app.page_a_recharger) {
 			localStorage.removeItem("observation");
 			localStorage.removeItem("constante");
-			location.reload();
+			location.reload(false);
 		}
 	},
 	submit_menu : function () {
