@@ -379,7 +379,24 @@ moncycle_app = {
 		let c_date = moncycle_app.date.parse(c);
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${moncycle_app.text.mois[c_fin.getMonth()]}. `;
-		cycle.append(`<h5 class='titre'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]}. <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span> jours</h5>`);
+		let c_title = $(`<h5 class='titre'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]}. <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span> jours</h5>`);
+		let c_ruler_but = $(`<button class='mini_ruler_but'>📏</button>`);
+		c_ruler_but.click(() => {
+			let aff_ruller = $("#ruler_" + c).is(":hidden");
+			$(".mini_ruler").hide();
+			if (aff_ruller) $("#ruler_" + c).show();
+		});
+		cycle.prepend(c_ruler_but);
+		cycle.append(c_title);
+		let c_ruler = $("<div>", {id: "ruler_" + c, class: "mini_ruler", style: "display:none"});
+		let odd = true;
+		for (let n=1; n<=35; n++) {
+			let ruler_num = $(`<span>${n}</span>`);
+			if (odd) ruler_num.addClass("odd");
+			c_ruler.append(ruler_num);
+			odd = !odd;
+		}
+		cycle.append(c_ruler);
 		cycle.append($("<div>", {id: "rc_contenu_" + c, class: "contenu"}));
 		return cycle;
 	},

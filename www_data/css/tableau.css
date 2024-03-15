@@ -137,7 +137,6 @@
 
 .o_fc .s {
 	font-family: "Montserrat";
-	font-weight: bold;
 	font-size: .8em;
 }
 
@@ -147,6 +146,11 @@
 .obs .s {
 	font-family: monospace;
 	font-size: .9em;
+}
+
+.day .s,
+.day .n {
+	font-weight: bold;
 }
 
 .day .n,
@@ -160,8 +164,7 @@
 }
 
 .day .j_pic {
-	font-size: 1.3em;
-	vertical-align: top;
+	font-family: "Montserrat";
 }
 
 .day .o {
@@ -257,6 +260,7 @@ h2 {
 	margin: 0;
 	margin-top: 30px;
 	padding: 5px 10px;
+	z-index: 100000;
 }
 
 .options {
@@ -336,14 +340,18 @@ h2 {
 	text-transform: uppercase;
 }
 
+.cycle_recap:first-child {
+	padding-top: 25px;
+}
+
 .cycle_recap .obs {
 	display: inline-block;
 	cursor: pointer;
 	line-height: 10px;
 }
 
-#regle_num span,
-.cycle_recap .obs {
+.cycle_recap .obs,
+.mini_ruler span {
 	width: 2.857%; /* 100% / 35j */
 }
 
@@ -382,8 +390,6 @@ h2 {
 
 .cycle_recap .obs span.rouge {
 	font-weight: bold;
-	padding: 0;
-	height: 10px;
 }
 
 .cycle_recap .obs:first-child span.g {
@@ -400,11 +406,12 @@ h2 {
 	font-weight: bold;
 }
 
-.cycle_recap h5,
-#regle_explication {
+.cycle_recap h5 {
+	display: block;
 	margin: 0;
-	margin-left: 20px;
-	margin-top: 12px;
+	margin-left: 10px;
+	margin-top: 3px;
+	padding-top: 8px;
 	font-weight: normal;
 	font-family: 'Montserrat';
 	font-size: 13px;
@@ -431,45 +438,17 @@ h2 {
 	width: 35px;
 }
 
-#regle_num {
-	display: block;
-	position: sticky;
-	height: 10px;
-	line-height: 10px;
-	padding: 0;
-	top: 0;
-	left: 0;
-	right: 0;
-	margin: 20px 0;
-	background-color: white;
-}
-
-#regle_num span {
-	display: inline-block;
-	height: 10px;
-	font-size: 7px;
-	text-align: center;
-	font-family: monospace;
-	overflow: hidden;
-	background-color: #f1f1f1;
-}
-
-#regle_num span.pair {
-	background-color: #d2d2d2;
-}
-
-#regle_explication {
-	margin-top: 20px;
-	margin-bottom: 8px;
-}
-
 .o_gross,
 .o_gross .j,
 .cycle_recap .obs span.pink,
 .o_gross .s,
 .o_gross .n {
-	background-color: #ffecee;
 	color: #821521;
+}
+
+.o_gross,
+.cycle_recap .obs span.pink {
+	background-color: #ffecee;
 	border-color: #ffecee;
 }
 
@@ -489,12 +468,55 @@ h2 {
 	padding-top: 5px;
 }
 
+.mini_ruler_but {
+	display: block;
+	float: right;
+	padding: 1.5px 3px;
+	margin: 0;
+	margin-right: 5px;
+}
+
+.mini_ruler {
+	display: block;
+	height: 10px;
+	line-height: 10px;
+	padding: 0;
+	top: 0;
+	left: 0;
+	right: 0;
+	margin: 3px 0;
+	background-color: white;
+}
+
+.mini_ruler span {
+	display: inline-block;
+	height: 10px;
+	font-size: 7px;
+	text-align: center;
+	font-family: monospace;
+	overflow: hidden;
+	background-color: #f1f1f1;
+	vertical-align: middle;
+	padding-top: 1px;
+}
+
+.mini_ruler span.odd {
+	background-color: #d2d2d2;
+}
+
 @media (min-width: 601px) {
 
 	.o_gross {
 		border-radius: 3px;
 	}
 
+	.cycle_recap h5 {
+		margin-left: 0;
+	}
+
+	.mini_ruler_but {
+		margin-right: 0;
+	}
 }
 
 @media (prefers-color-scheme: dark) {
@@ -504,7 +526,7 @@ h2 {
 		color: black;
 	}
 
-	#regle_num,
+	.mini_ruler,
 	#jour_form_header {
 		background-color: black;
 	}
@@ -524,11 +546,11 @@ h2 {
 		background-color: #241d00;
 	}
 
-	#regle_num span {
+	.mini_ruler span {
 		background-color: #4c4c4c;
 	}
 	
-	#regle_num span.pair {
+	.mini_ruler span.odd {
 		background-color: #292929;
 	}
 
@@ -537,8 +559,12 @@ h2 {
 	.cycle_recap .obs span.pink,
 	.o_gross .s,
 	.o_gross .n {
-		background-color: #3c0006;
 		color: #faa;
+	}
+
+	.o_gross,
+	.cycle_recap .obs span.pink {
+		background-color: #3c0006;
 		border-color: #3c0006;
 	}
 }
