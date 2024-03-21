@@ -1,5 +1,5 @@
 <?php
-/* moncycle.app
+/* MONCYCLE.APP
 **
 ** licence Creative Commons CC BY-NC-SA
 **
@@ -22,7 +22,7 @@ function mail_init(){
 	$mail->Port       = SMTP_PORT;
 	$mail->CharSet    = 'UTF-8';
 
-	$mail->setFrom(SMTP_MAIL, 'moncycle.app');
+	$mail->setFrom(SMTP_MAIL, 'MONCYCLE.APP');
 	return $mail;
 }
 
@@ -31,7 +31,7 @@ function mail_body_creation_compte ($nom, $mdp, $mail1) {
 	return <<<HTML
 	<div style='font-family: sans-serif;'>Bonjour {$nom},<br />
 	<br />
-	Bienvenue sur moncycle.app!<br />
+	Bienvenue sur MONCYCLE.APP!<br />
 	<br />
 	Voici votre mot de passe temporaire: <b style='font-family: monospace;'>{$mdp}</b><br />
 	Ce mot de passe est à changer dans la page "mon compte". Pour protéger vos données, pensez à activer l'authentification multifacteur.<br />
@@ -42,7 +42,7 @@ function mail_body_creation_compte ($nom, $mdp, $mail1) {
 	<br />
 	<a href='{$app_url_var}' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br />
 	<br />
-	<p style="color:gray;font-size:.85em;font-style: italic;">Merci d'utiliser moncycle.app! Ce mail a été envoyé automatiquement, merci de ne pas y répondre. Vous le recevez car vous avez un compte sur moncycle.app. Ce mail fait partie intégrante de l'application. Si vous ne souhaitez plus recevoir de mails de notre part, merci de ne plus utiliser moncycle.app.</p><br />
+	<p style="color:gray;font-size:.85em;font-style: italic;">Merci d'utiliser MONCYCLE.APP! Ce mail a été envoyé automatiquement, merci de ne pas y répondre. Vous le recevez car vous avez un compte sur MONCYCLE.APP. Ce mail fait partie intégrante de l'application. Si vous ne souhaitez plus recevoir de mails de notre part, merci de ne plus utiliser MONCYCLE.APP.</p><br />
 	</div>
 	HTML;
 }
@@ -59,9 +59,9 @@ function mail_body_nouveau_mdp($mdp, $mail1) {
 	<br />
 	A bientôt,<br />
 	<br />
-	<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br />
+	<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>MON<span style='color: #1e824c;font-weight:bold'>CYCLE</span>.APP</a><br />
 	<br />
-	<p style="color:gray;font-size:.85em;font-style: italic;">Merci d'utiliser moncycle.app! Ce mail a été envoyé automatiquement, merci de ne pas y répondre. Vous le recevez car vous avez un compte sur moncycle.app. Ce mail fait partie intégrante de l'application. Si vous ne souhaitez plus recevoir de mails de notre part, merci de ne plus utiliser moncycle.app.</p><br />
+	<p style="color:gray;font-size:.85em;font-style: italic;">Merci d'utiliser MONCYCLE.APP! Ce mail a été envoyé automatiquement, merci de ne pas y répondre. Vous le recevez car vous avez un compte sur MONCYCLE.APP. Ce mail fait partie intégrante de l'application. Si vous ne souhaitez plus recevoir de mails de notre part, merci de ne plus utiliser MONCYCLE.APP.</p><br />
 	</div>
 	HTML;
 }
@@ -77,7 +77,7 @@ function mail_body_cycle($nom, $dh, $fh, $nb_j) {
 	<br />
 	<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br />
 	<br />
-	<p style="color:gray;font-size:.85em;font-style: italic;">Merci d'utiliser moncycle.app! Ce mail a été envoyé automatiquement, merci de ne pas y répondre. Vous le recevez car vous avez un compte sur moncycle.app. Ce mail fait partie intégrante de l'application. Si vous ne souhaitez plus recevoir de mails de notre part, merci de ne plus utiliser moncycle.app.</p><br />
+	<p style="color:gray;font-size:.85em;font-style: italic;">Merci d'utiliser MONCYCLE.APP! Ce mail a été envoyé automatiquement, merci de ne pas y répondre. Vous le recevez car vous avez un compte sur MONCYCLE.APP. Ce mail fait partie intégrante de l'application. Si vous ne souhaitez plus recevoir de mails de notre part, merci de ne plus utiliser MONCYCLE.APP.</p><br />
 	</div>
 	HTML;
 }
@@ -94,14 +94,14 @@ function mail_body_relance ($nom, $mail1) {
 		<li>Vous avez perdu votre mot de passe?<br /><a style='color: #1e824c' href='{$app_url_var}inscription?email1={$mail1}'>Réinitiliisez votre mot de passe</a></li>
 		<li style="margin-top: 10px">L'application ne vous plait pas?<br /><a style='color: #1e824c' href='https://forms.gle/aA3GrFHAAx8SFdd47'>Dites nous tout</a></li>
 		<li style="margin-top: 10px">Vous souhaitez simplement vous connecter?<br /><a style='color: #1e824c' href='{$app_url_var}connexion?email1={$mail1}'>C'est par içi</a></li>
-		<li style="margin-top: 10px">Un problème? Besoin d'aide?<br />Envoyez-nous un mail à <a style='color: #1e824c' href='mailto:moncycle.app@thjn.fr'>moncycle.app@thjn.fr</a></li>
-		<li style="margin-top: 10px">Vous ne souhaitez plus utiliser moncycle.app?<br />Ingonrez ce mail, vous n'en recevrez pas d'autre.</li>
+		<li style="margin-top: 10px">Un problème? Besoin d'aide?<br />Envoyez-nous un mail à <a style='color: #1e824c' href='mailto:bonjour@moncycle.app'>bonjour@moncycle.app</a></li>
+		<li style="margin-top: 10px">Vous ne souhaitez plus utiliser MONCYCLE.APP?<br />Ingonrez ce mail, vous n'en recevrez pas d'autre.</li>
 	</ol>
 	A bientôt,<br />
 	<br />
 	<a href='https://www.moncycle.app' style='color: unset; text-decoration:none'>mon<span style='color: #1e824c;font-weight:bold'>cycle</span>.app</a><br />
 	<br />
-	<p style="color:gray;font-size:.85em;font-style: italic;">Merci d'utiliser moncycle.app! Ce mail a été envoyé automatiquement, merci de ne pas y répondre. Vous le recevez car vous avez un compte sur moncycle.app. Ce mail fait partie intégrante de l'application. Si vous ne souhaitez plus recevoir de mails de notre part, merci de ne plus utiliser moncycle.app.</p><br />
+	<p style="color:gray;font-size:.85em;font-style: italic;">Merci d'utiliser MONCYCLE.APP! Ce mail a été envoyé automatiquement, merci de ne pas y répondre. Vous le recevez car vous avez un compte sur MONCYCLE.APP. Ce mail fait partie intégrante de l'application. Si vous ne souhaitez plus recevoir de mails de notre part, merci de ne plus utiliser MONCYCLE.APP.</p><br />
 	</div>
 	HTML;
 }

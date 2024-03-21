@@ -140,11 +140,15 @@
 			<input id="but_mdp_change" type="submit" value="💾 enregistrer" /><br />
 			<span id="mdp_ret_msg" class="rouge"></span><br /></form>
 			<br /><br /><br />
+
+
+
 			<h2>À propos et contact</h2>
 			<p>Cette application est gratuite et sans publicité/vente de données! Vous pouvez cependant contribuer au financement de l'application et aider le développeur via </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">tipeee.com/moncycleapp</a>.</p>
 			<p>Cette application est Open Source: le code est disponible sur <a href="https://github.com/jean-io/moncycle.app" target="_blank">github.com/jean-io/moncycle.app</a>.</p>
 			<p>Retrouvez toutes les informations de cette application sur <a href="https://www.moncycle.app" target="_blank">www.moncycle.app</a>.</p>
-			<p>Un bug? Besoin d'aide? Une question? Une suggestion? Une demande liée aux données personnelles utilisées? Envoyez-nous un mail à <a href="mailto:moncycle.app@thjn.fr">moncycle.app@thjn.fr</a>.</p>
+			<p>Vous avez des difficultés dans la compréhension de vos cycles ou l'interprétation de votre tableau? Faites vous aider par le <a href="https://www.methode-billings.com/trouver-un-formateur" target="_blank">Centre Billings France</a> ou par <a href="https://www.fertilitycare.fr/instructrices-et-medecins" target="_blank">l'assocaition FertilityCare</a>.</p>
+			<p>Un bug? Besoin d'aide? Une question? Une suggestion? Une demande liée aux données personnelles ?<br /> Envoyez-nous un mail à <a href="mailto:bonjour@moncycle.app">bonjour@moncycle.app</a> ou un message sur Signal à <a target="_blank" href="https://signal.me/#eu/NZ99WMZSpp6NHkUBUhdKvADr4todXR+V8E20xbHQmtvZHRUK6cBOmIXE0PVQddrc">@jean.11</a>.</p>
 			<br /><br /><br />
 
 
@@ -162,9 +166,9 @@
 			<center>
 				<p class="tech_info">
 					Numéro de compte : <span id="tech_info_no"></span><br />
-					Identifiant : <span id="tech_info_id">jean.mercadier@thjn.fr</span><br />
-					Date d'inscription : <span id="tech_info_insc">15 fév. 2024</span><br />
-					Version du serveur/API : <span id="tech_info_ver">v8</span>
+					Identifiant : <span id="tech_info_id"></span><br />
+					Date d'inscription : <span id="tech_info_insc"></span><br />
+					Version du serveur/API : <span id="tech_info_ver"></span>
 				</p>
 			</center>
 			</div>

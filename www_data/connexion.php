@@ -58,7 +58,7 @@
 			<br /><br /><br />
 			<center><a class="decouverte" id="but_demo_bill" href="/connexion">compte de démo <b>Billings</b> 🥸</a></center>
 			<center><a class="decouverte" id="but_demo_fc" href="/connexion">compte de démo <b>FertilityCare</b> 🧐</a></center>
-			<center><a class="decouverte" href="https://www.moncycle.app">découvrir moncycle.app 😍</a></center>
+			<center><a class="decouverte" href="https://www.moncycle.app">découvrir MONCYCLE.APP 😍</a></center>
 			<br /><br /><br />
 		</div>
 

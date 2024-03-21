@@ -113,7 +113,7 @@ try {
 
 		db_update_motdepasse_par_mail($db, $pass_hash, $_POST["email1"]);
 
-		$succes = "Un nouveau mot de passe vous a été envoyé par mail (si ce compte existe). &#x2709;";
+		$succes = "Un nouveau mot de passe vous a été envoyé par mail (si ce compte existe). 📧";
 
 		$mail = mail_init();
 		$mail->addAddress($_POST["email1"], $_POST["email1"]);
@@ -128,7 +128,7 @@ try {
 	}
 	elseif (isset($_GET["nouveau_motdepasse_svp"])) {
 		sleep(rand(1,5));
-		$succes = "Un nouveau mot de passe vous a été envoyé par mail (si ce compte existe). &#x2709;";
+		$succes = "Un nouveau mot de passe vous a été envoyé par mail (si ce compte existe). 📧";
 	}
 	elseif (isset($_GET["creation_compte"])) {
 		$output .= "Un compte existe déjà pour cette adresse mail.";
@@ -217,7 +217,7 @@ catch (Exception $e){
 			<br />
 			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" <?php if (boolval($_POST["monito"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_monito">📝 L'application nécessite d'être formé aux méthodes naturelles pour être utilisé. Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficultés dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'utilise en contactant une monitrice/instructrice.</label></p>
 			<p><input type="checkbox" required id="jc_gratuit" name="gratuit" value="1" <?php if (boolval($_POST["gratuit"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_gratuit">💶 Je comprends que moncycle.app est gratuit et sans publicité/vente de données! Je suis d'accord avec <a target="_blank" href="https://www.moncycle.app/#rgpd">la politique de gestion des données</a> conformément à la RGPD. Je peux cependant contribuer au financement de l'application et aider le développeur via la </label><a target="_blank" href="https://fr.tipeee.com/moncycleapp">page Tipeee de moncycle.app</a>.</p>
-			<p><input type="checkbox" id="jc_recherche" name="recherche" value="1" <?php if (boolval($_POST["recherche"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_recherche">👩‍🔬 J'autorise des exports de la base de données avec mes cycles anonymisés pour contribuer à des programmes de recherches sur les méthodes naturelles ou le cycle féminin. (vous pourrez modifier ce choix dans la rubrique "mon compte")</p>
+			<p><input type="checkbox" id="jc_recherche" name="recherche" value="1" <?php if (boolval($_POST["recherche"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_recherche">👩‍🔬 J'autorise des exports de la base de données avec mes cycles anonymisés pour contribuer à des programmes de recherches sur les méthodes naturelles ou le cycle féminin. (vous pourrez modifier ce choix dans la rubrique "mon compte") - OPTIONNEL</p>
 			<br />
 			<input type="submit" value="Créer mon compte &#x1F942;&#x1F37E;" /></form>
 			<br /><br /><br />
