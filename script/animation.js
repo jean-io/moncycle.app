@@ -65,7 +65,7 @@ $(document).ready(() => {
 	}, 1500);
 
 	// affichage de l'addresse mail
-	var contact_mail = ['m','o','n','c','y','c','l','e','.','a','p','p','@','t','h','j','n','.','f','r'];
+	var contact_mail = ['b','o','n','j','o','u','r','@','m','o','n','c','y','c','l','e','.','a','p','p'];
 	document.getElementById("contact_mail").innerHTML = contact_mail.join('');
 	document.getElementById("contact_mail").href = "mailto:" + contact_mail.join('');
 	
