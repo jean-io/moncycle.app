@@ -574,6 +574,7 @@ moncycle_app = {
 			}
 			if (tbd) {
 				observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
+				observation.append(`<span class='s'></span>`);
 				return observation;
 			}
 			observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);

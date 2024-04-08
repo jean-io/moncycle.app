@@ -73,8 +73,10 @@ foreach($cycles as $cyc) {
 			$mail->Body = mail_body_cycle($cyc['nom'], $dh, $fh, $nb_j);
 			$mail->AltBody = "Export de votre cycle du $dh au $fh de $nb_j jours.\n\nmoncycle.app";
 
-			$mail->addStringAttachment($pdf->Output('', 'S'), 'moncycle_app_'. $debut_cycle . '.pdf');
-			$mail->addStringAttachment(stream_get_contents($csv), 'moncycle_app_'. $debut_cycle . '.csv');
+			$filename_start_date = date_humain(new DateTime($debut_cycle), '_');
+
+			$mail->addStringAttachment($pdf->Output('', 'S'), 'moncycle_app_'. $filename_start_date . '.pdf');
+			$mail->addStringAttachment(stream_get_contents($csv), 'moncycle_app_'. $filename_start_date . '.csv');
 
 			$mail->send();
 

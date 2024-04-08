@@ -18,13 +18,13 @@ require_once "../vendor/autoload.php";
 
 $db = db_open();
 
+$result = [];
 $compte = sec_auth_jetton($db);
 sec_redirect_non_connecte($compte);
 
 
 // LECTURE D'UNE DATE DE DEBUT DE CYCLE
 if (isset($_GET['start_date']) && preg_match("/^\s*\d{4}-\d{2}-\d{2}$/", $_GET["start_date"])) {
-	$date = new DateTime();
 	$result["start_date"] = trim($_GET['start_date']);
 }
 else {
@@ -35,7 +35,6 @@ else {
 
 // LECTURE D'UNE DATE DE FIN DE CYCLE
 if (isset($_GET['end_date']) && preg_match("/^\s*\d{4}-\d{2}-\d{2}$/", $_GET["end_date"])) {
-	$date = new DateTime();
 	$result["end_date"] = trim($_GET['end_date']);
 }
 else {
@@ -73,21 +72,23 @@ if (!isset($data[0])) {
 // AJOUT DES JOURS MANQUANTS DU CYCLE
 $cycle = doc_preparation_jours_pour_affichage($data, $compte["methode"]);
 
+$filename_start_date = date_humain(new DateTime($result["start_date"]), '_');
+
 if ($_GET['type'] == "csv") {
 
 	// ECRITURE DU CSV
 	header("content-type:application/csv;charset=UTF-8");
-	header('Content-Disposition: attachment; filename="moncycle_app_'. $result["start_date"] .'.csv"');
+	header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.csv"');
 	$out = fopen('php://output', 'w');
 	doc_cycle_vers_csv ($out, $cycle, $compte["methode"]);
 	fclose($out);
 }
 elseif ($_GET['type'] == "pdf") {
 	header("content-type:application/pdf");
-	header('Content-Disposition: attachment; filename="moncycle_app_'. date_sql($date) .'.pdf"');
+	header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.pdf"');
 	$pdf = null;
 	if ($compte["methode"] == 3 || $compte["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"]);
 	else $pdf = doc_cycle_bill_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"]);
-	$pdf->Output('I', 'moncycle_app_'. date_humain($date) . '.pdf');
+	$pdf->Output('I', 'moncycle_app_'. $filename_start_date . '.pdf');
 }
 

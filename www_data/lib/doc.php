@@ -99,7 +99,7 @@ function doc_cycle_vers_csv ($out, $cycle, $methode) {
 
 function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 		$pdf = new Fpdf('P','mm','A4');
-		$pdf->SetTitle('bill_cycle_'. date_humain(new Datetime($cycle[0]["date_obs"]), '_') . '.pdf');
+		$pdf->SetTitle('MONCYCLE.APP tableau du '. date_humain(new Datetime($cycle[0]["date_obs"])));
 		$pdf->AddPage();
 		$pdf->SetFont('Courier','B',12);
 		$pdf->Cell($pdf->GetPageWidth()-35,10,doc_txt($nom), 0, 0, 'C');
@@ -169,7 +169,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 			}
 			else {
 				$pdf->SetTextColor(200,200,200);
-				$pdf->Cell(11, 5, date_humain(new DateTime($line["date_obs"])), 0, 0, 'C',);
+				$pdf->Cell(11, 5, date_humain(new DateTime($line["date_obs"])), 0, 0, 'C');
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',8);
 				$pdf->Cell(8,5,$i>0 ? $i : "?", 0, 0, 'C');
@@ -372,7 +372,7 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom) {
 
 	$pdf = new Fpdf('L','mm','A3');
 	$pdf->SetMargins($left_margin, $top_margin);
-	$pdf->SetTitle('bill_cycle_test.pdf');
+	$pdf->SetTitle('MONCYCLE.APP tableau du '. date_humain(new Datetime($cycle[0]["date_obs"])));
 
 
 	$cell_width = ($pdf->GetPageWidth()-$first_col_width-2*$left_margin)/$nb_days_per_line;
