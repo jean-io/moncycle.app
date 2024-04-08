@@ -56,12 +56,47 @@ function doc_preparation_jours_pour_affichage($data, $methode){
 }
 
 function doc_parse_fc_note ($str_fc_note) {
-	$fc_note = ['10DL' => false, '10SL' => false, '10WL' => false, 'RAP' => false, 'LAP' => false, 'X1' => false, 'X2' => false, 'X3' => false, 'AD' => false, 'AP' => false, 'VL' => false, 'VH' => false, '2W' => false, '10' => false, 'H' => false, 'M' => false, 'L' => false, 'B' => false, '0' => false, '2' => false, '4' => false, '6' => false, '8' => false, 'C' => false, 'G' => false, 'K' => false, 'P' => false, 'Y' => false, 'R' => false];
+	$fc_note = [
+		'10DL' => false,
+		'10SL' => false,
+		'10WL' => false,
+		'RAP' => false,
+		'LAP' => false, 
+		'X1' => false,
+		'X2' => false,
+		'X3' => false,
+		'AD' => false,
+		'AP' => false,
+		'VL' => false,
+		'VH' => false,
+		'2W' => false,
+		'10' => false,
+		'H' => false,
+		'M' => false,
+		'L' => false,
+		'Lsaignement' => false,
+		'B' => false,
+		'0' => false,
+		'2' => false,
+		'4' => false,
+		'6' => false,
+		'8' => false,
+		'C' => false,
+		'G' => false,
+		'K' => false,
+		'P' => false,
+		'Y' => false,
+		'R' => false
+	];
 	$str_fc_note = trim($str_fc_note);
 	if (strlen($str_fc_note)>0) {
 		$str_fc_note = strtoupper($str_fc_note);
+		if (str_starts_with($str_fc_note, 'L') && !str_starts_with($str_fc_note, 'LAP')) {
+			$fc_note['Lsaignement'] = true;
+			$str_fc_note = substr($str_fc_note, 1);
+		}
 		foreach ($fc_note as $note => $is_present) {
-			if (str_contains($str_fc_note,$note)) $fc_note[$note] = true;
+			if (str_contains($str_fc_note, $note)) $fc_note[$note] = true;
 			$str_fc_note = str_ireplace($note, '', $str_fc_note);
 		}
 		$str_fc_note = trim($str_fc_note);
@@ -483,7 +518,10 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom) {
 				$note_fc = doc_parse_fc_note($cycle[$obs_index]["note_fc"] ?? "");
 
 				$fc_saignement = '';
-				foreach (['H', 'M', 'L', 'VL', 'VH', 'B'] as $s) $note_fc[$s] ? $fc_saignement .= $s : null;
+				foreach (['H', 'M', 'Lsaignement', 'VL', 'VH', 'B'] as $s) {
+					if ($note_fc[$s] && $s == 'Lsaignement') $fc_saignement .= 'L';
+					else $note_fc[$s] ? $fc_saignement .= $s : null;
+				}
 
 				$fc_glaire = '';
 				foreach (['0', '2', '2W', '4', '6', '8', '10', '10DL', '10SL', '10WL', 'C', 'G', 'K', 'P', 'Y', 'R', 'L', 'X1', 'X2', 'X3', 'AD'] as $s) $note_fc[$s] ? $fc_glaire .= $s : null;
