@@ -10,7 +10,7 @@
 <html lang="fr">
 	<head>
 		<meta charset="utf-8" />
-		<title>moncycle.app</title>
+		<title>MONCYCLE.APP - connexion</title>
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 		<meta name="apple-mobile-web-app-title" content="moncycle.app" />
@@ -58,7 +58,7 @@
 			<br /><br /><br />
 			<center><a class="decouverte" id="but_demo_bill" href="/connexion">compte de démo <b>Billings</b> 🥸</a></center>
 			<center><a class="decouverte" id="but_demo_fc" href="/connexion">compte de démo <b>FertilityCare</b> 🧐</a></center>
-			<center><a class="decouverte" href="https://www.moncycle.app">découvrir MONCYCLE.APP 😍</a></center>
+			<center><a class="decouverte" href="https://www.moncycle.app">découvrir MON<b>CYCLE</b>.APP 😍</a></center>
 			<br /><br /><br />
 		</div>
 

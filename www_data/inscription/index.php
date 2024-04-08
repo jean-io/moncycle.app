@@ -73,6 +73,9 @@ try {
 		elseif (!isset($_POST["prenom"]) || !isset($_POST["email1"]) || !isset($_POST["age"]) || !filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 			$output .= "Toutes les données n'ont pas été saisies ou sont erronées.";
 		}
+		elseif (!isset($_POST["email1_conf"]) || trim($_POST["email1"]) != trim($_POST["email1_conf"])) {
+			$output .= "L'addresse mail saisie et sa confirmation ne sont pas identique.";
+		}
 		elseif (isset($_POST["captcha"]) && strlen(trim($_POST["captcha"]))>=1 && trim($_POST["captcha"])==$captcha) {
 			$methode = intval($_POST["methode"] ?? 0);
 			if ($methode<METHODE_BILLINGS || $methode>METHODE_FERTILITYCARE) $methode=METHODE_BILLINGS;
@@ -86,7 +89,7 @@ try {
 
 			db_insert_compte($db, $_POST["prenom"], $methode, $_POST["age"], $_POST["email1"],$pass_hash, $_POST["decouvert"] ?? null, $_POST["recherche"] ?? 0);
 
-			$succes = "Félicitation <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par e-mail.";
+			$succes = "Félicitation <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par e-mail à l'addresse <b>{$_POST["email1"]}</b>";
 
 			$mail = mail_init();
 			$mail->addAddress($_POST["email1"], $_POST["email1"]);
@@ -94,7 +97,7 @@ try {
 			$mail->isHTML(false);
 			$mail->Subject = 'Bienvenue et mot de passe';
 			$mail->Body = mail_body_creation_compte($_POST["prenom"], $pass_text, $_POST["email1"]);
-			$mail->AltBody = 'Bienvenue sur moncycle.app! Votre mot de passe: ' . $pass_text;
+			$mail->AltBody = 'Bienvenue sur MONCYCLE.APP! Votre mot de passe: ' . $pass_text;
 
 			$mail->send();
 
@@ -113,7 +116,7 @@ try {
 
 		db_update_motdepasse_par_mail($db, $pass_hash, $_POST["email1"]);
 
-		$succes = "Un nouveau mot de passe vous a été envoyé par mail (si ce compte existe). 📧";
+		$succes = "Un nouveau mot de passe vous a été envoyé par mail (si ce compte existe). L'addresse mail saisie est 📧";
 
 		$mail = mail_init();
 		$mail->addAddress($_POST["email1"], $_POST["email1"]);
@@ -164,7 +167,7 @@ catch (Exception $e){
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
-		<title>moncycle.app</title>
+		<title>MONCYCLE.APP - inscription</title>
 		<meta name="description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
 		<meta property="og:title" content="MONCYCLE.APP" />
 		<meta property="og:type" content="siteweb" />
@@ -200,6 +203,9 @@ catch (Exception $e){
 			<label for="i_email1">E-mail:</label><br />
 			<input name="email1" id="i_email1" type="email" maxlength="255" required placeholder="Entrer votre adresse mail."  value="<?= $_POST['email1'] ?? "" ?>" /><br />
 			<br />
+			<label for="i_email1_conf">Confirmer (re-saisir) votre e-mail:</label><br />
+			<input name="email1_conf" id="i_email1_conf" type="email" maxlength="255" required placeholder="Entrer une 2ème fois votre adresse mail."  value="<?= $_POST['email1_conf'] ?? "" ?>" /><br />
+			<br />
 			<label for="i_anaissance">Année de naissance:</label><br />
 			<select name="age" id="i_anaissance" required placeholder="">
 			<option disabled selected class="placeholder">Sélectionner votre année de naissance</option>
@@ -221,8 +227,10 @@ catch (Exception $e){
 			<br />
 			<input type="submit" value="Créer mon compte &#x1F942;&#x1F37E;" /></form>
 			<br /><br /><br />
-			<h2>Mot de passe perdu?</h2>
-			<form action="?nouveau_motdepasse_svp" method="post"><br />
+			<h2>Mot de passe perdu</h2>
+			<form action="?nouveau_motdepasse_svp" method="post">
+			<p>Un nouveau mot de passe vous sera envoyé par mail. Ce mot de passe temporaire sera à changer dans votre espace <b>compte</b>.
+			<br/><br/>
 			<label for="i_email1">E-mail:</label><br />
 			<input name="email1" id="i_email1" type="email" required placeholder="Votre adresse mail"  value="<?= $_REQUEST['email1'] ?? "" ?>" /><br />
 			<br />

@@ -9,11 +9,11 @@
 -->
 <html>
 	<head>
-		<title>moncycle.app</title>
+		<title>MONCYCLE.APP</title>
 		<meta charset="utf-8" />
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-		<meta name="apple-mobile-web-app-title" content="moncycle.app" />
+		<meta name="apple-mobile-web-app-title" content="MONCYCLE.APP" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<link rel="apple-touch-icon" href="/img/moncycleapp512.jpg" />
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />

@@ -24,9 +24,15 @@ Si vous souhaitez auto-héberger votre propre instance Moncycle.app, vous pouvez
 - [YunoHost](https://install-app.yunohost.org/?app=moncycle)
 - [Docker](https://hub.docker.com/r/jeanio/moncycle.app)
 
-## Prérequis système
+### Prérequis système
 
 L'appli a été tésté sur **PHP 8.3** et **MariaDB 11.1.3**.
+
+### Sécurité
+
+Le répertoire `www-data/script` doit être protégé et ne doit pas être accèssible publiquement.
+
+Le script `www-data/script/cron.php` a pour fonction de supprimer les jetons de sessions expiré, il est donc imporant pour des raisons de sécurité de bien l'executer **une fois par jour**. La fréquence d'une fois par jour est importante, plus d'une fois par jours, des mails pourraient être expédié en doublon. Moins d'une fois par jours des jetons expirés seraient supprimé trop tardivement et envoient de mails seraient manquant.
 
 ### Variables Docker
 
@@ -41,8 +47,8 @@ L'appli a été tésté sur **PHP 8.3** et **MariaDB 11.1.3**.
 |SMTP_PORT        | SMTP server connection port |
 |SMTP_MAIL        | SMTP mail address (which is also used for identification) |
 |SMTP_PASSWORD    | SMTP password |
-|CREATION_COMPTE  | allow account creation for moncycle.app (boolean, default: true) |
-|CONNEXION_COMPTE | allow authentification in moncycle.app (boolean, default: true) |
+|CREATION_COMPTE  | allow account creation for MONCYCLE.APP (boolean, default: true) |
+|CONNEXION_COMPTE | allow authentification in MONCYCLE.APP (boolean, default: true) |
 |CSV_SEP          | separator for CSV export |
 |APP_URL | URL of hosted app in order to be correct in mails |
 |PHP_CACHE | activate PHP OPcache, default `On` |

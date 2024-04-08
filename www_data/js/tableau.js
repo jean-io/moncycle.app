@@ -66,6 +66,7 @@ moncycle_app = {
 			localStorage.constante = JSON.stringify(data);
 			moncycle_app.timeline_asc = data.timeline_asc;
 			localStorage.timeline_asc = JSON.stringify(data.timeline_asc);
+			document.title = "MONCYCLE.APP - " + moncycle_app.constante.nom;
 			if (moncycle_app.cycle_curseur == 0) moncycle_app.remplir_page_de_cycle();
 			$("#nom").html(moncycle_app.constante.nom);
 			if (moncycle_app.constante.donateur) $("#nom").append(" &#x1F396;&#xFE0F;");
