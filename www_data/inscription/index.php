@@ -44,7 +44,12 @@ if (isset($_COOKIE["MONCYCLEAPP_JETTON"]) && strlen($_COOKIE["MONCYCLEAPP_JETTON
 }
 else {
 	$jetton = sec_motdepasse_aleatoire(64);
-	db_insert_jetton($db, NULL, "CAPTCHA | " .  $_SERVER['HTTP_USER_AGENT'], "FR", $jetton, 3);
+	$ua = $_SERVER['HTTP_USER_AGENT'];
+	if (strlen($ua) > 200) {
+		$ua = substr($ua,0,200);
+		$ua .= " ...";
+	}
+	db_insert_jetton($db, NULL, "CAPTCHA | " . $ua, "FR", $jetton, 3);
 	$arr_cookie_options = array (
 		'expires' => strtotime('+2 days'), 
 		'path' => '/',

@@ -24,6 +24,8 @@ Si vous souhaitez auto-héberger votre propre instance Moncycle.app, vous pouvez
 - [YunoHost](https://install-app.yunohost.org/?app=moncycle)
 - [Docker](https://hub.docker.com/r/jeanio/moncycle.app)
 
+Pour Docker, il faudra installer manuellement la base de donnée. Le fichier SQL est dispnnible à l'empalcement [db/table.sql](https://github.com/jean-io/moncycle.app/blob/master/db/table.sql)
+
 ### Prérequis système
 
 L'appli a été tésté sur **PHP 8.3** et **MariaDB 11.1.3**.
