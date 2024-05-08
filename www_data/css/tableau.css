@@ -468,14 +468,6 @@ h2 {
 	padding-top: 5px;
 }
 
-.mini_ruler_but {
-	display: block;
-	float: right;
-	padding: 1.5px 3px;
-	margin: 0;
-	margin-right: 5px;
-}
-
 .mini_ruler {
 	display: block;
 	height: 10px;
@@ -512,10 +504,6 @@ h2 {
 
 	.cycle_recap h5 {
 		margin-left: 0;
-	}
-
-	.mini_ruler_but {
-		margin-right: 0;
 	}
 }
 

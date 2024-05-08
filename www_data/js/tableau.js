@@ -390,13 +390,11 @@ moncycle_app = {
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${moncycle_app.text.mois[c_fin.getMonth()]}. `;
 		let c_title = $(`<h5 class='titre'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]}. <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span> jours</h5>`);
-		let c_ruler_but = $(`<button class='mini_ruler_but'>📏</button>`);
-		c_ruler_but.click(() => {
+		c_title.click(() => {
 			let aff_ruller = $("#ruler_" + c).is(":hidden");
 			$(".mini_ruler").hide();
 			if (aff_ruller) $("#ruler_" + c).show();
 		});
-		cycle.prepend(c_ruler_but);
 		cycle.append(c_title);
 		let c_ruler = $("<div>", {id: "ruler_" + c, class: "mini_ruler", style: "display:none"});
 		let odd = true;
