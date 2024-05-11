@@ -21,10 +21,12 @@ moncycle_app = {
 		""  : ["", ""]
 	},
 	text : {
-		je_sais_pas: "❔ jour non observé",
+		je_sais_pas: "jour non observé",
+		je_sais_pas_emoji: "?",
 		grossesse: "🤰 grossesse",
 		grossesse_court: "🤰",
-		a_renseigner : "👋 à renseigner",
+		a_renseigner : "à renseigner",
+		a_renseigner_emoji : "👋",
 		chargement : "⏳ chargement",
 		a_aujourdhui : "à auj.",
 		union : "❤️",
@@ -464,7 +466,7 @@ moncycle_app = {
 		if (moncycle_app.gommette[index_couleur]) color = moncycle_app.gommette[index_couleur][1]; 
 		let car_du_milieu = bebe ? moncycle_app.gommette[":)"][0] : "";
 		let car_du_bas = j.union_sex ? moncycle_app.text.union : "";
-		if (j.err && j.err.includes("no data")) car_du_milieu = moncycle_app.text.a_renseigner.substring(0,2);
+		if (j.err && j.err.includes("no data")) car_du_milieu = moncycle_app.text.a_renseigner_emoji;
 		let recap_note = j.note_fc;
 		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) {
 			recap_note = recap_note.toUpperCase();
@@ -490,7 +492,7 @@ moncycle_app = {
 			car_du_milieu = "?";		
 			color = "jcpas";
 		}
-		if (car_du_milieu=="" && j.gommette=="") car_du_milieu = moncycle_app.text.a_renseigner.substring(0,2);
+		if (car_du_milieu=="" && j.gommette=="") car_du_milieu = moncycle_app.text.a_renseigner_emoji;
 		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
 		if (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==2) observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
@@ -519,8 +521,9 @@ moncycle_app = {
 		if (j.grossesse) o_class += " o_gross";
 		let observation = $("<div>", {id: o_id, class: o_class, date : moncycle_app.date.str(o_date)});
 		observation.click(moncycle_app.open_menu);
-		observation.append(`<span class='d'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);	
-		observation.append(`<span class='j'>${j.pos}</span>`);
+		observation.append(`<span class='d'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);
+		let pos = $(`<span class='j'>${j.pos}</span>`);
+		observation.append(pos);
 		if (j.chargement) {
 			observation.append(`<span class='l'>${moncycle_app.text.chargement}</span>`);
 			return observation;
@@ -534,7 +537,7 @@ moncycle_app = {
 		}
 		else {
 			if (j.jenesaispas) {
-				observation.append(`<span class='p'>${moncycle_app.text.je_sais_pas}</span>`);
+				observation.append(`<span class='g jcpas'>${moncycle_app.text.je_sais_pas_emoji}</span>`);
 				tbd = false;
 			}
 			else {
@@ -549,6 +552,7 @@ moncycle_app = {
 						contenu = moncycle_app.gommette[j.gommette][0];
 					}
 					observation.append(`<span class='g ${moncycle_app.gommette[color][1]}'>${contenu}</span>`);
+					pos.addClass("j_" + moncycle_app.gommette[color][1]);
 					tbd = false;
 				}
 				let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
@@ -571,8 +575,9 @@ moncycle_app = {
 				if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) tbd = false;
 			}
 			if (tbd) {
-				observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
+				observation.append(`<span class='g ar'>${moncycle_app.text.a_renseigner_emoji}</span>`);
 				observation.append(`<span class='s'></span>`);
+				observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
 				return observation;
 			}
 			observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
@@ -581,6 +586,7 @@ moncycle_app = {
 				observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
 				if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
 			}
+			else observation.append(`<span class='p'>${moncycle_app.text.je_sais_pas}</span>`);
 			observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		}
 		if (j.commentaire) {

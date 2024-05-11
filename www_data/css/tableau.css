@@ -12,9 +12,8 @@
 }
 
 .day {
-	padding: 1px;
 	cursor: pointer;
-	min-height: 28.5px;
+	padding-left: 3px;
 }
 
 .day span {
@@ -29,8 +28,8 @@
 
 .day .d {
 	font-family: monospace;
-	height: 26px;
-	line-height: 26px;
+	height: 25px;
+	line-height: 25px;
 	text-align: center;
 	font-size: .7em;
 	float: right;
@@ -42,8 +41,8 @@
 	font-family: monospace;
 	text-align: center;
 	width: 20px;
-	height: 26px;
-	line-height: 26px;
+	height: 25px;
+	line-height: 25px;
 }
 
 .day .g {
@@ -52,9 +51,23 @@
 	line-height: 25px;
 	padding-top: 0px;
 	text-align: center;
-	border: 1px solid black;
-	border-radius: 2px;
+	border-right: 1px solid black;
+	border-left: 1px solid black;
 	margin-right: 5px;
+}
+
+.day:first-child .g {
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	border-top-width: 1px;
+	border-top-style: solid;
+}
+
+.day:last-child .g {
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
 }
 
 .day .e {
@@ -113,8 +126,21 @@
 	color: #fbca0b;
 }
 
+.day .jcpas {
+	background-color: #edf6ff;
+	border-color: #cae4ff;
+	color: #5f8dbe;
+	font-weight: bold;
+	font-family: "Montserrat";
+}
+
+.day .ar {
+	border-color: #ffeda8;
+	background-color: #fff6d4;
+}
+
 .day .bebe {
-	border-color: #b6b6b6;
+	border-color: #d2d2d2;
 	background-color: white;
 }
 
@@ -154,8 +180,17 @@
 }
 
 .day .n,
-.obs .n {
+.obs .n,
+.day .j_vert {
 	color: #1e824c;
+}
+
+.day .j_rouge {
+	color: #ac2433;
+}
+
+.day .j_jaune {
+	color: #fbca0b;
 }
 
 .day .s,
@@ -374,6 +409,11 @@ h2 {
 	vertical-align: sub;
 }
 
+.cycle_recap .obs:last-child span.g {
+	border-top-right-radius: 2px;
+	border-bottom-right-radius: 2px;
+}
+
 .cycle_recap .obs span.jcpas {
 	color: white;
 	font-weight: bold;
@@ -465,7 +505,7 @@ h2 {
 }
 
 #timeline .o_gross {
-	padding-top: 5px;
+	padding-top: 2px;
 }
 
 .mini_ruler {
@@ -505,6 +545,21 @@ h2 {
 	.cycle_recap h5 {
 		margin-left: 0;
 	}
+
+	.cycle_recap .obs:first-child span.g {
+		border-top-left-radius: 2px;
+		border-bottom-left-radius: 2px;
+	}
+
+	.options,
+	h2 {
+		padding-left: 0;
+	}
+
+	.day {
+		padding-left: 0;
+	}
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -521,7 +576,7 @@ h2 {
 
 	.day .bebe,
 	.obs .bebe  {
-		border-color: #b6b6b6;
+		border-color: #dedede;
 	}
 
 
@@ -529,6 +584,7 @@ h2 {
 		color:#343434;
 	}
 
+	.day .ar,
 	.cycle_recap .obs span.vide {
 		border-color: #2f2600;
 		background-color: #241d00;
@@ -554,5 +610,11 @@ h2 {
 	.cycle_recap .obs span.pink {
 		background-color: #3c0006;
 		border-color: #3c0006;
+	}
+
+	.day .jcpas {
+		background-color: #001e3c;
+		border-color: #001123;
+		color: #dfefff;
 	}
 }
