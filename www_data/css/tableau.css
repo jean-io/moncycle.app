@@ -19,7 +19,7 @@
 .day span {
 	display: inline-block;
 	vertical-align: middle;
-	margin-right: 3px;
+	margin-right: 5px;
 }
 
 .day span:empty {
@@ -54,20 +54,25 @@
 	border-right: 1px solid black;
 	border-left: 1px solid black;
 	margin-right: 5px;
+	overflow: hidden;
 }
 
 .day:first-child .g {
-	border-top-left-radius: 3px;
-	border-top-right-radius: 3px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
 	border-top-width: 1px;
 	border-top-style: solid;
 }
 
 .day:last-child .g {
-	border-bottom-left-radius: 3px;
-	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 	border-bottom-width: 1px;
 	border-bottom-style: solid;
+}
+
+.day .u {
+	font-size: .9em;
 }
 
 .day .e {
@@ -82,7 +87,7 @@
 
 .day .p {
 	color: gray;
-	font-size: .85em;
+	font-size: .8em;
 	font-style: italic;
 }
 
@@ -126,34 +131,47 @@
 	color: #fbca0b;
 }
 
-.day .jcpas {
-	background-color: #edf6ff;
-	border-color: #cae4ff;
-	color: #5f8dbe;
+.day .jcpas,
+.obs .jcpas {
+	border-color: #c3e2ff;
+	background: repeating-linear-gradient(45deg, #edf6ff, #edf6ff 3px, #d3eaff 3px, #d3eaff 6px);
 	font-weight: bold;
 	font-family: "Montserrat";
+	font-size: .9em;
 }
 
-.day .ar {
-	border-color: #ffeda8;
-	background-color: #fff6d4;
+.obs .jcpas,
+.day .jcpas,
+.day .j_jcpas {
+	color: #366392;
+}
+
+.day .ar,
+.obs .vide {
+	border-color: #ffe88b;
+	background: repeating-linear-gradient(45deg, #fff6d4, #fff6d4 3px, #ffeda8 3px, #ffeda8 6px);
+}
+
+.day .ar,
+.day .j_ar {
+	color: #a39040;
 }
 
 .day .bebe {
 	border-color: #d2d2d2;
-	background-color: white;
+	background-color: #fbfbfb;
 }
 
 .obs .bebe  {
 	border-color: #e4e4e4;
-	background-color: #f6f5f5;
+	background-color: #fbfbfb;
 }
 
-.obs .jcpas {
+/* .obs .jcpas {
 	background-color: #00200e;
 	border-color: #00200e;
 	color: white;
-}
+} */
 
 .day .jesaispas {
 	border-style: dashed;
@@ -415,8 +433,6 @@ h2 {
 }
 
 .cycle_recap .obs span.jcpas {
-	color: white;
-	font-weight: bold;
 	padding: 0;
 	height: 10px;
 }
@@ -586,8 +602,13 @@ h2 {
 
 	.day .ar,
 	.cycle_recap .obs span.vide {
-		border-color: #2f2600;
-		background-color: #241d00;
+		border-color: #332900;
+		background: repeating-linear-gradient(45deg, #493b00, #493b00 3px, #332900 3px, #332900 6px);
+	}
+
+	.day .ar,
+	.day .j_ar {
+		color: #ffeda8;
 	}
 
 	.mini_ruler span {
@@ -596,6 +617,10 @@ h2 {
 	
 	.mini_ruler span.odd {
 		background-color: #292929;
+	}
+
+	.cycle_recap .obs span.g {
+		color: white;
 	}
 
 	.o_gross,
@@ -612,9 +637,14 @@ h2 {
 		border-color: #3c0006;
 	}
 
-	.day .jcpas {
-		background-color: #001e3c;
-		border-color: #001123;
+	.day .j_bebe {
+		color: #fbfbfb;
+	}
+
+	.day .jcpas,
+	.obs .jcpas {
+		border-color: #001e3c;
 		color: #dfefff;
+		background: repeating-linear-gradient(45deg, #00284f, #00284f 3px, #001e3c 3px, #001e3c 6px);
 	}
 }

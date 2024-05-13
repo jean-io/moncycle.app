@@ -538,6 +538,7 @@ moncycle_app = {
 		else {
 			if (j.jenesaispas) {
 				observation.append(`<span class='g jcpas'>${moncycle_app.text.je_sais_pas_emoji}</span>`);
+				pos.addClass("j_jcpas");
 				tbd = false;
 			}
 			else {
@@ -578,6 +579,7 @@ moncycle_app = {
 				observation.append(`<span class='g ar'>${moncycle_app.text.a_renseigner_emoji}</span>`);
 				observation.append(`<span class='s'></span>`);
 				observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
+				pos.addClass("j_ar");
 				return observation;
 			}
 			observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
