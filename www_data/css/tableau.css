@@ -149,7 +149,7 @@
 .day .ar,
 .obs .vide {
 	border-color: #ffe88b;
-	background: repeating-linear-gradient(45deg, #fff6d4, #fff6d4 3px, #ffeda8 3px, #ffeda8 6px);
+	background: repeating-linear-gradient(45deg, #fffae7, #fffae7 3px, #ffeda8 3px, #ffeda8 6px);
 }
 
 .day .ar,

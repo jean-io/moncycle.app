@@ -88,19 +88,19 @@
 					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_2" value="2" /><label for="fc_2"><b>2</b> humide sans lubrification</label><br />
 					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_2w" value="2W" /><label for="fc_2w"><b>2W</b> mouillé sans lubrification</label><br />
 					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_4" value="4" /><label for="fc_4"><b>4</b> brillant sans lubrification</label><br />
-					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_6" value="6" /><label for="fc_6"><b>6</b> peu élastique (0,5cm)</label><br />
-					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_8" value="8" /><label for="fc_8"><b>8</b> moyennement élastique (1-2cm)</label><br />
-					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_10" value="10" /><label for="fc_10"><b>10</b> très élastique (2,5cm ou +)</label><br />
 					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_10dl" value="10DL" /><label for="fc_10dl"><b>10DL</b> humide avec lubrification</label><br />
 					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_10sl" value="10SL" /><label for="fc_10sl"><b>10SL</b> brillant avec lubrification</label><br />
 					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_10wl" value="10WL" /><label for="fc_10wl"><b>10WL</b> mouillé avec lubrification</label><br />
-					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_sr" value="" checked /><label for="fc_sr">pas de sensation</label><br />
+					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_l" value="L" /><label for="fc_l"><b>L</b> lubrifiant</label><br />
+					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_sr" value="" checked /><label for="fc_sr">pas de lubrification</label><br />
 					<br />
 					<span class="categorie pas_temp">&#x1F90F; Test au doigt:</span><br />
+					<input class="fc_obs fc_form_note" type="checkbox" name="fc_c" id="fc_6" value="6" /><label for="fc_6"><b>6</b> peu élastique (0,5cm)</label><br />
+					<input class="fc_obs fc_form_note" type="checkbox" name="fc_c" id="fc_8" value="8" /><label for="fc_8"><b>8</b> moyennement élastique (1-2cm)</label><br />
+					<input class="fc_obs fc_form_note" type="checkbox" name="fc_c" id="fc_10" value="10" /><label for="fc_10"><b>10</b> très élastique (2,5cm ou +)</label><br />
 					<input class="fc_obs fc_form_note" type="checkbox" name="fc_c" id="fc_c" value="C" /><label for="fc_c"><b>C</b> opaque (blanc)</label><br />
 					<input class="fc_obs fc_form_note" type="checkbox" name="fc_g" id="fc_g" value="G" /><label for="fc_g"><b>G</b> gommeux (collant)</label><br />
 					<input class="fc_obs fc_form_note" type="checkbox" name="fc_k" id="fc_k" value="K" /><label for="fc_k"><b>K</b> transparent</label><br />
-					<input class="fc_obs fc_form_note" type="checkbox" name="fc_l" id="fc_l" value="L" /><label for="fc_l"><b>L</b> lubrifiant</label><br />
 					<input class="fc_obs fc_form_note" type="checkbox" name="fc_p" id="fc_p" value="P" /><label for="fc_p"><b>P</b> pâteux (crémeux)</label><br />
 					<input class="fc_obs fc_form_note" type="checkbox" name="fc_y" id="fc_y" value="Y" /><label for="fc_y"><b>Y</b> jaune (même jaune pâle)</label><br />
 					<input class="fc_obs fc_form_note" type="checkbox" name="fc_r" id="fc_r" value="R" /><label for="fc_r"><b>R</b> rouge</label><br />
