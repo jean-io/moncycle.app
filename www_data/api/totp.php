@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		}
 	}
 	else {
-		$ret["msg"] = "code temporaire non renseigné";
+		$ret["msg"] = "le code temporaire n'est pas renseigné";
 	}
 }
 
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 		}
 	}
 	else {
-		$ret["msg"] = "code temporaire non renseigné";
+		$ret["msg"] = "le code temporaire n'est pas renseigné";
 	}
 }
 

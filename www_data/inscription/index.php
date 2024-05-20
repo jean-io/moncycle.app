@@ -27,7 +27,7 @@ $db = db_open();
 $compte = sec_auth_jetton($db);
 if (!is_null($compte) && $compte["no_compte"]!=2 && $compte["no_compte"]!=3) {
 	header('Location: /');
-	echo "Déja connecté, redirection.";
+	echo "Déjà connecté, redirection.";
 	exit;
 }
 
@@ -94,7 +94,7 @@ try {
 
 			db_insert_compte($db, $_POST["prenom"], $methode, $_POST["age"], $_POST["email1"],$pass_hash, $_POST["decouvert"] ?? null, $_POST["recherche"] ?? 0);
 
-			$succes = "Félicitation <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par e-mail à l'addresse <b>{$_POST["email1"]}</b>";
+			$succes = "Félicitations <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par e-mail à l'addresse <b>{$_POST["email1"]}</b>";
 
 			$mail = mail_init();
 			$mail->addAddress($_POST["email1"], $_POST["email1"]);

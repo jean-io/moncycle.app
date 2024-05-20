@@ -28,13 +28,13 @@ Pour Docker, il faudra installer manuellement la base de donnée. Le fichier SQL
 
 ### Prérequis système
 
-L'appli a été tésté sur **PHP 8.3** et **MariaDB 11.1.3**.
+L'appli a été testée sous **PHP 8.3** et **MariaDB 11.1.3**.
 
 ### Sécurité
 
-Le répertoire `www-data/script` doit être protégé et ne doit pas être accèssible publiquement.
+Le répertoire `www-data/script` doit être protégé et ne doit pas être accessible publiquement.
 
-Le script `www-data/script/cron.php` a pour fonction de supprimer les jetons de sessions expiré, il est donc imporant pour des raisons de sécurité de bien l'executer **une fois par jour**. La fréquence d'une fois par jour est importante, plus d'une fois par jours, des mails pourraient être expédié en doublon. Moins d'une fois par jours des jetons expirés seraient supprimé trop tardivement et envoient de mails seraient manquant.
+Le script `www-data/script/cron.php` a pour fonction de supprimer les jetons de session expirés, il est donc important pour des raisons de sécurité de bien l'executer **une fois par jour**. La fréquence d'une fois par jour est importante: plus d'une fois par jours, des mails pourraient être expédiés en doublon. Moins d'une fois par jours, des jetons expirés seraient supprimé trop tardivement et des envois de mails seraient manquants.
 
 ### Variables Docker
 
@@ -57,4 +57,4 @@ Le script `www-data/script/cron.php` a pour fonction de supprimer les jetons de 
 |PHP_SHOW_ERR | show php errors in browser, default `Off` |
 |PHP_SECURE_COOKIES | allow cookie set up only in HTTPS, default `On` |
 
-Pour le devellopement de l'application, pensez à desactiver le cache, à afficher les erreurs PHP et à desactiver la securité sur les cookies.
+Pour le developpement de l'application, pensez à désactiver le cache, à afficher les erreurs PHP et à désactiver la securité sur les cookies.
