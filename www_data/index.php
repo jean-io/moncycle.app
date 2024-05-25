@@ -83,7 +83,7 @@
 					<input class="fc_form_note" type="radio" name="fc_regles" id="fc_nr" value="" checked /><label for="fc_nr">pas de flux</label><br />
 					<input class="fc_form_note" type="checkbox" name="fc_regles_b" id="fc_b" value="B" /><label for="fc_b"><b>B</b> saignement brun (ou noir)</label><br />
 					<br />
-					<span class="categorie pas_temp">&#x1F441;&#xFE0F; Sensation & observation:</span><br />
+					<span class="categorie pas_temp">&#x1F441;&#xFE0F; Sensations & observations:</span><br />
 					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_0" value="0" /><label for="fc_0"><b>0</b> sec</label><br />
 					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_2" value="2" /><label for="fc_2"><b>2</b> humide sans lubrification</label><br />
 					<input class="fc_form_note" type="radio" name="fc_sens" id="fc_2w" value="2W" /><label for="fc_2w"><b>2W</b> mouillé sans lubrification</label><br />
@@ -106,16 +106,16 @@
 					<input class="fc_obs fc_form_note" type="checkbox" name="fc_r" id="fc_r" value="R" /><label for="fc_r"><b>R</b> rouge</label><br />
 					<br />
 					<span class="categorie pas_temp">&#x1F522; Récurrence de l'observation:</span><br />
-					<input class="fc_form_note" type="radio" name="fc_rec" id="fc_x1" value="X1" /><label for="fc_x1"><b>X1</b> vu seulement une fois ce jour</label><br />
-					<input class="fc_form_note" type="radio" name="fc_rec" id="fc_x2" value="X2" /><label for="fc_x2"><b>X2</b> vu deux fois ce jour</label><br />
-					<input class="fc_form_note" type="radio" name="fc_rec" id="fc_x3" value="X3" /><label for="fc_x3"><b>X3</b> vu trois fois ce jour</label><br />
-					<input class="fc_form_note" type="radio" name="fc_rec" id="fc_ad" value="AD" /><label for="fc_ad"><b>AD</b> vu toute la journée</label><br />
+					<input class="fc_form_note" type="radio" name="fc_rec" id="fc_x1" value="X1" /><label for="fc_x1"><b>X1</b> vue seulement une fois ce jour</label><br />
+					<input class="fc_form_note" type="radio" name="fc_rec" id="fc_x2" value="X2" /><label for="fc_x2"><b>X2</b> vue deux fois ce jour</label><br />
+					<input class="fc_form_note" type="radio" name="fc_rec" id="fc_x3" value="X3" /><label for="fc_x3"><b>X3</b> vue trois fois ce jour</label><br />
+					<input class="fc_form_note" type="radio" name="fc_rec" id="fc_ad" value="AD" /><label for="fc_ad"><b>AD</b> vue toute la journée</label><br />
 					<input class="fc_form_note" type="radio" name="fc_rec" id="fc_rr" value="" checked /><label for="fc_rr">pas de récurrence</label><br />
 					<br />
 					<span class="categorie pas_temp">&#x1F974; Douleur:</span><br />
-					<input class="fc_form_note" type="radio" name="fc_dou" id="fc_ap" value="AP" /><label for="fc_ap"><b>AP</b> douleur abdominal</label><br />
-					<input class="fc_form_note" type="radio" name="fc_dou" id="fc_rap" value="RAP" /><label for="fc_rap"><b>RAP</b> douleur abdominal à droite</label><br />
-					<input class="fc_form_note" type="radio" name="fc_dou" id="fc_lap" value="LAP" /><label for="fc_lap"><b>LAP</b> douleur abdominal à gauche</label><br />
+					<input class="fc_form_note" type="radio" name="fc_dou" id="fc_ap" value="AP" /><label for="fc_ap"><b>AP</b> douleur abdominale</label><br />
+					<input class="fc_form_note" type="radio" name="fc_dou" id="fc_rap" value="RAP" /><label for="fc_rap"><b>RAP</b> douleur abdominale à droite</label><br />
+					<input class="fc_form_note" type="radio" name="fc_dou" id="fc_lap" value="LAP" /><label for="fc_lap"><b>LAP</b> douleur abdominale à gauche</label><br />
 					<input class="fc_form_note" type="radio" name="fc_dou" id="fc_rp" value="" checked /><label for="fc_rp">pas de douleur</label><br />
 					<br />
 					<span class="categorie">Flèche:</span><br />
@@ -132,14 +132,14 @@
 					<br />
 				</div>
 				<div class="pas_fc pas_fc_temp">
-					<span class="categorie">Vos sensations et visuels:</span><br />
+					<span class="categorie">Vos sensations & observations:</span><br />
 					<span id="vos_obs"></span>
-					<input type="text" name="ob_extra" id="ob_extra" autocapitalize="off" style="width: 95%" placeholder="autres sensations/visuels (séparées par une virgule)"/><br />
-					<p class="pas_fc note">Séparez vos sensations/visuels par des virgules afin qu'ils vous soient proposés ultérieurement.</p>
+					<input type="text" name="ob_extra" id="ob_extra" autocapitalize="off" style="width: 95%" placeholder="autres sensations & observations (séparées par une virgule)"/><br />
+					<p class="pas_fc note">Séparez vos sensations & observations par des virgules afin qu'elles vous soient proposées ultérieurement.</p>
 					<br />
 				</div>
 				<div>
-					<span class="categorie">Evénements:</span><br />
+					<span class="categorie">Évènements:</span><br />
 					<input type="checkbox" name="premier_jour" id="ev_premier_jour" class="ev_reload" value="1" /><label for="ev_premier_jour">📆 nouveau cycle à cette date</label><br />
 					<input type="checkbox" name="union_sex" id="ev_union" value="1" /><label for="ev_union">❤️ union</label><br />
 					<input type="checkbox" name="jour_sommet" id="ev_jour_sommet" value="1" /><label for="ev_jour_sommet">⛰️ <span class="pas_fc pas_fc_temp">jour sommet</span><span class="pas_bill pas_bill_temp">PIC</span></label><br />

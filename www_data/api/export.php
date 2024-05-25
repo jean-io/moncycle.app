@@ -46,7 +46,7 @@ else {
 // VERIFICATION D'ANTERIORITE
 if (new DateTime($result["start_date"]) >= new DateTime($result["end_date"])) {
 	http_response_code(400);
-	print("ERREUR: la 'start_date' doit être antérieur à la 'end_date'.");
+	print("ERREUR: la 'start_date' doit être antérieure à la 'end_date'.");
 	exit;
 }
 
