@@ -27,7 +27,8 @@ moncycle_app = {
 		grossesse_court: "🤰",
 		a_renseigner : "à renseigner",
 		a_renseigner_emoji : "👋",
-		chargement : "⏳ chargement",
+		chargement : "chargement...",
+		chargement_emoji : "⏳",
 		a_aujourdhui : "à auj.",
 		union : "❤️",
 		sommet_bill : "⛰️",
@@ -525,6 +526,7 @@ moncycle_app = {
 		let pos = $(`<span class='j'>${j.pos}</span>`);
 		observation.append(pos);
 		if (j.chargement) {
+			observation.append(`<span class='g g_loading'>${moncycle_app.text.chargement_emoji}</span>`);
 			observation.append(`<span class='l'>${moncycle_app.text.chargement}</span>`);
 			return observation;
 		}

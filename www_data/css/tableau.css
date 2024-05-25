@@ -39,7 +39,7 @@
 .day .j {
 	color: gray;
 	font-family: monospace;
-	text-align: center;
+	text-align: right;
 	width: 20px;
 	height: 25px;
 	line-height: 25px;
@@ -157,6 +157,11 @@
 	color: #a39040;
 }
 
+.day .g_loading {
+	border-color: #eaeaea;
+	background: repeating-linear-gradient(45deg, #ffffff, #ffffff 3px, #eaeaea 3px, #eaeaea 6px);
+}
+
 .day .bebe {
 	border-color: #d2d2d2;
 	background-color: #fbfbfb;
@@ -199,16 +204,25 @@
 
 .day .n,
 .obs .n,
-.day .j_vert {
+.day .j_vert,
+.popup label.green {
 	color: #1e824c;
 }
 
-.day .j_rouge {
+.day .j_rouge,
+.popup label.red {
 	color: #ac2433;
 }
 
-.day .j_jaune {
+.day .j_jaune,
+.popup label.yellow {
 	color: #fbca0b;
+}
+
+.popup label.yellow,
+.popup label.red,
+.popup label.green {
+	font-weight: bold;
 }
 
 .day .s,
@@ -301,6 +315,7 @@
 
 .categorie {
 	font-size: 1.1em;
+	font-weight: bold;
 }
 
 .err {
@@ -492,6 +507,8 @@ h2 {
 #ev_compteur_nb {
 	text-align: center;
 	width: 35px;
+	padding-top: 0;
+	padding-bottom: 0;
 }
 
 .o_gross,
@@ -576,6 +593,10 @@ h2 {
 		padding-left: 0;
 	}
 
+	.nouveau_cycle_form {
+		margin-left: 0;	
+	}
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -646,5 +667,10 @@ h2 {
 		border-color: #001e3c;
 		color: #dfefff;
 		background: repeating-linear-gradient(45deg, #00284f, #00284f 3px, #001e3c 3px, #001e3c 6px);
+	}
+
+	.day .g_loading {
+		border-color: #2c2c2c;
+		background: repeating-linear-gradient(45deg, #000000, #000000 3px, #2c2c2c 3px, #2c2c2c 6px);
 	}
 }

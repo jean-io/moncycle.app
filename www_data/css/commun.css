@@ -68,6 +68,10 @@ a {
 	background-color: white;
 }
 
+.popup label {
+	margin-left: 5px;
+}
+
 #nom {
 	font-family: 'Montserrat';
 	font-weight: lighter;
