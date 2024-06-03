@@ -88,7 +88,9 @@ moncycle_app = {
 		$("#jour_form_submit").click(moncycle_app.submit_menu);
 		$("#jour_form_next").click(moncycle_app.open_menu);
 		$("#jour_form_prev").click(moncycle_app.open_menu);
-		$("#jour_form input, #jour_form textarea").on("change", moncycle_app.submit_menu);
+		$("#bulk_but_submit_compter").click(moncycle_app.bulk_submit_menu);
+		$("#jour_form_bulk_but").click(moncycle_app.bulk_show_hide);
+		$("#jour_form #form_data input, #jour_form textarea").on("change", moncycle_app.submit_menu);
 		$("#form_fc").on("keyup", moncycle_app.fc_note2form);
 		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
 		$("#but_mini_maxi").click(moncycle_app.mini_maxi_switch);
@@ -138,6 +140,10 @@ moncycle_app = {
 		if (moncycle_app.cycle_curseur == 0) moncycle_app.remplir_page_de_cycle();
 		if (moncycle_app.timeline_asc && $(document).height()<=$(window).height()) moncycle_app.remplir_page_de_cycle();
 	},
+	bulk_show_hide : function () {
+		if ($("#bulk_form").is(":hidden")) $("#bulk_form").show();
+		else $("#bulk_form").hide();
+	},
 	remplir_page_de_cycle : function() {
 		if (!moncycle_app.constante || !moncycle_app.constante.tous_les_cycles) return;
 		if (moncycle_app.timeline_asc) {
@@ -167,6 +173,7 @@ moncycle_app = {
 			});
 		});	
 	},
+	loading_observation : {date_obs: "", pos: 0, chargement: true, temperature: NaN, cycle: ""},
 	charger_cycle : function() {
 		if (moncycle_app.cycle_curseur >= moncycle_app.constante.tous_les_cycles.length) {
 			moncycle_app.form_nouveau_cycle();
@@ -217,7 +224,12 @@ moncycle_app = {
 			let date_obs_str = moncycle_app.date.str(date_obs);
 			let data = null;
 			if (sotred_obs[date_obs_str]) data = sotred_obs[date_obs_str];
-			else data = {date_obs: date_obs_str, pos: pas+1, chargement: true, temperature: NaN, cycle: date_cycle_str};
+			else {
+				data = moncycle_app.loading_observation;
+				data["date_obs"] = date_obs_str;
+				data["pos"] = pas+1;
+				data["cycle"] = date_cycle_str;
+			}
 			dates_data_holder[date_obs_str] = data;
 			moncycle_app.observation[date_obs_str] = data;
 			if (moncycle_app.timeline_asc) $(`#c-${date_cycle_str} .contenu`).prepend(moncycle_app.observation2timeline(data));
@@ -633,7 +645,7 @@ moncycle_app = {
 			$("#jour_form_prev").show();
 		}
 		else $("#jour_form_prev").hide();
-		$("#jour_form")[0].reset();
+		$("#jour_form #form_data")[0].reset();
 		$("#fc_msg").empty();
 		$("#jour_form_saving").hide();
 		$("#jour_form_saved").hide();
@@ -708,6 +720,7 @@ moncycle_app = {
 		});
 		$("#timeline").removeClass("flou");
 		$("#recap").removeClass("flou");
+		$("#bulk_form").hide();
 		$("#jour_form").hide();
 		moncycle_app.menu_opened_date = null;
 		if (moncycle_app.page_a_recharger) {
@@ -719,7 +732,6 @@ moncycle_app = {
 	submit_menu : function () {
 		$("#jour_form_saving").show();
 		$("#jour_form_saved").hide();
-		let o_data = moncycle_app.menu_opened_date;
 		if (this.id == "form_fc") moncycle_app.fc_note2form();
 		else moncycle_app.fc_form2note();
 		moncycle_app.fc_test_note();
@@ -732,7 +744,13 @@ moncycle_app = {
 			moncycle_app.sensation[o] += 1;
 		});
 		localStorage.sensation = JSON.stringify(moncycle_app.sensation);
-		let d = $("#jour_form").serializeArray();
+		let d = $("#jour_form #form_data").serializeArray();
+		if (moncycle_app.menu_opened_date != null) {
+			let j = 0;
+			while (j<d.length && d[j]["name"]!="date") j += 1;
+			if (j == d.length) d.push({"date" : moncycle_app.menu_opened_date});
+			else d[j]["value"] = moncycle_app.menu_opened_date;
+		}
 		$.post("api/observation", $.param(d)).done(function(data){
 			$("#jour_form_saving").hide();
 			if (data.err){
@@ -749,6 +767,34 @@ moncycle_app = {
 			$("#form_err").val(ret.responseText);
 			moncycle_app.redirection_connexion(ret);
 		});
+	},
+	bulk_submit_menu : function () {
+		let nb_of_days = $("#i_bulk_compter").val();
+		if (nb_of_days > 365) {
+			alert("Le nombre de jours doit être inférieur à 365.");
+			return;
+		}
+		let menu_current_date = moncycle_app.menu_opened_date;
+		let menu_current_1st_day = $("#ev_premier_jour").is(':checked');
+		let date_cursor = moncycle_app.date.parse(menu_current_date);
+		let j = 1;
+		while (j <= nb_of_days && moncycle_app.menu_opened_date!=moncycle_app.observation[menu_current_date]["cycle"]) {
+			date_cursor.setDate(date_cursor.getDate()-1);
+			moncycle_app.menu_opened_date = moncycle_app.date.str(date_cursor);
+			if (moncycle_app.menu_opened_date==moncycle_app.observation[menu_current_date]["cycle"]) $("#ev_premier_jour").prop('checked', true);
+			else $("#ev_premier_jour").prop('checked', false);
+			console.log(date_cursor);
+			let laoding_obs = moncycle_app.loading_observation;
+			laoding_obs["date_obs"] = moncycle_app.menu_opened_date;
+			laoding_obs["pos"] = moncycle_app.observation[menu_current_date]["pos"]-j;
+			laoding_obs["cycle"] = moncycle_app.observation[menu_current_date]["cycle"];
+			console.log(laoding_obs);
+			$(`#o-${moncycle_app.menu_opened_date}`).replaceWith(moncycle_app.observation2timeline(laoding_obs));
+			moncycle_app.submit_menu();
+			j += 1;
+		}
+		moncycle_app.menu_opened_date = menu_current_date;
+		if (menu_current_1st_day) $("#ev_premier_jour").prop('checked', true);
 	},
 	suppr_observation : function () {
 		let date = moncycle_app.date.parse($("#form_date").val());

@@ -236,3 +236,7 @@ textarea:disabled {
 	}
 
 }
+
+label {
+	cursor: pointer;
+}
