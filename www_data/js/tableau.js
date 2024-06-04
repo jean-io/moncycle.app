@@ -210,10 +210,6 @@ moncycle_app = {
 			$("#timeline").prepend(moncycle_app.cycle2timeline(date_cycle_str, nb_jours, date_fin));
 			$("#recap").prepend(moncycle_app.cycle2recap(date_cycle_str, nb_jours, date_fin));
 		}
-		if (JSON.parse(localStorage.cycle_cache || "[]").includes(date_cycle_str)) moncycle_app.cycle_aff_switch(date_cycle_str);
-		$(`#c-${date_cycle_str} .aff_masquer_cycle`).click(function () {
-			moncycle_app.cycle_aff_switch($(this).attr("for"));
-		});
 		let dates_req = [];
 		let dates_data_holder = {};
 		let sotred_obs = {}
@@ -279,7 +275,7 @@ moncycle_app = {
 		}
 		let text = "Entrer la date du premier jour du cycle à créer.";
 		if (!prepend) text = "Entrer la date du jour de reprise du suivi du cycle.";
-		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="titre">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">${text}<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" min="${min_date}" /> <input type="button" id="but_creer_cycle" value="✔️" /></div></div>`;	
+		let html = `<div class="cycle" id="nouveau_cycle"><h2 class="title">Créer un nouveau cycle</h2><div class="nouveau_cycle_form">${text}<br><input id="nouveau_cycle_date" type="date" value="${max_date}" max="${max_date}" min="${min_date}" /> <input type="button" id="but_creer_cycle" value="✔️" /></div></div>`;	
 		let nocycle = `<div id="nocycle">Tous les cycles sont affichées.</div>`;
 		if (moncycle_app.cycle_curseur == 0) nocycle = `<div id="nocycle">Dans la page MAXI vous avez la possibilité de créer un nouveau cycle.</div>`;
 		if (prepend && !moncycle_app.timeline_asc) {
@@ -363,24 +359,22 @@ moncycle_app = {
 			}
 		});
 	},
-	cycle_aff_switch: function (id) {
-		let cache = JSON.parse(localStorage.cycle_cache || "[]");
-		if ($("#contenu-c-" + id).attr("o_hidden")=="yes") {
-			$("#contenu-c-" + id).show();
-			if(parseInt($("#graph-c-" + id).attr("vide"))!=1 && (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4)) $("#graph-c-" + id).show();
-			$("#but-contenu-c-" + id).html("👀 Masquer");
-			if (cache.includes(id)) cache.splice(cache.indexOf(id) , 1);
-			$("#contenu-c-" + id).attr("o_hidden", "no");
+	cycle_option : function (c_date_str, c_date_fin_str) {
+		let c_action = $(`<div class='cycle_options c_options_${c_date_str}' style='display:none'></div>`);
+		c_action.append(`<a href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=pdf'><button>&#x1F4C4; export PDF</button></a> `);
+		c_action.append(`<a href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=csv'><button>&#x1F522; export CSV</button></a>`);
+		return c_action;
+	},
+	cycle_title_click : function () {
+		let c = $(this).attr("for");
+		$(".cycle_options").hide();
+		$(".mini_ruler").hide();
+		if (!parseInt($(this).attr("active"))) {
+			$("#ruler_" + c).show();
+			$(`.c_options_${c}`).show();
+			$(`.title_${c}`).attr("active", 1);
 		}
-		else {
-			$("#contenu-c-" + id).hide();
-			$("#graph-c-" + id).hide();
-			$("#but-contenu-c-" + id).html("👀 Afficher");
-			if (!cache.includes(id)) cache.push(id);
-			$("#contenu-c-" + id).attr("o_hidden", "yes");
-		}
-		localStorage.cycle_cache = JSON.stringify(cache);
-		if (moncycle_app.timeline_asc) moncycle_app.remplir_page_de_cycle();
+		else $(`.title_${c}`).attr("active", 0);
 	},
 	cycle2timeline : function (c, nb, fin) {
 		let c_id = "c-" + c;
@@ -388,12 +382,12 @@ moncycle_app = {
 		let c_date = moncycle_app.date.parse(c);
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${moncycle_app.text.mois[c_fin.getMonth()]} `;
-		let c_title = $(`<h2 class='titre'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
-		let c_action = $(`<div class='options'><button class='aff_masquer_cycle' for='${c}' id='but-contenu-${c_id}'>&#x1F440; Masquer</button> <a href='api/export?start_date=${moncycle_app.date.str(c_date)}&end_date=${moncycle_app.date.str(fin)}&type=pdf'><button>&#x1F4C4; export PDF</button></a> <a href='api/export?start_date=${moncycle_app.date.str(c_date)}&end_date=${moncycle_app.date.str(fin)}&type=csv'><button>&#x1F522; export CSV</button></a></div>`);
+		let c_title = $(`<h2 class='title title_${c}' for='${c}'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]} <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span>j</h2>`);
 		let c_graph = $(`<div class='graph pas_bill pas_fc' id='graph-${c_id}' style='display:none' ><canvas id='canvas-${c_id}'></canvas></div>`);
 		let c_content = $(`<div class='contenu' id='contenu-${c_id}'></div>`);
+		c_title.click(moncycle_app.cycle_title_click);
 		cycle.append(c_title);
-		cycle.append(c_action);
+		cycle.append(moncycle_app.cycle_option(c, fin));
 		cycle.append(c_graph);
 		cycle.append(c_content);
 		return cycle;
@@ -404,13 +398,10 @@ moncycle_app = {
 		let c_date = moncycle_app.date.parse(c);
 		let c_fin = new Date(fin);
 		let c_fin_text = `au ${c_fin.getDate()} ${moncycle_app.text.mois[c_fin.getMonth()]}. `;
-		let c_title = $(`<h5 class='titre'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]}. <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span> jours</h5>`);
-		c_title.click(() => {
-			let aff_ruller = $("#ruler_" + c).is(":hidden");
-			$(".mini_ruler").hide();
-			if (aff_ruller) $("#ruler_" + c).show();
-		});
+		let c_title = $(`<h5 class='title title_${c}' for='${c}'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]}. <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span> jours</h5>`);
+		c_title.click(moncycle_app.cycle_title_click);
 		cycle.append(c_title);
+		cycle.append(moncycle_app.cycle_option(c, fin));
 		let c_ruler = $("<div>", {id: "ruler_" + c, class: "mini_ruler", style: "display:none"});
 		let odd = true;
 		for (let n=1; n<=35; n++) {

@@ -340,12 +340,16 @@ h2 {
 	margin-top: 30px;
 	padding: 5px 10px;
 	z-index: 100000;
+	cursor: pointer;
 }
 
-.options {
+.cycle_options {
+	padding: 3px;
 	padding-left: 10px;
-	padding-bottom: 10px;
-	padding-top: 3px;
+}
+
+.cycle_options button {
+	font-size: .6em;
 }
 
 .nouveau_cycle_form {
@@ -596,7 +600,7 @@ h2 {
 		border-bottom-left-radius: 2px;
 	}
 
-	.options,
+	.cycle_options,
 	h2 {
 		padding-left: 0;
 	}
