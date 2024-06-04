@@ -467,6 +467,16 @@ moncycle_app = {
 		let o_class = "obs";
 		if (j.grossesse) o_class += " o_gross";
 		let observation = $("<div>", {id: o_id, class: o_class, date: moncycle_app.date.str(o_date)});
+		if (j.chargement) {
+			observation.append(`<span class='s'></span>`);
+			observation.append(`<span class='g g_loading'>${moncycle_app.text.chargement_emoji}</span>`);
+			observation.append(`<span class='c'></span>`);
+			if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) {
+				observation.append(`<span class='fc'></span>`);
+				observation.append(`<span class='fc'></span>`);
+			}
+			return observation;
+		}
 		observation.click(moncycle_app.open_menu);
 		let color = "vide";
 		let index_couleur = j.gommette;
@@ -533,7 +543,6 @@ moncycle_app = {
 		else o_class += " o_bill";
 		if (j.grossesse) o_class += " o_gross";
 		let observation = $("<div>", {id: o_id, class: o_class, date : moncycle_app.date.str(o_date)});
-		observation.click(moncycle_app.open_menu);
 		observation.append(`<span class='d'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);
 		let pos = $(`<span class='j'>${j.pos}</span>`);
 		observation.append(pos);
@@ -542,6 +551,7 @@ moncycle_app = {
 			observation.append(`<span class='l'>${moncycle_app.text.chargement}</span>`);
 			return observation;
 		}
+		observation.click(moncycle_app.open_menu);
 		let tbd = true;
 		if (j.grossesse) {
 			observation.append(`<span class='e'>${moncycle_app.text.grossesse}</span>`);
@@ -790,6 +800,7 @@ moncycle_app = {
 			laoding_obs["cycle"] = moncycle_app.observation[menu_current_date]["cycle"];
 			console.log(laoding_obs);
 			$(`#o-${moncycle_app.menu_opened_date}`).replaceWith(moncycle_app.observation2timeline(laoding_obs));
+			$(`#ro-${moncycle_app.menu_opened_date}`).replaceWith(moncycle_app.observation2recap(laoding_obs));
 			moncycle_app.submit_menu();
 			j += 1;
 		}

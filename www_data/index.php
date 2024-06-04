@@ -80,7 +80,7 @@
 						<span class="categorie pas_temp">Note FertilityCare:</span> <span id="fc_msg"></span><br />
 						<input type="text" autocapitalize="characters" name="note_fc" id="form_fc" style="width: 95%" placeholder="note FC" /><br />	
 						<br />
-						<span class="categorie pas_temp">&#x1FA78; Saignement:</span><br />
+						<span class="categorie pas_temp">Saignement:</span><br />
 						<input class="fc_form_note" type="radio" name="fc_regles" id="fc_h" value="H" /><label for="fc_h"><b>H</b> flux abondant</label><br />
 						<input class="fc_form_note" type="radio" name="fc_regles" id="fc_m" value="M" /><label for="fc_m"><b>M</b> flux modéré</label><br />
 						<input class="fc_form_note" type="radio" name="fc_regles" id="fc_rl" value="L" /><label for="fc_rl"><b>L</b> flux léger</label><br />
@@ -89,7 +89,7 @@
 						<input class="fc_form_note" type="radio" name="fc_regles" id="fc_nr" value="" checked /><label for="fc_nr">pas de flux</label><br />
 						<input class="fc_form_note" type="checkbox" name="fc_regles_b" id="fc_b" value="B" /><label for="fc_b"><b>B</b> saignement brun (ou noir)</label><br />
 						<br />
-						<span class="categorie pas_temp">&#x1F441;&#xFE0F; Sensations & observations:</span><br />
+						<span class="categorie pas_temp">Sensations & observations:</span><br />
 						<input class="fc_form_note" type="radio" name="fc_sens" id="fc_0" value="0" /><label for="fc_0"><b>0</b> sec</label><br />
 						<input class="fc_form_note" type="radio" name="fc_sens" id="fc_2" value="2" /><label for="fc_2"><b>2</b> humide sans lubrification</label><br />
 						<input class="fc_form_note" type="radio" name="fc_sens" id="fc_2w" value="2W" /><label for="fc_2w"><b>2W</b> mouillé sans lubrification</label><br />
@@ -100,7 +100,7 @@
 						<input class="fc_form_note" type="radio" name="fc_sens" id="fc_l" value="L" /><label for="fc_l"><b>L</b> lubrifiant</label><br />
 						<input class="fc_form_note" type="radio" name="fc_sens" id="fc_sr" value="" checked /><label for="fc_sr">pas de lubrification</label><br />
 						<br />
-						<span class="categorie pas_temp">&#x1F90F; Test au doigt:</span><br />
+						<span class="categorie pas_temp">Test au doigt:</span><br />
 						<input class="fc_obs fc_form_note" type="checkbox" name="fc_c" id="fc_6" value="6" /><label for="fc_6"><b>6</b> peu élastique (0,5cm)</label><br />
 						<input class="fc_obs fc_form_note" type="checkbox" name="fc_c" id="fc_8" value="8" /><label for="fc_8"><b>8</b> moyennement élastique (1-2cm)</label><br />
 						<input class="fc_obs fc_form_note" type="checkbox" name="fc_c" id="fc_10" value="10" /><label for="fc_10"><b>10</b> très élastique (2,5cm ou +)</label><br />
@@ -111,14 +111,14 @@
 						<input class="fc_obs fc_form_note" type="checkbox" name="fc_y" id="fc_y" value="Y" /><label for="fc_y"><b>Y</b> jaune (même jaune pâle)</label><br />
 						<input class="fc_obs fc_form_note" type="checkbox" name="fc_r" id="fc_r" value="R" /><label for="fc_r"><b>R</b> rouge</label><br />
 						<br />
-						<span class="categorie pas_temp">&#x1F522; Récurrence de l'observation:</span><br />
+						<span class="categorie pas_temp">Récurrence de l'observation:</span><br />
 						<input class="fc_form_note" type="radio" name="fc_rec" id="fc_x1" value="X1" /><label for="fc_x1"><b>X1</b> vue seulement une fois ce jour</label><br />
 						<input class="fc_form_note" type="radio" name="fc_rec" id="fc_x2" value="X2" /><label for="fc_x2"><b>X2</b> vue deux fois ce jour</label><br />
 						<input class="fc_form_note" type="radio" name="fc_rec" id="fc_x3" value="X3" /><label for="fc_x3"><b>X3</b> vue trois fois ce jour</label><br />
 						<input class="fc_form_note" type="radio" name="fc_rec" id="fc_ad" value="AD" /><label for="fc_ad"><b>AD</b> vue toute la journée</label><br />
 						<input class="fc_form_note" type="radio" name="fc_rec" id="fc_rr" value="" checked /><label for="fc_rr">pas de récurrence</label><br />
 						<br />
-						<span class="categorie pas_temp">&#x1F974; Douleur:</span><br />
+						<span class="categorie pas_temp">Douleur:</span><br />
 						<input class="fc_form_note" type="radio" name="fc_dou" id="fc_ap" value="AP" /><label for="fc_ap"><b>AP</b> douleur abdominale</label><br />
 						<input class="fc_form_note" type="radio" name="fc_dou" id="fc_rap" value="RAP" /><label for="fc_rap"><b>RAP</b> douleur abdominale à droite</label><br />
 						<input class="fc_form_note" type="radio" name="fc_dou" id="fc_lap" value="LAP" /><label for="fc_lap"><b>LAP</b> douleur abdominale à gauche</label><br />

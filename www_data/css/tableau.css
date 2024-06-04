@@ -157,9 +157,10 @@
 	color: #a39040;
 }
 
-.day .g_loading {
-	border-color: #eaeaea;
-	background: repeating-linear-gradient(45deg, #ffffff, #ffffff 3px, #eaeaea 3px, #eaeaea 6px);
+.day .g_loading,
+.obs .g_loading {
+	border-color: #f1f1f1;
+	background-color: #f1f1f1;
 }
 
 .day .bebe {
@@ -325,7 +326,6 @@
 }
 
 .categorie {
-	font-size: 1.1em;
 	font-weight: bold;
 }
 
@@ -497,6 +497,7 @@ h2 {
 	font-weight: normal;
 	font-family: 'Montserrat';
 	font-size: 13px;
+	cursor: pointer;
 }
 
 #nocycle {
@@ -680,9 +681,10 @@ h2 {
 		background: repeating-linear-gradient(45deg, #00284f, #00284f 3px, #001e3c 3px, #001e3c 6px);
 	}
 
-	.day .g_loading {
+	.day .g_loading,
+	.obs .g_loading {
 		border-color: #2c2c2c;
-		background: repeating-linear-gradient(45deg, #000000, #000000 3px, #2c2c2c 3px, #2c2c2c 6px);
+		background-color: #2c2c2c;
 	}
 
 	#jour_form #bulk_form {
