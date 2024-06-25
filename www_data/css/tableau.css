@@ -585,6 +585,12 @@ h2 {
 	background-color: #d2d2d2;
 }
 
+.label_anonymous_export {
+	font-size: .8em;
+	vertical-align: middle;
+	color: gray;
+}
+
 @media (min-width: 601px) {
 
 	.o_gross {

@@ -359,22 +359,25 @@ moncycle_app = {
 			}
 		});
 	},
-	cycle_option : function (c_date_str, c_date_fin_str) {
+	cycle_option : function (c_date_str, c_date_fin_str, discri) {
 		let c_action = $(`<div class='cycle_options c_options_${c_date_str}' style='display:none'></div>`);
+		c_action.append(`<a href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=csv'><button>&#x1F522; export CSV</button></a> `);
 		c_action.append(`<a href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=pdf'><button>&#x1F4C4; export PDF</button></a> `);
-		c_action.append(`<a href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=csv'><button>&#x1F522; export CSV</button></a>`);
+		let id_label = c_date_str.replace("-", "_").replace("-", "_");
+		c_action.append(`<input type='checkbox' value='1' id='anonymous_${id_label}_${discri}' name="privacy" /><label for='anonymous_${id_label}_${discri}' class='label_anonymous_export'> anonymiser l'export PDF</label>`);
 		return c_action;
 	},
+	cycle_title_opened : null,
 	cycle_title_click : function () {
 		let c = $(this).attr("for");
 		$(".cycle_options").hide();
 		$(".mini_ruler").hide();
-		if (!parseInt($(this).attr("active"))) {
+		if (moncycle_app.cycle_title_opened == null || moncycle_app.cycle_title_opened != c) {
 			$("#ruler_" + c).show();
 			$(`.c_options_${c}`).show();
-			$(`.title_${c}`).attr("active", 1);
+			moncycle_app.cycle_title_opened = c;
 		}
-		else $(`.title_${c}`).attr("active", 0);
+		else moncycle_app.cycle_title_opened = null;
 	},
 	cycle2timeline : function (c, nb, fin) {
 		let c_id = "c-" + c;
@@ -387,7 +390,7 @@ moncycle_app = {
 		let c_content = $(`<div class='contenu' id='contenu-${c_id}'></div>`);
 		c_title.click(moncycle_app.cycle_title_click);
 		cycle.append(c_title);
-		cycle.append(moncycle_app.cycle_option(c, fin));
+		cycle.append(moncycle_app.cycle_option(c, moncycle_app.date.str(fin), "timeline"));
 		cycle.append(c_graph);
 		cycle.append(c_content);
 		return cycle;
@@ -401,7 +404,7 @@ moncycle_app = {
 		let c_title = $(`<h5 class='title title_${c}' for='${c}'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]}. <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span> jours</h5>`);
 		c_title.click(moncycle_app.cycle_title_click);
 		cycle.append(c_title);
-		cycle.append(moncycle_app.cycle_option(c, fin));
+		cycle.append(moncycle_app.cycle_option(c, fin, "recap"));
 		let c_ruler = $("<div>", {id: "ruler_" + c, class: "mini_ruler", style: "display:none"});
 		let odd = true;
 		for (let n=1; n<=35; n++) {
