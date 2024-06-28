@@ -43,6 +43,7 @@ CREATE TABLE `observation` (
   `commentaire` varchar(256) COLLATE utf8mb4_bin DEFAULT NULL,
   `dernier_modif` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`no_observation`),
+  UNIQUE KEY `unique_compte_and_date` (`no_compte`,`date_obs`),
   KEY `no_compte` (`no_compte`),
   KEY `date_obs` (`date_obs`),
   CONSTRAINT `observation_ibfk_1` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
