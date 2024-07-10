@@ -108,7 +108,11 @@ function doc_parse_fc_note ($str_fc_note) {
 
 function doc_txt($txt) {
 	if (is_null($txt)) return '';
-	return iconv('UTF-8', 'windows-1252//TRANSLIT', $txt);
+	$encoding = mb_detect_encoding($txt, "auto");
+	if (!$encoding) return '';
+	$txt = mb_convert_encoding($txt, 'windows-1252', $encoding);
+	if ($txt) return $txt;
+	return '';
 }
 
 function doc_cycle_vers_csv ($out, $cycle, $methode) {
