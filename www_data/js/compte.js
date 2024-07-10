@@ -12,7 +12,7 @@ $(document).ready(function(){
 		moncycle_app_usr = data;
 		$("#f_info_pref")[0].reset();
 		$("#nom").text(moncycle_app_usr.nom);
-		document.title = "MONCYCLE.APP - compte " + moncycle_app_usr.nom;
+		document.title = "moncycle.app - compte " + moncycle_app_usr.nom;
 		$("#i_prenom").val(moncycle_app_usr.nom);
 		$("#tech_info_no").text(moncycle_app_usr.id_utilisateur);
 		if(moncycle_app_usr.donateur) $("#merci_don").show();

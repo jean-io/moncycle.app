@@ -10,7 +10,7 @@
 <html lang="fr">
 	<head>
 		<meta charset="utf-8" />
-		<title>MONCYCLE.APP - connexion</title>
+		<title>moncycle.app - connexion</title>
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 		<meta name="apple-mobile-web-app-title" content="moncycle.app" />

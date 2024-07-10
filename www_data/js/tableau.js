@@ -69,7 +69,7 @@ moncycle_app = {
 			localStorage.constante = JSON.stringify(data);
 			moncycle_app.timeline_asc = data.timeline_asc;
 			localStorage.timeline_asc = JSON.stringify(data.timeline_asc);
-			document.title = "MONCYCLE.APP - " + moncycle_app.constante.nom;
+			document.title = "moncycle.app - " + moncycle_app.constante.nom;
 			if (moncycle_app.cycle_curseur == 0) moncycle_app.remplir_page_de_cycle();
 			$("#nom").html(moncycle_app.constante.nom);
 			if (moncycle_app.constante.donateur) $("#nom").append(" &#x1F396;&#xFE0F;");
@@ -363,8 +363,9 @@ moncycle_app = {
 		let c_action = $(`<div class='cycle_options c_options_${c_date_str}' style='display:none'></div>`);
 		c_action.append(`<a href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=csv'><button>&#x1F522; export CSV</button></a> `);
 		c_action.append(`<a href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=pdf'><button>&#x1F4C4; export PDF</button></a> `);
-		let id_label = c_date_str.replace("-", "_").replace("-", "_");
-		c_action.append(`<input type='checkbox' value='1' id='anonymous_${id_label}_${discri}' name="privacy" /><label for='anonymous_${id_label}_${discri}' class='label_anonymous_export'> anonymiser l'export PDF</label>`);
+		// TO BE ACTIVATED IN A LATER VERSION
+		// let id_label = c_date_str.replace("-", "_").replace("-", "_");
+		// c_action.append(`<input type='checkbox' value='1' id='anonymous_${id_label}_${discri}' name="privacy" /><label for='anonymous_${id_label}_${discri}' class='label_anonymous_export'> anonymiser l'export PDF</label>`);
 		return c_action;
 	},
 	cycle_title_opened : null,
@@ -787,12 +788,10 @@ moncycle_app = {
 			moncycle_app.menu_opened_date = moncycle_app.date.str(date_cursor);
 			if (moncycle_app.menu_opened_date==moncycle_app.observation[menu_current_date]["cycle"]) $("#ev_premier_jour").prop('checked', true);
 			else $("#ev_premier_jour").prop('checked', false);
-			console.log(date_cursor);
 			let laoding_obs = moncycle_app.loading_observation;
 			laoding_obs["date_obs"] = moncycle_app.menu_opened_date;
 			laoding_obs["pos"] = moncycle_app.observation[menu_current_date]["pos"]-j;
 			laoding_obs["cycle"] = moncycle_app.observation[menu_current_date]["cycle"];
-			console.log(laoding_obs);
 			$(`#o-${moncycle_app.menu_opened_date}`).replaceWith(moncycle_app.observation2timeline(laoding_obs));
 			$(`#ro-${moncycle_app.menu_opened_date}`).replaceWith(moncycle_app.observation2recap(laoding_obs));
 			moncycle_app.submit_menu();

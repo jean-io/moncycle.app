@@ -19,7 +19,7 @@
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
 		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
-		<title>MONCYCLE.APP - compte</title>
+		<title>moncycle.app - compte</title>
 		<meta name="description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
 		<meta property="og:title" content="MONCYCLE.APP" />
 		<meta property="og:type" content="siteweb" />
