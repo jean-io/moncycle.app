@@ -838,26 +838,26 @@ moncycle_app = {
 			$("#fc_msg").empty();
 		}
 		else if (moncycle_app.fc_note_regex.test($("#form_fc").val().toUpperCase())) {
-			$("#fc_msg").html("(syntaxe valide)");
+			$("#fc_msg").html("syntaxe valide");
 			$("#fc_msg").addClass("vert");
 			$("#fc_msg").removeClass("rouge");
 		}
 		else {
-			$("#fc_msg").html("(syntaxe invalide)");
+			$("#fc_msg").html("syntaxe invalide");
 			$("#fc_msg").addClass("rouge");
 			$("#fc_msg").removeClass("vert");
 		}
 	},
 	fc_form2note : function() {
-		let note = $('input[name="fc_regles"]:checked').val();
-		note += $('input[name="fc_regles_b"]:checked').val() ? $('input[name="fc_regles_b"]:checked').val() : "";
+		let note = $('input[name="fc_regles"]:checked').map(function(){ return this.value }).get().join("");
 		if (note.length && !note.endsWith(' ')) note += " " ;
-		note += $('input[name="fc_sens"]:checked').val();
+		note += $('.fc_sens:checked').map(function(){ return this.value }).get().join("");
 		note += $(".fc_obs:checked").map(function(){ return this.value }).get().join("");
+		note += $('.fc_sens_L:checked').val() ? $('.fc_sens_L:checked').val() : "";
 		if (note.length && !note.endsWith(' ')) note += " ";
-		note += $('input[name="fc_rec"]:checked').val();
+		note += $('input[name="fc_rec"]:checked').map(function(){ return this.value }).get().join("");
 		if (note.length && !note.endsWith(' ')) note += " ";
-		note += $('input[name="fc_dou"]:checked').val();
+		note += $('input[name="fc_dou"]:checked').map(function(){ return this.value }).get().join("");
 		$("#form_fc").val(note.trim());
 		return note;
 	},
@@ -894,34 +894,21 @@ moncycle_app = {
 			else $("#fc_" + c.toLowerCase()).prop("checked", false);
 		});
 		note = $("#form_fc").val().trim().toUpperCase();
-		let no_regle = true;
-		let no_sens = true;
-		let no_dou = true;
-		let no_rec = true;
 		['10DL', '10SL', '10WL', '10', '2W'].forEach(c => {
-			if (note.includes(c)) no_sens=false;
 			note = note.replace(c,'');
 		});
 		['RAP', 'LAP', 'AP'].forEach(c => {
-			if (note.includes(c)) no_dou=false;
 			note = note.replace(c,'');
 		});
 		['X1', 'X2', 'X3', 'AD'].forEach(c => {
-			if (note.includes(c)) no_rec=false;
 			note = note.replace(c,'');
 		});
 		['VL', 'VH', 'H', 'M', 'L'].forEach(c => {
-			if (note.includes(c)) no_regle=false;
 			note = note.replace(c,'');
 		});
 		['0', '2', '4', '6', '8'].forEach(c => {
-			if (note.includes(c)) no_sens=false;
 			note = note.replace(c,'');
 		});
-		if (no_regle) $("#fc_nr").prop("checked", true);
-		if (no_sens) $("#fc_sr").prop("checked", true);
-		if (no_rec) $("#fc_rr").prop("checked", true);
-		if (no_dou) $("#fc_rp").prop("checked", true);
 		return note;
 	},
 	date : {

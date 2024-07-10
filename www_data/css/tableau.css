@@ -417,6 +417,13 @@ h2 {
 
 #fc_msg {
 	font-family: monospace;
+	float: right;
+}
+
+#note_fc_holder {
+	position: sticky;
+	top: 62px;
+	background-color: white;
 }
 
 #form_fc {
