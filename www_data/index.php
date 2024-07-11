@@ -69,11 +69,12 @@
 					<br />
 					<div>
 						<span class="categorie">Gommettes:</span><br />
-						<input type="radio" name="gommette" id="go_vide" value="" checked /><label for="go_vide">pas de couleur (blanc)</label><br />
-						<input type="radio" name="gommette" id="go_rouge" value="." /><label class="red" for="go_rouge">rouge</label><br />
-						<input type="radio" name="gommette" id="go_vert" value="I" /><label class="green" for="go_vert">vert</label><br />
-						<input type="radio" name="gommette" id="go_jaune" value="=" /><label class="yellow" for="go_jaune">jaune</label><br />
-						<input type="checkbox" name="bebe" id="go_bebe" value=":)" /><label for="go_bebe">👶 bébé</label><br />
+						<label for="go_rouge" class="go_color go_color_red"><input type="radio" name="gommette" id="go_rouge" value="." />&nbsp;rouge</label>
+						<label for="go_vert" class="go_color go_color_green"><input type="radio" name="gommette" id="go_vert" value="I" />&nbsp;vert</label>
+						<label for="go_jaune" class="go_color go_color_yellow"><input type="radio" name="gommette" id="go_jaune" value="=" />&nbsp;jaune</label>
+						<label for="go_vide" class="go_color go_color_empty"><input type="radio" name="gommette" id="go_vide" value="" checked />&nbsp;<span id="blank_or_empty">vide</span></label>
+						<br />
+						<input type="checkbox" name="bebe" id="go_bebe" value=":)" /><label for="go_bebe">avec bébé 👶</label><br />
 						<br />
 					</div>
 					<div class="pas_bill pas_bill_temp">

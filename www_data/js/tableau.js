@@ -94,6 +94,7 @@ moncycle_app = {
 		$("#form_fc").on("keyup", moncycle_app.fc_note2form);
 		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
 		$("#but_mini_maxi").click(moncycle_app.mini_maxi_switch);
+		$("#go_bebe").click(moncycle_app.go_blank_or_empty);
 		if (localStorage.mini_maxi == "mini") moncycle_app.mini_maxi = "maxi";
 		else moncycle_app.mini_maxi = "mini";
 		moncycle_app.mini_maxi_switch();
@@ -619,6 +620,10 @@ moncycle_app = {
 		}
 		return observation;
 	},
+	go_blank_or_empty : function () {
+		if ($("#go_bebe")[0].checked) $("#blank_or_empty").text("blanc");
+		else $("#blank_or_empty").text("vide");
+	},
 	menu_opened_date : null,
 	open_menu : function(e, date = null) {
 		let o_date;
@@ -666,6 +671,7 @@ moncycle_app = {
 			gommette = gommette.replace(":)", "");
 		}
 		if (moncycle_app.gommette[gommette]) $("#go_" + moncycle_app.gommette[gommette][1]).prop('checked', true);
+		moncycle_app.go_blank_or_empty();
 		$("#form_temp").val(j.temperature);
 		$("#form_heure_temp").val(j.heure_temp);
 		$("#vos_obs").empty();

@@ -110,6 +110,10 @@
 	margin: 0;
 }
 
+.day .fle {
+	font-size: .9em;
+}
+
 .day .rouge,
 .obs .rouge {
 	background-color: #ac2433;
@@ -205,18 +209,15 @@
 
 .day .n,
 .obs .n,
-.day .j_vert,
-.popup label.green {
+.day .j_vert {
 	color: #1e824c;
 }
 
-.day .j_rouge,
-.popup label.red {
+.day .j_rouge {
 	color: #ac2433;
 }
 
-.day .j_jaune,
-.popup label.yellow {
+.day .j_jaune {
 	color: #fbca0b;
 }
 
@@ -260,6 +261,35 @@
 
 .day .th {
 	font-size: .7em;
+}
+
+.popup .go_color {
+	display: inline-block;
+	border: 1px solid #d2d2d2;
+	border-radius: 2px;
+	background-color: #fbfbfb;
+	color: #aeaeae;;
+	font-weight: bold;
+	width: 23%;
+	margin: 0;
+}
+
+.popup .go_color_red {
+	background-color: #ac2433;
+	border-color: #821521;
+	color: white;
+}
+
+.popup .go_color_green {
+	background-color: #1e824c;
+	border-color: #16683c;
+	color: white;
+}
+
+.popup .go_color_yellow {
+	background-color: #fbca0b;
+	border-color: #e3b607;
+	color: white;
 }
 
 .bold {
@@ -636,7 +666,8 @@ h2 {
 	}
 
 	.mini_ruler,
-	#jour_form_header {
+	#jour_form_header,
+	#note_fc_holder {
 		background-color: black;
 	}
 
