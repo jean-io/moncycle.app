@@ -52,17 +52,17 @@
 			<span class="rouge" id="export_err"></span>
 			</form>
 			<br /><br />
-			<a href="api/mes_donnees_svp"><input type="button" value="📦 Exporter brut de tout mon compte" /></a>
+			<a href="api/mes_donnees_svp"><input type="button" value="📦 Exporter l'ensemble des données brutes de mon compte" /></a>
 			<br /><br /><br /><br />
 	
 
 
-			<h2>Modifier mes informations/préférences<span class="net_stat" id="net_stat"></span></h2>
+			<h2>Modifier mes informations & préférences<span class="net_stat" id="net_stat"></span></h2>
 			<form action="../api/param" method="post" id="f_info_pref"><br />
 			<label for="i_prenom">Prénom(s):</label><br />
 			<input class="auto_save" type="text" id="i_prenom" required name="nom" value="" /><br />
 			<br />
-			<input class="auto_save" value="1" type="checkbox" id="i_timeline_asc" name="timeline_asc"/> <label for="i_timeline_asc">Afficher les date en ordre croissant (aujourd'hui en premier et les dates les plus anciènne en bas).</label><br />
+			<input class="auto_save" value="1" type="checkbox" id="i_timeline_asc" name="timeline_asc"/> <label for="i_timeline_asc">Afficher les date en ordre croissant (aujourd'hui en premier et les dates les plus anciennes en bas).</label><br />
 			<br />
 			J'ai besoin de suivre:<br />
 			<span class="label_info">Modifier ce choix ne génère aucune perte de données.</span><br />
@@ -76,7 +76,7 @@
 			<label for="i_email1">E-mail:</label> <br /><span class="label_info">Identifiant de connexion et envoi des cycles (non modifiable).</span><br />
 			<input id="i_email1" type="email" readonly name="email1" value="" /><br />
 			<br />
-			<label for="i_email2">2ème e-mail:</label> <br /><span class="label_info">Permet de recevoir les cycles sur une deuxième addresse.</span><br />
+			<label for="i_email2">2e e-mail:</label> <br /><span class="label_info">Permet de recevoir les cycles sur une deuxième addresse.</span><br />
 			<input id="i_email2" class="auto_save" type="email" name="email2" value="" /><br />
 			<br />
 			<label for="i_anaissance">Année de naissance:</label><br />
