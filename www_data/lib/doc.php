@@ -137,14 +137,18 @@ function doc_cycle_vers_csv ($out, $cycle, $methode) {
 }
 
 function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) {
+		$week_days = ["D", "L", "M", "M", "J", "V", "S"];
+
 		$pdf = new Fpdf('P','mm','A4');
 		$pdf->SetTitle('MONCYCLE.APP tableau du '. date_humain(new Datetime($cycle[0]["date_obs"])));
 		$pdf->AddPage();
 		$pdf->SetFont('Courier','B',12);
+		if ($pdf_anonymous) $nom = $nom[0] . "************";
 		$pdf->Cell($pdf->GetPageWidth()-35,10,doc_txt($nom), 0, 0, 'C');
 		$pdf->SetFont('Courier','',10);
 		$pdf->Ln();
-		$pdf->Cell($pdf->GetPageWidth()-35,5,sprintf("Tableau de %d jours du %s au %s", count($cycle), date_humain(new Datetime($cycle[0]["date_obs"])), date_humain(new Datetime(end($cycle)["date_obs"]))), 0, 0, 'C');
+		if ($pdf_anonymous)$pdf->Cell($pdf->GetPageWidth()-35,5,sprintf("Tableau de %d jours", count($cycle)), 0, 0, 'C');
+		else $pdf->Cell($pdf->GetPageWidth()-35,5,sprintf("Tableau de %d jours du %s au %s", count($cycle), date_humain(new Datetime($cycle[0]["date_obs"])), date_humain(new Datetime(end($cycle)["date_obs"]))), 0, 0, 'C');
 		$pdf->Ln();
 		$pdf->SetTextColor(30, 130, 76);
 		$pdf->Link($pdf->GetX(), $pdf->GetY(), $pdf->GetPageWidth()-25, 6, "https://www.moncycle.app");
@@ -198,19 +202,22 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 			if ($col == 2) $pdf->SetX($pdf->GetPageWidth()/2);
 			$com_long = false;
 			$date_obs = new DateTime($line["date_obs"]);
+			$date_obs_human = date_humain_week_day($date_obs, $week_days);
 			if (intval(date_format($date_obs, 'w'))==0) $pdf->SetFont('Courier','B',6);
 			else $pdf->SetFont('Courier','',6);
+			if ($pdf_anonymous) $date_obs_human = $week_days[date_format($date_obs, 'w')];
 			if (boolval($line["premier_jour"])) {
 				$pdf->SetFillColor(0,0,0);
 				$pdf->SetDrawColor(0,0,0);
 				$pdf->SetTextColor(255,255,255);
-				$pdf->Cell(11, 5, date_humain($date_obs), 1, 0, 'C', true);
+				$pdf->Cell(11, 5, $date_obs_human, 1, 0, 'R', true);
 				$pdf->SetFont('Courier','',8);
 				$pdf->Cell(8,5,"1erJ", 1, 0, 'C', true);
 			}
 			else {
 				$pdf->SetTextColor(200,200,200);
-				$pdf->Cell(11, 5, date_humain($date_obs), 0, 0, 'C');
+				if (intval(date_format($date_obs, 'w'))==0) $pdf->SetTextColor(145,145,145);
+				$pdf->Cell(11, 5, $date_obs_human, 0, 0, 'R');
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',8);
 				$pdf->Cell(8,5,$i>0 ? $i : "?", 0, 0, 'C');
