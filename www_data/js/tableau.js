@@ -361,12 +361,21 @@ moncycle_app = {
 		});
 	},
 	cycle_option : function (c_date_str, c_date_fin_str, discri) {
+		let id_buts = c_date_str.replace("-", "_").replace("-", "_");
 		let c_action = $(`<div class='cycle_options c_options_${c_date_str}' style='display:none'></div>`);
 		c_action.append(`<a href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=csv'><button>&#x1F522; export CSV</button></a> `);
-		c_action.append(`<a href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=pdf'><button>&#x1F4C4; export PDF</button></a> `);
-		// TO BE ACTIVATED IN A LATER VERSION
-		// let id_label = c_date_str.replace("-", "_").replace("-", "_");
-		// c_action.append(`<input type='checkbox' value='1' id='anonymous_${id_label}_${discri}' name="privacy" /><label for='anonymous_${id_label}_${discri}' class='label_anonymous_export'> anonymiser l'export PDF</label>`);
+		c_action.append(`<a id='pdf_but_${id_buts}_${discri}' href='api/export?start_date=${c_date_str}&end_date=${c_date_fin_str}&type=pdf&anonymous=0'><button>&#x1F4C4; export PDF</button></a> `);
+		let anonymiser_checkbox = $(`<input type='checkbox' value='1' id='anonymous_${id_buts}_${discri}' name="privacy" />`);
+		anonymiser_checkbox.change(function () {
+			let url = $(`#pdf_but_${id_buts}_${discri}`).attr("href").split('?');
+			let params = new URLSearchParams(url[1]);
+			if ($(this).is(':checked')) params.set("anonymous", 1);
+			else params.set("anonymous", 0);
+			url[1] = params.toString();
+			$(`#pdf_but_${id_buts}_${discri}`).attr("href", url.join("?"));
+		});
+		c_action.append(anonymiser_checkbox);
+		c_action.append(`<label for='anonymous_${id_buts}_${discri}' class='label_anonymous_export'> anonymiser l'export PDF</label>`);
 		return c_action;
 	},
 	cycle_title_opened : null,
@@ -539,7 +548,8 @@ moncycle_app = {
 		else o_class += " o_bill";
 		if (j.grossesse) o_class += " o_gross";
 		let observation = $("<div>", {id: o_id, class: o_class, date : moncycle_app.date.str(o_date)});
-		observation.append(`<span class='d'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);
+		let d_bold = o_date.getDay()==0 ? "bold" : "";
+		observation.append(`<span class='d ${d_bold}'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);
 		let pos = $(`<span class='j'>${j.pos}</span>`);
 		observation.append(pos);
 		if (j.chargement) {

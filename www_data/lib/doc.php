@@ -136,7 +136,7 @@ function doc_cycle_vers_csv ($out, $cycle, $methode) {
 	}
 }
 
-function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
+function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) {
 		$pdf = new Fpdf('P','mm','A4');
 		$pdf->SetTitle('MONCYCLE.APP tableau du '. date_humain(new Datetime($cycle[0]["date_obs"])));
 		$pdf->AddPage();
@@ -197,18 +197,20 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 			elseif (!$com_long) $pdf->Ln();
 			if ($col == 2) $pdf->SetX($pdf->GetPageWidth()/2);
 			$com_long = false;
-			$pdf->SetFont('Courier','',6);
+			$date_obs = new DateTime($line["date_obs"]);
+			if (intval(date_format($date_obs, 'w'))==0) $pdf->SetFont('Courier','B',6);
+			else $pdf->SetFont('Courier','',6);
 			if (boolval($line["premier_jour"])) {
 				$pdf->SetFillColor(0,0,0);
 				$pdf->SetDrawColor(0,0,0);
 				$pdf->SetTextColor(255,255,255);
-				$pdf->Cell(11, 5, date_humain(new DateTime($line["date_obs"])), 1, 0, 'C', true);
+				$pdf->Cell(11, 5, date_humain($date_obs), 1, 0, 'C', true);
 				$pdf->SetFont('Courier','',8);
 				$pdf->Cell(8,5,"1erJ", 1, 0, 'C', true);
 			}
 			else {
 				$pdf->SetTextColor(200,200,200);
-				$pdf->Cell(11, 5, date_humain(new DateTime($line["date_obs"])), 0, 0, 'C');
+				$pdf->Cell(11, 5, date_humain($date_obs), 0, 0, 'C');
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',8);
 				$pdf->Cell(8,5,$i>0 ? $i : "?", 0, 0, 'C');
@@ -378,7 +380,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom) {
 	}
 
 
-function doc_cycle_fc_vers_pdf($cycle, $methode, $nom) {
+function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 	$first_col_width = 16;
 	$nb_days_per_line = 35;
 	$nb_lines_per_page = 8;

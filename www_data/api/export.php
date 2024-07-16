@@ -59,6 +59,14 @@ if (!isset($_GET['type']) || !in_array($_GET['type'], $available_type)) {
 	exit;
 }
 
+// CHECK ANONYMOUS MODE OR NOT
+if ($_GET['type'] == "pdf" && isset($_GET['anonymous']) && !in_array($_GET['anonymous'], ["1", "0"])) {
+	http_response_code(400);
+	print("ERREUR: 'anonymous' doit être 1 ou 0");
+	exit;
+}
+$pdf_anonymous = boolval(intval($_GET['anonymous'] ?? "0"));
+
 // RECUPERATION DU CYCLE
 $data = db_select_cycle_complet($db, $result["start_date"],$result["end_date"], $compte["no_compte"]);
 
@@ -87,8 +95,8 @@ elseif ($_GET['type'] == "pdf") {
 	header("content-type:application/pdf");
 	header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.pdf"');
 	$pdf = null;
-	if ($compte["methode"] == 3 || $compte["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"]);
-	else $pdf = doc_cycle_bill_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"]);
+	if ($compte["methode"] == 3 || $compte["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"], $pdf_anonymous);
+	else $pdf = doc_cycle_bill_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"], $pdf_anonymous);
 	$pdf->Output('I', 'moncycle_app_'. $filename_start_date . '.pdf');
 }
 
