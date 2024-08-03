@@ -143,7 +143,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 		$pdf->SetTitle('MONCYCLE.APP tableau du '. date_humain(new Datetime($cycle[0]["date_obs"])));
 		$pdf->AddPage();
 		$pdf->SetFont('Courier','B',12);
-		if ($pdf_anonymous) $nom = $nom[0] . "************";
+		if ($pdf_anonymous) $nom = $nom[0] . " (anonyme)";
 		$pdf->Cell($pdf->GetPageWidth()-35,10,doc_txt($nom), 0, 0, 'C');
 		$pdf->SetFont('Courier','',10);
 		$pdf->Ln();
@@ -388,6 +388,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 
 
 function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
+	$week_days = ["D", "L", "M", "M", "J", "V", "S"];
 	$first_col_width = 16;
 	$nb_days_per_line = 35;
 	$nb_lines_per_page = 8;
@@ -411,6 +412,8 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 		'=:)' => ['BBJ', 255, 255, 9],
 		'G' => ['G', 255, 236, 238]
 	];
+
+	if ($pdf_anonymous) $nom = $nom[0];
 
 	if ($methode == 4) $nb_lines_per_page -= 1;
 
@@ -449,7 +452,10 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 
 		$pdf->SetDrawColor($grid_gray,$grid_gray,$grid_gray);
 
-		$page_title = doc_txt(" - observations du $h_start_date au $h_end_date - document créé le $h_current_date - page $page_no sur $total_nb_page - ");
+		$page_title = "";
+		if ($pdf_anonymous) $page_title .= " (anonyme)";
+		else $page_title .= doc_txt(" - observations du $h_start_date au $h_end_date");
+		$page_title .= doc_txt(" - document créé le $h_current_date - page $page_no sur $total_nb_page - ");
 		$pdf->SetFont('Courier','B',10);
 		$pdf->Cell($pdf->GetStringWidth(doc_txt($nom)),$line_height, doc_txt($nom), 0, 0, 'L');
 		$pdf->SetFont('Courier','',10);
@@ -463,9 +469,11 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 
 		$pdf->SetY($pdf->GetY()+2);
 
+		$pdf->SetFillColor(220,220,220);
+
 		$pdf->Cell($first_col_width,$line_height,doc_txt(""), "LTR", 0, 'L');
 		for ($j=0; $j < $nb_days_per_line; $j++) { 
-			$pdf->Cell($cell_width,$line_height,doc_txt($j+1), "TR", 0, 'C');
+			$pdf->Cell($cell_width,$line_height,doc_txt($j+1), "TR", 0, 'C', True);
 		}
 
 		// BOUCLE LIGNE PAR LIGNE
@@ -594,9 +602,17 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 				$pdf->SetDrawColor(255/$color_coef,255/$color_coef,255/$color_coef);
 
 				// CELLULE DATE
-				$pdf->SetFont('Courier','',6);
-				$pdf->Cell($cell_width,$line_height,doc_txt(($date_exploded[2] ?? "") . (isset($date_exploded[2]) ? '/' : '') . ($date_exploded[1] ?? "")), 'B', 0, 'C');
+				$date_obs = new DateTime($cycle[$obs_index]["date_obs"] ?? "");
+				$date_txt = ($date_exploded[2] ?? "") . (isset($date_exploded[2]) ? '/' : '') . ($date_exploded[1] ?? "");
+				if (strlen($date_txt)>0) {
+					if ($pdf_anonymous) $date_txt = $week_days[date_format($date_obs, 'w')];
+					else $date_txt = $week_days[date_format($date_obs, 'w')] . " " . $date_txt;
+				}
+				if (intval(date_format($date_obs, 'w'))==0) $pdf->SetFont('Courier','B',6);
+				else $pdf->SetFont('Courier','',6);
+				$pdf->Cell($cell_width,$line_height,doc_txt($date_txt), 'B', 0, 'C');
 				$pdf->SetXY($x+$cell_width*$j, $y+$line_height*3+$stamp_height);
+				$pdf->SetFont('Courier','',6);
 
 				// CELLULE SAIGNEMENT
 				$pdf->Cell($cell_width,$line_height,doc_txt($fc_saignement), 'B', 0, 'C');
