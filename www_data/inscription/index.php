@@ -81,7 +81,7 @@ try {
 		elseif (!isset($_POST["email1_conf"]) || trim($_POST["email1"]) != trim($_POST["email1_conf"])) {
 			$output .= "L'addresse mail saisie et sa confirmation ne sont pas identique.";
 		}
-		elseif (isset($_POST["captcha"]) && strlen(trim($_POST["captcha"]))>=1 && trim($_POST["captcha"])==$captcha) {
+		elseif (isset($_POST["captcha"]) && strlen(trim($_POST["captcha"]))>0 && trim($_POST["captcha"])==$captcha) {
 			$methode = intval($_POST["methode"] ?? 0);
 			if ($methode<METHODE_BILLINGS || $methode>METHODE_FERTILITYCARE) $methode=METHODE_BILLINGS;
 			if (intval($_POST["temp"] ?? 0)) {
