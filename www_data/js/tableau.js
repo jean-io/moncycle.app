@@ -415,7 +415,7 @@ moncycle_app = {
 		let c_title = $(`<h5 class='title title_${c}' for='${c}'>Cycle du ${c_date.getDate()} ${moncycle_app.text.mois[c_date.getMonth()]}. <span class='cycle_fin'>${c_fin_text}</span> de <span class='nb_jours'>${nb}</span> jours</h5>`);
 		c_title.click(moncycle_app.cycle_title_click);
 		cycle.append(c_title);
-		cycle.append(moncycle_app.cycle_option(c, fin, "recap"));
+		cycle.append(moncycle_app.cycle_option(c, moncycle_app.date.str(fin), "recap"));
 		let c_ruler = $("<div>", {id: "ruler_" + c, class: "mini_ruler", style: "display:none"});
 		let odd = true;
 		for (let n=1; n<=35; n++) {
