@@ -220,7 +220,7 @@ catch (Exception $e){
 			</select><br />
 			<br />
 			<label for="i_captcha">Captcha:</label><br />
-			<input name="captcha" id="i_captcha" type="text" maxlength="6" required placeholder="Entrer les six lettres ou chiffres affichés ci-dessous." /><br />
+			<input name="captcha" id="i_captcha" type="text" maxlength="6" required placeholder="Entrer les lettres ou chiffres affichés ci-dessous." /><br />
 			<img src="captcha.php" class="captcha" /><br />
 			<br />
 			<label for="i_comment">Comment avez-vous découvert moncycle.app? Un commentaire?</label><br />

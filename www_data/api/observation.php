@@ -70,8 +70,6 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 	$date_exploded = explode('-', $date);
 	if (checkdate($date_exploded[1], $date_exploded[2], $date_exploded[0])) {
 
-		$db->beginTransaction();
-
 		if (isset($compte["relance"]) && boolval($compte["relance"])) {
 			db_update_relance($db, $compte["no_compte"], 0);
 			$compte["relance"] = 0;
@@ -80,37 +78,47 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 		$date = trim($_POST['date']);
 		$result["date"] = $date;
 
-		$output = db_select_observation($db, $date, $compte["no_compte"]);
+		try {
 
-		if(!isset($output[0])){
-			db_insert_observation($db, $date, $compte["no_compte"]);
+			$db->exec("LOCK TABLES observation LOW_PRIORITY WRITE");
+	
+			$output = db_select_observation($db, $date, $compte["no_compte"]);
+	
+			if(!isset($output[0])){
+				db_insert_observation($db, $date, $compte["no_compte"]);
+			}
+			
+			$sensation = [];
+			foreach ($_POST as $key => $p) {
+				if (!str_starts_with($key, "ob_") || $p=="") continue;
+				array_push($sensation, strtolower(trim($p)));
+			}
+			$sensation_db = implode(", ", $sensation);
+			if ($sensation_db == "") $sensation_db = null;
+	
+			$temp = null;
+			$htemp = null;
+			if (isset($_POST["temp"]) && !empty(trim($_POST["temp"]))) {
+				$temp = floatval($_POST["temp"]);
+				if ($temp <= 0) $temp = null;
+				elseif (!empty($_POST["heure_temp"])) $htemp = trim($_POST["heure_temp"]);
+			}
+	
+			$go  = $_POST["gommette"] ?? '';
+			$go .= $_POST["bebe"] ?? '';
+	
+			$compteur = null;
+			if (isset($_POST["compteur"]) && intval($_POST["compteur"])>0) $compteur = intval($_POST["compteur"]);
+	
+			db_update_observation($db, $date, $compte["no_compte"], $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null, $compteur);
+
+			$db->exec("UNLOCK TABLES");
+
+		} catch (\Throwable $th) {
+			$db->exec("UNLOCK TABLES");
+			$result["outcome"] = "ko";
+			throw $th;
 		}
-		
-		$sensation = [];
-		foreach ($_POST as $key => $p) {
-			if (!str_starts_with($key, "ob_") || $p=="") continue;
-			array_push($sensation, strtolower(trim($p)));
-		}
-		$sensation_db = implode(", ", $sensation);
-		if ($sensation_db == "") $sensation_db = null;
-
-		$temp = null;
-		$htemp = null;
-		if (isset($_POST["temp"]) && !empty(trim($_POST["temp"]))) {
-			$temp = floatval($_POST["temp"]);
-			if ($temp <= 0) $temp = null;
-			elseif (!empty($_POST["heure_temp"])) $htemp = trim($_POST["heure_temp"]);
-		}
-
-		$go  = $_POST["gommette"] ?? '';
-		$go .= $_POST["bebe"] ?? '';
-
-		$compteur = null;
-		if (isset($_POST["compteur"]) && intval($_POST["compteur"])>0) $compteur = intval($_POST["compteur"]);
-
-		db_update_observation($db, $date, $compte["no_compte"], $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null, $compteur);
-
-		$db->commit();
 
 		$result["outcome"] = "ok";
 
