@@ -1,76 +1,92 @@
+-- moncycle.app
+--
+-- licence Creative Commons CC BY-NC-SA
+--
+-- https://www.moncycle.app
+-- https://github.com/jean-io/moncycle.app
+
 SET NAMES utf8mb4;
 
-CREATE TABLE `compte` (
-  `no_compte` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `nom` varchar(255) COLLATE utf8mb4_bin NOT NULL,
-  `methode` smallint(5) unsigned NOT NULL DEFAULT 1,
+DROP TABLE IF EXISTS `account`;
+CREATE TABLE `account` (
+  `id_account` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `nfp_method` smallint(5) unsigned NOT NULL DEFAULT 1,
   `age` smallint(5) unsigned NOT NULL,
-  `email1` varchar(255) COLLATE utf8mb4_bin NOT NULL,
-  `email2` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
-  `motdepasse` varchar(255) COLLATE utf8mb4_bin NOT NULL,
-  `totp_etat` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `email1` varchar(255) NOT NULL,
+  `email2` varchar(255) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `totp_status` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `totp_secret` varchar(255) DEFAULT NULL,
-  `nb_co_echoue` smallint(5) unsigned NOT NULL DEFAULT 0,
+  `failed_login` smallint(5) unsigned NOT NULL DEFAULT 0,
   `timeline_asc` tinyint(1) unsigned NOT NULL DEFAULT 1,
-  `donateur` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `donor` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `recherche` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `actif` tinyint(1) unsigned NOT NULL DEFAULT 1,
+  `disabled` tinyint(1) unsigned NOT NULL DEFAULT 1,
   `relance` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `derniere_co_date` timestamp NULL DEFAULT NULL,
-  `inscription_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `mdp_change_date` timestamp NULL DEFAULT NULL,
-  `decouvert` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
-  PRIMARY KEY (`no_compte`),
+  `last_login_date` timestamp NULL DEFAULT NULL,
+  `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `password_change_date` timestamp NULL DEFAULT NULL,
+  `how_discovered` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id_account`),
   UNIQUE KEY `email1` (`email1`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+
+DROP TABLE IF EXISTS `observation`;
 CREATE TABLE `observation` (
-  `no_observation` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `no_compte` mediumint(8) unsigned NOT NULL,
-  `date_obs` date NOT NULL DEFAULT '0000-00-00',
-  `jenesaispas` tinyint(1) unsigned DEFAULT NULL,
-  `note_fc` varchar(32) COLLATE utf8mb4_bin DEFAULT NULL,
-  `fleche_fc` varchar(1) COLLATE utf8mb4_bin DEFAULT NULL,
-  `gommette` varchar(3) COLLATE utf8mb4_bin NOT NULL,
-  `sensation` varchar(256) COLLATE utf8mb4_bin DEFAULT NULL,
+  `id_observation` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `id_account` mediumint(8) unsigned NOT NULL,
+  `observation_date` date NOT NULL DEFAULT '0000-00-00',
+  `i_dont_know` tinyint(1) unsigned DEFAULT NULL,
+  `note_fc` varchar(32) DEFAULT NULL,
+  `arrow_fc` varchar(1) DEFAULT NULL,
+  `stamp` varchar(3) NOT NULL,
+  `feeling` varchar(256) DEFAULT NULL,
   `temperature` decimal(4,2) unsigned DEFAULT NULL,
-  `heure_temp` time DEFAULT NULL,
-  `jour_sommet` tinyint(1) unsigned DEFAULT NULL,
-  `compteur` tinyint(1) unsigned DEFAULT NULL,
-  `union_sex` tinyint(1) unsigned DEFAULT NULL,
-  `premier_jour` tinyint(1) unsigned DEFAULT NULL,
-  `grossesse` tinyint(1) unsigned DEFAULT NULL,
-  `commentaire` varchar(256) COLLATE utf8mb4_bin DEFAULT NULL,
-  `dernier_modif` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
-  PRIMARY KEY (`no_observation`),
-  UNIQUE KEY `unique_compte_and_date` (`no_compte`,`date_obs`),
-  KEY `no_compte` (`no_compte`),
-  KEY `date_obs` (`date_obs`),
-  CONSTRAINT `observation_ibfk_1` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
-
-CREATE TABLE `jetton` (
-  `no_jetton` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  `no_compte` mediumint(8) unsigned DEFAULT NULL,
-  `nom` varchar(256) COLLATE utf8mb4_bin NOT NULL,
-  `expire` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `pays` varchar(2) COLLATE utf8mb4_bin DEFAULT NULL,
-  `date_creation` timestamp NOT NULL DEFAULT current_timestamp(),
-  `date_use` timestamp NULL DEFAULT NULL,
-  `jetton_str` varchar(512) COLLATE utf8mb4_bin NOT NULL,
-  `captcha` varchar(16) COLLATE utf8mb4_bin DEFAULT NULL,
-  PRIMARY KEY (`no_jetton`),
-  UNIQUE KEY `jetton_str` (`jetton_str`),
-  KEY `no_compte` (`no_compte`),
-  CONSTRAINT `observation_ibfk_2` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
+  `temperature_time` time DEFAULT NULL,
+  `peak` tinyint(1) unsigned DEFAULT NULL,
+  `counter` tinyint(1) unsigned DEFAULT NULL,
+  `sexual_union` tinyint(1) unsigned DEFAULT NULL,
+  `cycle_first_day` tinyint(1) unsigned DEFAULT NULL,
+  `pregnancy` tinyint(1) unsigned DEFAULT NULL,
+  `comment` varchar(256) DEFAULT NULL,
+  `last_modified_date` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id_observation`),
+  UNIQUE KEY `unique_account_and_date` (`id_account`,`observation_date`),
+  KEY `no_compte` (`id_account`),
+  KEY `date_obs` (`observation_date`),
+  CONSTRAINT `observation_ibfk_1` FOREIGN KEY (`id_account`) REFERENCES `account` (`id_account`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
-CREATE TABLE `cle_valeur` (
-  `cle` varchar(255) NOT NULL,
-  `valeur` bigint(20) unsigned DEFAULT NULL
+
+DROP TABLE IF EXISTS `token`;
+CREATE TABLE `token` (
+  `id_token` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `id_account` mediumint(8) unsigned DEFAULT NULL,
+  `nom` varchar(256) NOT NULL,
+  `expired` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `country` varchar(2) DEFAULT NULL,
+  `creation_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `use_date` timestamp NULL DEFAULT NULL,
+  `token_str` varchar(512) NOT NULL,
+  `captcha` varchar(16) DEFAULT NULL,
+  PRIMARY KEY (`id_token`),
+  UNIQUE KEY `token_str` (`token_str`),
+  KEY `no_compte` (`id_account`),
+  CONSTRAINT `observation_ibfk_2` FOREIGN KEY (`id_account`) REFERENCES `account` (`id_account`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
-INSERT INTO `cle_valeur` (`cle`, `valeur`) VALUES
-('pub_visite_mensuel',	0),
-('pub_visite_hebdo',	0),
-('pub_visite_jour',	0);
+
+DROP TABLE IF EXISTS `key_value`;
+CREATE TABLE `key_value` (
+  `key` varchar(255) NOT NULL,
+  `value` bigint(20) unsigned DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+INSERT INTO `key_value` (`key`, `value`) VALUES
+('monthly_public_visits', 0),
+('weekly_public_visits', 0),
+('daily_public_visits', 0);
+
+-- 2024-08-24 19:26:49

@@ -193,7 +193,7 @@ function db_delete_compte_sans_connexions_recentes($db, $month_without_connectio
 	return $statement->rowCount();
 }
 
-function db_delete_compte_sans_connexions_recentes($db, $month_without_connections=48){
+function db_select_compte_sans_connexions_recentes($db, $month_without_connections=48){
 	static $sql = "SELECT * FROM compte WHERE derniere_co_date IS NOT NULL AND derniere_co_date < NOW() - INTERVAL :month_without_connections MONTH";
 
 	static $statement = $db->prepare($sql);

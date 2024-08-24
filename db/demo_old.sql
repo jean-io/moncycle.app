@@ -1,21 +1,14 @@
--- moncycle.app
---
--- licence Creative Commons CC BY-NC-SA
---
--- https://www.moncycle.app
--- https://github.com/jean-io/moncycle.app
-
 SET NAMES utf8mb4;
 
-DELETE FROM `account` WHERE `id_account` = '2';
-DELETE FROM `account` WHERE `id_account` = '3';
+DELETE FROM `compte` WHERE `no_compte` = '2';
+DELETE FROM `compte` WHERE `no_compte` = '3';
 
-INSERT INTO `account` (`id_account`, `name`, `age`, `email1`, `password`, `disabled`, `nfp_method`) VALUES
+INSERT INTO `compte` (`no_compte`, `nom`, `age`, `email1`, `motdepasse`, `actif`, `methode`) VALUES
 (2, 'Démo Billings', 1990, 'demo.bill@moncycle.app', '$2y$10$hTn9Xjg4wk/ovWEY8BWXau.Y1ODRoX03c2zlp6Rnmib1yUcVpp0sC', 1, 2),
 (3, 'Démo FertilityCare', 1990, 'demo.fc@moncycle.app', '$2y$10$hTn9Xjg4wk/ovWEY8BWXau.Y1ODRoX03c2zlp6Rnmib1yUcVpp0sC', 1, 3);
 
 
-INSERT INTO `observation` (`id_observation`, `id_account`, `observation_date`, `i_dont_know`, `note_fc`, `arrow_fc`, `stamp`, `feeling`, `temperature`, `temperature_time`, `peak`, `counter`, `sexual_union`, `cycle_first_day`, `pregnancy`, `comment`) VALUES
+INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `jenesaispas`, `note_fc`, `fleche_fc`, `gommette`, `sensation`, `temperature`, `heure_temp`, `jour_sommet`, `compteur`, `union_sex`, `premier_jour`, `grossesse`, `commentaire`) VALUES
 (0+50,	2,	CURDATE() + INTERVAL - (50-0) DAY,	NULL,	NULL,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	1,	NULL,	''),
 (1+50,	2,	CURDATE() + INTERVAL - (50-1) DAY,	NULL,	NULL,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
 (2+50,	2,	CURDATE() + INTERVAL - (50-2) DAY,	NULL,	NULL,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
@@ -69,7 +62,7 @@ INSERT INTO `observation` (`id_observation`, `id_account`, `observation_date`, `
 
 
 
-INSERT INTO `observation` (`id_observation`, `id_account`, `observation_date`, `i_dont_know`, `note_fc`, `arrow_fc`, `stamp`, `feeling`, `temperature`, `temperature_time`, `peak`, `counter`, `sexual_union`, `cycle_first_day`, `pregnancy`, `comment`) VALUES
+INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `jenesaispas`, `note_fc`, `fleche_fc`, `gommette`, `sensation`, `temperature`, `heure_temp`, `jour_sommet`, `compteur`, `union_sex`, `premier_jour`, `grossesse`, `commentaire`) VALUES
 (1,	3,	CURDATE() + INTERVAL - (50-1) DAY,	NULL,	'H AP',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	1,	NULL,	''),
 (2,	3,	CURDATE() + INTERVAL - (50-2) DAY,	NULL,	'M',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
 (3,	3,	CURDATE() + INTERVAL - (50-3) DAY,	NULL,	'MB',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
