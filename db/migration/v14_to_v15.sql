@@ -18,6 +18,7 @@ ALTER TABLE `account`
   CHANGE COLUMN `donateur` `donor` tinyint(1) unsigned NOT NULL DEFAULT 0,
   CHANGE COLUMN `recherche` `research` tinyint(1) unsigned NOT NULL DEFAULT 0,
   CHANGE COLUMN `actif` `disabled` tinyint(1) unsigned NOT NULL DEFAULT 1,
+  CHANGE COLUMN `relance` `followup` tinyint(1) unsigned NOT NULL DEFAULT 1,
   CHANGE COLUMN `derniere_co_date` `last_login_date` timestamp NULL DEFAULT NULL,
   CHANGE COLUMN `inscription_date` `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
   CHANGE COLUMN `mdp_change_date` `password_change_date` timestamp NULL DEFAULT NULL,

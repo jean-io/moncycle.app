@@ -21,7 +21,7 @@ CREATE TABLE `account` (
   `failed_login` smallint(5) unsigned NOT NULL DEFAULT 0,
   `timeline_asc` tinyint(1) unsigned NOT NULL DEFAULT 1,
   `donor` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `recherche` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `research` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `disabled` tinyint(1) unsigned NOT NULL DEFAULT 1,
   `relance` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `last_login_date` timestamp NULL DEFAULT NULL,
