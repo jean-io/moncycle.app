@@ -235,6 +235,7 @@ moncycle_app = {
 			dates_req.push(date_obs_str);
 		}
 		moncycle_app.graph_preparation_data(dates_data_holder);
+		while (dates_req.length>200) moncycle_app.charger_observation(dates_req.splice(0, 200).join(','));
 		moncycle_app.charger_observation(dates_req.join(','));
 		if (moncycle_app.constante.methode == 1 || moncycle_app.constante.methode == 4) moncycle_app.cycle2graph(date_cycle_str);
 		if (form_nouv_cycle && !moncycle_app.timeline_asc) moncycle_app.form_nouveau_cycle(false);

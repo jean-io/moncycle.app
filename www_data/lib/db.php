@@ -193,16 +193,6 @@ function db_delete_compte_sans_connexions_recentes($db, $month_without_connectio
 	return $statement->rowCount();
 }
 
-function db_delete_compte_sans_connexions_recentes($db, $month_without_connections=48){
-	static $sql = "SELECT * FROM compte WHERE derniere_co_date IS NOT NULL AND derniere_co_date < NOW() - INTERVAL :month_without_connections MONTH";
-
-	static $statement = $db->prepare($sql);
-	$statement->bindValue(":month_without_connections", $month_without_connections, PDO::PARAM_INT);
-	$statement->execute();
-
-	return $statement->rowCount();
-}
-
 function db_delete_jetton($db, $no_jetton, $no_compte){
 	static $sql = "DELETE FROM `jetton` WHERE `no_jetton` = :no_jetton AND `no_compte` = :no_compte";
 
