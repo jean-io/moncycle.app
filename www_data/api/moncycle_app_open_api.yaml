@@ -395,6 +395,32 @@ paths:
         - HTTPtoken: []
 
 
+  /sync:
+
+    get:
+      tags:
+        - observations
+      summary: liste des observations modifié depuis la date spécifié pour synchronisation entre les clients et le serveur.
+      parameters:
+        - name: fromTimestamp
+          in: query
+          description: un timestamp au format YYYY-MM-JJ hh:mm:ss, l'heure doit être en UTC.
+          required: true
+          schema:
+            format: string
+            example: "2025-01-23 15:30:45"
+            pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+      responses:
+        200:
+          description: OK (les observation sont dans un tableau JSON)
+        401:
+          description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+
   /export:
     get:
       tags:

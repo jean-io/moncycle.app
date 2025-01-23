@@ -111,7 +111,7 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 			if (isset($_POST["compteur"]) && intval($_POST["compteur"])>0) $compteur = intval($_POST["compteur"]);
 
 			$last_write_client_UTC = "";
-			if (isset($_POST["last_write_client_UTC"]) && preg_match("/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/", trim($_POST['last_write_client_UTC']))) $last_write_client_UTC = trim($_POST['last_write_client_UTC']);
+			if (isset($_POST["last_write_client_UTC"]) && date_validate_timestamp(trim($_POST['last_write_client_UTC']))) $last_write_client_UTC = trim($_POST['last_write_client_UTC']);
 			else $last_write_client_UTC = date('Y-m-d H:i:s');
 	
 			db_update_observation($db, $date, $compte["no_compte"], $last_write_client_UTC, $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null, $compteur);

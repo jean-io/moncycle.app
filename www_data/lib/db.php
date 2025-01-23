@@ -245,6 +245,17 @@ function db_select_observation ($db, $date, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+function db_select_observations_modified ($db, $modified_since, $no_compte) {
+	static $sql = "SELECT * FROM observation WHERE last_write_client_UTC >= :modified_since AND no_compte = :no_compte ORDER BY last_write_client_UTC DESC";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":modified_since", $modified_since, PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function db_insert_observation ($db, $date, $no_compte) {
 	static $sql = "INSERT INTO observation (no_compte, date_obs, gommette) VALUES (:no_compte, :date, '')";
 
