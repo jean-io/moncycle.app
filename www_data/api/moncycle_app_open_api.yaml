@@ -533,6 +533,12 @@ components:
         commentaire:
           type: string
           description: commentaire libre lié à journée
+        last_write_client_UTC:
+          type: string
+          description: timestamp de mise à jour de DB au format YYYY-MM-DD HH:MM:SS. Doit être de l'UTC.
+          format: string
+          example: "2025-01-23 15:30:45"
+          pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
 
 
     auth:

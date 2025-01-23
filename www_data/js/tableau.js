@@ -754,6 +754,7 @@ moncycle_app = {
 	submit_menu : function () {
 		$("#jour_form_saving").show();
 		$("#jour_form_saved").hide();
+		$("#form_save_time").val(moncycle_app.date.nowInUTC());
 		if (this.id == "form_fc") moncycle_app.fc_note2form();
 		else moncycle_app.fc_form2note();
 		moncycle_app.fc_test_note();
@@ -944,6 +945,16 @@ moncycle_app = {
 			let m = d.getMonth()+1;
 			let j = d.getDate();
 			return [d.getFullYear(), m<10 ? "0"+m : m, j<10 ? "0"+j : j].join("-");
+		},
+		nowInUTC : function () {
+			const now = new Date();
+			year = now.getUTCFullYear();
+			month = String(now.getUTCMonth() + 1).padStart(2, '0');
+			day = String(now.getUTCDate()).padStart(2, '0');
+			hours = String(now.getUTCHours()).padStart(2, '0');
+			minutes = String(now.getUTCMinutes()).padStart(2, '0');
+			seconds = String(now.getUTCSeconds()).padStart(2, '0');
+			return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 		}
 	}
 }

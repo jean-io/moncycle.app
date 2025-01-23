@@ -65,6 +65,7 @@
 			</div>
 			<form id="form_data">
 				<input type="hidden" id="form_date" name="date" value="" />
+				<input type="hidden" id="form_save_time" name="last_write_client_UTC" value="" />
 				<div>
 					<br />
 					<div>

@@ -256,8 +256,8 @@ function db_insert_observation ($db, $date, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $htemp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $grossesse=null, $commentaire=null, $compteur=null) {
-	static $sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, fleche_fc = :fleche_fc, temperature = :temp, heure_temp = :htemp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, grossesse = :grossesse, commentaire = :commentaire, compteur = :compteur WHERE date_obs = :date AND no_compte = :no_compte";
+function db_update_observation ($db, $date, $no_compte, $last_write_client_UTC, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $htemp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $grossesse=null, $commentaire=null, $compteur=null) {
+	static $sql = "UPDATE observation SET gommette = :gommette, note_fc = :note_fc, fleche_fc = :fleche_fc, temperature = :temp, heure_temp = :htemp, sensation = :sensation, jour_sommet = :jour_sommet, union_sex = :union_sex, premier_jour = :premier_jour, jenesaispas = :jenesaispas, grossesse = :grossesse, commentaire = :commentaire, compteur = :compteur, last_write_client_UTC = :last_write_client_UTC WHERE date_obs = :date AND no_compte = :no_compte";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":gommette", $gommette, PDO::PARAM_STR);
@@ -275,6 +275,7 @@ function db_update_observation ($db, $date, $no_compte, $gommette='', $note_fc=n
 	$statement->bindValue(":date", $date, PDO::PARAM_STR);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->bindValue(":compteur", $compteur, PDO::PARAM_INT);
+	$statement->bindValue(":last_write_client_UTC", $last_write_client_UTC, PDO::PARAM_STR);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -444,7 +445,7 @@ function db_select_cycles_recent($db) {
 }
 
 function db_select_compte_inactif($db) {
-	static $sql = "select `c`.`no_compte` as `no_compte`,`c`.`nom` as `nom`,max(`o`.`dernier_modif`) as `derniere_obs_modif`,`c`.`email1` as `email1`,`c`.`email2` as `email2`,`c`.`inscription_date` as `inscription_date` from `compte` as     `c` left join `observation` as `o` on `c`.`no_compte` = `o`.`no_compte` where `c`.`no_compte` != 2 and `c`.`relance`=0 group by `c`.`no_compte`  having (date(`derniere_obs_modif`) < date(now()) - interval 35 DAY or `derniere_obs_modif` is null) and `inscription_date` < date(now()) - interval 35 DAY order by `derniere_obs_modif` desc limit 20";
+	static $sql = "select `c`.`no_compte` as `no_compte`,`c`.`nom` as `nom`,max(`o`.`last_write_db`) as `derniere_obs_modif`,`c`.`email1` as `email1`,`c`.`email2` as `email2`,`c`.`inscription_date` as `inscription_date` from `compte` as     `c` left join `observation` as `o` on `c`.`no_compte` = `o`.`no_compte` where `c`.`no_compte` != 2 and `c`.`relance`=0 group by `c`.`no_compte`  having (date(`derniere_obs_modif`) < date(now()) - interval 35 DAY or `derniere_obs_modif` is null) and `inscription_date` < date(now()) - interval 35 DAY order by `derniere_obs_modif` desc limit 20";
 
 	static $statement = $db->prepare($sql);
 	$statement->execute();
