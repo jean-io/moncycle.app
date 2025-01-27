@@ -66,6 +66,29 @@ CREATE TABLE `jetton` (
   CONSTRAINT `observation_ibfk_2` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
+CREATE TABLE `description` (
+  `no_description` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `no_compte` mediumint(8) unsigned DEFAULT NULL,
+  `name` varchar(256) COLLATE utf8mb4_bin NOT NULL,
+  `type` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `last_write_db` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  PRIMARY KEY (`no_jetton`),
+  KEY `no_compte` (`no_compte`),
+  UNIQUE KEY `unique_compte_and_name` (`no_compte`,`name`),
+  CONSTRAINT `observation_ibfk_3` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+CREATE TABLE `link_observation_description` (
+  `no_observation` mediumint(8) unsigned NOT NULL,
+  `no_description` mediumint(8) unsigned NOT NULL,
+  `last_write_db` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  KEY `no_observation` (`no_observation`),
+  KEY `no_description` (`no_description`),
+  UNIQUE KEY `unique_observation_and_description` (`no_observation`,`no_description`),
+  CONSTRAINT `observation_ibfk_4` FOREIGN KEY (`no_observation`) REFERENCES `observation` (`no_observation`) ON DELETE CASCADE,
+  CONSTRAINT `observation_ibfk_5` FOREIGN KEY (`no_description`) REFERENCES `description` (`no_description`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
 CREATE TABLE `cle_valeur` (
   `cle` varchar(255) NOT NULL,
   `valeur` bigint(20) unsigned DEFAULT NULL

@@ -49,6 +49,11 @@ if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['date'])) {
 		$ob_db = db_select_observation($db, $date, $compte["no_compte"]);
 		if(isset($ob_db[0])) {
 			$ob_data = array_merge($ob_data, $ob_db[0]);
+			$raw_description = db_select_all_description_for_observation($db, $compte["no_compte"], $ob_data["no_observation"]);
+			$description = [];
+			foreach ($raw_description as $obj) array_push($description, $obj["name"]);
+			if (count($description)>0) $ob_data["sensation"] = implode(", ", $description);
+			else $ob_data["sensation"] = null;
 		}
 		else {
 			$ob_data["err"] = "no data at this date";
@@ -84,17 +89,30 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 	
 			$output = db_select_observation($db, $date, $compte["no_compte"]);
 	
-			if(!isset($output[0])){
-				db_insert_observation($db, $date, $compte["no_compte"]);
-			}
+			$observation_no = null;
+			if(!isset($output[0])) $observation_no = db_insert_observation($db, $date, $compte["no_compte"]);
+			else $observation_no = $output[0]["no_observation"];
 			
-			$sensation = [];
+			$observation = [];
 			foreach ($_POST as $key => $p) {
 				if (!str_starts_with($key, "ob_") || $p=="") continue;
-				array_push($sensation, strtolower(trim($p)));
+				array_push($observation, strtolower(trim($p)));
 			}
-			$sensation_db = implode(", ", $sensation);
-			if ($sensation_db == "") $sensation_db = null;
+			
+			$old_description = db_select_all_description_for_observation($db, $compte["no_compte"], $observation_no);
+			$raw_old_description = [];
+			$description_to_delete = [];
+			foreach ($old_description as $desc) {
+				if (!in_array($desc["name"], $observation)) array_push($description_to_delete, $desc["no_description"]);
+				array_push($raw_old_description, $desc["name"]);
+			}
+			$raw_new_description = [];
+			foreach ($observation as $desc) {
+				if (!in_array($desc, $raw_old_description)) array_push($raw_new_description, $desc);
+			}
+
+			// TODO : DELETE AND CLEAN observation_db
+			$observation_db = null;
 	
 			$temp = null;
 			$htemp = null;
@@ -114,7 +132,19 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 			if (isset($_POST["last_write_client_UTC"]) && date_validate_timestamp(trim($_POST['last_write_client_UTC']))) $last_write_client_UTC = trim($_POST['last_write_client_UTC']);
 			else $last_write_client_UTC = date('Y-m-d H:i:s');
 	
-			db_update_observation($db, $date, $compte["no_compte"], $last_write_client_UTC, $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $sensation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null, $compteur);
+			db_update_observation($db, $date, $compte["no_compte"], $last_write_client_UTC, $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $observation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null, $compteur);
+			
+			foreach ($description_to_delete as $no_desc) db_delete_linked_descriptions ($db, $observation_no, $no_desc);
+
+			foreach ($raw_new_description as $desc) {
+				$db_description = db_select_description_from_name($db, $compte["no_compte"], $desc);
+				$description_no = null;
+				if (!isset($db_description) || !isset($db_description[0])) {
+					$description_no = db_insert_description($db, $compte["no_compte"], $desc, 0);
+				}
+				else $description_no = $db_description[0]["no_description"];
+				db_insert_link_description_observation($db, $observation_no, $description_no);
+			}
 
 			$db->exec("UNLOCK TABLES");
 

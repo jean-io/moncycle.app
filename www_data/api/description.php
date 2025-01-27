@@ -19,17 +19,12 @@ $db = db_open();
 $compte = sec_auth_jetton($db);
 sec_exit_si_non_connecte($compte);
 
-$sensations_brut = db_select_sensations($db, $compte["no_compte"]);
+$raw_description = db_select_description_with_count($db, $compte["no_compte"]);
 
-$sensations = [];
-foreach ($sensations_brut as $obj) {
-	$i = explode(',', $obj["sensation"]);
-	foreach ($i as $sens) {
-		$sens = strtolower(trim($sens));
-		if (!isset($sensations[$sens])) $sensations[$sens] = 0;
-		$sensations[$sens] += $obj["nb"];
-	}
+$description = [];
+foreach ($raw_description as $obj) {
+	$description[$obj["name"]] = $obj["use_count"];
 } 
 
-echo json_encode($sensations);
+echo json_encode($description);
 

@@ -37,11 +37,67 @@ function db_select_grossesses($db, $no_compte) {
 	return $statement->fetchAll(PDO::FETCH_COLUMN);
 }
 
-function db_select_sensations($db, $no_compte) {
-	static $sql = "select distinct sensation, count(sensation) as nb from observation where sensation is not null and no_compte=:no_compte group by sensation order by nb desc";
+function db_select_description_with_count($db, $no_compte) {
+	static $sql = "SELECT d.no_description, d.name, COUNT(od.no_observation) AS use_count, d.no_compte, d.name, d.type FROM description AS d LEFT JOIN link_observation_description AS od ON od.no_description = d.no_description WHERE d.no_compte = :no_compte GROUP BY d.no_description ORDER BY use_count DESC";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_select_all_description_for_observation($db, $no_compte, $no_observation) {
+	static $sql = "SELECT ld.no_description, ld.no_description, d.no_compte, d.name, d.type FROM link_observation_description AS ld LEFT JOIN description AS d ON ld.no_description = d.no_description WHERE ld.no_observation = :no_observation AND d.no_compte = :no_compte";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":no_observation", $no_observation, PDO::PARAM_INT);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_delete_linked_descriptions ($db, $no_observation, $no_description) {
+	static $sql = "DELETE FROM link_observation_description WHERE no_description = :no_description AND no_observation = :no_observation";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
+	$statement->bindValue(":no_observation", $no_observation, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->rowCount();
+}
+
+function db_select_description_from_name($db, $no_compte, $name) {
+	static $sql = "SELECT * FROM description WHERE name LIKE :name AND no_compte= :no_compte LIMIT 1";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":name", $name, PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_insert_description($db, $no_compte, $name, $desc_type) {
+	static $sql = "INSERT INTO `description` (`no_compte`, `name`, `type`) VALUES (:no_compte, :name, :desc_type)";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":desc_type", $desc_type, PDO::PARAM_INT);
+	$statement->bindValue(":name", $name, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $db->lastInsertId();
+}
+
+function db_insert_link_description_observation($db, $observation_no, $description_no) {
+	static $sql = "INSERT INTO `link_observation_description` (`no_observation`, `no_description`) VALUES (:observation_no, :description_no)";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":observation_no", $observation_no, PDO::PARAM_INT);
+	$statement->bindValue(":description_no", $description_no, PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -264,7 +320,7 @@ function db_insert_observation ($db, $date, $no_compte) {
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->execute();
 
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
+	return $db->lastInsertId();
 }
 
 function db_update_observation ($db, $date, $no_compte, $last_write_client_UTC, $gommette='', $note_fc=null, $fleche_fc=null, $sensation=null, $temp=null, $htemp=null, $jour_sommet=null, $union_sex=null, $premier_jour=null, $jenesaispas=null, $grossesse=null, $commentaire=null, $compteur=null) {

@@ -60,7 +60,7 @@ moncycle_app = {
 		if (localStorage.constante != null) {
 			moncycle_app.constante = JSON.parse(localStorage.constante);
 		}
-		$.get("api/sensation", {}).done(function(data) {
+		$.get("api/description", {}).done(function(data) {
 			moncycle_app.sensation = data;
 			localStorage.sensation = JSON.stringify(data);
 		}).fail(moncycle_app.redirection_connexion);
