@@ -66,14 +66,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == "DELETE") {
 // HTTP GET method, getting all descriptions
 else {
 
-	$raw_description = db_select_description_with_count($db, $compte["no_compte"]);
-
-	$description = [];
-	foreach ($raw_description as $obj) {
-		$description[$obj["name"]] = $obj["use_count"];
-	} 
-
-	$ret = $description;
+	$ret = $description = db_select_description_with_count($db, $compte["no_compte"]);
 
 }
 

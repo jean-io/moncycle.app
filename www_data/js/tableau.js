@@ -61,8 +61,10 @@ moncycle_app = {
 			moncycle_app.constante = JSON.parse(localStorage.constante);
 		}
 		$.get("api/description", {}).done(function(data) {
-			moncycle_app.sensation = data;
-			localStorage.sensation = JSON.stringify(data);
+			let transformed_data = {};
+			for (let i = 0; i < data.length; i++) transformed_data[data[i]["name"]] = data[i]["use_count"];
+			moncycle_app.sensation = transformed_data;
+			localStorage.sensation = JSON.stringify(transformed_data);
 		}).fail(moncycle_app.redirection_connexion);
 		$.get("api/constante", {}).done(function(data) {
 			moncycle_app.constante = data;
