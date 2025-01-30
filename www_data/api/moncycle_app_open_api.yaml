@@ -322,7 +322,7 @@ paths:
     post:
       tags:
         - observations
-      summary: creating new observations
+      summary: creating or updating descriptions
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -339,7 +339,12 @@ paths:
                     - 0
                     - 1
                     - 2
-        required: true
+                new_name:
+                  type: string
+                  description: to rename a description
+              required:
+                - name
+                - type
       responses:
         200:
           description: OK

@@ -43,11 +43,31 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 		$raw_description = db_select_description_with_count($db, $compte["no_compte"]);
 
-		$already_exist = false;
-		foreach ($raw_description as $desc) if ($desc["name"] == $desc_name) $already_exist = true;
+		$old_description = [];
+		foreach ($raw_description as $desc) if ($desc["name"] == $desc_name) $old_description = $desc;
     
-		if ($already_exist) {
-			$ret["err"] = "Error : this description already exist for this account.";
+		if (isset($old_description["no_description"])) {
+			$ret["ok"] = "Description of observation " . $desc_name . " already existing.";
+
+			if (!empty($_POST["new_name"]) && strpos(',',$_POST["new_name"])==false) {
+				$new_desc_name = trim($_POST["new_name"]);
+
+				$already_exist_rename = false;
+				foreach ($raw_description as $desc) if ($desc["name"] == $new_desc_name) $already_exist_rename = true;
+
+				if ($already_exist_rename) {
+					$ret["err"] = "Error : 'new_name' argument give a name that already exist.";
+				}
+				else {
+					db_update_description_name($db, $compte["no_compte"], $old_description["no_description"], $new_desc_name);
+					$ret["renamed"] = "Description of observation " . $desc_name . " renamed to " . $new_desc_name;
+				}
+			}
+
+			if ($old_description["type"] != $desc_type) {
+				db_update_description_type ($db, $compte["no_compte"], $old_description["no_description"], $desc_type);
+				$ret["type_updated"] = "Type of description updated from " . $old_description["type"] . " to " . $desc_type;
+			}
 		}
 		else {
 			db_insert_description($db, $compte["no_compte"], $desc_name, $desc_type);

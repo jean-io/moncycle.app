@@ -92,6 +92,30 @@ function db_insert_description($db, $no_compte, $name, $desc_type) {
 	return $db->lastInsertId();
 }
 
+function db_update_description_name ($db, $no_compte, $no_description, $name) {
+	static $sql ="UPDATE description SET name = :name WHERE no_description = :no_description AND no_compte = :no_compte";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":name", $name, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_update_description_type ($db, $no_compte, $no_description, $type) {
+	static $sql ="UPDATE description SET type = :type WHERE no_description = :no_description AND no_compte = :no_compte";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":type", $type, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
 function db_insert_link_description_observation($db, $observation_no, $description_no) {
 	static $sql = "INSERT INTO `link_observation_description` (`no_observation`, `no_description`) VALUES (:observation_no, :description_no)";
 
@@ -124,7 +148,7 @@ function db_select_compte_par_mail($db, $mail) {
 }
 
 function db_update_compte_connecte($db, $no_compte){
-	$sql ="update compte set derniere_co_date = now(), nb_co_echoue = 0, relance = 0 where no_compte = :no_compte";
+	static $sql ="update compte set derniere_co_date = now(), nb_co_echoue = 0, relance = 0 where no_compte = :no_compte";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
@@ -134,7 +158,7 @@ function db_update_compte_connecte($db, $no_compte){
 }
 
 function db_update_co_echoue($db, $mail){
-	$sql ="update compte set nb_co_echoue = nb_co_echoue + 1 where email1 like :email1";
+	static $sql ="update compte set nb_co_echoue = nb_co_echoue + 1 where email1 like :email1";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":email1", $mail, PDO::PARAM_STR);
