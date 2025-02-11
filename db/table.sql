@@ -71,6 +71,7 @@ CREATE TABLE `description` (
   `no_compte` mediumint(8) unsigned DEFAULT NULL,
   `name` varchar(256) COLLATE utf8mb4_bin NOT NULL,
   `type` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `last_write_client_UTC` timestamp NULL DEFAULT NULL,
   `last_write_db` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   PRIMARY KEY (`no_jetton`),
   KEY `no_compte` (`no_compte`),

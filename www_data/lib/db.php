@@ -38,9 +38,20 @@ function db_select_grossesses($db, $no_compte) {
 }
 
 function db_select_description_with_count($db, $no_compte) {
-	static $sql = "SELECT d.no_description, d.name, COUNT(od.no_observation) AS use_count, d.no_compte, d.name, d.type FROM description AS d LEFT JOIN link_observation_description AS od ON od.no_description = d.no_description WHERE d.no_compte = :no_compte GROUP BY d.no_description ORDER BY use_count DESC";
+	static $sql = "SELECT d.no_description, d.name, COUNT(od.no_observation) AS use_count, d.no_compte, d.name, d.type, d.last_write_client_UTC, d.last_write_db FROM description AS d LEFT JOIN link_observation_description AS od ON od.no_description = d.no_description WHERE d.no_compte = :no_compte GROUP BY d.no_description ORDER BY use_count DESC";
 
 	static $statement = $db->prepare($sql);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_select_description_with_count_modified ($db, $modified_since, $no_compte) {
+	static $sql = "SELECT d.no_description, d.name, COUNT(od.no_observation) AS use_count, d.no_compte, d.name, d.type, d.last_write_client_UTC, d.last_write_db FROM description AS d LEFT JOIN link_observation_description AS od ON od.no_description = d.no_description WHERE d.no_compte = :no_compte AND d.last_write_client_UTC >= :modified_since GROUP BY d.no_description ORDER BY use_count DESC";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":modified_since", $modified_since, PDO::PARAM_STR);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->execute();
 
@@ -64,6 +75,17 @@ function db_delete_linked_descriptions ($db, $no_observation, $no_description) {
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
 	$statement->bindValue(":no_observation", $no_observation, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->rowCount();
+}
+
+function db_delete_descriptions ($db, $name, $no_compte) {
+	static $sql = "DELETE FROM description WHERE name = :name AND no_compte = :no_compte";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":name", $name, PDO::PARAM_STR);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->rowCount();
@@ -99,6 +121,18 @@ function db_update_description_name ($db, $no_compte, $no_description, $name) {
 	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
 	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
 	$statement->bindValue(":name", $name, PDO::PARAM_STR);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_update_description_client_timestamp ($db, $no_compte, $no_description, $last_write_client_UTC) {
+	static $sql = "UPDATE description SET last_write_client_UTC = :last_write_client_UTC WHERE no_description = :no_description AND no_compte = :no_compte";
+
+	$statement = $db->prepare($sql);
+	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
+	$statement->bindValue(":no_compte", $no_compte, PDO::PARAM_INT);
+	$statement->bindValue(":last_write_client_UTC", $last_write_client_UTC, PDO::PARAM_STR);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);

@@ -85,7 +85,7 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 
 		try {
 
-			$db->exec("LOCK TABLES observation LOW_PRIORITY WRITE");
+			$db->exec("START TRANSACTION");
 	
 			$output = db_select_observation($db, $date, $compte["no_compte"]);
 	
@@ -146,10 +146,10 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 				db_insert_link_description_observation($db, $observation_no, $description_no);
 			}
 
-			$db->exec("UNLOCK TABLES");
+			$db->exec("COMMIT");
 
 		} catch (\Throwable $th) {
-			$db->exec("UNLOCK TABLES");
+			$db->exec("ROLLBACK");
 			$result["outcome"] = "ko";
 			throw $th;
 		}

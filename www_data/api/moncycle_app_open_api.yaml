@@ -302,59 +302,6 @@ paths:
         - HTTPtoken: []
 
 
-  /description:
-
-
-    get:
-      tags:
-        - observations
-      summary: Lecture de toutes les sensations et visuels déja renseignés
-      responses:
-        200:
-          description: OK - le chiffre correspond au nombre d'occurences
-        401:
-          description: authentification requise
-      security:
-        - HTTPcookie: []
-        - HTTPtoken: []
-
-
-    post:
-      tags:
-        - observations
-      summary: creating or updating descriptions
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  description: description to be created separated by a comma (commas are forbiddens)
-                type:
-                  type: integer
-                  description: type of description (0 => undefined, 1 => observation, 2 => sensation)
-                  enum:
-                    - 0
-                    - 1
-                    - 2
-                new_name:
-                  type: string
-                  description: to rename a description
-              required:
-                - name
-                - type
-      responses:
-        200:
-          description: OK
-        401:
-          description: authentification requise
-      security:
-        - HTTPcookie: []
-        - HTTPtoken: []
-
-
 
   /observation:
 
@@ -429,6 +376,91 @@ paths:
           description: OK
         401:
           description: authentification requise
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+  /description:
+
+
+    get:
+      tags:
+        - observations
+      summary: Reading of all descriptions existing in DB sorted by most used. Field 'use_count' is giving the number of how many time an observation is used.
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification needed
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+
+
+    post:
+      tags:
+        - observations
+      summary: creating or updating descriptions
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: description to be created (or renamed)
+                type:
+                  type: integer
+                  description: type of description (0 => undefined, 1 => observation, 2 => sensation)
+                  enum:
+                    - 0
+                    - 1
+                    - 2
+                new_name:
+                  type: string
+                  description: to rename a description
+                last_write_client_UTC:
+                  type: string
+                  description: client side UTC update timestamp, format should be YYYY-MM-DD HH:MM:SS. Will be set by server if not present.
+                  format: string
+                  example: "2025-01-23 15:30:45"
+                  pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+              required:
+                - name
+                - type
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification needed
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
+    delete:
+      tags:
+        - observations
+      summary: deletion of a description
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: description to be deleted
+              required:
+                - name
+        required: true
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification needed
       security:
         - HTTPcookie: []
         - HTTPtoken: []
