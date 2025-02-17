@@ -73,7 +73,7 @@ CREATE TABLE `description` (
   `type` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `last_write_client_UTC` timestamp NULL DEFAULT NULL,
   `last_write_db` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
-  PRIMARY KEY (`no_jetton`),
+  PRIMARY KEY (`no_description`),
   KEY `no_compte` (`no_compte`),
   UNIQUE KEY `unique_compte_and_name` (`no_compte`,`name`),
   CONSTRAINT `observation_ibfk_3` FOREIGN KEY (`no_compte`) REFERENCES `compte` (`no_compte`) ON DELETE CASCADE
