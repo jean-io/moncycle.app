@@ -12,6 +12,16 @@ require_once "../lib/db.php";
 
 header("Content-Type: text/plain");
 
+print("MONCYCLE.APP");
+print(PHP_EOL);
+
+print("DB migration script from v14 to v15.");
+print(PHP_EOL);
+
+print("-----");
+print(PHP_EOL);
+print(PHP_EOL);
+
 $db = db_open();
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -24,10 +34,11 @@ try {
     $statement_insert_desc = $db->prepare("INSERT INTO `description` (`no_compte`, `name`, `type`) VALUES (:no_compte, :name, 0)");
     $statement_insert_link = $db->prepare("INSERT INTO `link_observation_description` (`no_observation`, `no_description`) VALUES (:observation_no, :description_no)");
 
-
 	$statement_select_obs->execute();
 
 	$observations = $statement_select_obs->fetchAll(PDO::FETCH_ASSOC);
+
+    $cached_descriptions = [];
 
     // ITERATE ON ALL OBSERVATIONS
     foreach ($observations as $obs) {
@@ -36,6 +47,9 @@ try {
         print("; obs " . $obs["no_observation"]);
         print(" " . $obs["date_obs"]);
         
+        if (!isset($cached_descriptions[$obs["no_compte"]])) {
+            $cached_descriptions[$obs["no_compte"]] = [];
+        }
 
         if (isset($obs["sensation"]) && $obs["sensation"]!=null && !empty($obs["sensation"])) {
 
@@ -45,7 +59,7 @@ try {
             foreach ($sensations as $sens) {
                 $sens = trim($sens);
                 print(PHP_EOL);
-                print("         # ");
+                print("      # ");
                 print($sens);
                 
                 $statement_select_desc->bindValue(":desc_name", $sens, PDO::PARAM_STR);
@@ -59,7 +73,11 @@ try {
                 try {
                     $no_desc = 0;
 
-                    if (!isset($description["no_description"]) || isset($description["no_description"])<0) {
+                    if (isset($cached_descriptions[$obs["no_compte"]][$sens])) {
+                        print(" Cached: "); // DESC NO PRESENT IN CACHE
+                        $no_desc = $cached_descriptions[$obs["no_compte"]][$sens];
+                    }
+                    elseif (!isset($description["no_description"]) || isset($description["no_description"])<0) {
                         print(" Inserting: "); // INSERTING A NEW DESC FOR THIS ACCOUNT
                         $statement_insert_desc->bindValue(":no_compte", $obs["no_compte"], PDO::PARAM_INT);
                         $statement_insert_desc->bindValue(":name", $sens, PDO::PARAM_STR);
@@ -73,6 +91,11 @@ try {
     
                     print($no_desc); // ID OF DESCRIPTION
     
+                    // CACHING DESCRIPTION NUMBER
+                    if (!isset($cached_descriptions[$obs["no_compte"]][$sens])) {
+                        $cached_descriptions[$obs["no_compte"]][$sens] = $no_desc;
+                    }
+
                     $statement_insert_link->bindValue(":observation_no", $obs["no_observation"], PDO::PARAM_INT);
                     $statement_insert_link->bindValue(":description_no", $no_desc, PDO::PARAM_INT);
                     $statement_insert_link->execute();
@@ -90,9 +113,7 @@ try {
         print(PHP_EOL);
     }
 
-    $db->exec("ROLLBACK");
-
-    // $db->exec("COMMIT");
+    $db->exec("COMMIT");
 
 } catch (\Throwable $th) {
     $db->exec("ROLLBACK");

@@ -96,7 +96,12 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 			$observation = [];
 			foreach ($_POST as $key => $p) {
 				if (!str_starts_with($key, "ob_") || $p=="") continue;
-				array_push($observation, strtolower(trim($p)));
+				if ($key == "ob_extra") {
+					foreach (explode(",", $_POST["ob_extra"]) as $cp) {
+						array_push($observation, strtolower(trim($cp)));
+					}
+				}
+				else array_push($observation, strtolower(trim($p)));
 			}
 			
 			$old_description = db_select_all_description_for_observation($db, $compte["no_compte"], $observation_no);
