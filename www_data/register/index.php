@@ -179,14 +179,17 @@ catch (Exception $e){
 		<meta property="og:url" content="https://www.moncycle.app/" />
 		<meta property="og:image" content="/img/moncycleapp_apercu.jpg" />
 		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
-		<link rel="stylesheet" href="../css/commun.css?v=<?= filemtime('../css/commun.css') ?>" />
-		<link rel="stylesheet" href="../css/compte.css?v=<?= filemtime('../css/compte.css') ?>" />
+		<link rel="stylesheet" href="../css/commun.css" />
+		<link rel="stylesheet" href="../css/account.css" />
+		<script>
+			// alert("123");
+		</script>
 	</head>
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<a class="decouverte" href="https://www.moncycle.app"><button type="button" class="nav_button">découvrir moncycle.app 😍</button></a>
-			<a href="/connexion?email1=<?= $_POST['email1'] ?? "" ?>"><button type="button" class="nav_button">Se connecter 🔑</button></a>
+			<a href="/auth?email1=<?= $_POST['email1'] ?? "" ?>"><button type="button" class="nav_button">Se connecter 🔑</button></a>
 			<span class="vert"><?= $succes? "<br /><br />" . $succes : "" ?></span>
 			<span class="rouge"><?= $output? "<br /><br />" . $output : "" ?></span>
 		</center>

@@ -52,7 +52,7 @@ moncycle_app = {
 	timeline_asc : true,
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
-		if (!localStorage.auth) window.location.replace('/connexion');
+		if (!localStorage.auth) window.location.replace('/auth');
 		moncycle_app.date_chargement = moncycle_app.date.str(moncycle_app.date.now());
 		if (localStorage.sensation != null) {
 			moncycle_app.sensation = JSON.parse(localStorage.sensation);
@@ -161,7 +161,7 @@ moncycle_app = {
 	redirection_connexion : function(err) {
 		if (err.status == 401 || err.status == 403 || err.status == 407) {	
 			window.localStorage.clear();
-			window.location.replace('/connexion');
+			window.location.replace('/auth');
 		}
 	},
 	charger_actu : function() {

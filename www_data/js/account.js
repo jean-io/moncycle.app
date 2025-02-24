@@ -38,7 +38,7 @@ $(document).ready(function(){
 	}).fail(function (err) {
 		if (err.status == 401 || err.status == 403 || err.status == 407) {	
 			window.localStorage.clear();
-			window.location.replace('/connexion');
+			window.location.replace('/auth');
 		}
 	});
 	$.get("api/version", {}).done(function(data) {
@@ -46,7 +46,7 @@ $(document).ready(function(){
 	}).fail(function (err) {
 		if (err.status == 401 || err.status == 403 || err.status == 407) {	
 			window.localStorage.clear();
-			window.location.replace('/connexion');
+			window.location.replace('/auth');
 		}
 	});
 
@@ -174,7 +174,7 @@ $(document).ready(function(){
 			if (ret.suppr) {
 				window.localStorage.clear();
 				alert(moncycle_app_usr.nom + ", votre compte a bien été supprimé. 😢💔");
-				window.location.replace('connexion');
+				window.location.replace('auth');
 			}
 			else alert(moncycle_app_usr.nom + ", votre compte n'a pas été supprimé: " + ret.msg);
 		}).fail(function(err) {

@@ -52,7 +52,7 @@ function sec_exit_si_non_connecte($compte) {
 
 function sec_redirect_non_connecte($compte) {
 	if (is_null($compte)) {
-		header('Location: connexion');
+		header('Location: auth');
 		http_response_code(401);
 		exit;
 	}

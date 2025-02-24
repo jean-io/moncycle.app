@@ -36,7 +36,7 @@ function mail_body_creation_compte ($nom, $mdp, $mail1) {
 	Voici votre mot de passe temporaire: <b style='font-family: monospace;'>{$mdp}</b><br />
 	Ce mot de passe est à changer dans la page "👨‍💻 Mon compte". Pour protéger vos données, pensez à activer l'authentification multifacteur.<br />
 	<br />
-	<a style='color: #1e824c' href='{$app_url_var}connexion?email1={$mail1}'>connectez-vous</a><br />
+	<a style='color: #1e824c' href='{$app_url_var}auth?email1={$mail1}'>connectez-vous</a><br />
 	<br />
 	À bientôt,<br />
 	<br />
@@ -55,7 +55,7 @@ function mail_body_nouveau_mdp($mdp, $mail1) {
 	Voici un nouveau mot de passe temporaire: <b style='font-family: monospace;'>{$mdp}</b><br />
 	Ce mot de passe est à changer dans la page "👨‍💻 Mon compte".<br />
 	<br />
-	<a style='color: #1e824c' href='{$app_url_var}connexion?email1={$mail1}'>connectez-vous</a><br />
+	<a style='color: #1e824c' href='{$app_url_var}auth?email1={$mail1}'>connectez-vous</a><br />
 	<br />
 	A bientôt,<br />
 	<br />
@@ -91,9 +91,9 @@ function mail_body_relance ($nom, $mail1) {
 	<br />
 	Tout va bien? Comment pouvons-nous vous aider?<br />
 	<ol type='a'>
-		<li>Vous avez perdu votre mot de passe?<br /><a style='color: #1e824c' href='{$app_url_var}inscription?email1={$mail1}'>Réinitialisez votre mot de passe</a></li>
+		<li>Vous avez perdu votre mot de passe?<br /><a style='color: #1e824c' href='{$app_url_var}register?email1={$mail1}'>Réinitialisez votre mot de passe</a></li>
 		<li style="margin-top: 10px">L'application ne vous plaît pas?<br /><a style='color: #1e824c' href='https://forms.gle/aA3GrFHAAx8SFdd47'>Dîtes-nous tout</a></li>
-		<li style="margin-top: 10px">Vous souhaitez simplement vous connecter?<br /><a style='color: #1e824c' href='{$app_url_var}connexion?email1={$mail1}'>C'est par ici</a></li>
+		<li style="margin-top: 10px">Vous souhaitez simplement vous connecter?<br /><a style='color: #1e824c' href='{$app_url_var}auth?email1={$mail1}'>C'est par ici</a></li>
 		<li style="margin-top: 10px">Un problème? Besoin d'aide?<br />Envoyez-nous un mail à <a style='color: #1e824c' href='mailto:bonjour@moncycle.app'>bonjour@moncycle.app</a></li>
 		<li style="margin-top: 10px">Vous ne souhaitez plus utiliser MONCYCLE.APP?<br />Ignorez ce mail, vous n'en recevrez plus d'autre.</li>
 	</ol>

@@ -10,7 +10,7 @@
 <html lang="fr">
 	<head>
 		<meta charset="utf-8" />
-		<title>moncycle.app - connexion</title>
+		<title>moncycle.app - authentification</title>
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
 		<meta name="apple-mobile-web-app-title" content="moncycle.app" />
@@ -26,9 +26,9 @@
 		<meta property="og:url" content="https://www.moncycle.app/" />
 		<meta property="og:image" content="/img/moncycleapp_apercu.jpg" />
 		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
-		<script type="text/javascript" src="vendor/components/jquery/jquery.min.js?v=<?= filemtime('vendor/components/jquery/jquery.min.js') ?>"></script> 
-		<link rel="stylesheet" href="css/commun.css?v=<?= filemtime('css/commun.css') ?>" />
-		<link rel="stylesheet" href="css/compte.css?v=<?= filemtime('css/compte.css') ?>" />
+		<script type="text/javascript" src="vendor/components/jquery/jquery.min.js"></script> 
+		<link rel="stylesheet" href="css/commun.css" />
+		<link rel="stylesheet" href="css/account.css" />
 		<style>
 			.contennu {
 				max-width: 300px;
@@ -38,8 +38,8 @@
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
-			<a href="inscription"><button type="button" class="nav_button">Créer un compte 🚀</button></a>
-			<a href="inscription"><button type="button" class="nav_button">Mot de passe perdu 🤯</button></a>
+			<a href="register"><button type="button" class="nav_button">Créer un compte 🚀</button></a>
+			<a href="register"><button type="button" class="nav_button">Mot de passe perdu 🤯</button></a>
 		</center>
 		<div class="contennu" id="timeline">
 			<h2>Connexion à votre compte</h2>
@@ -56,8 +56,8 @@
 			<br />
 			<input type="submit" value="Connexion &#x1F511;" id="connexion_but"/></form>
 			<br /><br /><br />
-			<center><a class="decouverte" id="but_demo_bill" href="/connexion">compte de démo <b>Billings</b> 🥸</a></center>
-			<center><a class="decouverte" id="but_demo_fc" href="/connexion">compte de démo <b>FertilityCare</b> 🧐</a></center>
+			<center><a class="decouverte" id="but_demo_bill" href="/auth">compte de démo <b>Billings</b> 🥸</a></center>
+			<center><a class="decouverte" id="but_demo_fc" href="/auth">compte de démo <b>FertilityCare</b> 🧐</a></center>
 			<center><a class="decouverte" href="https://www.moncycle.app">découvrir MON<b>CYCLE</b>.APP 😍</a></center>
 			<br /><br /><br />
 		</div>
