@@ -118,6 +118,63 @@ paths:
         - HTTPcookie: []
         - HTTPtoken: []
 
+  /register:
+    post:
+      tags:
+        - compte
+      summary: creating a new account
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - firstname
+                - email1
+                - method
+                - birth_year
+                - captcha
+                - discovered_comment
+              type: object
+              properties:
+                firstname:
+                  type: string
+                  description: first name of woman of firtnames of couple that is using this app
+                email1:
+                  type: string
+                  description: login email address
+                method:
+                  type: integer
+                  description: NFP method (Billings with temperature --> 1, Billings only --> 2, FertilityCare only --> 3, FertilityCare with temperature --> 4)
+                  enum :
+                    - 1
+                    - 2
+                    - 3
+                    - 4
+                birth_year:
+                  type: integer
+                  description: year of birth for stats (dont need to be precise +/- 2 years)
+                captcha:
+                  type: string
+                  description: string contained in captcha imaged (obtained in another API call)
+                discovered_comment:
+                  type: string
+                  description: awnser to quetion asked to user --> how did you discovered this app ?
+                ok_for_research:
+                  type: integer
+                  description: is user ok for sharing anonymous data for research (1 --> yes, 0 --> no)
+                  enum :
+                    - 1
+                    - 0
+        required: true
+      responses:
+        200:
+          description: OK
+        401:
+          description: authentification needed
+      security:
+        - HTTPcookie: []
+        - HTTPtoken: []
+
 
 
   /totp:

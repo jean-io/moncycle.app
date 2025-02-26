@@ -75,14 +75,14 @@ try {
 		if (!CREATION_COMPTE) {
 			$output .= "La création de compte est temporairement désactivée. Veuillez nous excuser pour le désagrément.";
 		}
-		elseif (!isset($_POST["prenom"]) || !isset($_POST["email1"]) || !isset($_POST["age"]) || !filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
+		elseif (!isset($_POST["firstname"]) || !isset($_POST["email1"]) || !isset($_POST["birth_year"]) || !filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 			$output .= "Toutes les données n'ont pas été saisies ou sont erronées.";
 		}
 		elseif (!isset($_POST["email1_conf"]) || trim($_POST["email1"]) != trim($_POST["email1_conf"])) {
 			$output .= "L'addresse mail saisie et sa confirmation ne sont pas identique.";
 		}
 		elseif (isset($_POST["captcha"]) && strlen(trim($_POST["captcha"]))>0 && trim($_POST["captcha"])==$captcha) {
-			$methode = intval($_POST["methode"] ?? 0);
+			$methode = intval($_POST["method"] ?? 0);
 			if ($methode<METHODE_BILLINGS || $methode>METHODE_FERTILITYCARE) $methode=METHODE_BILLINGS;
 			if (intval($_POST["temp"] ?? 0)) {
 				if ($methode == METHODE_BILLINGS)      $methode = METHODE_BILLINGS_TEMP;
@@ -92,16 +92,16 @@ try {
 			$pass_text = sec_motdepasse_aleatoire();
 			$pass_hash = sec_hash($pass_text);
 
-			db_insert_compte($db, $_POST["prenom"], $methode, $_POST["age"], $_POST["email1"],$pass_hash, $_POST["decouvert"] ?? null, $_POST["recherche"] ?? 0);
+			db_insert_compte($db, $_POST["firstname"], $methode, $_POST["birth_year"], $_POST["email1"],$pass_hash, $_POST["discovered_comment"] ?? null, $_POST["recherche"] ?? 0);
 
-			$succes = "Félicitations <b>{$_POST["prenom"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par e-mail à l'addresse <b>{$_POST["email1"]}</b>";
+			$succes = "Félicitations <b>{$_POST["firstname"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par e-mail à l'addresse <b>{$_POST["email1"]}</b>";
 
 			$mail = mail_init();
 			$mail->addAddress($_POST["email1"], $_POST["email1"]);
 
 			$mail->isHTML(false);
 			$mail->Subject = 'Bienvenue et mot de passe';
-			$mail->Body = mail_body_creation_compte($_POST["prenom"], $pass_text, $_POST["email1"]);
+			$mail->Body = mail_body_creation_compte($_POST["firstname"], $pass_text, $_POST["email1"]);
 			$mail->AltBody = 'Bienvenue sur MONCYCLE.APP! Votre mot de passe: ' . $pass_text;
 
 			$mail->send();
@@ -110,6 +110,9 @@ try {
 		else {
 			$output .= "Erreur dans la saisie du captcha.";
 		}
+
+		print($output);
+		exit;
 	} 
 
 
@@ -181,9 +184,7 @@ catch (Exception $e){
 		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
 		<link rel="stylesheet" href="../css/commun.css" />
 		<link rel="stylesheet" href="../css/account.css" />
-		<script>
-			// alert("123");
-		</script>
+		<script type="text/javascript" src="../vendor/components/jquery/jquery.min.js"></script> 
 	</head>
 	<body>
 		<center>
@@ -196,13 +197,13 @@ catch (Exception $e){
 
 		<div class="contennu" id="timeline" <?php if(!empty($succes)): ?>style="display:none;"<?php endif; ?>>
 			<h2>Créer votre compte</h2>
-			<form action="?creation_compte" method="post"><br />
-			<label for="i_prenom">Prénoms:</label><br />
-			<input name="prenom" type="text" maxlength="255" id="i_prenom" required placeholder='ex: "Alice et Benoît" ou "Charlotte"' value="<?= $_POST['prenom'] ?? "" ?>" /><br />
+			<form action="?creation_compte" method="post" id="f_registration"><br />
+			<label for="i_firstname">Prénoms:</label><br />
+			<input name="firstname" type="text" maxlength="255" id="i_firstname" required placeholder='ex: "Alice et Benoît" ou "Charlotte"' value="<?= $_POST['firstname'] ?? "" ?>" /><br />
 			<br />
 			Méthode à suivre:<br />
-			<input type="radio" name="methode" value="2" id="m_glaire" <?php if (($_POST["methode"] ?? 0) ==2): ?>checked<?php endif; ?> required /><label for="m_glaire"><b>Billings</b>: l'évolution de la glaire cervicale seule</label><br />
-			<input type="radio" name="methode" value="3" id="m_fc" <?php if (($_POST["methode"] ?? 0) ==3): ?>checked<?php endif; ?>/><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />
+			<input type="radio" name="method" value="2" id="m_glaire" <?php if (($_POST["method"] ?? 0) ==2): ?>checked<?php endif; ?> required /><label for="m_glaire"><b>Billings</b>: l'évolution de la glaire cervicale seule</label><br />
+			<input type="radio" name="method" value="3" id="m_fc" <?php if (($_POST["method"] ?? 0) ==3): ?>checked<?php endif; ?>/><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />
 			<br />
 			<input type="checkbox" name="temp" value="1" id="m_temp" <?php if (($_POST["temp"] ?? 0) ==1): ?>checked<?php endif; ?>/><label for="m_temp"><b>Température</b>: suivre dans l'application les évolutions de la température corporelle en plus de Billings ou de FertilityCare.</label><br />
 			<br />
@@ -215,10 +216,10 @@ catch (Exception $e){
 			<input name="email1_conf" id="i_email1_conf" type="email" maxlength="255" required placeholder="Entrer une 2ème fois votre adresse mail."  value="<?= $_POST['email1_conf'] ?? "" ?>" /><br />
 			<br />
 			<label for="i_anaissance">Année de naissance:</label><br />
-			<select name="age" id="i_anaissance" required placeholder="">
+			<select name="birth_year" id="i_anaissance" required placeholder="">
 			<option disabled selected class="placeholder">Sélectionner votre année de naissance</option>
 			<?php for ($i = date('Y')-(date('Y')%5)-75; $i < date('Y')-5; $i += 5) { ?>
-				<option <?= $i==($_POST["age"]?? -1) ? "selected" : "" ?>  value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>
+				<option <?= $i==($_POST["birth_year"]?? -1) ? "selected" : "" ?>  value="<?= $i ?>">entre <?= $i ?> et <?= $i+4 ?></option>
 			<?php } ?>
 			</select><br />
 			<br />
@@ -227,7 +228,7 @@ catch (Exception $e){
 			<img src="captcha.php" class="captcha" /><br />
 			<br />
 			<label for="i_comment">Comment avez-vous découvert moncycle.app? Un commentaire?</label><br />
-			<textarea required id="i_comment" name="decouvert" maxlength="255" placeholder="Dites nous tout!"><?= $_POST['decouvert'] ?? "" ?></textarea>
+			<textarea required id="i_comment" name="discovered_comment" maxlength="255" placeholder="Dites nous tout!"><?= $_POST["discovered_comment"] ?? "" ?></textarea>
 			<br />
 			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" <?php if (boolval($_POST["monito"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_monito">📝 L'application nécessite d'être formé aux méthodes naturelles pour être utilisé. Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficultés dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'utilise en contactant une monitrice/instructrice.</label></p>
 			<p><input type="checkbox" required id="jc_gratuit" name="gratuit" value="1" <?php if (boolval($_POST["gratuit"] ?? 0)): ?>checked<?php endif; ?>/> <label for="jc_gratuit">🤝 Je suis d'accord avec <a target="_blank" href="https://www.moncycle.app/#rgpd">la politique de gestion des données</a> conformément à la RGPD. Je consens à partager mes données de cycles menstruels et de sexualité avec l’application.</p>
@@ -246,7 +247,20 @@ catch (Exception $e){
 			<br /><br /><br />
 			<br /><br /><br />
 		</div>
-
+		<script>
+			alert("ok");
+			$("#f_registration").on("submit", function(event) {
+				event.preventDefault();
+				var form_data = $("#f_registration").serializeArray();
+				alert("123");
+				$.ajax({type : 'POST', "url" : ".?creation_compte", "data" : $.param(form_data)}).done(function(ret){
+					console.log(ret);
+					exit;
+				}).fail(function(err) {
+					console.error(err);
+				});
+			});
+		</script>
 
 	</body>
 </html>

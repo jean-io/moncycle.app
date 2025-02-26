@@ -224,7 +224,7 @@ function db_insert_compte($db, $nom, $methode, $age, $mail, $mdp, $decouvert, $r
 	$statement->bindValue(":recherche", $recherche, PDO::PARAM_INT);
 	$statement->execute();
 
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
+	return $db->lastInsertId();
 }
 
 function db_update_compte_param_str($db, $param, $value, $no_compte) {
