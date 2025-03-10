@@ -33,7 +33,7 @@ $result_code = [
 	5 => "Error in captcha input.",
 	6 => "Account successfuly created, but password sending has failed.",
 	7 => "Account already exist.",
-	8 => "Birth year is not reallistic."
+	8 => "Birth year is not reallistic.",
 	100 => "Account successfuly created"
 ];
 

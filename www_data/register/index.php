@@ -236,6 +236,8 @@ catch (Exception $e){
 			<br />
 			<input type="submit" value="Créer mon compte &#x1F942;&#x1F37E;" /></form>
 			<br /><br /><br />
+
+			
 			<h2>Mot de passe perdu</h2>
 			<form action="?nouveau_motdepasse_svp" method="post">
 			<p>Un nouveau mot de passe vous sera envoyé par mail. Ce mot de passe temporaire sera à changer dans votre espace <b>compte</b>.

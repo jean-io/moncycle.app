@@ -31,7 +31,7 @@
 		<link rel="stylesheet" href="css/account.css" />
 		<style>
 			.contennu {
-				max-width: 300px;
+				max-width: 370px;
 			}
 		</style>
 	</head>
@@ -39,7 +39,7 @@
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<a href="register"><button type="button" class="nav_button">Créer un compte 🚀</button></a>
-			<a href="register"><button type="button" class="nav_button">Mot de passe perdu 🤯</button></a>
+			<a href="https://www.moncycle.app" target="_blank"><button type="button" class="nav_button">Découvrir MON<b>CYCLE</b>.APP 😍</button></a>
 		</center>
 		<div class="contennu" id="timeline">
 			<h2>Connexion à votre compte</h2>
@@ -58,8 +58,17 @@
 			<br /><br /><br />
 			<center><a class="decouverte" id="but_demo_bill" href="/auth">compte de démo <b>Billings</b> 🥸</a></center>
 			<center><a class="decouverte" id="but_demo_fc" href="/auth">compte de démo <b>FertilityCare</b> 🧐</a></center>
-			<center><a class="decouverte" href="https://www.moncycle.app">découvrir MON<b>CYCLE</b>.APP 😍</a></center>
-			<br /><br /><br />
+			<br /><br />
+			<h2>Mot de passe perdu</h2>
+			<span id="password_reseted_msg" class="vert"></span>
+			<form method="post" action="api/recover_password" id="reset_form"><br />
+				<label for="r_email1">E-mail:</label><br />
+				<input name="email1" id="r_email1" type="email" required placeholder="adresse mail de connexion"  value="" /><br />
+				<br />
+				<input type="submit" value="Rénitialiser 🤐" id="reset_but"/></form>
+				<br /><br /><br />
+			</form>
+			
 		</div>
 
 		<script>
@@ -87,6 +96,22 @@
 								window.location.replace('..');
 							}
 							else $("#message_err").html(ret.message);
+						});
+					});
+					$("#reset_form").on("submit", function(event) {
+						event.preventDefault();
+						$("#reset_but").prop("disabled", true);
+						$("#reset_but").val("Rénitialiser ⏳");
+						var form_data = $("#reset_form").serializeArray();
+						$.post("api/recover_password", $.param(form_data)).done(function(ret){
+							console.log(ret);
+							$("#reset_but").val("Rénitialiser 🤐");
+							$("#reset_but").prop("disabled", false);
+							if(ret.outcome==100) {
+								$("#reset_form").hide();
+								$("#password_reseted_msg").html("📧 Nouveau mot de passe envoyé par mail à : <br />" + ret.email1 + "<br /><br />(si ce commpte existe)");
+							}
+							
 						});
 					});
 					const email1 = (new URLSearchParams(window.location.search)).get("email1");

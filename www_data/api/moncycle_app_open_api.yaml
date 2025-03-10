@@ -176,6 +176,28 @@ paths:
         - HTTPtoken: []
 
 
+  /recover_password:
+    post:
+      tags:
+        - compte
+      summary: reset password if lost based on email address
+      requestBody:
+        description: login email address that is used to authenticate
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - email1
+              type: object
+              properties:
+                email1:
+                  type: string
+                  description: login email address
+        required: true
+      responses:
+        200:
+          description: OK
+
 
   /totp:
 
