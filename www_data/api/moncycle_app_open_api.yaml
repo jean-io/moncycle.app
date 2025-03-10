@@ -176,6 +176,17 @@ paths:
         - HTTPtoken: []
 
 
+  /register_captcha:
+    get:
+      tags:
+        - compte
+      summary: create a captcha for account creation (this API enpoint should be called before 'register' endpoint)
+      responses:
+        200:
+          description: OK
+
+
+
   /recover_password:
     post:
       tags:

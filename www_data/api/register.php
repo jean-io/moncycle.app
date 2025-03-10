@@ -39,7 +39,7 @@ $result_code = [
 
 $output = [];
 $output["auth"] = 0;
-$output["output"] = 0;
+$output["outcome"] = 0;
 $output["message"] = "";
 
 $db = db_open();
@@ -48,12 +48,12 @@ $db = db_open();
 $compte = sec_auth_jetton($db);
 if (!is_null($compte)) {
 	$output["auth"] = $compte["no_compte"];
-	$output["output"] = 1;
+	$output["outcome"] = 1;
 }
 
 // IF ACCOUNT CREATION IS DISABLED
 elseif (!CREATION_COMPTE) {
-	$output["output"] = 2;
+	$output["outcome"] = 2;
 }
 
 // ANALYSING USER INPUT FOR ACCOUNT CREATION
@@ -67,25 +67,28 @@ else {
 		$db_ret = db_select_jetton_captcha($db, $jetton);
 		if (isset($db_ret[0]["no_jetton"])) {
 			db_update_jetton_use($db, $db_ret[0]["no_jetton"]);
-			$captcha = $db_ret[0]["captcha"]; 
+			$captcha = $db_ret[0]["captcha"];
+
+			// SECURITY : THIS PREVENT CAPTCAH RE-USE
+			db_update_jetton_captcha($db, $jetton, null);
 		}
 	}
 
-	// CHECKING USER INOUT
+	// CHECKING USER INPUT
 	if (!isset($_POST["firstname"]) || !isset($_POST["email1"]) || !isset($_POST["birth_year"]) || !isset($_POST["birth_year"])) {
-		$output["output"] = 3;
+		$output["outcome"] = 3;
 	}
 	elseif (!filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
-		$output["output"] = 4;
+		$output["outcome"] = 4;
 	}
-	elseif (!isset($_POST["captcha"]) || strlen(trim($_POST["captcha"]))<=0 || trim($_POST["captcha"])!=$captcha) {
-		$output["output"] = 5;
+	elseif (!isset($_POST["captcha"]) || strlen(trim($_POST["captcha"]))<=0 || is_null($captcha) || trim($_POST["captcha"])!=$captcha) {
+		$output["outcome"] = 5;
 	}
 	elseif (boolval(db_select_compte_existe($db,$_POST["email1"])[0]["compte_existe"])) {
-		$output["output"] = 7;
+		$output["outcome"] = 7;
 	}
 	elseif (intval($_POST["birth_year"]) < (intval(date("Y"))-100) || intval($_POST["birth_year"]) > intval(date("Y"))) {
-		$output["output"] = 8;
+		$output["outcome"] = 8;
 	}
 	else {
 
@@ -102,11 +105,10 @@ else {
 
 		$output["new_account_no"] = db_insert_compte($db, $_POST["firstname"], $methode, $_POST["birth_year"], $_POST["email1"],$pass_hash, $_POST["discovered_comment"] ?? null, $_POST["ok_for_research"] ?? 0);
 
-		$output["succes"] = "Félicitations <b>{$_POST["firstname"]}</b>: votre compte a été créé! &#x1F525;<br />Votre mot de passe vous a été envoyé par e-mail à l'addresse <b>{$_POST["email1"]}</b>";
 		$output["email1"] = $_POST["email1"];
 		$output["name"] = $_POST["firstname"];
 
-		$output["output"] = 6;
+		$output["outcome"] = 6;
 
 		// MAIL SENDING TO USER
 		$mail = mail_init();
@@ -119,12 +121,12 @@ else {
 
 		$mail->send();
 
-		$output["output"] = 100;
+		$output["outcome"] = 100;
 	}
 
 }
 
 
-$output["message"] = $result_code[$output["output"]];
+$output["message"] = $result_code[$output["outcome"]];
 
 echo json_encode($output);

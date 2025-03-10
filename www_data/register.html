@@ -1,0 +1,154 @@
+<!doctype html>
+<!--
+** moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/jean-io/moncycle.app
+-->
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+		<meta name="apple-mobile-web-app-title" content="moncycle.app" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="apple-touch-icon" href="/img/moncycleapp512.jpg" />
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content="black" />
+		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: light)" content="light-content" />
+		<meta name="apple-mobile-web-app-status-bar-style" media="(prefers-color-scheme: dark)" content="dark-content" />
+		<title>moncycle.app - inscription</title>
+		<meta name="description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
+		<meta property="og:title" content="MONCYCLE.APP" />
+		<meta property="og:type" content="siteweb" />
+		<meta property="og:url" content="https://www.moncycle.app/" />
+		<meta property="og:image" content="/img/moncycleapp_apercu.jpg" />
+		<meta property="og:description" content="Application de suivi de cycle pour les méthodes naturelles de régulation des naissances." />
+		<link rel="stylesheet" href="css/commun.css" />
+		<link rel="stylesheet" href="css/account.css" />
+		<script type="text/javascript" src="vendor/components/jquery/jquery.min.js"></script> 
+	</head>
+	<body>
+		<center>
+			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
+			<a href="/auth"><button type="button" class="nav_button">Se connecter 🔑</button></a>
+			<a class="decouverte" href="https://www.moncycle.app" target="_blank"><button type="button" class="nav_button">découvrir moncycle.app 😍</button></a>
+			<span class="vert"></span>
+			<span class="rouge"></span>
+		</center>
+
+		<div class="contennu vert" id="register_ok" style="display:none">
+			<center>
+				<br /><br />
+				<b>Félicitation <span id="success_name"></span>! 🍾🥂</b><br />
+				Vous avez maintenant une application pour suivre votre cycle.
+				<br /><br /><br />
+				Votre mot de passe a été envoyé à l'addresse : <b><span id="success_email"></span></b><br />
+				Pensez bien à le changer dans la rubrique <b>mon compte</b> une fois connecté.
+			</center>
+		</div>
+		<div class="contennu" id="register_form">
+			<h2>Créer votre compte</h2>
+			<form action="api/register" method="post" id="f_registration"><br />
+			<label for="i_firstname">Prénoms:</label><br />
+			<input name="firstname" type="text" maxlength="255" id="i_firstname" required placeholder='ex: "Alice et Benoît" ou "Charlotte"' /><br />
+			<br />
+			Méthode à suivre:<br />
+			<input type="radio" name="method" value="2" id="m_glaire" required /><label for="m_glaire"><b>Billings</b>: l'évolution de la glaire cervicale seule</label><br />
+			<input type="radio" name="method" value="3" id="m_fc" /><label for="m_fc"><b>FertilityCare</b>: l'évolution de la glaire cervicale + notation</label><br />
+			<br />
+			<input type="checkbox" name="temp" value="1" id="m_temp" /><label for="m_temp"><b>Température</b>: suivre dans l'application les évolutions de la température corporelle en plus de Billings ou de FertilityCare.</label><br />
+			<br />
+			<span class="label_info">Si vous suivez une méthode symptothermique (Cyclamen, SensiPlan, ...), vous pouvez cocher "Billings" avec "température". Pour ces méthodes symptothermiques, l'application est incomplète car elle ne propose pas une interprétation des courbes de températures efficace. Vous pourrez modifier ce choix dans la rubrique "mon compte" sans perte de données une fois votre compte créé.</span><br />
+			<br />
+			<label for="i_email1">E-mail:</label><br />
+			<input name="email1" id="i_email1" type="email" maxlength="255" required placeholder="Entrer votre adresse mail." /><br />
+			<br />
+			<label for="i_email1_conf">Confirmer (re-saisir) votre e-mail:</label><br />
+			<input name="email1_conf" id="i_email1_conf" type="email" maxlength="255" required placeholder="Entrer une 2ème fois votre adresse mail." /><br />
+			<br />
+			<label for="i_anaissance">Année de naissance:</label><br />
+			<select name="birth_year" id="i_anaissance" required placeholder="">
+				<option disabled selected class="placeholder">Sélectionner votre année de naissance</option>
+			</select><br />
+			<br />
+			<label for="i_captcha">Captcha:</label><br />
+			<input name="captcha" id="i_captcha" type="text" maxlength="6" required placeholder="Entrer les lettres ou chiffres affichés ci-dessous." /><br />
+			<img src="api/register_captcha.php" class="captcha" id="r_captcha" /><br />
+			<br />
+			<label for="i_comment">Comment avez-vous découvert moncycle.app? Un commentaire?</label><br />
+			<textarea required id="i_comment" name="discovered_comment" maxlength="255" placeholder="Dites nous tout!"></textarea>
+			<br />
+			<p><input type="checkbox" required id="jc_monito" name="monito" value="1" /> <label for="jc_monito">📝 L'application nécessite d'être formé aux méthodes naturelles pour être utilisé. Je comprends que moncycle.app est seulement un support pour noter les différentes informations de mon cycle. En cas de difficultés dans la tenue de mon tableau, je me tournerai vers l'association qui propose la méthode que j'utilise en contactant une monitrice/instructrice.</label></p>
+			<p><input type="checkbox" required id="jc_gratuit" name="gratuit" value="1" /> <label for="jc_gratuit">🤝 Je suis d'accord avec <a target="_blank" href="https://www.moncycle.app/#rgpd">la politique de gestion des données</a> conformément à la RGPD. Je consens à partager mes données de cycles menstruels et de sexualité avec l’application.</p>
+			<p><input type="checkbox" id="jc_recherche" name="recherche" value="1" /> <label for="jc_recherche">👩‍🔬 J'autorise des exports de la base de données avec mes cycles anonymisés pour contribuer à des programmes de recherches sur les méthodes naturelles ou le cycle féminin. (vous pourrez modifier ce choix dans la rubrique "mon compte") - OPTIONNEL</p>
+			<br />
+			<input type="submit" id="but_register" value="Créer mon compte 🥳" /></form>
+			<br /><br />
+			<span class="rouge" id="register_error_msg" ></span>
+			<br /><br /><br /><br />
+		</div>
+		<script>
+			if (parseInt(localStorage.auth)>0) {
+				window.location.replace('..');
+			}
+			else {
+				window.localStorage.clear();
+				$(document).ready(function(){
+					let year = new Date().getFullYear();
+					yera = year - (year%5);
+					for (let yy = year-100; yy < year; yy+=5) {
+						$("#i_anaissance").append(`<option value="${yy}">entre ${yy} et ${yy+4}</option>`);
+					}
+					$("#f_registration").on("submit", function(event) {
+						event.preventDefault();
+						$("#register_error_msg").html("");
+						if ($("#i_email1").val() != $("#i_email1_conf").val()) {
+							$("#register_error_msg").html("L'addresse email et sa confirmation ne sont pas identique.");
+							return;
+						}
+						$("#but_register").prop("disabled", true);
+						$("#but_register").val("Créer mon compte ⏳");
+						let reactivate_form = function() {
+							$("#but_register").prop("disabled", false);
+							$("#but_register").val("Créer mon compte 🥳");
+							$("#r_captcha").attr("src", $("#r_captcha").attr("src") + "?v=" + new Date().getTime());
+							$("#i_captcha").val('');
+						}
+						let form_data = $("#f_registration").serializeArray();
+						$.ajax({type : 'POST', "url" : "api/register", "data" : $.param(form_data)}).done(function(ret){
+							console.log(ret);
+							if (ret.outcome == 100) {
+								$("#success_name").text(ret.name);
+								$("#success_email").text(ret.email1);
+								$("#register_form").hide();
+								$("#register_ok").show();
+							}
+							else {
+								const return_codes = {
+									0: "Erreur inconnue.",
+									1: "Compte déjà connecté.",
+									2: "La création de compte est désactivée.",
+									3: "Données manquantes pour créer le compte.",
+									4: "L'adresse email renseignée n'est pas valide.",
+									5: "Erreur dans la saisie du captcha.",
+									6: "Le compte a bien été créé, mais le mail avec le mot de passe n'a pas été envoyé.",
+									7: "Un compte existe déjà pour cette adresse email.",
+									8: "La date de naissance n'est pas réaliste."
+								};
+								$("#register_error_msg").html(return_codes[ret.outcome]);
+								reactivate_form();
+							};
+						}).fail(function(err) {
+							console.error(err);
+							reactivate_form();
+						});
+					});
+				});
+			}
+		</script>
+	</body>
+</html>
+

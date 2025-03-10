@@ -109,7 +109,7 @@
 							$("#reset_but").prop("disabled", false);
 							if(ret.outcome==100) {
 								$("#reset_form").hide();
-								$("#password_reseted_msg").html("📧 Nouveau mot de passe envoyé par mail à : <br />" + ret.email1 + "<br /><br />(si ce commpte existe)");
+								$("#password_reseted_msg").html("📧 Nouveau mot de passe envoyé par mail à : <br /><b>" + ret.email1 + "</b><br /><br />(si ce compte existe)");
 							}
 							
 						});
