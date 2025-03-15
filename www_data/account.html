@@ -35,7 +35,7 @@
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="nom">Mon compte</div>
-			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="api/deconnexion" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
+			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="api/logout" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<p id="merci_don" style="display:none">🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p>
 			<p id="warning_demo" style="font-weight:bold; display:none">&#x1F6A8; Vous visualisez actuellement le compte de démonstration.<br /><br /><a style="color:#fbca0b" href='/register'><button type='button'>&#x1F680; créer votre compte</button></a></p>
 		</center>
@@ -52,7 +52,7 @@
 			<span class="rouge" id="export_err"></span>
 			</form>
 			<br /><br />
-			<a href="api/mes_donnees_svp"><input type="button" value="📦 Exporter l'ensemble des données brutes de mon compte" /></a>
+			<a href="api/all_of_my_data_plz"><input type="button" value="📦 Exporter l'ensemble des données brutes de mon compte" /></a>
 			<br /><br /><br /><br />
 	
 
@@ -125,17 +125,17 @@
 
 
 			<h2>Changer mon mot de passe <span class="net_stat" id="mdp_change_ok"></span></h2>
-			<form id="form_mdp_change" action="?change_motdepasse" method="post">
+			<form id="form_mdp_change" action="api/password_change" method="post">
 			<br />
-			<label for="mdp_old">Ancien mot de passe:</label><br />
-			<input type="password" name="mdp_old" required /><br />  
+			<label for="i_old_pw">Ancien mot de passe:</label><br />
+			<input type="password" id="i_old_pw" name="old_pw" required /><br />  
 			<br />
-			<label for="mdp1">Nouveau mot de passe:</label><br />
-			<input type="password" name="mdp1" id="i_mdp1" required pattern="^(?=.*?[a-z])(?=.*?[0-9]).{7,}$" /><br />
+			<label for="pw1">Nouveau mot de passe:</label><br />
+			<input type="password" name="pw1" id="i_pw1" required pattern="^(?=.*?[a-z])(?=.*?[0-9]).{7,}$" /><br />
 			<span class="label_info">Le mot de passe doit contenir au moins 10 caractères dont un chiffre et une majuscule.</span><br/>
 			<br />
-			<label for="mdp2">Confirmer votre nouveau mot de passe:</label><br />
-			<input type="password" name="mdp2" id="i_mdp2" required /><br />
+			<label for="pw2">Confirmer votre nouveau mot de passe:</label><br />
+			<input type="password" name="pw2" id="i_pw2" required /><br />
 			<br />
 			<input id="but_mdp_change" type="submit" value="💾 enregistrer" /><br />
 			<span id="mdp_ret_msg" class="rouge"></span><br /></form>
@@ -157,8 +157,8 @@
 			<p class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est irréversible mais vous avez la possibilité de télécharger toutes vos données avant la suppression.</p>
 			<br />
 			<form method="delete" action="api/suppr_compte" id="f_suppr_compte">
-				<label class="rouge" for="mdp_pour_supprimer">Entrez votre mot de passe pour supprimer votre compte:</label><br />
-				<input class="rouge" name="mdp_pour_supprimer" name="mdp_pour_supprimer" type="password" placeholder="mot de passe" /><br />
+				<label class="rouge" for="pw_before_deletion">Entrez votre mot de passe pour supprimer votre compte:</label><br />
+				<input class="rouge" name="pw_before_deletion" name="pw_before_deletion" type="password" placeholder="mot de passe" /><br />
 				<br />
 				<input type="submit" class="rouge" value="⚠️ Supprimer définitivement mon compte" />
 			</form>

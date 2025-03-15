@@ -44,17 +44,17 @@
 		<div class="contennu" id="timeline">
 			<h2>Connexion à votre compte</h2>
 			<span class="rouge" id="message_err"></span>
-			<form method="post" action="api/authentification" id="connexion_form"><br />
+			<form method="post" action="api/login" id="connexion_form"><br />
 			<label for="i_email1">E-mail:</label><br />
 			<input name="email1" id="i_email1" type="email" required placeholder="adresse mail de connexion"  value="" /><br />
 			<br />
-			<label for="i_mdp">Mot de passe:</label><br />
-			<input name="mdp" id="i_mdp" type="password" required placeholder="mot de passe moncycle.app"  value="" /><br />
+			<label for="i_password">Mot de passe:</label><br />
+			<input name="password" id="i_password" type="password" required placeholder="mot de passe moncycle.app"  value="" /><br />
 			<br />
 			<label for="i_code">Code:</label><br />
 			<input name="code" id="i_code" type="number" placeholder="authentification multifacteur (si activée)" value="" /><br />
 			<br />
-			<input type="submit" value="Connexion &#x1F511;" id="connexion_but"/></form>
+			<input type="submit" value="Connexion 🔑" id="connexion_but"/></form>
 			<br /><br /><br />
 			<center><a class="decouverte" id="but_demo_bill" href="/auth">compte de démo <b>Billings</b> 🥸</a></center>
 			<center><a class="decouverte" id="but_demo_fc" href="/auth">compte de démo <b>FertilityCare</b> 🧐</a></center>
@@ -86,16 +86,25 @@
 					$("#connexion_form").on("submit", function(event) {
 						event.preventDefault();
 						$("#connexion_but").prop("disabled", true);
+						$("#connexion_but").val("Connexion ⏳");
 						var form_data = $("#connexion_form").serializeArray();
-						$.post("api/authentification", $.param(form_data)).done(function(ret){
+						$.post("api/login", $.param(form_data)).done(function(ret){
 							console.log(ret);
 							$("#connexion_but").prop("disabled", false);
-							ret.message += "<br />"
-							if (ret.auth == true) {
+							$("#connexion_but").val("Connexion 🔑");
+							const return_codes = {
+								1 : "La connexion est désactivée.",
+								2 : "E-mail et/ou mot de passe manquant.",
+								3 : "Compte désactivé.",
+								4 : "Bon mot de passe, mais le code TOTP est incorrect ou manquant.",
+								5 : "Mauvais mot de passe ou compte inexistant."
+							};
+							if (ret.outcome >= 100) {
 								localStorage.auth = ret.no_compte;
 								window.location.replace('..');
 							}
-							else $("#message_err").html(ret.message);
+							else if (ret.outcome in return_codes) $("#message_err").html(return_codes[ret.outcome] + "<br />");
+							else $("#message_err").html(ret.message + "<br />");
 						});
 					});
 					$("#reset_form").on("submit", function(event) {
@@ -119,13 +128,13 @@
 					$("#but_demo_bill").on("click", function(event) {
 						event.preventDefault();
 						$("#i_email1").val("demo.bill@moncycle.app");
-						$("#i_mdp").val("demo");
+						$("#i_password").val("demo");
 						$("#connexion_form").submit();
 					});
 					$("#but_demo_fc").on("click", function(event) {
 						event.preventDefault();
 						$("#i_email1").val("demo.fc@moncycle.app");
-						$("#i_mdp").val("demo");
+						$("#i_password").val("demo");
 						$("#connexion_form").submit();
 					});
 				});

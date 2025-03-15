@@ -66,7 +66,7 @@ moncycle_app = {
 			moncycle_app.sensation = transformed_data;
 			localStorage.sensation = JSON.stringify(transformed_data);
 		}).fail(moncycle_app.redirection_connexion);
-		$.get("api/constante", {}).done(function(data) {
+		$.get("api/key_infos", {}).done(function(data) {
 			moncycle_app.constante = data;
 			localStorage.constante = JSON.stringify(data);
 			moncycle_app.timeline_asc = data.timeline_asc;
@@ -243,7 +243,7 @@ moncycle_app = {
 		if (form_nouv_cycle && !moncycle_app.timeline_asc) moncycle_app.form_nouveau_cycle(false);
 	},
 	charger_observation : function(o_date) {
-		$.get("api/observation", { date: o_date }).done(function(data) {
+		$.get("api/day", { date: o_date }).done(function(data) {
 			let sotred_obs = {};
 			if (localStorage.observation) sotred_obs = JSON.parse(localStorage.observation);
 			$.each(data, function (o_date, o_data) {
@@ -299,7 +299,7 @@ moncycle_app = {
 				alert("Erreur: la date du premier jour du cycle à créer ne doit pas être dans un cycle existant et doit être antérieure à aujourd'hui.");
 				return;
 			}
-			$.post("api/observation", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
+			$.post("api/day", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
 				if (data.err){
 					console.error(data.err);
 				}
@@ -776,7 +776,7 @@ moncycle_app = {
 			if (j == d.length) d.push({"date" : moncycle_app.menu_opened_date});
 			else d[j]["value"] = moncycle_app.menu_opened_date;
 		}
-		$.post("api/observation", $.param(d)).done(function(data){
+		$.post("api/day", $.param(d)).done(function(data){
 			$("#jour_form_saving").hide();
 			if (data.err){
 				$("#form_err").val(data.err);
@@ -827,7 +827,7 @@ moncycle_app = {
 		if (confirm(`Voulez-vous vraiment supprimer définitivement les données de la journée du ${jour}?`)) {
 			let date_id = moncycle_app.date.str(date);
 			if (moncycle_app.observation[date_id]["premier_jour"] || moncycle_app.observation[date_id]["grossesse"]) moncycle_app.page_a_recharger = true;
-			$.ajax({type : 'DELETE', "url" : "api/observation", "data" : `date=${date_id}`}).done(function(data){
+			$.ajax({type : 'DELETE', "url" : "api/day", "data" : `date=${date_id}`}).done(function(data){
 				if (data.err){
 					$("#form_err").val(data.err);
 					console.error(data.err);

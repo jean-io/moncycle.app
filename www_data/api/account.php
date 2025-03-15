@@ -61,12 +61,12 @@ if (isset($_POST["recherche"])) {
 	$mise_a_jour["recherche"] = $recherche;
 }
 
-if (isset($_DELETE["mdp_pour_supprimer"])) {
+if (isset($_DELETE["pw_before_deletion"])) {
 
-	if (strlen($_DELETE["mdp_pour_supprimer"])>0){
+	if (strlen($_DELETE["pw_before_deletion"])>0){
 		$compte = db_select_compte_par_mail($db, $compte["email1"])[0] ?? [];
 		
-		if (isset($compte["motdepasse"]) && password_verify($_DELETE["mdp_pour_supprimer"], $compte["motdepasse"])) {
+		if (isset($compte["motdepasse"]) && password_verify($_DELETE["pw_before_deletion"], $compte["motdepasse"])) {
 			// SUPPRESSION DU COMPTE
 			db_delete_compte($db, $compte["no_compte"]);
 			setcookie("MONCYCLEAPP_JETTON", '', -1, '/');

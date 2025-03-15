@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: MONCYCLE.APP API
   description: |-
-    Documentation de l'API REST de moncycle.app! L'application fonctionne sur la base d'une timeline d'observations. 1 observation = 1 jour.
+    Documentation de l'API REST de moncycle.app! L'application fonctionne sur la base d'une timeline d'observations. 1 observation => 1 jour.
     Ainsi la lecture d'un cycle ou sa modification se fait via le call API observation.
     Un nouveau cycle est caracterisé par un attribut lié au premier jour du cycle en question.
   license:
@@ -16,20 +16,20 @@ servers:
   - url: .
   - url: https://tableau.moncycle.app/api
 tags:
-  - name: général
-    description: informations générales sur le serveur (pas d'infos persos)
-  - name: compte
-    description: connexion, modifications sur le compte, TOTP, ...
+  - name: general
+    description: general information about the server (no personal information)
+  - name: account
+    description: login, account modifications, register, TOTP, …
   - name: observations
-    description: création, modification et lecture d'observations
+    description: creation, modification, and reading of observations and menstrual cycle data
 
 paths:
 
   /version:
     get:
       tags:
-        - général
-      summary: version du serveur et de l'API
+        - general
+      summary: Server and API version
       responses:
         200:
           description: OK
@@ -38,8 +38,8 @@ paths:
   /pub_stat:
     get:
       tags:
-        - général
-      summary: lecture des statistiques publiques
+        - general
+      summary: Public statistics
       responses:
         200:
           description: OK
@@ -48,72 +48,92 @@ paths:
   /sante:
     get:
       tags:
-        - général
-      summary: état de santé du serveur pour la supervision
+        - general
+      summary: Server health status for monitoring
       responses:
-        200:
-          description: OK
+        "oookkk":
+          description: Server is responding and connection to back-end DB is running.
+        "kkkooo":
+          description: Houston we have a problem (error).
 
 
 
-  /authentification:
+  /login:
     post:
       tags:
-        - compte
-      summary: création d'un jeton (clé d'API)
+        - account
+      summary: Creation of a token (API key)
       requestBody:
-        description: données d'identification (email, mdp, TOTP)
+        description: Identification data (email, password, TOTP)
         content:
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/auth'
         required: true
       responses:
-        200:
-          description: OK
+        0 :
+          description: "Unknown error."
+        1 :
+          description: "Login is disabled."
+        2 :
+          description: "Email and/or password missing."
+        3 :
+          description: "Account deactivated."
+        4 :
+          description: "Correct password but TOTP code is incorrect or missing."
+        5 :
+          description: "Incorrect password or non-existent account."
+        6 :
+          description: "Missing data"
+        100 :
+          description: "Account successfuly authentificated (password only)."
+        101 :
+          description: "Account successfuly authentificated (password + TOTP)."
+        102 :
+          description : "Account already authentificated."
 
 
-  /deconnexion:
+  /logout:
     get:
       tags:
-        - compte
-      summary: suppression du jeton d'authentification
+        - account
+      summary: Deletion of an authentication token
       responses:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
 
 
-  /mdp_change:
+  /password_change:
     post:
       tags:
-        - compte
-      summary: changement du mot de passe
+        - account
+      summary: Password change
       requestBody:
         content:
           application/x-www-form-urlencoded:
             schema:
               required:
-                - mdp_old
-                - mdp1
+                - old_pw
+                - pw1
               type: object
               properties:
-                mdp_old:
+                old_pw:
                   type: string
-                  description: ancien mot de passe
-                mdp1:
+                  description: old password
+                pw1:
                   type: string
-                  description: nouveau mot de passe
+                  description: new password
         required: true
       responses:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -121,7 +141,7 @@ paths:
   /register:
     post:
       tags:
-        - compte
+        - account
       summary: creating a new account
       requestBody:
         content:
@@ -144,7 +164,12 @@ paths:
                   description: login email address
                 method:
                   type: integer
-                  description: NFP method (Billings with temperature --> 1, Billings only --> 2, FertilityCare only --> 3, FertilityCare with temperature --> 4)
+                  description: |
+                    NFP cycle tracking method 
+                    * 1 => Billings + body temperature
+                    * 2 => Billings
+                    * 3 => FertilityCare
+                    * 4 => FertilityCare + body temperature
                   enum :
                     - 1
                     - 2
@@ -158,19 +183,35 @@ paths:
                   description: string contained in captcha imaged (obtained in another API call)
                 discovered_comment:
                   type: string
-                  description: awnser to quetion asked to user --> how did you discovered this app ?
+                  description: awnser to quetion asked to user => how did you discovered this app ?
                 ok_for_research:
                   type: integer
-                  description: is user ok for sharing anonymous data for research (1 --> yes, 0 --> no)
+                  description: is user ok for sharing anonymous data for research (1 => yes, 0 => no)
                   enum :
                     - 1
                     - 0
         required: true
       responses:
-        200:
-          description: OK
-        401:
-          description: authentification needed
+        0 :
+          description: "Unknown error."
+        1 :
+          description: "Account already logged in (auth variable return logged in account number)."
+        2 :
+          description: "Account creation has been disabled."
+        3 :
+          description: "Missing data or user input."
+        4 :
+          description: "Provided email address is not valid."
+        5 :
+          description: "Error in captcha input."
+        6 :
+          description: "Account successfuly created but password sending has failed."
+        7 :
+          description: "Account already exist."
+        8 :
+          description: "Birth year is not reallistic."
+        100 :
+          description: "Account successfuly created"
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -179,7 +220,7 @@ paths:
   /register_captcha:
     get:
       tags:
-        - compte
+        - account
       summary: create a captcha for account creation (this API enpoint should be called before 'register' endpoint)
       responses:
         200:
@@ -190,7 +231,7 @@ paths:
   /recover_password:
     post:
       tags:
-        - compte
+        - account
       summary: reset password if lost based on email address
       requestBody:
         description: login email address that is used to authenticate
@@ -206,8 +247,14 @@ paths:
                   description: login email address
         required: true
       responses:
-        200:
-          description: OK
+        0 :
+          description: Unknown error.
+        1 :
+          description: Email address was not provided.
+        2 :
+          description: Email address provided is not valid.
+        100 :
+          description: New password sucessfully sent to provided email address (if account exist).
 
 
   /totp:
@@ -215,13 +262,13 @@ paths:
 
     get:
       tags:
-        - compte
-      summary: initialisation du secret TOTP pour activation
+        - account
+      summary: Initialization of TOTP secret before activation
       responses:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -229,8 +276,8 @@ paths:
 
     post:
       tags:
-        - compte
-      summary: activation du TOTP accès configuration de l'application
+        - account
+      summary: first TOTP code for final activation
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -241,13 +288,13 @@ paths:
               properties:
                 tmp_code:
                   type: integer
-                  description: code généré dans l'application de TOTP
+                  description: Code generated in TOTP application
         required: true
       responses:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -255,8 +302,8 @@ paths:
 
     delete:
       tags:
-        - compte
-      summary: désactivation du TOTP pour le compte
+        - account
+      summary: TOTP deactivation for account
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -267,27 +314,27 @@ paths:
               properties:
                 tmp_code:
                   type: integer
-                  description: code généré dans l'application de TOTP
+                  description: Code generated in TOTP application
         required: true
       responses:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
 
 
 
-  /compte:
+  /account:
 
 
 
     post:
       tags:
-        - compte
-      summary: modification des informations du compte
+        - account
+      summary: Modification of account information
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -296,13 +343,18 @@ paths:
               properties:
                 nom:
                   type: string
-                  description: le prénom des personnes à qui ce compte appartient
+                  description: The first names of the people to whom this account belongs
                 email2:
                   type: string
-                  description: deuxième adresse mail pour recevoir les cycles par mail sur une autre addresse
+                  description: Second email address to receive the cycles via email on a different address
                 methode:
                   type: integer
-                  description: méthode de suivi (1 = Billings + température, 2 = Billings, 3 = FertilityCare, 4 = FertilityCare + température)
+                  description: |
+                    Cycle tracking method 
+                    * 1 => Billings + body temperature
+                    * 2 => Billings
+                    * 3 => FertilityCare
+                    * 4 => FertilityCare + body temperature
                   enum:
                     - 1
                     - 2
@@ -310,25 +362,28 @@ paths:
                     - 4
                 age:
                   type: integer
-                  description: année (approximative) de naissance des personnes
+                  description: Approximate year of birth
                 timeline_asc:
                   type: integer
-                  description: ordre d'affichage des observation. 1 = ajourd'hui en début du tableau, 0 = aujourd'hui à la fin du tableau
+                  description: |
+                    Order of displaying observations.
+                    * 1 => today at the beginning of the table
+                    * 0 => today at the end of the table
                   enum:
                     - 1
                     - 0
                 recherche:
                   type: integer
-                  description: accord pour contribuer de manière anonyme à la recherche. 1 = oui, 0 = non
+                  description: Consent to contribute anonymously to research programs. 1 => yes, 0 => no
                   enum:
                     - 1
                     - 0
         required: true
       responses:
         200:
-          description: OK - les champs correctement modifiés sont renvoyés dans la réponse
+          description: OK - the correctly modified fields are returned in the response
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -337,73 +392,73 @@ paths:
 
     delete:
       tags:
-        - compte
-      summary: suppression du compte utilisateur
+        - account
+      summary: User account deletion
       requestBody:
         content:
           application/x-www-form-urlencoded:
             schema:
               required:
-                - mdp_pour_supprimer
+                - pw_before_deletion
               type: object
               properties:
-                mdp_pour_supprimer:
+                pw_before_deletion:
                   type: string
-                  description: mot de passe du compte
+                  description: Account password
         required: true
       responses:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
 
 
 
-  /mes_donnees_svp:
+  /all_of_my_data_plz:
     get:
       tags:
-        - compte
-      summary: export de toutes les données liées au compte au format CSV (pour la RGPD)
+        - account
+      summary: Export of all account-related data in CSV format (for GDPR)
       responses:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
 
 
-  /constante:
+  /key_infos:
     get:
       tags:
         - observations
-      summary: Lecture des informations clés du tableau
+      summary: Reading key informations from user and menstrual cycle.
       responses:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
 
 
 
-  /observation:
+  /day:
 
 
     get:
       tags:
         - observations
-      summary: lecture d'observations
+      summary: Reading of a daily observations
       parameters:
         - name: date
           in: query
-          description: plusieurs dates (au moins une) au format YYYY-MM-DD séparées par des virgules
+          description: Multiple dates (at least one) in the format YYYY-MM-DD, separated by commas
           required: true
           schema:
             type: string
@@ -417,7 +472,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/observation'
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -426,7 +481,7 @@ paths:
     post:
       tags:
         - observations
-      summary: écriture d'une observation
+      summary: Writing of a daily observation
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -437,7 +492,7 @@ paths:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -446,7 +501,7 @@ paths:
     delete:
       tags:
         - observations
-      summary: suppression d'une observation
+      summary: Deletion of a daily observation
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -457,7 +512,7 @@ paths:
               properties:
                 date:
                   type: string
-                  description: date d'une observation au format YYYY-MM-DD
+                  description: Date of observation in the format YYYY-MM-DD
                   format: date
                   pattern: '^\d{4}-\d{2}-\d{2}$'
         required: true
@@ -465,7 +520,7 @@ paths:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -482,7 +537,7 @@ paths:
         200:
           description: OK
         401:
-          description: authentification needed
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -504,7 +559,11 @@ paths:
                   description: description to be created (or renamed)
                 type:
                   type: integer
-                  description: type of description (0 => undefined, 1 => observation, 2 => sensation)
+                  description: |
+                    type of description
+                    * 0 => undefined
+                    * 1 => observation
+                    * 2 => sensation)
                   enum:
                     - 0
                     - 1
@@ -525,7 +584,7 @@ paths:
         200:
           description: OK
         401:
-          description: authentification needed
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -550,7 +609,7 @@ paths:
         200:
           description: OK
         401:
-          description: authentification needed
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -561,11 +620,11 @@ paths:
     get:
       tags:
         - observations
-      summary: liste des observations modifié depuis la date spécifié pour synchronisation entre les clients et le serveur.
+      summary: List of daily observations and description modified since specified date for synchronization between clients and the server.
       parameters:
         - name: fromTimestamp
           in: query
-          description: un timestamp au format YYYY-MM-JJ hh:mm:ss, l'heure doit être en UTC.
+          description: A timestamp in the format YYYY-MM-DD hh:mm:ss, with the time in UTC.
           required: true
           schema:
             format: string
@@ -573,9 +632,9 @@ paths:
             pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
       responses:
         200:
-          description: OK (les observation sont dans un tableau JSON)
+          description: OK - observations are in a JSON array
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -586,11 +645,11 @@ paths:
     get:
       tags:
         - observations
-      summary: export au format CSV ou PDF d'un cycle
+      summary: Export in CSV or PDF format of a cycle
       parameters:
         - name: start_date
           in: query
-          description: date du premier jour à exporter au format YYYY-MM-DD
+          description: Date of first day to export in YYYY-MM-DD format
           required: true
           schema:
             type: string
@@ -598,7 +657,7 @@ paths:
             pattern: '^\d{4}-\d{2}-\d{2}$'
         - name: end_date
           in: query
-          description: date du dernier jour à exporter au format  YYYY-MM-DD
+          description: Date of last day to export in YYYY-MM-DD format
           required: true
           schema:
             type: string
@@ -606,7 +665,7 @@ paths:
             pattern: '^\d{4}-\d{2}-\d{2}$'
         - name: type
           in: query
-          description: format du fichier à renvoyer
+          description: File format to be returned
           required: true
           schema:
             type: string
@@ -616,7 +675,7 @@ paths:
               - csv
         - name: anonymous
           in: query
-          description: anonymise l'export PDF
+          description: Make anonymous pdf export (0 => no, 1 => yes)
           required: false
           schema:
             type: integer
@@ -628,7 +687,7 @@ paths:
         200:
           description: OK
         401:
-          description: authentification requise
+          description: Authentication required
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -645,84 +704,88 @@ components:
       properties:
         date:
           type: string
-          description: date d'une observation au format YYYY-MM-DD
+          description: Date of observation in YYYY-MM-DD format
           format: date
           pattern: '^\d{4}-\d{2}-\d{2}$'
         premier_jour:
           type: integer
-          description: démarrage d'un cycle à cette date
+          description: Start of a new cycle on this date (1 => yes, 0 => no)
           enum :
             - 1
             - 0
         gommette:
           type: string
-          description: gommette de couleur (. rouge, I vert, = jaune)
+          description: |
+            Color stamp 
+            * . red
+            * I green
+            * = yellow
           enum :
             - "."
             - "I"
             - "="
         bebe:
           type: string
-          description: bébé sur la gommette
+          description: Baby on stamp
           enum :
             - ":)"
         note_fc:
           type: string
-          description: note FertilityCare de la journée
+          description: FertilityCare note for day
         fc_fle:
           type: string
-          description: flèche liée à la note FertilityCare
+          description: Arrow related to the FertilityCare note
           enum :
             - "↑"
             - "↓"
             - "→"
         temp:
           type: number
-          description: température corporelle
+          description: Body temperature
         heure_temp:
           type: string
-          description: horodatage de prise de la temperature
+          description: Timestamp of temperature measurement
         ob_extra:
           type: string
-          description: sensations et visuels de la journée séparés par des virgules
+          description: Description (sensations and visuals) on that day, separated by commas
         union_sex:
           type: integer
-          description: union dans la journée
+          description: Sex union on that day (1 => at least one, 0 => none)
           enum :
             - 1
             - 0
           default: 0
         jour_sommet:
           type: integer
-          description: jour sommet dans le cycle
+          description: Peak day for current menstural cycle (1 => on that day, 0 => not that day)
           enum :
             - 1
             - 0
           default: 0
         compteur:
           type: integer
-          description: ajoute un compteur d'un nombre de jour variable à partir de cette date
+          description: Extra days counting capabilities, number of days that should be counted starting this day
           default: 0
         jenesaispas:
           type: integer
-          description: pas d'observation à cette date
+          description: No observation on this date (1 => no data on this date, 0 => there is data)
           enum :
             - 1
             - 0
           default: 0
         grossesse:
           type: integer
-          description: début d'une grossesse
+          description: Beginning of a pregnancy (1 => yes, 0 => no)
           enum :
             - 1
             - 0
           default: 0
         commentaire:
           type: string
-          description: commentaire libre lié à journée
+          description: Free comment related that day
         last_write_client_UTC:
           type: string
-          description: timestamp de mise à jour de DB au format YYYY-MM-DD HH:MM:SS. Doit être de l'UTC.
+          description: Last client update timestamp in YYYY-MM-DD HH:MM:SS format. Must be in UTC.
           format: string
           example: "2025-01-23 15:30:45"
           pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
@@ -731,29 +794,29 @@ components:
     auth:
       required:
         - email1
-        - mdp
+        - password
       type: object
       properties:
         email1:
           type: string
           example: demo.bill@moncycle.app
-          description: addresse e-mail de connexion
-        mdp:
+          description: Login email address
+        password:
           type: string
           example: demo
-          description: mot de passe de connexion
+          description: Login password
         code:
           type: integer
-          description: code temporaire (TOTP)
+          description: One time pass code (TOTP)
 
 
   securitySchemes:
     HTTPtoken:
-      description: jeton dans l'entête HTTP Authorization
+      description: Token in the HTTP Authorization header
       type: http
       scheme: Bearer
     HTTPcookie:
-      description: jeton dans un cookie HTTP
+      description: Token in an HTTP cookie
       type: apiKey
       in: cookie
       name: MONCYCLEAPP_JETTON

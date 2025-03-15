@@ -8,7 +8,7 @@ const TOTP_STATE_ACTIVE = 3;
 $(document).ready(function(){
 
 	// TELECHARGEMENT DES DONNES DES UTILISATEUR
-	$.get("api/constante", {}).done(function(data) {
+	$.get("api/key_infos", {}).done(function(data) {
 		moncycle_app_usr = data;
 		$("#f_info_pref")[0].reset();
 		$("#nom").text(moncycle_app_usr.nom);
@@ -56,7 +56,7 @@ $(document).ready(function(){
 		localStorage.timeline_asc = $("#i_timeline_asc").prop('checked');
 		let val = this.value;
 		if ($(this)[0].type=="checkbox") val = $(this)[0].checked ? 1 : 0;
-		$.post("../api/compte", `${$(this).attr('name')}=${val}`).fail(function(data){
+		$.post("../api/account", `${$(this).attr('name')}=${val}`).fail(function(data){
 			console.error(data);
 			$("#net_stat").html(' ❌&nbsp;erreur');
 			$("#net_stat").addClass('rouge');
@@ -76,13 +76,13 @@ $(document).ready(function(){
 		event.preventDefault();
 		$("#mdp_change_ok").text('');
 		$("#mdp_ret_msg").text('');
-		if ($("#i_mdp1").val() != $("#i_mdp2").val()) {
+		if ($("#i_pw1").val() != $("#i_pw2").val()) {
 			$("#mdp_ret_msg").html("❌ <b>erreur:</b> le nouveau mot de passe et sa confirmation ne sont pas identiques.");
 			return;
 		}
 		$("#but_mdp_change").prop("disabled", true);
 		var form_data = $("#form_mdp_change").serializeArray();
-		$.post("../api/mdp_change", $.param(form_data)).done(function(ret){
+		$.post("../api/password_change", $.param(form_data)).done(function(ret){
 			$("#but_mdp_change").prop("disabled", false);
 			if (ret.change_ok) {
 				$("#form_mdp_change input[type=password]").val('');
@@ -170,7 +170,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		var form_data = $("#f_suppr_compte").serializeArray();
 		if (!confirm(moncycle_app_usr.nom + ', êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irréversible. 😟')) return;
-		$.ajax({type : 'DELETE', "url" : "../api/compte", "data" : $.param(form_data)}).done(function(ret){
+		$.ajax({type : 'DELETE', "url" : "../api/account", "data" : $.param(form_data)}).done(function(ret){
 			if (ret.suppr) {
 				window.localStorage.clear();
 				alert(moncycle_app_usr.nom + ", votre compte a bien été supprimé. 😢💔");

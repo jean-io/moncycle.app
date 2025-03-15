@@ -20,20 +20,20 @@ sec_exit_si_non_connecte($compte);
 
 $result = ["change_ok" => false, "msg" => ""];
 
-if (isset($_POST["mdp1"]) && !empty($_POST["mdp1"]) && isset($_POST["mdp_old"]) && !empty($_POST["mdp_old"])) {
+if (isset($_POST["pw1"]) && !empty($_POST["pw1"]) && isset($_POST["old_pw"]) && !empty($_POST["old_pw"])) {
 	
 	$compte = db_select_compte_par_mail($db, $compte["email1"])[0] ?? [];
 
-	if (strlen($_POST["mdp1"])<8) {
+	if (strlen($_POST["pw1"])<8) {
 		$result["msg"] = "nouveau mot de passe trop court";
 	}
-	elseif (isset($compte["motdepasse"]) && password_verify($_POST["mdp1"], $compte["motdepasse"])) {
+	elseif (isset($compte["motdepasse"]) && password_verify($_POST["pw1"], $compte["motdepasse"])) {
 		$result["msg"] = "le nouveau mot de passe est identique à l'ancien mot de passe";
 	}
-	elseif (isset($compte["motdepasse"]) && password_verify($_POST["mdp_old"], $compte["motdepasse"])) {
-		unset($_POST["mdp_old"]);
+	elseif (isset($compte["motdepasse"]) && password_verify($_POST["old_pw"], $compte["motdepasse"])) {
+		unset($_POST["old_pw"]);
 
-		db_udpate_motdepasse_par_nocompte($db, sec_hash($_POST["mdp1"]), $compte["no_compte"]);
+		db_udpate_motdepasse_par_nocompte($db, sec_hash($_POST["pw1"]), $compte["no_compte"]);
 
 		$result["msg"] = "votre mot de passe a bien été mis à jour";
 		$result["change_ok"] = true;
