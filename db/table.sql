@@ -13,7 +13,7 @@ CREATE TABLE `compte` (
   `nb_co_echoue` smallint(5) unsigned NOT NULL DEFAULT 0,
   `timeline_asc` tinyint(1) unsigned NOT NULL DEFAULT 1,
   `donateur` tinyint(1) unsigned NOT NULL DEFAULT 0,
-  `recherche` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `research` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `actif` tinyint(1) unsigned NOT NULL DEFAULT 1,
   `relance` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `derniere_co_date` timestamp NULL DEFAULT NULL,

@@ -71,7 +71,7 @@
 			<input type="radio" name="methode" value="3" class="auto_save" id="m_3" /><label for="m_3"><b>FertilityCare</b>: l'évolution de la glaire cervicale avec notation FertilityCare</label><br />
 			<input type="radio" name="methode" value="4" class="auto_save" id="m_4" /><label for="m_4"><b>FertilityCare + température</b>: l'évolution de la glaire cervicale avec notation FertilityCare et suivi des évolutions de la température corporelle.</label><br />
 			<br />
-			<input class="auto_save" value="1" type="checkbox" id="i_recherche" name="recherche"/> <label for="i_recherche">Autoriser des exports de la base de données avec des cycles anonymisés pour la recherche sur les méthodes naturelles.</label><br />
+			<input class="auto_save" value="1" type="checkbox" id="i_research" name="research"/> <label for="i_research">Autoriser des exports de la base de données avec des cycles anonymisés pour la research sur les méthodes naturelles.</label><br />
 			<br />
 			<label for="i_email1">E-mail:</label> <br /><span class="label_info">Identifiant de connexion et envoi des cycles (non modifiable).</span><br />
 			<input id="i_email1" type="email" readonly name="email1" value="" /><br />
@@ -111,7 +111,7 @@
 					<input type="submit" id="i_submit_otp" value="🔐 activer" />
 				</form>
 			</div>
-			<div id="totp_actif" style="display: none;">
+			<div id="totp_state" style="display: none;">
 				<p class="vert">✅ 🔐 Authentification multifacteur active.</p>
 				<form id="f_totp_desac" action="../api/totp?desactivation" method="post">
 					<p>Pour désactiver l'authentification multifacteur, entrez le code temporaire dans votre application:</p>

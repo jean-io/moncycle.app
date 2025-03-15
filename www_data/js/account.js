@@ -21,7 +21,7 @@ $(document).ready(function(){
 		$("#i_email1").val(moncycle_app_usr.email1);
 		$("#i_email2").val(moncycle_app_usr.email2);
 		$(`#m_${moncycle_app_usr.methode}`).attr("checked", "");
-		if (moncycle_app_usr.recherche) $("#i_recherche").prop('checked', true);
+		if (moncycle_app_usr.research) $("#i_research").prop('checked', true);
 		if (moncycle_app_usr.timeline_asc) $("#i_timeline_asc").prop('checked', true);
 		let d = new Date(moncycle_app_usr.date_inscription);
 		let m = d.getMonth()+1;
@@ -33,8 +33,8 @@ $(document).ready(function(){
 			if (y==moncycle_app_usr.age) selected = 'selected';
 			$("#i_anaissance").append(`<option ${selected} value="${y}">entre ${y} et ${y+4}</option>`);
 		}
-		if (moncycle_app_usr.totp_actif < 3) $("#totp_explications").show();
-		else $("#totp_actif").show();
+		if (moncycle_app_usr.totp_state < 3) $("#totp_explications").show();
+		else $("#totp_state").show();
 	}).fail(function (err) {
 		if (err.status == 401 || err.status == 403 || err.status == 407) {	
 			window.localStorage.clear();
@@ -89,7 +89,7 @@ $(document).ready(function(){
 				$("#mdp_change_ok").text('✅ enregistré');
 			}
 			else {
-				$("#mdp_ret_msg").html(`❌ <b>erreur:</b> ${ret.msg}.`);
+				$("#mdp_ret_msg").html(`❌ <b>erreur:</b> ${ret.message}.`);
 			}
 		}).fail(function(ret){
 			console.error(ret);
@@ -123,12 +123,12 @@ $(document).ready(function(){
 		var form_data = $("#f_totp_validation").serializeArray();
 		$("#f_totp_validation").trigger("reset");
 		$.post("../api/totp", $.param(form_data)).done(function(ret){
-			if (ret.totp_actif == TOTP_STATE_ACTIVE) {
+			if (ret.totp_state == TOTP_STATE_ACTIVE) {
 				$("#totp_miseenpalce").hide();
-				$("#totp_actif").show();
+				$("#totp_state").show();
 			}
 			else {
-				$("#totp_err_msg").html("<b>❌&nbsp;erreur:</b> " + ret.msg);
+				$("#totp_err_msg").html("<b>❌&nbsp;erreur:</b> " + ret.message);
 			}
 		}).fail(function(err) {
 			console.error(err);
@@ -141,12 +141,12 @@ $(document).ready(function(){
 		var form_data = $("#f_totp_desac").serializeArray();
 		$("#f_totp_desac").trigger("reset");
 		$.ajax({type : 'DELETE', "url" : "../api/totp?desactivation", "data" : $.param(form_data)}).done(function(ret){
-			if (ret.totp_actif == TOTP_STATE_DISABLED) {
+			if (ret.totp_state == TOTP_STATE_DISABLED) {
 				$("#totp_explications").show();
-				$("#totp_actif").hide();
+				$("#totp_state").hide();
 			}
 			else {
-				$("#totp_err_msg").html("<b>❌&nbsp;erreur:</b> " + ret.msg);
+				$("#totp_err_msg").html("<b>❌&nbsp;erreur:</b> " + ret.message);
 			}
 		}).fail(function(err) {
 			console.error(err);

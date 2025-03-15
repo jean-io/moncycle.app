@@ -55,10 +55,10 @@ if (isset($_POST["timeline_asc"])) {
 	$mise_a_jour["test"] = $tet;
 }
 
-if (isset($_POST["recherche"])) {
-	$recherche = boolval($_POST["recherche"]);
-	db_update_compte_param_int($db, "recherche", $recherche ? 1 : 0, $compte["no_compte"]);
-	$mise_a_jour["recherche"] = $recherche;
+if (isset($_POST["research"])) {
+	$research = boolval($_POST["research"]);
+	db_update_compte_param_int($db, "research", $research ? 1 : 0, $compte["no_compte"]);
+	$mise_a_jour["research"] = $research;
 }
 
 if (isset($_DELETE["pw_before_deletion"])) {

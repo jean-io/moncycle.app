@@ -84,7 +84,7 @@ paths:
         5 :
           description: "Incorrect password or non-existent account."
         6 :
-          description: "Missing data"
+          description: "Missing data."
         100 :
           description: "Account successfuly authentificated (password only)."
         101 :
@@ -257,18 +257,39 @@ paths:
           description: New password sucessfully sent to provided email address (if account exist).
 
 
+
   /totp:
 
 
     get:
       tags:
         - account
-      summary: Initialization of TOTP secret before activation
+      summary: Initialization of TOTP secret before activation.
+      description: |
+        TOTP (Time-Based One-Time Password) is a temporary, time-sensitive code used for two-factor authentication (2FA or MFA).
+
+        Possible TOTP states per account (matching DB data) :
+        * 0 : TOTP has nevers been activated.
+        * 1 : TOTP is desactivated.
+        * 2 : TOTP is initiated.
+        * 3 : TOTP is active.
       responses:
-        200:
-          description: OK
-        401:
-          description: Authentication required
+        0 :
+          description: "Unknown error."
+        1 :
+          description: "Two-factor authentication is already enabled."
+        2 :
+          description: "Two-factor authentication is not enabled."
+        3 :
+          description: "Entered TOTP code is not valid."
+        4 :
+          description: "TOTP one-time code not provided."
+        100 :
+          description: "Two-factor authentication via TOTP successfully enabled."
+        101 :
+          description: "Two-factor authentication via TOTP successfully disabeled."
+        102 :
+          description: "Two-factor authentication via TOTP successfully initiated."
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -277,7 +298,15 @@ paths:
     post:
       tags:
         - account
-      summary: first TOTP code for final activation
+      summary: Send first TOTP code for final activation
+      description: |
+        TOTP (Time-Based One-Time Password) is a temporary, time-sensitive code used for two-factor authentication (2FA or MFA).
+
+        Possible TOTP states per account (matching DB data) :
+        * 0 : TOTP has nevers been activated.
+        * 1 : TOTP is desactivated.
+        * 2 : TOTP is initiated.
+        * 3 : TOTP is active.
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -291,10 +320,22 @@ paths:
                   description: Code generated in TOTP application
         required: true
       responses:
-        200:
-          description: OK
-        401:
-          description: Authentication required
+        0 :
+          description: "Unknown error."
+        1 :
+          description: "Two-factor authentication is already enabled."
+        2 :
+          description: "Two-factor authentication is not enabled."
+        3 :
+          description: "Entered TOTP code is not valid."
+        4 :
+          description: "TOTP one-time code not provided."
+        100 :
+          description: "Two-factor authentication via TOTP successfully enabled."
+        101 :
+          description: "Two-factor authentication via TOTP successfully disabeled."
+        102 :
+          description: "Two-factor authentication via TOTP successfully initiated."
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -304,6 +345,14 @@ paths:
       tags:
         - account
       summary: TOTP deactivation for account
+      description: |
+        TOTP (Time-Based One-Time Password) is a temporary, time-sensitive code used for two-factor authentication (2FA or MFA).
+
+        Possible TOTP states per account (matching DB data) :
+        * 0 : TOTP has nevers been activated.
+        * 1 : TOTP is desactivated.
+        * 2 : TOTP is initiated.
+        * 3 : TOTP is active.
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -317,10 +366,22 @@ paths:
                   description: Code generated in TOTP application
         required: true
       responses:
-        200:
-          description: OK
-        401:
-          description: Authentication required
+        0 :
+          description: "Unknown error."
+        1 :
+          description: "Two-factor authentication is already enabled."
+        2 :
+          description: "Two-factor authentication is not enabled."
+        3 :
+          description: "Entered TOTP code is not valid."
+        4 :
+          description: "TOTP one-time code not provided."
+        100 :
+          description: "Two-factor authentication via TOTP successfully enabled."
+        101 :
+          description: "Two-factor authentication via TOTP successfully disabeled."
+        102 :
+          description: "Two-factor authentication via TOTP successfully initiated."
       security:
         - HTTPcookie: []
         - HTTPtoken: []
@@ -372,7 +433,7 @@ paths:
                   enum:
                     - 1
                     - 0
-                recherche:
+                research:
                   type: integer
                   description: Consent to contribute anonymously to research programs. 1 => yes, 0 => no
                   enum:

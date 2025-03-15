@@ -27,6 +27,7 @@ $result_code = [
 	0 => "",
     1 => "Email address was not provided.",
 	2 => "Email address provided is not valid.",
+    3 => "Password sending via email has failed.",
 	100 => "New password sucessfully sent to provided email address (if account exist)."
 ];
 
@@ -53,6 +54,8 @@ elseif (boolval(db_select_compte_existe($db,$reset_email)[0]["compte_existe"])) 
     $pass_hash = sec_hash($pass_text);
 
     db_update_motdepasse_par_mail($db, $pass_hash, $_POST["email1"]);
+
+    $output["outcome"] = 3;
 
     $mail = mail_init();
     $mail->addAddress($_POST["email1"], $_POST["email1"]);

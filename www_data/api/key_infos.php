@@ -34,10 +34,10 @@ echo json_encode([
 	"nom" => $compte["nom_compte"],
 	"date_inscription" => $compte["inscription_date"],
 	"donateur" => boolval($compte["donateur"]),
-	"recherche" => boolval($compte["recherche"]), 
+	"research" => boolval($compte["research"]), 
 	"timeline_asc" => boolval($compte["timeline_asc"]), 
 	"tous_les_cycles" => $cycles,
 	"toutes_les_grossesses" => $grossesses,
-	"totp_actif" => $compte["totp_etat"]
+	"totp_state" => $compte["totp_etat"]
 ]);
 
