@@ -26,10 +26,10 @@ function mail_init(){
 	return $mail;
 }
 
-function mail_body_creation_compte ($nom, $mdp, $mail1) {
+function mail_body_creation_compte ($name, $mdp, $mail1) {
 	$app_url_var = APP_URL;
 	return <<<HTML
-	<div style='font-family: sans-serif;'>Bonjour {$nom},<br />
+	<div style='font-family: sans-serif;'>Bonjour {$name},<br />
 	<br />
 	Bienvenue sur MONCYCLE.APP!<br />
 	<br />
@@ -66,10 +66,10 @@ function mail_body_nouveau_mdp($mdp, $mail1) {
 	HTML;
 }
 
-function mail_body_cycle($nom, $dh, $fh, $nb_j) {
+function mail_body_cycle($name, $dh, $fh, $nb_j) {
 	$app_url_var = APP_URL;
 	return <<<HTML
-	<div style='font-family: sans-serif;'>Bonjour {$nom},<br />
+	<div style='font-family: sans-serif;'>Bonjour {$name},<br />
 	<br />
 	Vous trouverez en PJ un export au format PDF et CSV de votre cycle du $dh au $fh d'une durée de $nb_j jours.<br />
 	<br />
@@ -82,10 +82,10 @@ function mail_body_cycle($nom, $dh, $fh, $nb_j) {
 	HTML;
 }
 
-function mail_body_relance ($nom, $mail1) {
+function mail_body_relance ($name, $mail1) {
 	$app_url_var = APP_URL;
 	return <<<HTML
-	<div style='font-family: sans-serif;'>Bonjour {$nom},<br />
+	<div style='font-family: sans-serif;'>Bonjour {$name},<br />
 	<br />
 	Cela fait un moment qu'il n'y a pas eu d'activité dans votre tableau.<br />
 	<br />

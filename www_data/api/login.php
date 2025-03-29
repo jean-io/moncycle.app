@@ -49,24 +49,24 @@ try {
 
 		$compte = db_select_compte_par_mail($db, $_POST["email1"])[0] ?? [];
 
-		if (isset($compte["nb_co_echoue"]) && intval($compte["nb_co_echoue"])>=5) sleep(5);
-		elseif (!isset($compte["nb_co_echoue"]) && rand(0,5)==0) sleep(5);
+		if (isset($compte["nb_connection_attempts"]) && intval($compte["nb_connection_attempts"])>=5) sleep(5);
+		elseif (!isset($compte["nb_connection_attempts"]) && rand(0,5)==0) sleep(5);
 
 		if (!CONNEXION_COMPTE) $output["outcome"] = 1;
 		elseif (empty($_POST["email1"]) || empty($_POST["password"])) {
 			$output["outcome"] = 2;
 		}
-		elseif (isset($compte["actif"]) && !boolval($compte["actif"])) {
+		elseif (isset($compte["user_enabled"]) && !boolval($compte["user_enabled"])) {
 			$output["outcome"] = 3;
 		}
-		elseif (isset($compte["motdepasse"]) && password_verify($_POST["password"], $compte["motdepasse"])) {
-			unset($compte["motdepasse"]);
+		elseif (isset($compte["password"]) && password_verify($_POST["password"], $compte["password"])) {
+			unset($compte["password"]);
 			unset($_POST["password"]);
 
 			$usr_totp_code = 0;
 			if (isset($_POST["code"]) && strlen($_POST["code"])>0) $usr_totp_code = intval(preg_replace('/\s+/','',$_POST["code"]));
 
-			if ($compte["totp_etat"] != TOTP_STATE_ACTIVE) {
+			if ($compte["totp_state"] != TOTP_STATE_ACTIVE) {
 				// AUTH SUCCESS
 				$output["jetton"] = sec_auth_succes($db, $compte);
 				$output["outcome"] = 100;
@@ -101,7 +101,7 @@ try {
 }
 catch (Exception $e){
 	
-	$output .= $e->getMessage();
+	$output["exception_error"] = $e->getMessage();
 
 }
 

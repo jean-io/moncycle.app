@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') parse_str(file_get_contents('php://
 
 $mise_a_jour = [];
 
-if (isset($_POST["nom"])) {
-	db_update_compte_param_str($db, "nom", $_POST["nom"], $compte["no_compte"]);
-	$mise_a_jour["nom"] = $_POST["nom"];
+if (isset($_POST["name"])) {
+	db_update_compte_param_str($db, "name", $_POST["name"], $compte["no_compte"]);
+	$mise_a_jour["name"] = $_POST["name"];
 }
 
 if (isset($_POST["email2"]) && (empty($_POST["email2"]) || filter_var($_POST["email2"], FILTER_VALIDATE_EMAIL))) {
@@ -32,11 +32,11 @@ if (isset($_POST["email2"]) && (empty($_POST["email2"]) || filter_var($_POST["em
 	$mise_a_jour["email2"] = $_POST["email2"];
 }
 
-if (isset($_POST["methode"]) && !empty($_POST["methode"])) {
-	$methode = intval($_POST["methode"]);
-	if ($methode && $methode >=1 && $methode <= 4) {
-		db_update_compte_param_int($db, "methode", $methode, $compte["no_compte"]);
-		$mise_a_jour["methode"] = $methode;
+if (isset($_POST["nfp_method"]) && !empty($_POST["nfp_method"])) {
+	$nfp_method = intval($_POST["nfp_method"]);
+	if ($nfp_method && $nfp_method >=1 && $nfp_method <= 4) {
+		db_update_compte_param_int($db, "nfp_method", $nfp_method, $compte["no_compte"]);
+		$mise_a_jour["nfp_method"] = $nfp_method;
 	}
 }
 
@@ -66,7 +66,7 @@ if (isset($_DELETE["pw_before_deletion"])) {
 	if (strlen($_DELETE["pw_before_deletion"])>0){
 		$compte = db_select_compte_par_mail($db, $compte["email1"])[0] ?? [];
 		
-		if (isset($compte["motdepasse"]) && password_verify($_DELETE["pw_before_deletion"], $compte["motdepasse"])) {
+		if (isset($compte["password"]) && password_verify($_DELETE["pw_before_deletion"], $compte["password"])) {
 			// SUPPRESSION DU COMPTE
 			db_delete_compte($db, $compte["no_compte"]);
 			setcookie("MONCYCLEAPP_JETTON", '', -1, '/');

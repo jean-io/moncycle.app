@@ -50,7 +50,7 @@ echo PHP_EOL;
 
 if ($nb_compte_actif<=0) exit;
 
-$nb_compte_actif_billings = db_select_nb_compte_actif_par_methode($db, 2)[0][0];
+$nb_compte_actif_billings = db_select_nb_compte_actif_par_nfp_method($db, 2)[0][0];
 echo "moncycle_app_nb_compte_actif_billings ";
 echo $nb_compte_actif_billings;
 echo PHP_EOL;
@@ -58,7 +58,7 @@ echo "moncycle_app_pc_compte_actif_billings ";
 echo round(($nb_compte_actif_billings/$nb_compte_actif)*100,1);
 echo PHP_EOL;
 
-$nb_compte_actif_billings_temp = db_select_nb_compte_actif_par_methode($db, 1)[0][0];
+$nb_compte_actif_billings_temp = db_select_nb_compte_actif_par_nfp_method($db, 1)[0][0];
 echo "moncycle_app_nb_compte_actif_billings_temp ";
 echo $nb_compte_actif_billings_temp;
 echo PHP_EOL;
@@ -66,7 +66,7 @@ echo "moncycle_app_pc_compte_actif_billings_temp ";
 echo round(($nb_compte_actif_billings_temp/$nb_compte_actif)*100,1);
 echo PHP_EOL;
 
-$nb_compte_actif_fertilitycare = db_select_nb_compte_actif_par_methode($db, 3)[0][0];
+$nb_compte_actif_fertilitycare = db_select_nb_compte_actif_par_nfp_method($db, 3)[0][0];
 echo "moncycle_app_nb_compte_actif_fertilitycare ";
 echo $nb_compte_actif_fertilitycare;
 echo PHP_EOL;
@@ -74,7 +74,7 @@ echo "moncycle_app_pc_compte_actif_fertilitycare ";
 echo round(($nb_compte_actif_fertilitycare/$nb_compte_actif)*100);
 echo PHP_EOL;
 
-$nb_compte_actif_fertilitycare_temp = db_select_nb_compte_actif_par_methode($db, 4)[0][0];
+$nb_compte_actif_fertilitycare_temp = db_select_nb_compte_actif_par_nfp_method($db, 4)[0][0];
 echo "moncycle_app_nb_compte_actif_fertilitycare_temp ";
 echo $nb_compte_actif_fertilitycare_temp;
 echo PHP_EOL;

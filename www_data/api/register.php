@@ -19,10 +19,10 @@ require_once '../vendor/phpmailer/phpmailer/src/Exception.php';
 require_once '../vendor/phpmailer/phpmailer/src/PHPMailer.php';
 require_once '../vendor/phpmailer/phpmailer/src/SMTP.php';
 
-define('METHODE_BILLINGS_TEMP',      1);
-define('METHODE_BILLINGS',           2);
-define('METHODE_FERTILITYCARE',      3);
-define('METHODE_FERTILITYCARE_TEMP', 4);
+define('NFP_METHOD_BILLINGS_TEMP',      1);
+define('NFP_METHOD_BILLINGS',           2);
+define('NFP_METHOD_FERTILITYCARE',      3);
+define('NFP_METHOD_FERTILITYCARE_TEMP', 4);
 
 $result_code = [
 	0 => "",
@@ -93,17 +93,17 @@ else {
 	else {
 
 		//CREATING USER ACCOUNT
-		$methode = intval($_POST["method"] ?? 0);
-		if ($methode<METHODE_BILLINGS || $methode>METHODE_FERTILITYCARE) $methode=METHODE_BILLINGS;
+		$nfp_method = intval($_POST["method"] ?? 0);
+		if ($nfp_method<NFP_METHOD_BILLINGS || $nfp_method>NFP_METHOD_FERTILITYCARE) $nfp_method=NFP_METHOD_BILLINGS;
 		if (intval($_POST["temp"] ?? 0)) {
-			if ($methode == METHODE_BILLINGS)      $methode = METHODE_BILLINGS_TEMP;
-			if ($methode == METHODE_FERTILITYCARE) $methode = METHODE_FERTILITYCARE_TEMP;
+			if ($nfp_method == NFP_METHOD_BILLINGS)      $nfp_method = NFP_METHOD_BILLINGS_TEMP;
+			if ($nfp_method == NFP_METHOD_FERTILITYCARE) $nfp_method = NFP_METHOD_FERTILITYCARE_TEMP;
 		}
 
-		$pass_text = sec_motdepasse_aleatoire();
+		$pass_text = sec_password_aleatoire();
 		$pass_hash = sec_hash($pass_text);
 
-		$output["new_account_no"] = db_insert_compte($db, $_POST["firstname"], $methode, $_POST["birth_year"], $_POST["email1"],$pass_hash, $_POST["discovered_comment"] ?? null, $_POST["ok_for_research"] ?? 0);
+		$output["new_account_no"] = db_insert_compte($db, $_POST["firstname"], $nfp_method, $_POST["birth_year"], $_POST["email1"],$pass_hash, $_POST["discovered_comment"] ?? null, $_POST["ok_for_research"] ?? 0);
 
 		$output["email1"] = $_POST["email1"];
 		$output["name"] = $_POST["firstname"];

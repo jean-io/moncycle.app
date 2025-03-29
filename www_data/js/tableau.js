@@ -7,11 +7,11 @@
 */
 
 moncycle_app = {
-	gommette : {
+	stamp : {
 		"."  : [".", "rouge"],
 		"I"  : ["I", "vert"],
 		"="  : ["=", "jaune"],
-		":)" : ["👶", "bebe"],
+		":)" : ["👶", "baby"],
 	},
 	fleche : {
 		"↓" : ["b", "⬇️"],
@@ -23,8 +23,8 @@ moncycle_app = {
 	text : {
 		je_sais_pas: "jour non observé",
 		je_sais_pas_emoji: "?",
-		grossesse: "🤰 grossesse",
-		grossesse_court: "🤰",
+		pregnancy: "🤰 grossesse",
+		pregnancy_court: "🤰",
 		a_renseigner : "à renseigner",
 		a_renseigner_emoji : "👋",
 		chargement : "chargement...",
@@ -38,7 +38,7 @@ moncycle_app = {
 		semaine : ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
 	},
 	sommets : [],
-	compteurs : {},
+	counter_starts : {},
 	page_a_recharger: false,
 	graph_data : {},
 	graphs : {},
@@ -71,10 +71,10 @@ moncycle_app = {
 			localStorage.constante = JSON.stringify(data);
 			moncycle_app.timeline_asc = data.timeline_asc;
 			localStorage.timeline_asc = JSON.stringify(data.timeline_asc);
-			document.title = "moncycle.app - " + moncycle_app.constante.nom;
+			document.title = "moncycle.app - " + moncycle_app.constante.name;
 			if (moncycle_app.cycle_curseur == 0) moncycle_app.remplir_page_de_cycle();
-			$("#nom").html(moncycle_app.constante.nom);
-			if (moncycle_app.constante.donateur) $("#nom").append(" &#x1F396;&#xFE0F;");
+			$("#name").html(moncycle_app.constante.name);
+			if (moncycle_app.constante.sponsor) $("#name").append(" &#x1F396;&#xFE0F;");
 			$(".main_button").css("display","inline-block");
 			if (moncycle_app.timeline_asc) $("#charger_cycle").hide();
 			else $("#charger_cycle").show();
@@ -96,16 +96,16 @@ moncycle_app = {
 		$("#form_fc").on("keyup", moncycle_app.fc_note2form);
 		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
 		$("#but_mini_maxi").click(moncycle_app.mini_maxi_switch);
-		$("#go_bebe").click(moncycle_app.go_blank_or_empty);
+		$("#go_baby").click(moncycle_app.go_blank_or_empty);
 		if (localStorage.mini_maxi == "mini") moncycle_app.mini_maxi = "maxi";
 		else moncycle_app.mini_maxi = "mini";
 		moncycle_app.mini_maxi_switch();
-		$("#form_heure_temp").focus(function () {
-			if($("#form_heure_temp").val().trim().length==0) {
+		$("#form_time_temp_taken").focus(function () {
+			if($("#form_time_temp_taken").val().trim().length==0) {
 				let d  = new Date();
 				let h = d.getHours();
 				let m = d.getMinutes();
-				$("#form_heure_temp").val((h<10 ? "0"+h : h) + ":" + (m<10 ? "0"+m : m));
+				$("#form_time_temp_taken").val((h<10 ? "0"+h : h) + ":" + (m<10 ? "0"+m : m));
 				moncycle_app.submit_menu();
 			}
 		});
@@ -119,7 +119,7 @@ moncycle_app = {
 			return false;
 		})
 		window.addEventListener("storage", function () {
-			if (this.localStorage.auth != moncycle_app.constante.id_utilisateur) window.location.href = window.location.href;
+			if (this.localStorage.auth != moncycle_app.constante.account_id) window.location.href = window.location.href;
 			return false;
 		}, false);
 		moncycle_app.charger_actu();
@@ -148,9 +148,9 @@ moncycle_app = {
 		else $("#bulk_form").hide();
 	},
 	remplir_page_de_cycle : function() {
-		if (!moncycle_app.constante || !moncycle_app.constante.tous_les_cycles) return;
+		if (!moncycle_app.constante || !moncycle_app.constante.all_cycles_1st_day) return;
 		if (moncycle_app.timeline_asc) {
-			while ($(window).height() == $(document).height() && moncycle_app.cycle_curseur < moncycle_app.constante.tous_les_cycles.length) {
+			while ($(window).height() == $(document).height() && moncycle_app.cycle_curseur < moncycle_app.constante.all_cycles_1st_day.length) {
 				moncycle_app.charger_cycle();
 			}
 			moncycle_app.charger_cycle();
@@ -178,25 +178,25 @@ moncycle_app = {
 	},
 	loading_observation : {date_obs: "", pos: 0, chargement: true, temperature: NaN, cycle: ""},
 	charger_cycle : function() {
-		if (moncycle_app.cycle_curseur >= moncycle_app.constante.tous_les_cycles.length) {
+		if (moncycle_app.cycle_curseur >= moncycle_app.constante.all_cycles_1st_day.length) {
 			moncycle_app.form_nouveau_cycle();
 			return;
 		}
 		let c = moncycle_app.cycle_curseur;
 		moncycle_app.cycle_curseur += 1;
-		let date_cycle_str = moncycle_app.constante.tous_les_cycles[c];
+		let date_cycle_str = moncycle_app.constante.all_cycles_1st_day[c];
 		let date_fin = moncycle_app.date.now();
 		let fin_auj = true;
 		if (c>0) {
-			date_fin = new Date(moncycle_app.date.parse(moncycle_app.constante.tous_les_cycles[c-1]) - (1000*60*60*24));
+			date_fin = new Date(moncycle_app.date.parse(moncycle_app.constante.all_cycles_1st_day[c-1]) - (1000*60*60*24));
 			date_fin.setHours(9);
 			fin_auj = false;
 		}
 		let date_cycle = moncycle_app.date.parse(date_cycle_str);
 		date_cycle.setHours(9);
 		let form_nouv_cycle = false;
-		for (let i = 0; i < moncycle_app.constante.toutes_les_grossesses.length; i++) {
-			let gross = moncycle_app.date.parse(moncycle_app.constante.toutes_les_grossesses[i]);
+		for (let i = 0; i < moncycle_app.constante.all_pregnancy_dates.length; i++) {
+			let gross = moncycle_app.date.parse(moncycle_app.constante.all_pregnancy_dates[i]);
 			gross.setHours(9);
 			if (gross>=date_cycle && gross<=date_fin) {
 				date_fin = gross;
@@ -239,7 +239,7 @@ moncycle_app = {
 		moncycle_app.graph_preparation_data(dates_data_holder);
 		while (dates_req.length>200) moncycle_app.charger_observation(dates_req.splice(0, 200).join(','));
 		moncycle_app.charger_observation(dates_req.join(','));
-		if (moncycle_app.constante.methode == 1 || moncycle_app.constante.methode == 4) moncycle_app.cycle2graph(date_cycle_str);
+		if (moncycle_app.constante.nfp_method == 1 || moncycle_app.constante.nfp_method == 4) moncycle_app.cycle2graph(date_cycle_str);
 		if (form_nouv_cycle && !moncycle_app.timeline_asc) moncycle_app.form_nouveau_cycle(false);
 	},
 	charger_observation : function(o_date) {
@@ -251,13 +251,13 @@ moncycle_app = {
 				sotred_obs[o_date] = o_data;
 				$(`#o-${o_date}`).replaceWith(moncycle_app.observation2timeline(o_data));
 				$(`#ro-${o_date}`).replaceWith(moncycle_app.observation2recap(o_data));
-				if (o_data.jour_sommet && $.inArray(o_date, moncycle_app.sommets)<0) moncycle_app.sommets.push(o_date);
-				else if (!o_data.jour_sommet && $.inArray(o_date, moncycle_app.sommets)>=0) moncycle_app.sommets.splice($.inArray(o_date, moncycle_app.sommets), 1);
-				if (o_data.compteur) moncycle_app.compteurs[o_date] = o_data.compteur;
-				else if (!o_data.compteur && o_date in moncycle_app.compteurs) delete moncycle_app.compteurs[o_date];
+				if (o_data.is_peak && $.inArray(o_date, moncycle_app.sommets)<0) moncycle_app.sommets.push(o_date);
+				else if (!o_data.is_peak && $.inArray(o_date, moncycle_app.sommets)>=0) moncycle_app.sommets.splice($.inArray(o_date, moncycle_app.sommets), 1);
+				if (o_data.counter_start) moncycle_app.counter_starts[o_date] = o_data.counter_start;
+				else if (!o_data.counter_start && o_date in moncycle_app.counter_starts) delete moncycle_app.counter_starts[o_date];
 			});
 			localStorage.observation = JSON.stringify(sotred_obs);
-			$(`.pas_${moncycle_app.constante.methode_diminutif}`).css("display", "none");
+			$(`.pas_${moncycle_app.constante.nfp_method_name}`).css("display", "none");
 			moncycle_app.trois_jours();
 			moncycle_app.graph_preparation_data(data);
 		}).fail(moncycle_app.redirection_connexion);
@@ -269,11 +269,11 @@ moncycle_app = {
 		let max_date = moncycle_app.date.str(moncycle_app.date.now());
 		let min_date = "";
 		if (prepend && moncycle_app.cycle_curseur>0) {
-			max_date = moncycle_app.constante.tous_les_cycles[moncycle_app.cycle_curseur-1];
+			max_date = moncycle_app.constante.all_cycles_1st_day[moncycle_app.cycle_curseur-1];
 			max_date = moncycle_app.date.str(new Date(moncycle_app.date.parse(max_date) - (1000*60*60*24)));
 		}
 		else if (!prepend) {
-			let min_calc = moncycle_app.date.parse(moncycle_app.constante.toutes_les_grossesses[0]);
+			let min_calc = moncycle_app.date.parse(moncycle_app.constante.all_pregnancy_dates[0]);
 			min_calc.setDate(min_calc.getDate()+1);
 			min_date = moncycle_app.date.str(min_calc);
 		}
@@ -299,7 +299,7 @@ moncycle_app = {
 				alert("Erreur: la date du premier jour du cycle à créer ne doit pas être dans un cycle existant et doit être antérieure à aujourd'hui.");
 				return;
 			}
-			$.post("api/day", `date=${nouveau_cycle_date}&premier_jour=1`).done(function(data){
+			$.post("api/day", `date=${nouveau_cycle_date}&cycle_1st_day=1`).done(function(data){
 				if (data.err){
 					console.error(data.err);
 				}
@@ -310,7 +310,7 @@ moncycle_app = {
 						location.reload(false);
 						return;
 					}
-					moncycle_app.constante.tous_les_cycles.push(nouveau_cycle_date);
+					moncycle_app.constante.all_cycles_1st_day.push(nouveau_cycle_date);
 					$("#charger_cycle").prop("disabled", false);
 					moncycle_app.form_nouveau_cycle_active = false;
 					$("#nouveau_cycle").remove();
@@ -328,7 +328,7 @@ moncycle_app = {
 		$(".obs .s").show();
 		$(".day .s").removeClass("j_pic");
 		let txt_sommet = moncycle_app.text.sommet_bill;
-		if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) txt_sommet = moncycle_app.text.sommet_fc;
+		if (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) txt_sommet = moncycle_app.text.sommet_fc;
 		moncycle_app.sommets.forEach(s => {
 			let last = 3;
 			if (!moncycle_app.timeline_asc) last = $(`#o-${s}`).parent()[0].children.length - $(`#o-${s}`).index() - 1;
@@ -345,11 +345,11 @@ moncycle_app = {
 			$(`#o-${s} .s`).addClass("j_pic");
 			$(`#ro-${s} .s`).addClass("j_pic");
 		});
-		if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) return;
+		if (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) return;
 		$(".day .n").empty();
 		$(".obs .n").empty();
 		$(".obs .n").hide();
-		$.each(moncycle_app.compteurs,function(d,c){
+		$.each(moncycle_app.counter_starts,function(d,c){
 			for (let i = 0; i < c; i++) {
 				let s_date = moncycle_app.date.parse(d);
 				s_date.setDate(s_date.getDate()+i);
@@ -464,7 +464,7 @@ moncycle_app = {
 			moncycle_app.graphs[id].data.datasets[0].data = moncycle_app.graph_data[id];
 			moncycle_app.graphs[id].update();
 		}
-		if (!vide && (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4)) {
+		if (!vide && (moncycle_app.constante.nfp_method==1 || moncycle_app.constante.nfp_method==4)) {
 			moncycle_app.graphs[id].data.datasets = moncycle_app.graphs[id].data.datasets.slice(0,1);
 			moncycle_app.graphs[id].update();
 		}
@@ -473,13 +473,13 @@ moncycle_app = {
 		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "ro-" + moncycle_app.date.str(o_date);
 		let o_class = "obs";
-		if (j.grossesse) o_class += " o_gross";
+		if (j.pregnancy) o_class += " o_gross";
 		let observation = $("<div>", {id: o_id, class: o_class, date: moncycle_app.date.str(o_date)});
 		if (j.chargement) {
 			observation.append(`<span class='s'></span>`);
 			observation.append(`<span class='g g_loading'>${moncycle_app.text.chargement_emoji}</span>`);
 			observation.append(`<span class='c'></span>`);
-			if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) {
+			if (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) {
 				observation.append(`<span class='fc'></span>`);
 				observation.append(`<span class='fc'></span>`);
 			}
@@ -487,24 +487,24 @@ moncycle_app = {
 		}
 		observation.click(moncycle_app.open_menu);
 		let color = "vide";
-		let index_couleur = j.gommette;
-		let bebe = (j.gommette == ":)");
-		if (j.gommette && j.gommette.includes(':)') && j.gommette.length>2) {
-			color = moncycle_app.gommette[":)"][1];
+		let index_couleur = j.stamp;
+		let baby = (j.stamp == ":)");
+		if (j.stamp && j.stamp.includes(':)') && j.stamp.length>2) {
+			color = moncycle_app.stamp[":)"][1];
 			index_couleur = index_couleur.replace(":)", "");
-			bebe = true;
+			baby = true;
 		}
-		if (moncycle_app.gommette[index_couleur]) color = moncycle_app.gommette[index_couleur][1]; 
-		let car_du_milieu = bebe ? moncycle_app.gommette[":)"][0] : "";
+		if (moncycle_app.stamp[index_couleur]) color = moncycle_app.stamp[index_couleur][1]; 
+		let car_du_milieu = baby ? moncycle_app.stamp[":)"][0] : "";
 		let car_du_bas = j.union_sex ? moncycle_app.text.union : "";
 		if (j.err && j.err.includes("no data")) car_du_milieu = moncycle_app.text.a_renseigner_emoji;
-		let recap_note = j.note_fc;
-		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) {
+		let recap_note = j.fc_score;
+		if ((moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) && j.fc_score) {
 			recap_note = recap_note.toUpperCase();
 			recap_note = recap_note.replace('RAP','').replace('LAP','').replace('AD','').replace('AP','').replace('B','');
 		}
 		else recap_note = "";
-		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && car_du_milieu == "" && j.note_fc) {
+		if ((moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) && car_du_milieu == "" && j.fc_score) {
 			const should_be_red = ['VL', 'L', 'VH', 'H', 'M'];
 			should_be_red.forEach(c => {
 				recap_note = recap_note.trim();
@@ -514,20 +514,20 @@ moncycle_app = {
 				}
 			});
 		}
-		if (j.grossesse) {
+		if (j.pregnancy) {
 			color = "pink";
 			car_du_milieu = "G"
-			car_du_bas = moncycle_app.text.grossesse_court;
+			car_du_bas = moncycle_app.text.pregnancy_court;
 		}
-		if (j.jenesaispas) {
+		if (j.day_not_observed) {
 			car_du_milieu = "?";		
 			color = "jcpas";
 		}
-		if (car_du_milieu=="" && j.gommette=="") car_du_milieu = moncycle_app.text.a_renseigner_emoji;
-		observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
-		if (moncycle_app.constante.methode==1 || moncycle_app.constante.methode==2) observation.append(`<span class='n'></span>`);
+		if (car_du_milieu=="" && j.stamp=="") car_du_milieu = moncycle_app.text.a_renseigner_emoji;
+		observation.append(`<span class='s'>${j.is_peak ? moncycle_app.text.sommet_bill : ""}</span>`);
+		if (moncycle_app.constante.nfp_method==1 || moncycle_app.constante.nfp_method==2) observation.append(`<span class='n'></span>`);
 		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
-		if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && !j.grossesse && !j.jenesaispas && j.note_fc){
+		if ((moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) && !j.pregnancy && !j.day_not_observed && j.fc_score){
 			recap_note = recap_note.replace('X1','').replace('X2','').replace('X3','');
 			let fc_glaire = recap_note.match(/\d+/);
 			if (fc_glaire) recap_note = recap_note.replace(fc_glaire[0], '');
@@ -536,7 +536,7 @@ moncycle_app = {
 			if (recap_note.length>2) recap_note='*';
 			observation.append(`<span class='fc'>${recap_note}</span>`);
 		}
-		else if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) {
+		else if (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) {
 			observation.append(`<span class='fc'></span>`);
 			observation.append(`<span class='fc'></span>`);
 		}
@@ -547,9 +547,9 @@ moncycle_app = {
 		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "o-" + moncycle_app.date.str(o_date);
 		let o_class = "day";
-		if (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) o_class += " o_fc";
+		if (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) o_class += " o_fc";
 		else o_class += " o_bill";
-		if (j.grossesse) o_class += " o_gross";
+		if (j.pregnancy) o_class += " o_gross";
 		let observation = $("<div>", {id: o_id, class: o_class, date : moncycle_app.date.str(o_date)});
 		let d_bold = o_date.getDay()==0 ? "bold" : "";
 		observation.append(`<span class='d ${d_bold}'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);
@@ -562,36 +562,36 @@ moncycle_app = {
 		}
 		observation.click(moncycle_app.open_menu);
 		let tbd = true;
-		if (j.grossesse) {
-			observation.append(`<span class='e'>${moncycle_app.text.grossesse}</span>`);
+		if (j.pregnancy) {
+			observation.append(`<span class='e'>${moncycle_app.text.pregnancy}</span>`);
 			observation.append(`<span class='s'></span>`);
 			observation.append(`<span class='n'></span>`);
 			tbd = false;
 		}
 		else {
-			if (j.jenesaispas) {
+			if (j.day_not_observed) {
 				observation.append(`<span class='g jcpas'>${moncycle_app.text.je_sais_pas_emoji}</span>`);
 				pos.addClass("j_jcpas");
 				tbd = false;
 			}
 			else {
-				if (j.gommette) {
+				if (j.stamp) {
 					let contenu = "o";
-					let color = j.gommette;
-					if (j.gommette.includes(':)') && j.gommette.length>2){
-						contenu = moncycle_app.gommette[":)"][0];
-						color = j.gommette.replace(":)", "");
+					let color = j.stamp;
+					if (j.stamp.includes(':)') && j.stamp.length>2){
+						contenu = moncycle_app.stamp[":)"][0];
+						color = j.stamp.replace(":)", "");
 					}
 					else {
-						contenu = moncycle_app.gommette[j.gommette][0];
+						contenu = moncycle_app.stamp[j.stamp][0];
 					}
-					observation.append(`<span class='g ${moncycle_app.gommette[color][1]}'>${contenu}</span>`);
-					pos.addClass("j_" + moncycle_app.gommette[color][1]);
+					observation.append(`<span class='g ${moncycle_app.stamp[color][1]}'>${contenu}</span>`);
+					pos.addClass("j_" + moncycle_app.stamp[color][1]);
 					tbd = false;
 				}
-				let html_note_fc = moncycle_app.fc_note2html(j.note_fc || "");
-				observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_note_fc}</span>`);
-				if ((moncycle_app.constante.methode==1 || moncycle_app.constante.methode==4) && j.temperature) {
+				let html_fc_score = moncycle_app.fc_note2html(j.fc_score || "");
+				observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_fc_score}</span>`);
+				if ((moncycle_app.constante.nfp_method==1 || moncycle_app.constante.nfp_method==4) && j.temperature) {
 					let temp = parseFloat(j.temperature);
 					let color = "#4169e1";
 					if (temp > 37.5) color = "#b469e1";
@@ -600,13 +600,13 @@ moncycle_app = {
 						color = `rgb(${r}, 105, 225)`;
 					}
 					observation.append(`<span class='t pas_bill pas_fc' style='background-color: ${color}'>${temp}</span>`);
-					if (j.heure_temp) {
-						let h = j.heure_temp.substring(0,5).replace(':','h');
+					if (j.time_temp_taken) {
+						let h = j.time_temp_taken.substring(0,5).replace(':','h');
 						observation.append(`<span class='th bill pas_fc pas_bill' style='color: ${color}'> à ${h}</span>`);
 					}
 					tbd = false;
 				}
-				if ((moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4) && j.note_fc) tbd = false;
+				if ((moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) && j.fc_score) tbd = false;
 			}
 			if (tbd) {
 				observation.append(`<span class='g ar'>${moncycle_app.text.a_renseigner_emoji}</span>`);
@@ -615,17 +615,17 @@ moncycle_app = {
 				pos.addClass("j_ar");
 				return observation;
 			}
-			observation.append(`<span class='s'>${j.jour_sommet ? moncycle_app.text.sommet_bill : ""}</span>`);
+			observation.append(`<span class='s'>${j.is_peak ? moncycle_app.text.sommet_bill : ""}</span>`);
 			observation.append(`<span class='n'></span>`);
-			if (!j.jenesaispas) {
+			if (!j.day_not_observed) {
 				observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
-				if (moncycle_app.fleche[j.fleche_fc]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fleche_fc][1] || ""}</span>`);
+				if (moncycle_app.fleche[j.fc_arrow]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fc_arrow][1] || ""}</span>`);
 			}
 			else observation.append(`<span class='p'>${moncycle_app.text.je_sais_pas}</span>`);
 			observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		}
-		if (j.commentaire) {
-			let comment = j.commentaire.trim();
+		if (j.comment) {
+			let comment = j.comment.trim();
 			while (comment.includes('\n')) {
 				comment = comment.replace('\n', "<br />");
 			}
@@ -634,7 +634,7 @@ moncycle_app = {
 		return observation;
 	},
 	go_blank_or_empty : function () {
-		if ($("#go_bebe")[0].checked) $("#blank_or_empty").text("blanc");
+		if ($("#go_baby")[0].checked) $("#blank_or_empty").text("blanc");
 		else $("#blank_or_empty").text("vide");
 	},
 	menu_opened_date : null,
@@ -645,7 +645,7 @@ moncycle_app = {
 		date = moncycle_app.date.str(o_date);
 		moncycle_app.menu_opened_date = date;
 		let j = moncycle_app.observation[moncycle_app.menu_opened_date];
-		let gommette = j.gommette? j.gommette : "";
+		let stamp = j.stamp? j.stamp : "";
 		let titre = [moncycle_app.text.semaine[o_date.getDay()], o_date.getDate(), moncycle_app.text.mois_long[o_date.getMonth()], o_date.getFullYear()];
 		titre.push(`<span>J${j.pos}</span>`);
 		$("#jour_form_titre").html(titre.join(" "));
@@ -656,7 +656,7 @@ moncycle_app = {
 		let date_cursor = new Date(j.date_obs);
 		date_cursor.setDate(date_cursor.getDate()+1);
 		let str_date_cursor = moncycle_app.date.str(date_cursor);
-		if (moncycle_app.observation[str_date_cursor] && !moncycle_app.observation[str_date_cursor].premier_jour) {
+		if (moncycle_app.observation[str_date_cursor] && !moncycle_app.observation[str_date_cursor].cycle_1st_day) {
 			$("#jour_form_next").attr("date", str_date_cursor);
 			$("#jour_form_next").show();
 		}
@@ -673,20 +673,20 @@ moncycle_app = {
 		$("#jour_form_saving").hide();
 		$("#jour_form_saved").hide();
 		$("#form_date").val(j.date_obs);
-		if (j.note_fc && (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4)) {
-			$("#form_fc").val(j.note_fc);
+		if (j.fc_score && (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4)) {
+			$("#form_fc").val(j.fc_score);
 			moncycle_app.fc_note2form();
 			moncycle_app.fc_test_note();
 		}
-		if (j.fleche_fc && (moncycle_app.constante.methode==3 || moncycle_app.constante.methode==4)) $("#fc_f" + moncycle_app.fleche[j.fleche_fc][0]).prop('checked', true);
-		if (gommette.includes(":)") && gommette.length>2) {
-			$("#go_" + moncycle_app.gommette[":)"][1]).prop('checked', true);
-			gommette = gommette.replace(":)", "");
+		if (j.fc_arrow && (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4)) $("#fc_f" + moncycle_app.fleche[j.fc_arrow][0]).prop('checked', true);
+		if (stamp.includes(":)") && stamp.length>2) {
+			$("#go_" + moncycle_app.stamp[":)"][1]).prop('checked', true);
+			stamp = stamp.replace(":)", "");
 		}
-		if (moncycle_app.gommette[gommette]) $("#go_" + moncycle_app.gommette[gommette][1]).prop('checked', true);
+		if (moncycle_app.stamp[stamp]) $("#go_" + moncycle_app.stamp[stamp][1]).prop('checked', true);
 		moncycle_app.go_blank_or_empty();
 		$("#form_temp").val(j.temperature);
-		$("#form_heure_temp").val(j.heure_temp);
+		$("#form_time_temp_taken").val(j.time_temp_taken);
 		$("#vos_obs").empty();
 		let n = 0;
 		Object.entries(moncycle_app.sensation).sort((a,b) => b[1] - a[1]).forEach(function (o){
@@ -708,26 +708,26 @@ moncycle_app = {
 			else extra.push(ob);
 		});
 		if (extra.length) $("#ob_extra").val(extra.join(", "));
-		if (j.premier_jour) {
-			$("#ev_premier_jour").prop('checked', true);
-			$("#ev_premier_jour").attr('initial', true);
+		if (j.cycle_1st_day) {
+			$("#ev_cycle_1st_day").prop('checked', true);
+			$("#ev_cycle_1st_day").attr('initial', true);
 		}
-		else $("#ev_premier_jour").attr('initial', false);
+		else $("#ev_cycle_1st_day").attr('initial', false);
 		if (j.union_sex) $("#ev_union").prop('checked', true);
-		if (j.jour_sommet) $("#ev_jour_sommet").prop('checked', true);
-		if (j.compteur && j.compteur > 0) {
-			$("#ev_compteur_actif").prop('checked', true);
-			$("#ev_compteur_nb").val(j.compteur);
-			$("#ev_hidden_compteur").val(j.compteur)
+		if (j.is_peak) $("#ev_is_peak").prop('checked', true);
+		if (j.counter_start && j.counter_start > 0) {
+			$("#ev_counter_start_actif").prop('checked', true);
+			$("#ev_counter_start_nb").val(j.counter_start);
+			$("#ev_hidden_counter_start").val(j.counter_start)
 		}
-		if (j.jenesaispas) $("#ev_jesaispas").prop('checked', true);
-		if (j.grossesse) $("#ev_grossesse").prop('checked', true);
-		$("#ev_grossesse").attr('initial', new Boolean(j.grossesse));
+		if (j.day_not_observed) $("#ev_jesaispas").prop('checked', true);
+		if (j.pregnancy) $("#ev_pregnancy").prop('checked', true);
+		$("#ev_pregnancy").attr('initial', new Boolean(j.pregnancy));
 		$(".ev_reload").change(function () {
-			moncycle_app.page_a_recharger = (JSON.parse($("#ev_premier_jour").attr('initial')) != $("#ev_premier_jour").is(':checked'));
-			if (!moncycle_app.page_a_recharger) moncycle_app.page_a_recharger = (JSON.parse($("#ev_grossesse").attr('initial')) != $("#ev_grossesse").is(':checked'));
+			moncycle_app.page_a_recharger = (JSON.parse($("#ev_cycle_1st_day").attr('initial')) != $("#ev_cycle_1st_day").is(':checked'));
+			if (!moncycle_app.page_a_recharger) moncycle_app.page_a_recharger = (JSON.parse($("#ev_pregnancy").attr('initial')) != $("#ev_pregnancy").is(':checked'));
 		});
-		$("#from_com").val(j.commentaire);
+		$("#from_com").val(j.comment);
 		$("html, body").css({
 			"overflow": "hidden",
 			"touch-action": "none"
@@ -760,8 +760,8 @@ moncycle_app = {
 		if (this.id == "form_fc") moncycle_app.fc_note2form();
 		else moncycle_app.fc_form2note();
 		moncycle_app.fc_test_note();
-		if ($("#ev_compteur_actif")[0].checked) $("#ev_hidden_compteur").val($("#ev_compteur_nb").val());
-		else $("#ev_hidden_compteur").val(0);
+		if ($("#ev_counter_start_actif")[0].checked) $("#ev_hidden_counter_start").val($("#ev_counter_start_nb").val());
+		else $("#ev_hidden_counter_start").val(0);
 		$("#ob_extra").val().split(',').forEach(function(o) {
 			o = o.trim().toLowerCase();
 			if (!o) return;
@@ -800,14 +800,14 @@ moncycle_app = {
 			return;
 		}
 		let menu_current_date = moncycle_app.menu_opened_date;
-		let menu_current_1st_day = $("#ev_premier_jour").is(':checked');
+		let menu_current_1st_day = $("#ev_cycle_1st_day").is(':checked');
 		let date_cursor = moncycle_app.date.parse(menu_current_date);
 		let j = 1;
 		while (j <= nb_of_days && moncycle_app.menu_opened_date!=moncycle_app.observation[menu_current_date]["cycle"]) {
 			date_cursor.setDate(date_cursor.getDate()-1);
 			moncycle_app.menu_opened_date = moncycle_app.date.str(date_cursor);
-			if (moncycle_app.menu_opened_date==moncycle_app.observation[menu_current_date]["cycle"]) $("#ev_premier_jour").prop('checked', true);
-			else $("#ev_premier_jour").prop('checked', false);
+			if (moncycle_app.menu_opened_date==moncycle_app.observation[menu_current_date]["cycle"]) $("#ev_cycle_1st_day").prop('checked', true);
+			else $("#ev_cycle_1st_day").prop('checked', false);
 			let laoding_obs = moncycle_app.loading_observation;
 			laoding_obs["date_obs"] = moncycle_app.menu_opened_date;
 			laoding_obs["pos"] = moncycle_app.observation[menu_current_date]["pos"]-j;
@@ -818,7 +818,7 @@ moncycle_app = {
 			j += 1;
 		}
 		moncycle_app.menu_opened_date = menu_current_date;
-		if (menu_current_1st_day) $("#ev_premier_jour").prop('checked', true);
+		if (menu_current_1st_day) $("#ev_cycle_1st_day").prop('checked', true);
 	},
 	suppr_observation : function () {
 		let date = moncycle_app.date.parse($("#form_date").val());
@@ -826,7 +826,7 @@ moncycle_app = {
 		let jour = [moncycle_app.text.semaine[date.getDay()], date.getDate(), moncycle_app.text.mois_long[date.getMonth()], date.getFullYear()].join(" ");
 		if (confirm(`Voulez-vous vraiment supprimer définitivement les données de la journée du ${jour}?`)) {
 			let date_id = moncycle_app.date.str(date);
-			if (moncycle_app.observation[date_id]["premier_jour"] || moncycle_app.observation[date_id]["grossesse"]) moncycle_app.page_a_recharger = true;
+			if (moncycle_app.observation[date_id]["cycle_1st_day"] || moncycle_app.observation[date_id]["pregnancy"]) moncycle_app.page_a_recharger = true;
 			$.ajax({type : 'DELETE', "url" : "api/day", "data" : `date=${date_id}`}).done(function(data){
 				if (data.err){
 					$("#form_err").val(data.err);

@@ -75,9 +75,9 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 	$date_exploded = explode('-', $date);
 	if (checkdate($date_exploded[1], $date_exploded[2], $date_exploded[0])) {
 
-		if (isset($compte["relance"]) && boolval($compte["relance"])) {
-			db_update_relance($db, $compte["no_compte"], 0);
-			$compte["relance"] = 0;
+		if (isset($compte["is_inactive"]) && boolval($compte["is_inactive"])) {
+			db_update_is_inactive($db, $compte["no_compte"], 0);
+			$compte["is_inactive"] = 0;
 		}
 
 		$date = trim($_POST['date']);
@@ -124,20 +124,20 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 			if (isset($_POST["temp"]) && !empty(trim($_POST["temp"]))) {
 				$temp = floatval($_POST["temp"]);
 				if ($temp <= 0) $temp = null;
-				elseif (!empty($_POST["heure_temp"])) $htemp = trim($_POST["heure_temp"]);
+				elseif (!empty($_POST["time_temp_taken"])) $htemp = trim($_POST["time_temp_taken"]);
 			}
 	
-			$go  = $_POST["gommette"] ?? '';
-			$go .= $_POST["bebe"] ?? '';
+			$go  = $_POST["stamp"] ?? '';
+			$go .= $_POST["baby"] ?? '';
 	
-			$compteur = null;
-			if (isset($_POST["compteur"]) && intval($_POST["compteur"])>0) $compteur = intval($_POST["compteur"]);
+			$counter_start = null;
+			if (isset($_POST["counter_start"]) && intval($_POST["counter_start"])>0) $counter_start = intval($_POST["counter_start"]);
 
 			$last_write_client_UTC = "";
 			if (isset($_POST["last_write_client_UTC"]) && date_validate_timestamp(trim($_POST['last_write_client_UTC']))) $last_write_client_UTC = trim($_POST['last_write_client_UTC']);
 			else $last_write_client_UTC = date('Y-m-d H:i:s');
 	
-			db_update_observation($db, $date, $compte["no_compte"], $last_write_client_UTC, $go, $_POST["note_fc"] ?? null, $_POST["fc_fle"] ?? null, $observation_db, $temp, $htemp, $_POST["jour_sommet"] ?? null, $_POST["union_sex"] ?? null, $_POST["premier_jour"] ?? null, $_POST["jenesaispas"] ?? null, $_POST["grossesse"] ?? null, $_POST["commentaire"] ?? null, $compteur);
+			db_update_observation($db, $date, $compte["no_compte"], $last_write_client_UTC, $go, $_POST["fc_score"] ?? null, $_POST["fc_arrow"] ?? null, $observation_db, $temp, $htemp, $_POST["is_peak"] ?? null, $_POST["union_sex"] ?? null, $_POST["cycle_1st_day"] ?? null, $_POST["day_not_observed"] ?? null, $_POST["pregnancy"] ?? null, $_POST["comment"] ?? null, $counter_start);
 			
 			foreach ($description_to_delete as $no_desc) db_delete_linked_descriptions ($db, $observation_no, $no_desc);
 

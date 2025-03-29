@@ -27,13 +27,13 @@ if (isset($_POST["pw1"]) && !empty($_POST["pw1"]) && isset($_POST["old_pw"]) && 
 	if (strlen($_POST["pw1"])<8) {
 		$result["msg"] = "nouveau mot de passe trop court";
 	}
-	elseif (isset($compte["motdepasse"]) && password_verify($_POST["pw1"], $compte["motdepasse"])) {
+	elseif (isset($compte["password"]) && password_verify($_POST["pw1"], $compte["password"])) {
 		$result["msg"] = "le nouveau mot de passe est identique à l'ancien mot de passe";
 	}
-	elseif (isset($compte["motdepasse"]) && password_verify($_POST["old_pw"], $compte["motdepasse"])) {
+	elseif (isset($compte["password"]) && password_verify($_POST["old_pw"], $compte["password"])) {
 		unset($_POST["old_pw"]);
 
-		db_udpate_motdepasse_par_nocompte($db, sec_hash($_POST["pw1"]), $compte["no_compte"]);
+		db_udpate_password_par_nocompte($db, sec_hash($_POST["pw1"]), $compte["no_compte"]);
 
 		$result["msg"] = "votre mot de passe a bien été mis à jour";
 		$result["change_ok"] = true;
@@ -42,7 +42,7 @@ if (isset($_POST["pw1"]) && !empty($_POST["pw1"]) && isset($_POST["old_pw"]) && 
 		$result["msg"] = "l'ancien mot de passe n'est pas le bon";
 	}
 
-	unset($compte["motdepasse"]);
+	unset($compte["password"]);
 
 }
 else {

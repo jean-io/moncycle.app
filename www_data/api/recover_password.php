@@ -50,10 +50,10 @@ elseif (!filter_var($reset_email, FILTER_VALIDATE_EMAIL)) {
 
 // CHECK IF ACCOUNT IS EXISTING, IF YES SEND A NEW PASSWORD
 elseif (boolval(db_select_compte_existe($db,$reset_email)[0]["compte_existe"])) {
-    $pass_text = sec_motdepasse_aleatoire();
+    $pass_text = sec_password_aleatoire();
     $pass_hash = sec_hash($pass_text);
 
-    db_update_motdepasse_par_mail($db, $pass_hash, $_POST["email1"]);
+    db_update_password_par_mail($db, $pass_hash, $_POST["email1"]);
 
     $output["outcome"] = 3;
 

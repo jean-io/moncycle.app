@@ -5,7 +5,7 @@ DELETE FROM `compte` WHERE `no_compte` = '2';
 DELETE FROM `compte` WHERE `no_compte` = '3';
 
 
-INSERT INTO `compte` (`no_compte`, `nom`, `age`, `email1`, `motdepasse`, `actif`, `methode`) VALUES
+INSERT INTO `compte` (`no_compte`, `name`, `age`, `email1`, `password`, `user_enabled`, `nfp_method`) VALUES
 (2, 'Démo Billings', 1990, 'demo.bill@moncycle.app', '$2y$10$hTn9Xjg4wk/ovWEY8BWXau.Y1ODRoX03c2zlp6Rnmib1yUcVpp0sC', 1, 2),
 (3, 'Démo FertilityCare', 1990, 'demo.fc@moncycle.app', '$2y$10$hTn9Xjg4wk/ovWEY8BWXau.Y1ODRoX03c2zlp6Rnmib1yUcVpp0sC', 1, 3);
 
@@ -19,7 +19,7 @@ INSERT INTO `description` (`no_description`, `no_compte`, `name`, `type`) VALUES
 (6,	2,	'blanc',	0);
 
 
-INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `jenesaispas`, `note_fc`, `fleche_fc`, `gommette`, `temperature`, `heure_temp`, `jour_sommet`, `compteur`, `union_sex`, `premier_jour`, `grossesse`, `commentaire`) VALUES
+INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `day_not_observed`, `fc_score`, `fc_arrow`, `stamp`, `temperature`, `time_temp_taken`, `is_peak`, `counter_start`, `union_sex`, `cycle_1st_day`, `pregnancy`, `comment`) VALUES
 (0+50,	2,	CURDATE() + INTERVAL - (50-0) DAY,	NULL,	NULL,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	1,	NULL,	''),
 (1+50,	2,	CURDATE() + INTERVAL - (50-1) DAY,	NULL,	NULL,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
 (2+50,	2,	CURDATE() + INTERVAL - (50-2) DAY,	NULL,	NULL,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
@@ -72,7 +72,7 @@ INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `jenesaisp
 (49+50,	2,	CURDATE() + INTERVAL - (50-49) DAY,	NULL,	'',	'',	'I',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'');
 
 
-INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `jenesaispas`, `note_fc`, `fleche_fc`, `gommette`, `temperature`, `heure_temp`, `jour_sommet`, `compteur`, `union_sex`, `premier_jour`, `grossesse`, `commentaire`) VALUES
+INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `day_not_observed`, `fc_score`, `fc_arrow`, `stamp`, `temperature`, `time_temp_taken`, `is_peak`, `counter_start`, `union_sex`, `cycle_1st_day`, `pregnancy`, `comment`) VALUES
 (1,	3,	CURDATE() + INTERVAL - (50-1) DAY,	NULL,	'H AP',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	1,	NULL,	''),
 (2,	3,	CURDATE() + INTERVAL - (50-2) DAY,	NULL,	'M',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
 (3,	3,	CURDATE() + INTERVAL - (50-3) DAY,	NULL,	'MB',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),

@@ -34,7 +34,7 @@
 	<body>
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
-			<div id="nom">Mon compte</div>
+			<div id="name">Mon compte</div>
 			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="api/logout" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<p id="merci_don" style="display:none">🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p>
 			<p id="warning_demo" style="font-weight:bold; display:none">&#x1F6A8; Vous visualisez actuellement le compte de démonstration.<br /><br /><a style="color:#fbca0b" href='/register'><button type='button'>&#x1F680; créer votre compte</button></a></p>
@@ -59,17 +59,17 @@
 
 			<h2>Modifier mes informations & préférences<span class="net_stat" id="net_stat"></span></h2>
 			<form action="../api/param" method="post" id="f_info_pref"><br />
-			<label for="i_prenom">Prénom(s):</label><br />
-			<input class="auto_save" type="text" id="i_prenom" required name="nom" value="" /><br />
+			<label for="i_name">Prénom(s):</label><br />
+			<input class="auto_save" type="text" id="i_name" required name="name" value="" /><br />
 			<br />
 			<input class="auto_save" value="1" type="checkbox" id="i_timeline_asc" name="timeline_asc"/> <label for="i_timeline_asc">Afficher les date en ordre croissant (aujourd'hui en premier et les dates les plus anciennes en bas).</label><br />
 			<br />
 			J'ai besoin de suivre:<br />
 			<span class="label_info">Modifier ce choix ne génère aucune perte de données.</span><br />
-			<input type="radio" name="methode" value="2" class="auto_save" id="m_2" required /><label for="m_2"><b>Billings</b>: l'évolution de la glaire cervicale seule.</label><br />
-			<input type="radio" name="methode" value="1" class="auto_save" id="m_1"  /><label for="m_1"><b>Billings + température</b>: l'évolution de la glaire cervicale avec suivi des évolutions de la température corporelle.</label><br />
-			<input type="radio" name="methode" value="3" class="auto_save" id="m_3" /><label for="m_3"><b>FertilityCare</b>: l'évolution de la glaire cervicale avec notation FertilityCare</label><br />
-			<input type="radio" name="methode" value="4" class="auto_save" id="m_4" /><label for="m_4"><b>FertilityCare + température</b>: l'évolution de la glaire cervicale avec notation FertilityCare et suivi des évolutions de la température corporelle.</label><br />
+			<input type="radio" name="nfp_method" value="2" class="auto_save" id="m_2" required /><label for="m_2"><b>Billings</b>: l'évolution de la glaire cervicale seule.</label><br />
+			<input type="radio" name="nfp_method" value="1" class="auto_save" id="m_1"  /><label for="m_1"><b>Billings + température</b>: l'évolution de la glaire cervicale avec suivi des évolutions de la température corporelle.</label><br />
+			<input type="radio" name="nfp_method" value="3" class="auto_save" id="m_3" /><label for="m_3"><b>FertilityCare</b>: l'évolution de la glaire cervicale avec notation FertilityCare</label><br />
+			<input type="radio" name="nfp_method" value="4" class="auto_save" id="m_4" /><label for="m_4"><b>FertilityCare + température</b>: l'évolution de la glaire cervicale avec notation FertilityCare et suivi des évolutions de la température corporelle.</label><br />
 			<br />
 			<input class="auto_save" value="1" type="checkbox" id="i_research" name="research"/> <label for="i_research">Autoriser des exports de la base de données avec des cycles anonymisés pour la research sur les méthodes naturelles.</label><br />
 			<br />

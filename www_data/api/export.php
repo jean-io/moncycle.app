@@ -78,7 +78,7 @@ if (!isset($data[0])) {
 }
 
 // AJOUT DES JOURS MANQUANTS DU CYCLE
-$cycle = doc_preparation_jours_pour_affichage($data, $compte["methode"]);
+$cycle = doc_preparation_jours_pour_affichage($data, $compte["nfp_method"]);
 
 $filename_start_date = date_humain(new DateTime($result["start_date"]), '_');
 
@@ -88,15 +88,15 @@ if ($_GET['type'] == "csv") {
 	header("content-type:application/csv;charset=UTF-8");
 	header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.csv"');
 	$out = fopen('php://output', 'w');
-	doc_cycle_vers_csv ($out, $cycle, $compte["methode"]);
+	doc_cycle_vers_csv ($out, $cycle, $compte["nfp_method"]);
 	fclose($out);
 }
 elseif ($_GET['type'] == "pdf") {
 	header("content-type:application/pdf");
 	header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.pdf"');
 	$pdf = null;
-	if ($compte["methode"] == 3 || $compte["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"], $pdf_anonymous);
-	else $pdf = doc_cycle_bill_vers_pdf($cycle, $compte["methode"], $compte["nom_compte"], $pdf_anonymous);
+	if ($compte["nfp_method"] == 3 || $compte["nfp_method"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["nfp_method"], $compte["name_compte"], $pdf_anonymous);
+	else $pdf = doc_cycle_bill_vers_pdf($cycle, $compte["nfp_method"], $compte["name_compte"], $pdf_anonymous);
 	$pdf->Output('I', 'moncycle_app_'. $filename_start_date . '.pdf');
 }
 

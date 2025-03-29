@@ -12,7 +12,7 @@ define("TOTP_STATE_DISABLED", 1);
 define("TOTP_STATE_INIT", 2);
 define("TOTP_STATE_ACTIVE", 3);
 
-function sec_motdepasse_aleatoire($taille=12){
+function sec_password_aleatoire($taille=12){
 	$alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 	$pass = [];
 	$alphaLength = strlen($alphabet)-1;
@@ -34,7 +34,7 @@ function sec_auth_jetton($db) {
 	if (isset($head["Authorization"]) && str_contains($head["Authorization"], "Bearer ")) $jetton = explode(' ', trim($head["Authorization"]), 2)[1];
 	if (strlen($jetton)>0) {
 		$compte = db_select_compte_jetton($db, $jetton);
-		if (isset($compte[0]) && isset($compte[0]["actif"]) && boolval($compte[0]["actif"])) {
+		if (isset($compte[0]) && isset($compte[0]["user_enabled"]) && boolval($compte[0]["user_enabled"])) {
 			db_update_jetton_use($db, $compte[0]["no_jetton"]);
 			return $compte[0];
 		}
@@ -59,7 +59,7 @@ function sec_redirect_non_connecte($compte) {
 }
 
 function sec_auth_succes($db, $compte, $appareil=null) {
-	$jetton = sec_motdepasse_aleatoire(256);
+	$jetton = sec_password_aleatoire(256);
 
 	db_insert_jetton($db, $compte["no_compte"], $appareil ?? ("AUTH | " . $_SERVER['HTTP_USER_AGENT']), "FR", $jetton);	
 	db_update_compte_connecte($db, $compte["no_compte"]);

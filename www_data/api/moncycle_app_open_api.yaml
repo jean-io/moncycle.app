@@ -45,7 +45,7 @@ paths:
           description: OK
 
 
-  /sante:
+  /health_check:
     get:
       tags:
         - general
@@ -402,13 +402,13 @@ paths:
             schema:
               type: object
               properties:
-                nom:
+                name:
                   type: string
                   description: The first names of the people to whom this account belongs
                 email2:
                   type: string
                   description: Second email address to receive the cycles via email on a different address
-                methode:
+                nfp_method:
                   type: integer
                   description: |
                     Cycle tracking method 
@@ -768,13 +768,13 @@ components:
           description: Date of observation in YYYY-MM-DD format
           format: date
           pattern: '^\d{4}-\d{2}-\d{2}$'
-        premier_jour:
+        cycle_1st_day:
           type: integer
           description: Start of a new cycle on this date (1 => yes, 0 => no)
           enum :
             - 1
             - 0
-        gommette:
+        stamp:
           type: string
           description: |
             Color stamp 
@@ -785,15 +785,15 @@ components:
             - "."
             - "I"
             - "="
-        bebe:
+        baby:
           type: string
           description: Baby on stamp
           enum :
             - ":)"
-        note_fc:
+        fc_score:
           type: string
           description: FertilityCare note for day
-        fc_fle:
+        fc_arrow:
           type: string
           description: Arrow related to the FertilityCare note
           enum :
@@ -803,7 +803,7 @@ components:
         temp:
           type: number
           description: Body temperature
-        heure_temp:
+        time_temp_taken:
           type: string
           description: Timestamp of temperature measurement
         ob_extra:
@@ -816,32 +816,32 @@ components:
             - 1
             - 0
           default: 0
-        jour_sommet:
+        is_peak:
           type: integer
           description: Peak day for current menstural cycle (1 => on that day, 0 => not that day)
           enum :
             - 1
             - 0
           default: 0
-        compteur:
+        counter_start:
           type: integer
           description: Extra days counting capabilities, number of days that should be counted starting this day
           default: 0
-        jenesaispas:
+        day_not_observed:
           type: integer
           description: No observation on this date (1 => no data on this date, 0 => there is data)
           enum :
             - 1
             - 0
           default: 0
-        grossesse:
+        pregnancy:
           type: integer
           description: Beginning of a pregnancy (1 => yes, 0 => no)
           enum :
             - 1
             - 0
           default: 0
-        commentaire:
+        comment:
           type: string
           description: Free comment related that day
         last_write_client_UTC:

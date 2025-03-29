@@ -167,12 +167,12 @@
 	background-color: #f1f1f1;
 }
 
-.day .bebe {
+.day .baby {
 	border-color: #d2d2d2;
 	background-color: #fbfbfb;
 }
 
-.obs .bebe  {
+.obs .baby  {
 	border-color: #e4e4e4;
 	background-color: #fbfbfb;
 }
@@ -450,7 +450,7 @@ h2 {
 	float: right;
 }
 
-#note_fc_holder {
+#fc_score_holder {
 	position: sticky;
 	top: 62px;
 	background-color: white;
@@ -557,7 +557,7 @@ h2 {
 	margin-left: 5px;
 }
 
-#ev_compteur_nb {
+#ev_counter_start_nb {
 	text-align: center;
 	width: 35px;
 	padding-top: 0;
@@ -667,12 +667,12 @@ h2 {
 
 	.mini_ruler,
 	#jour_form_header,
-	#note_fc_holder {
+	#fc_score_holder {
 		background-color: black;
 	}
 
-	.day .bebe,
-	.obs .bebe  {
+	.day .baby,
+	.obs .baby  {
 		border-color: #dedede;
 	}
 
@@ -718,7 +718,7 @@ h2 {
 		border-color: #3c0006;
 	}
 
-	.day .j_bebe {
+	.day .j_baby {
 		color: #fbfbfb;
 	}
 

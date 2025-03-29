@@ -20,24 +20,24 @@ $compte = sec_auth_jetton($db);
 sec_exit_si_non_connecte($compte);
 
 $cycles = db_select_cycles($db, $compte["no_compte"]);
-$grossesses = db_select_grossesses($db, $compte["no_compte"]);
+$pregnancys = db_select_pregnancys($db, $compte["no_compte"]);
 
-$methode = [1 => "bill_temp", 2 => "bill", 3 => "fc", 4 => "fc_temp"];
+$nfp_method = [1 => "bill_temp", 2 => "bill", 3 => "fc", 4 => "fc_temp"];
 
 echo json_encode([
-	"id_utilisateur" => $compte["no_compte"],
+	"account_id" => $compte["no_compte"],
 	"email1" => $compte["email1"],
 	"email2" => $compte["email2"],
-	"methode" => $compte["methode"],
-	"methode_diminutif" => $methode[$compte["methode"]],
+	"nfp_method" => $compte["nfp_method"],
+	"nfp_method_name" => $nfp_method[$compte["nfp_method"]],
 	"age" => $compte["age"],
-	"nom" => $compte["nom_compte"],
-	"date_inscription" => $compte["inscription_date"],
-	"donateur" => boolval($compte["donateur"]),
+	"name" => $compte["name_compte"],
+	"inscription_date" => $compte["inscription_date"],
+	"sponsor" => boolval($compte["sponsor"]),
 	"research" => boolval($compte["research"]), 
 	"timeline_asc" => boolval($compte["timeline_asc"]), 
-	"tous_les_cycles" => $cycles,
-	"toutes_les_grossesses" => $grossesses,
-	"totp_state" => $compte["totp_etat"]
+	"all_cycles_1st_day" => $cycles,
+	"all_pregnancy_dates" => $pregnancys,
+	"totp_state" => $compte["totp_state"]
 ]);
 

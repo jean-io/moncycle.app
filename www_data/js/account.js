@@ -11,16 +11,16 @@ $(document).ready(function(){
 	$.get("api/key_infos", {}).done(function(data) {
 		moncycle_app_usr = data;
 		$("#f_info_pref")[0].reset();
-		$("#nom").text(moncycle_app_usr.nom);
-		document.title = "moncycle.app - compte " + moncycle_app_usr.nom;
-		$("#i_prenom").val(moncycle_app_usr.nom);
-		$("#tech_info_no").text(moncycle_app_usr.id_utilisateur);
-		if(moncycle_app_usr.donateur) $("#merci_don").show();
-		if(moncycle_app_usr.id_utilisateur == 2 || moncycle_app_usr.id_utilisateur == 3) $("#warning_demo").show();
+		$("#name").text(moncycle_app_usr.name);
+		document.title = "moncycle.app - compte " + moncycle_app_usr.name;
+		$("#i_name").val(moncycle_app_usr.name);
+		$("#tech_info_no").text(moncycle_app_usr.account_id);
+		if(moncycle_app_usr.sponsor) $("#merci_don").show();
+		if(moncycle_app_usr.account_id == 2 || moncycle_app_usr.account_id == 3) $("#warning_demo").show();
 		$("#tech_info_id").text(moncycle_app_usr.email1);
 		$("#i_email1").val(moncycle_app_usr.email1);
 		$("#i_email2").val(moncycle_app_usr.email2);
-		$(`#m_${moncycle_app_usr.methode}`).attr("checked", "");
+		$(`#m_${moncycle_app_usr.nfp_method}`).attr("checked", "");
 		if (moncycle_app_usr.research) $("#i_research").prop('checked', true);
 		if (moncycle_app_usr.timeline_asc) $("#i_timeline_asc").prop('checked', true);
 		let d = new Date(moncycle_app_usr.date_inscription);
@@ -62,8 +62,8 @@ $(document).ready(function(){
 			$("#net_stat").addClass('rouge');
 			$("#net_stat").removeClass('vert');
 		}).done(function(data){
-			if(data.hasOwnProperty("nom")) {
-				$("#nom").text(data.nom);
+			if(data.hasOwnProperty("name")) {
+				$("#name").text(data.name);
 			}
 			$("#net_stat").html(' ✅&nbsp;enregistré');
 			$("#net_stat").addClass('vert');
@@ -169,14 +169,14 @@ $(document).ready(function(){
 	$("#f_suppr_compte").on("submit", function(event) {
 		event.preventDefault();
 		var form_data = $("#f_suppr_compte").serializeArray();
-		if (!confirm(moncycle_app_usr.nom + ', êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irréversible. 😟')) return;
+		if (!confirm(moncycle_app_usr.name + ', êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irréversible. 😟')) return;
 		$.ajax({type : 'DELETE', "url" : "../api/account", "data" : $.param(form_data)}).done(function(ret){
 			if (ret.suppr) {
 				window.localStorage.clear();
-				alert(moncycle_app_usr.nom + ", votre compte a bien été supprimé. 😢💔");
+				alert(moncycle_app_usr.name + ", votre compte a bien été supprimé. 😢💔");
 				window.location.replace('auth');
 			}
-			else alert(moncycle_app_usr.nom + ", votre compte n'a pas été supprimé: " + ret.msg);
+			else alert(moncycle_app_usr.name + ", votre compte n'a pas été supprimé: " + ret.msg);
 		}).fail(function(err) {
 			console.error(err);
 		});

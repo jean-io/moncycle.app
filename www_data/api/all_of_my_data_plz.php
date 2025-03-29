@@ -34,7 +34,7 @@ header('Content-Disposition: attachment; filename="export_moncycle_app.csv"');
 $out = fopen('php://output', 'w');
 fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
 
-fputs($out,"Export des données MONCYCLE.APP de " . $compte["nom_compte"] . PHP_EOL);
+fputs($out,"Export des données MONCYCLE.APP de " . $compte["name_compte"] . PHP_EOL);
 fputs($out, PHP_EOL);
 
 // export des informations du compte
@@ -42,7 +42,7 @@ foreach ($export_compte[0] as $key => $value) {
 	fputs($out, $key . CSV_SEP);
 }
 fputs($out, PHP_EOL);
-if (isset($export_compte[0]["motdepasse"])) $export_compte[0]["motdepasse"] = sec_offuscate_str($export_compte[0]["motdepasse"]);
+if (isset($export_compte[0]["password"])) $export_compte[0]["password"] = sec_offuscate_str($export_compte[0]["password"]);
 if (isset($export_compte[0]["totp_secret"])) $export_compte[0]["totp_secret"] = sec_offuscate_str($export_compte[0]["totp_secret"]);
 fputcsv($out, $export_compte[0], CSV_SEP);
 fputs($out, PHP_EOL);

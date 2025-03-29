@@ -46,18 +46,18 @@ foreach($cycles as $cyc) {
 
 		$debut_cycle = $debut_cycle[0]["cycle"];
 		$cycle_complet = db_select_cycle_complet($db, $debut_cycle,  $cyc["cycle_complet"], $cyc["no_compte"]);
-		$cycle_complet = doc_preparation_jours_pour_affichage($cycle_complet, $cyc["methode"]);
+		$cycle_complet = doc_preparation_jours_pour_affichage($cycle_complet, $cyc["nfp_method"]);
 
 		$nb_j = count($cycle_complet);
 		
 		if ($nb_j>=5) {
 
 			$pdf = null;
-			if ($cyc["methode"] == 3 || $cyc["methode"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle_complet, $cyc["methode"], $cyc["nom"]);
-			else $pdf = doc_cycle_bill_vers_pdf ($cycle_complet, $cyc["methode"], $cyc["nom"]);
+			if ($cyc["nfp_method"] == 3 || $cyc["nfp_method"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle_complet, $cyc["nfp_method"], $cyc["name"]);
+			else $pdf = doc_cycle_bill_vers_pdf ($cycle_complet, $cyc["nfp_method"], $cyc["name"]);
 
 			$csv = fopen('php://memory','rw');
-			doc_cycle_vers_csv ($csv, $cycle_complet, $cyc["methode"]);
+			doc_cycle_vers_csv ($csv, $cycle_complet, $cyc["nfp_method"]);
 			rewind($csv);
 
 			$mail = mail_init();
@@ -70,7 +70,7 @@ foreach($cycles as $cyc) {
 
 			$mail->isHTML(true);
 			$mail->Subject = "Cycle de $nb_j jours du $dh";
-			$mail->Body = mail_body_cycle($cyc['nom'], $dh, $fh, $nb_j);
+			$mail->Body = mail_body_cycle($cyc['name'], $dh, $fh, $nb_j);
 			$mail->AltBody = "Export de votre cycle du $dh au $fh de $nb_j jours.\n\nmoncycle.app";
 
 			$filename_start_date = date_humain(new DateTime($debut_cycle), '_');
@@ -101,12 +101,12 @@ foreach($compte as $com) {
 
 	$mail->isHTML(true);
 	$mail->Subject = "Comment allez-vous?";
-	$mail->Body = mail_body_relance($com["nom"], $com["email1"]);
+	$mail->Body = mail_body_relance($com["name"], $com["email1"]);
 	$mail->AltBody = "Cela fait longtemps que l'on ne vous a pas vu sur moncycle.app, tout va bien?";
 
 	$mail->send();
 
-	db_update_relance($db, $com["no_compte"], 1);
+	db_update_is_inactive($db, $com["no_compte"], 1);
 
 	echo "relance envoyée à {$com["email1"]} (et {$com["email2"]})";
 	echo PHP_EOL;

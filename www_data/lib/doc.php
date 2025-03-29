@@ -9,18 +9,18 @@
 
 use Fpdf\Fpdf;
 
-function doc_preparation_jours_pour_affichage($data, $methode){
+function doc_preparation_jours_pour_affichage($data, $nfp_method){
 	$cycle = [];
 	$date_cursor = new DateTime($data[0]["date_obs"]);
 	$today = new DateTime();
-	$empty_line = array("date_obs" => '', "premier_jour" => "", "?" => '1',"gommette" => '',"sensation" => '',"sommet" => '', "compteur" => '',"unions" => '', "grossesse" => 0,"commentaire" => '');
-	if ($methode == 1 || $methode == 4) {
+	$empty_line = array("date_obs" => '', "cycle_1st_day" => "", "?" => '1',"stamp" => '',"sensation" => '',"sommet" => '', "counter_start" => '',"unions" => '', "pregnancy" => 0,"comment" => '');
+	if ($nfp_method == 1 || $nfp_method == 4) {
 		$empty_line["temperature"] = '';
-		$empty_line["heure_temp"] = '';
+		$empty_line["time_temp_taken"] = '';
 	}
-	if ($methode == 3 || $methode == 4) {
-		$empty_line["note_fc"] = '';
-		$empty_line["fleche_fc"] = '';
+	if ($nfp_method == 3 || $nfp_method == 4) {
+		$empty_line["fc_score"] = '';
+		$empty_line["fc_arrow"] = '';
 		unset($empty_line["sensation"]);
 	}
 	foreach ($data as $line){
@@ -29,25 +29,25 @@ function doc_preparation_jours_pour_affichage($data, $methode){
 			$cycle[] = $empty_line;
 			$date_cursor->modify('+1 day');
 		}
-		if ($line["premier_jour"]) $line["premier_jour"] = 1;
-		else $line["premier_jour"] = "";
-		if ($methode != 1 && $methode != 4) unset($line["temperature"]);
-		if ($methode != 3 && $methode != 4) {
-			unset($line["note_fc"]);
-			unset($line["fleche_fc"]);
+		if ($line["cycle_1st_day"]) $line["cycle_1st_day"] = 1;
+		else $line["cycle_1st_day"] = "";
+		if ($nfp_method != 1 && $nfp_method != 4) unset($line["temperature"]);
+		if ($nfp_method != 3 && $nfp_method != 4) {
+			unset($line["fc_score"]);
+			unset($line["fc_arrow"]);
 		}
 		$empty_line["date_obs"] = $date_cursor->format('Y-m-d');
-		if ($methode != 1 && $methode != 2) unset($line["sensation"]);
-		if ($line["grossesse"]) {
-			$comment = $line["commentaire"];
+		if ($nfp_method != 1 && $nfp_method != 2) unset($line["sensation"]);
+		if ($line["pregnancy"]) {
+			$comment = $line["comment"];
 			$line = $empty_line;
-			$line["grossesse"] = 1;
+			$line["pregnancy"] = 1;
 			$line["?"] = 0;
-			$line["commentaire"] = $comment;
+			$line["comment"] = $comment;
 		}
 		else {
-			if (($methode == 1 || $methode == 4) && empty(trim($line["gommette"])) && empty(trim($line["temperature"]))) $line = $empty_line;
-			if (($methode == 2 || $methode == 3) && empty(trim($line["gommette"]))) $line = $empty_line;
+			if (($nfp_method == 1 || $nfp_method == 4) && empty(trim($line["stamp"])) && empty(trim($line["temperature"]))) $line = $empty_line;
+			if (($nfp_method == 2 || $nfp_method == 3) && empty(trim($line["stamp"]))) $line = $empty_line;
 		}
 		array_push($cycle, $line);
 		$date_cursor->modify('+1 day');
@@ -127,14 +127,14 @@ function doc_get_initials($string) {
 	return $initials;
 }
 
-function doc_cycle_vers_csv ($out, $cycle, $methode) {
+function doc_cycle_vers_csv ($out, $cycle, $nfp_method) {
 	$i = 1;
 	fputs($out, $bom =( chr(0xEF) . chr(0xBB) . chr(0xBF) ));
 	$csv_partition = [];
-	if ($methode == 1) $csv_partition = ["date_obs","premier_jour","?","gommette", "temperature", "heure_temp", "sensation", "sommet", "compteur", "unions", "grossesse", "commentaire"];
-	if ($methode == 2) $csv_partition = ["date_obs","premier_jour","?","gommette", "sensation", "sommet", "compteur", "unions", "grossesse", "commentaire"];
-	if ($methode == 3) $csv_partition = ["date_obs","premier_jour","?","note_fc","fleche_fc","gommette", "sommet", "unions", "grossesse", "commentaire"];
-	if ($methode == 4) $csv_partition = ["date_obs","premier_jour","?","note_fc","fleche_fc","gommette", "temperature", "heure_temp", "sommet", "unions", "grossesse", "commentaire"];
+	if ($nfp_method == 1) $csv_partition = ["date_obs","cycle_1st_day","?","stamp", "temperature", "time_temp_taken", "sensation", "sommet", "counter_start", "unions", "pregnancy", "comment"];
+	if ($nfp_method == 2) $csv_partition = ["date_obs","cycle_1st_day","?","stamp", "sensation", "sommet", "counter_start", "unions", "pregnancy", "comment"];
+	if ($nfp_method == 3) $csv_partition = ["date_obs","cycle_1st_day","?","fc_score","fc_arrow","stamp", "sommet", "unions", "pregnancy", "comment"];
+	if ($nfp_method == 4) $csv_partition = ["date_obs","cycle_1st_day","?","fc_score","fc_arrow","stamp", "temperature", "time_temp_taken", "sommet", "unions", "pregnancy", "comment"];
 	fputcsv($out,array_merge(["no"], $csv_partition), CSV_SEP);
 	foreach ($cycle as $line){
 		fputs($out, $i);
@@ -148,15 +148,15 @@ function doc_cycle_vers_csv ($out, $cycle, $methode) {
 	}
 }
 
-function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) {
+function doc_cycle_bill_vers_pdf ($cycle, $nfp_method, $name, $pdf_anonymous=false) {
 	$week_days = ["D", "L", "M", "M", "J", "V", "S"];
 	
 	$pdf = new Fpdf('P','mm','A4');
 	$pdf->SetTitle('MONCYCLE.APP tableau du '. date_humain(new Datetime($cycle[0]["date_obs"])));
 	$pdf->AddPage();
 	$pdf->SetFont('Courier','B',12);
-	if ($pdf_anonymous) $nom = doc_get_initials($nom) . " (anonyme)";
-	$pdf->Cell($pdf->GetPageWidth()-35,10,doc_txt($nom), 0, 0, 'C');
+	if ($pdf_anonymous) $name = doc_get_initials($name) . " (anonyme)";
+	$pdf->Cell($pdf->GetPageWidth()-35,10,doc_txt($name), 0, 0, 'C');
 	$pdf->SetFont('Courier','',10);
 	$pdf->Ln();
 	if ($pdf_anonymous)$pdf->Cell($pdf->GetPageWidth()-35,5,sprintf("Tableau de %d jours", count($cycle)), 0, 0, 'C');
@@ -171,7 +171,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 	
 	$temp_max = 0;
 	$temp_mini = 100;
-	if ($methode==1) {
+	if ($nfp_method==1) {
 		foreach ($cycle as $line){
 			if (isset($line["temperature"]) && !empty($line["temperature"])) {
 				$temp = floatval($line["temperature"]);
@@ -187,20 +187,20 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 	
 	$i = -1;
 	$s = -1;
-	$compteur_n = 100;
-	$compteur_max = -1;
+	$counter_start_n = 100;
+	$counter_start_max = -1;
 	$prev_temp_x = 0;
 	$prev_temp_y = 0;
 	$com_long = false;
 	$col = 0;
 	$top_y = $top_y = $pdf->GetY();
 	foreach ($cycle as $line){
-		if (boolval($line["premier_jour"])) $i = 1;
+		if (boolval($line["cycle_1st_day"])) $i = 1;
 		if ($col == 0) $col = 1;
-		elseif($pdf->GetPageHeight()-$pdf->GetY()<=30 || boolval($line["premier_jour"])){
+		elseif($pdf->GetPageHeight()-$pdf->GetY()<=30 || boolval($line["cycle_1st_day"])){
 			$prev_temp_x = 0;
 			$prev_temp_y = 0;
-			if ($methode == 2 && $col == 1) {
+			if ($nfp_method == 2 && $col == 1) {
 				$col = 2;
 				$pdf->SetXY($pdf->GetPageWidth()/2,$top_y);
 			}
@@ -218,7 +218,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 		if (intval(date_format($date_obs, 'w'))==0) $pdf->SetFont('Courier','B',6);
 		else $pdf->SetFont('Courier','',6);
 		if ($pdf_anonymous) $date_obs_human = $week_days[date_format($date_obs, 'w')];
-		if (boolval($line["premier_jour"])) {
+		if (boolval($line["cycle_1st_day"])) {
 			$pdf->SetFillColor(0,0,0);
 			$pdf->SetDrawColor(0,0,0);
 			$pdf->SetTextColor(255,255,255);
@@ -234,7 +234,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 			$pdf->SetFont('Courier','',8);
 			$pdf->Cell(8,5,$i>0 ? $i : "?", 0, 0, 'C');
 		}
-		if ($line["grossesse"]) {
+		if ($line["pregnancy"]) {
 			$pdf->SetTextColor(130, 21, 33);
 			$pdf->SetFillColor(255, 236, 238);
 			$pdf->SetDrawColor(255, 236, 238);
@@ -246,20 +246,20 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 			$pdf->SetX($pdf->GetX()+0.5);
 			$pdf->SetFont('Courier','',10);
 			$pdf->SetTextColor(0,0,0);
-			if (isset($line["gommette"]) && !boolval($line["?"])) {
-				if(str_contains($line["gommette"], ".")) {
+			if (isset($line["stamp"]) && !boolval($line["?"])) {
+				if(str_contains($line["stamp"], ".")) {
 					$pdf->SetFillColor(172,36,51);
 					$pdf->SetDrawColor(172,36,51);
 				}
-				elseif(str_contains($line["gommette"], "I")){
+				elseif(str_contains($line["stamp"], "I")){
 					$pdf->SetFillColor(30,130,76);
 					$pdf->SetDrawColor(30,130,76);
 				}
-				elseif(str_contains($line["gommette"], "?")){
+				elseif(str_contains($line["stamp"], "?")){
 					$pdf->SetFillColor(220,220,220);
 					$pdf->SetDrawColor(220,220,220);
 				}
-				elseif(str_contains($line["gommette"], "=")) {
+				elseif(str_contains($line["stamp"], "=")) {
 					$pdf->SetFillColor(251,202,11);
 					$pdf->SetDrawColor(251,202,11);
 				}
@@ -267,7 +267,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 					$pdf->SetFillColor(255,255,255);
 					$pdf->SetDrawColor(255,255,255);
 				}
-				if ($line["gommette"] == ":)") {
+				if ($line["stamp"] == ":)") {
 					$pdf->SetTextColor(30, 130, 76);
 					$pdf->SetDrawColor(220,220,220);
 					$xx = $pdf->GetX();
@@ -276,7 +276,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 					$pdf->Image("../img/baby.png", $xx+0.25, $yy+0.25, 4.5, 4.5);
 					$pdf->SetTextColor(0,0,0);
 				}
-				elseif (str_contains($line["gommette"], ":)")) {
+				elseif (str_contains($line["stamp"], ":)")) {
 					$pdf->SetTextColor(255,255,255);
 					$xx = $pdf->GetX();
 					$yy = $pdf->GetY();
@@ -309,16 +309,16 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',10);
 			}
-			if(intval($line["compteur"]) || $compteur_n>0) {
+			if(intval($line["counter_start"]) || $counter_start_n>0) {
 				$pdf->SetTextColor(30,130,76);
-				if(intval($line["compteur"])) {
-					$compteur_n = 1;
-					$compteur_max = $line["compteur"];
+				if(intval($line["counter_start"])) {
+					$counter_start_n = 1;
+					$counter_start_max = $line["counter_start"];
 				}
-				if ($compteur_n<=$compteur_max) {
+				if ($counter_start_n<=$counter_start_max) {
 					$pdf->SetFont('Courier','',10);
-					$pdf->Cell(5,5,"+". $compteur_n); 
-					$compteur_n += 1;
+					$pdf->Cell(5,5,"+". $counter_start_n); 
+					$counter_start_n += 1;
 				}
 				$pdf->SetTextColor(0,0,0);
 				$pdf->SetFont('Courier','',10);
@@ -346,7 +346,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 				$pdf->SetFont('Courier','',9);
 				$pdf->SetTextColor(135, 67, 176);
 				$w = strval($temp) . doc_txt("°");
-				if ($line["heure_temp"]) $w .= doc_txt(" à ") .  str_replace(':', 'h', substr($line["heure_temp"],0,-3));
+				if ($line["time_temp_taken"]) $w .= doc_txt(" à ") .  str_replace(':', 'h', substr($line["time_temp_taken"],0,-3));
 				$com_fin_x = $pdf->GetPageWidth()/2 - $pdf->GetStringWidth($w);
 				$pdf->SetX($com_fin_x);
 				$pdf->Cell($pdf->GetStringWidth($w),5,$w,0,0,'R');
@@ -370,25 +370,25 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 				$prev_temp_y = 0;
 			}
 			if ($com_fin_x<=0) {
-				if ($col == 2 || $methode ==1) $com_fin_x = $pdf->GetPageWidth();
+				if ($col == 2 || $nfp_method ==1) $com_fin_x = $pdf->GetPageWidth();
 				else $com_fin_x = $pdf->GetPageWidth()/2;
 			}
 		}
 		$pdf->SetTextColor(0,0,0);
 		$pdf->SetFont('Courier','',10);
 		$pdf->SetY($pdf->GetY()+0.5);
-		if (isset($line["commentaire"]) && $line["commentaire"]) {
+		if (isset($line["comment"]) && $line["comment"]) {
 			$pdf->SetFont('Arial','I',7);
-			$w = $pdf->GetStringWidth(doc_txt($line["commentaire"]));
+			$w = $pdf->GetStringWidth(doc_txt($line["comment"]));
 			if ($w < ($com_fin_x-$com_debut_x)) {
 				$pdf->SetX($com_debut_x);
-				$pdf->Cell($w,5,doc_txt($line["commentaire"]));
+				$pdf->Cell($w,5,doc_txt($line["comment"]));
 			}
 			else {
 				$pdf->Ln();
 				if ($col == 2) $pdf->SetX($pdf->GetPageWidth()/2);
 				$pdf->SetX($pdf->GetX());
-				$pdf->MultiCell($pdf->GetPageWidth()/2-11,3,doc_txt($line["commentaire"]));
+				$pdf->MultiCell($pdf->GetPageWidth()/2-11,3,doc_txt($line["comment"]));
 				$com_long = true;
 			}
 			$pdf->SetFont('Courier','',10);
@@ -399,7 +399,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $methode, $nom, $pdf_anonymous=false) 
 }
 
 
-function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
+function doc_cycle_fc_vers_pdf($cycle, $nfp_method, $name, $pdf_anonymous=false) {
 	$week_days = ["D", "L", "M", "M", "J", "V", "S"];
 	$first_col_width = 16;
 	$nb_days_per_line = 35;
@@ -425,9 +425,9 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 		'G' => ['G', 255, 236, 238]
 	];
 	
-	if ($pdf_anonymous) $nom = doc_get_initials($nom);
+	if ($pdf_anonymous) $name = doc_get_initials($name);
 	
-	if ($methode == 4) $nb_lines_per_page -= 1;
+	if ($nfp_method == 4) $nb_lines_per_page -= 1;
 	
 	$h_start_date = date_humain(new Datetime($cycle[0]["date_obs"]));
 	$h_end_date = date_humain(new Datetime(end($cycle)["date_obs"]));
@@ -446,7 +446,7 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 	$nb_line = 1;
 	$current_line_size = 0;
 	foreach ($cycle as $index => $day) {
-		if ($index>0 && (boolval($day["premier_jour"] ?? false) || $current_line_size > $nb_days_per_line)) {
+		if ($index>0 && (boolval($day["cycle_1st_day"] ?? false) || $current_line_size > $nb_days_per_line)) {
 			$nb_line += 1;
 			$current_line_size = 0;
 		}
@@ -454,7 +454,7 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 	}
 	$total_nb_page = ceil($nb_line/$nb_lines_per_page);
 	
-	// COMPTEUR DE CELLLES
+	// counter_start DE CELLLES
 	$num_cell = 0;
 	
 	// BOUCLE PAGE PAR PAGE
@@ -469,7 +469,7 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 		else $page_title .= doc_txt(" - observations du $h_start_date au $h_end_date");
 		$page_title .= doc_txt(" - document créé le $h_current_date - page $page_no sur $total_nb_page - ");
 		$pdf->SetFont('Courier','B',10);
-		$pdf->Cell($pdf->GetStringWidth(doc_txt($nom)),$line_height, doc_txt($nom), 0, 0, 'L');
+		$pdf->Cell($pdf->GetStringWidth(doc_txt($name)),$line_height, doc_txt($name), 0, 0, 'L');
 		$pdf->SetFont('Courier','',10);
 		$pdf->Cell($pdf->GetStringWidth($page_title),$line_height, $page_title, 0, 0, 'L');
 		$pdf->SetTextColor(30, 130, 76);
@@ -519,7 +519,7 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 			$pdf->Ln();
 			$pdf->Cell($first_col_width,$line_height,doc_txt("AUTRE INFO"), "B", 0, 'R');
 			$pdf->Ln();
-			if ($methode == 4) {
+			if ($nfp_method == 4) {
 				$pdf->Cell($first_col_width,$line_height,doc_txt("TEMPERATURE"), "B", 0, 'R');
 				$pdf->Ln();
 			}
@@ -534,37 +534,37 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 			// BOUCLE CELLULE PAR CELLULE
 			for ($j=0; $j < $nb_days_per_line; $j++) {
 				
-				$first_day_of_cycle = boolval($cycle[$num_cell]["premier_jour"] ?? false);
+				$first_day_of_cycle = boolval($cycle[$num_cell]["cycle_1st_day"] ?? false);
 				$obs_index = $num_cell;
 				
-				if (isset($cycle[$obs_index]["grossesse"]) && $cycle[$obs_index]["grossesse"]) $pdf->SetTextColor(130, 21, 33);
+				if (isset($cycle[$obs_index]["pregnancy"]) && $cycle[$obs_index]["pregnancy"]) $pdf->SetTextColor(130, 21, 33);
 				else $pdf->SetTextColor(0, 0, 0);
 				
 				if ($first_day_of_cycle && $num_cell>0 && $j>0) $obs_index = null;
 				
 				$obs_forgotten = boolval($cycle[$num_cell]["?"] ?? false);
-				if ($obs_forgotten) $cycle[$obs_index]["gommette"] = '?';
-				$cell_carac = $symbol_convert_table[$cycle[$obs_index]["gommette"] ?? ""];
-				if (isset($cycle[$obs_index]["grossesse"]) && $cycle[$obs_index]["grossesse"]) $cell_carac =  $symbol_convert_table["G"];
+				if ($obs_forgotten) $cycle[$obs_index]["stamp"] = '?';
+				$cell_carac = $symbol_convert_table[$cycle[$obs_index]["stamp"] ?? ""];
+				if (isset($cycle[$obs_index]["pregnancy"]) && $cycle[$obs_index]["pregnancy"]) $cell_carac =  $symbol_convert_table["G"];
 				$peak_text = "";
 				$date_exploded = explode('-', $cycle[$obs_index]["date_obs"] ?? "");
-				$note_fc = doc_parse_fc_note($cycle[$obs_index]["note_fc"] ?? "");
+				$fc_score = doc_parse_fc_note($cycle[$obs_index]["fc_score"] ?? "");
 				
 				$fc_saignement = '';
 				foreach (['H', 'M', 'Lsaignement', 'VL', 'VH', 'B'] as $s) {
-					if ($note_fc[$s] && $s == 'Lsaignement') $fc_saignement .= 'L';
-					else $note_fc[$s] ? $fc_saignement .= $s : null;
+					if ($fc_score[$s] && $s == 'Lsaignement') $fc_saignement .= 'L';
+					else $fc_score[$s] ? $fc_saignement .= $s : null;
 				}
 				
 				$fc_glaire = '';
-				foreach (['0', '2', '2W', '4', '6', '8', '10', '10DL', '10SL', '10WL', 'C', 'G', 'K', 'P', 'Y', 'R', 'L', 'X1', 'X2', 'X3', 'AD'] as $s) $note_fc[$s] ? $fc_glaire .= $s : null;
+				foreach (['0', '2', '2W', '4', '6', '8', '10', '10DL', '10SL', '10WL', 'C', 'G', 'K', 'P', 'Y', 'R', 'L', 'X1', 'X2', 'X3', 'AD'] as $s) $fc_score[$s] ? $fc_glaire .= $s : null;
 				$fc_glaire = str_ireplace('X', '*', $fc_glaire);
 				
-				$arraow = $cycle[$obs_index]["fleche_fc"] ?? '';
+				$arraow = $cycle[$obs_index]["fc_arrow"] ?? '';
 				$all_arraows = array("↑" => chr(173), "↓" => chr(175), "→" => chr(174), "←" => chr(172), "" => '');
 				
 				$fc_tiers = '';
-				foreach (['AP', 'RAP', 'LAP'] as $s) if ($note_fc[$s]) $fc_tiers .= $s;
+				foreach (['AP', 'RAP', 'LAP'] as $s) if ($fc_score[$s]) $fc_tiers .= $s;
 				
 				if ($obs_forgotten) {
 					$fc_saignement = '';
@@ -587,7 +587,7 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 					$peak_text = $peak;
 				}
 				
-				$comment_width = $pdf->GetStringWidth(doc_txt($cycle[$obs_index]["commentaire"] ?? ""))+1;
+				$comment_width = $pdf->GetStringWidth(doc_txt($cycle[$obs_index]["comment"] ?? ""))+1;
 				
 				// CELLULE TAMPON
 				$pdf->SetFont('Courier','',6);
@@ -597,12 +597,12 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 				$pdf->SetFont('Courier','',8);
 				$pdf->SetXY($x+$cell_width*$j, $y+$line_height);
 				
-				// CELLULE BEBE
+				// CELLULE baby
 				$pdf->SetFont('Courier','',5);
 				$xx = $pdf->GetX();
 				$yy = $pdf->GetY();
 				$text = "";
-				if (isset($cycle[$obs_index]["grossesse"]) && $cycle[$obs_index]["grossesse"]) $text = "GROSSESSE";
+				if (isset($cycle[$obs_index]["pregnancy"]) && $cycle[$obs_index]["pregnancy"]) $text = "GROSSESSE";
 				$pdf->Cell($cell_width,$stamp_height,doc_txt($text), 'B', 0, 'C', true);
 				if (str_contains($cell_carac[0], 'BB')) $pdf->Image("../img/baby.png", $xx+$img_seize/2, $yy+1, $img_seize, $img_seize);
 				$pdf->SetXY($x+$cell_width*$j, $y+$line_height+$stamp_height);
@@ -656,21 +656,21 @@ function doc_cycle_fc_vers_pdf($cycle, $methode, $nom, $pdf_anonymous=false) {
 				}
 				
 				// CELLULE TEMPERATURE
-				if ($methode == 4) {
+				if ($nfp_method == 4) {
 					$pdf->SetXY($x+$cell_width*$j, $y+$line_height*6+$stamp_height);
 					$pdf->SetFont('Courier','',3.8);
 					$temp = "";
 					if (isset($cycle[$obs_index]["temperature"]) && !empty($cycle[$obs_index]["temperature"])) $temp = $cycle[$obs_index]["temperature"];
-					if (isset($cycle[$obs_index]["heure_temp"]) && !empty($cycle[$obs_index]["heure_temp"])) $temp .= " à " . substr($cycle[$obs_index]["heure_temp"], 0, 5);
+					if (isset($cycle[$obs_index]["time_temp_taken"]) && !empty($cycle[$obs_index]["time_temp_taken"])) $temp .= " à " . substr($cycle[$obs_index]["time_temp_taken"], 0, 5);
 					$pdf->Cell($cell_width,$line_height,doc_txt($temp), 'B', 0, 'C');
 				}
 				
 				// CELLULE COMMENTAIRE
-				$pdf->SetXY($x+$cell_width*$j, $y+$line_height*(6 + intval($methode == 4))+$stamp_height);
+				$pdf->SetXY($x+$cell_width*$j, $y+$line_height*(6 + intval($nfp_method == 4))+$stamp_height);
 				$pdf->SetFont('Courier','',3);
 				$xx = $pdf->GetX();
 				$yy = $pdf->GetY();
-				$comment = trim($cycle[$obs_index]["commentaire"] ?? "");
+				$comment = trim($cycle[$obs_index]["comment"] ?? "");
 				if (strlen($comment)<$comment_max_char_per_line/2) {
 					$pdf->SetFont('Courier','',6);
 					$pdf->Cell($cell_width,$line_height,doc_txt($comment), 0, 0, 'L');
