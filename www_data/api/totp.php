@@ -37,20 +37,20 @@ $result_code = [
 
 $db = db_open();
 
-$compte = sec_auth_jetton($db);
-sec_exit_si_non_connecte($compte);
+$user_account = sec_auth_token($db);
+sec_exit_si_non_connecte($user_account);
 
-$output["totp_state"] = $compte["totp_state"];
+$output["totp_state"] = $user_account["totp_state"];
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-	if ($compte["totp_state"] == TOTP_STATE_ACTIVE) $output["outcome"] = 1;
+	if ($user_account["totp_state"] == TOTP_STATE_ACTIVE) $output["outcome"] = 1;
 	else {
 		$totp = TOTP::generate();
-		$totp->setLabel($compte["email1"]);
+		$totp->setLabel($user_account["email1"]);
 		$totp->setIssuer('MONCYCLE.APP');
 		$totp->setParameter('image', APP_URL . "img/moncycleapp512.jpg");
-		db_update_compte_totp_secret($db, $totp->getSecret(), $compte["no_compte"]);
-		db_update_compte_totp_state($db, TOTP_STATE_INIT, $compte["no_compte"]);
+		db_update_user_account_totp_secret($db, $totp->getSecret(), $user_account["no_user_account"]);
+		db_update_user_account_totp_state($db, TOTP_STATE_INIT, $user_account["no_user_account"]);
 		$renderer = new ImageRenderer(new RendererStyle(150), new SvgImageBackEnd());
 		$writer = new Writer($renderer);
 		$output["init_secret"] = $totp->getSecret();
@@ -62,11 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	if ($compte["totp_state"] == TOTP_STATE_ACTIVE) $output["outcome"] = 1;
+	if ($user_account["totp_state"] == TOTP_STATE_ACTIVE) $output["outcome"] = 1;
 	elseif (isset($_POST["tmp_code"]) && !empty($_POST["tmp_code"]) && intval($_POST["tmp_code"])>0) {
-		$otp_obj = TOTP::createFromSecret($compte["totp_secret"]);
+		$otp_obj = TOTP::createFromSecret($user_account["totp_secret"]);
 		if ($otp_obj->verify(intval($_POST["tmp_code"]))) {
-			db_update_compte_totp_state($db, TOTP_STATE_ACTIVE, $compte["no_compte"]);
+			db_update_user_account_totp_state($db, TOTP_STATE_ACTIVE, $user_account["no_user_account"]);
 			$output["outcome"] = 100;
 			$output["totp_state"] = TOTP_STATE_ACTIVE;
 		}
@@ -77,12 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
 	parse_str(file_get_contents('php://input'), $_DELETE);
-	if ($compte["totp_state"] != TOTP_STATE_ACTIVE) $output["outcome"] = 1;
+	if ($user_account["totp_state"] != TOTP_STATE_ACTIVE) $output["outcome"] = 1;
 	elseif (isset($_DELETE["tmp_code"]) && !empty($_DELETE["tmp_code"]) && intval($_DELETE["tmp_code"])>0) {
-		$otp_obj = TOTP::createFromSecret($compte["totp_secret"]);
+		$otp_obj = TOTP::createFromSecret($user_account["totp_secret"]);
 		if ($otp_obj->verify(intval($_DELETE["tmp_code"]))) {
-			db_update_compte_totp_state($db, TOTP_STATE_DISABLED, $compte["no_compte"]);
-			db_update_compte_totp_secret($db, null, $compte["no_compte"]);
+			db_update_user_account_totp_state($db, TOTP_STATE_DISABLED, $user_account["no_user_account"]);
+			db_update_user_account_totp_secret($db, null, $user_account["no_user_account"]);
 			$output["totp_state"] = TOTP_STATE_DISABLED;
 			$output["outcome"] = 101;
 		}

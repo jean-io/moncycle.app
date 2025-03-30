@@ -39,47 +39,47 @@ try {
 
 	$db = db_open();
 
-	$compte = sec_auth_jetton($db);
-	if (!is_null($compte)) {
-		$output["no_compte"] = $compte["no_compte"];
+	$user_account = sec_auth_token($db);
+	if (!is_null($user_account)) {
+		$output["no_user_account"] = $user_account["no_user_account"];
 		$output["outcome"] = 102;
 	}
 
 	elseif (isset($_POST["email1"]) && isset($_POST["password"]) && filter_var($_POST["email1"], FILTER_VALIDATE_EMAIL)) {
 
-		$compte = db_select_compte_par_mail($db, $_POST["email1"])[0] ?? [];
+		$user_account = db_select_user_account_par_mail($db, $_POST["email1"])[0] ?? [];
 
-		if (isset($compte["nb_connection_attempts"]) && intval($compte["nb_connection_attempts"])>=5) sleep(5);
-		elseif (!isset($compte["nb_connection_attempts"]) && rand(0,5)==0) sleep(5);
+		if (isset($user_account["nb_connection_attempts"]) && intval($user_account["nb_connection_attempts"])>=5) sleep(5);
+		elseif (!isset($user_account["nb_connection_attempts"]) && rand(0,5)==0) sleep(5);
 
 		if (!CONNEXION_COMPTE) $output["outcome"] = 1;
 		elseif (empty($_POST["email1"]) || empty($_POST["password"])) {
 			$output["outcome"] = 2;
 		}
-		elseif (isset($compte["user_enabled"]) && !boolval($compte["user_enabled"])) {
+		elseif (isset($user_account["user_enabled"]) && !boolval($user_account["user_enabled"])) {
 			$output["outcome"] = 3;
 		}
-		elseif (isset($compte["password"]) && password_verify($_POST["password"], $compte["password"])) {
-			unset($compte["password"]);
+		elseif (isset($user_account["password"]) && password_verify($_POST["password"], $user_account["password"])) {
+			unset($user_account["password"]);
 			unset($_POST["password"]);
 
 			$usr_totp_code = 0;
 			if (isset($_POST["code"]) && strlen($_POST["code"])>0) $usr_totp_code = intval(preg_replace('/\s+/','',$_POST["code"]));
 
-			if ($compte["totp_state"] != TOTP_STATE_ACTIVE) {
+			if ($user_account["totp_state"] != TOTP_STATE_ACTIVE) {
 				// AUTH SUCCESS
-				$output["jetton"] = sec_auth_succes($db, $compte);
+				$output["auth_token"] = sec_auth_succes($db, $user_account);
 				$output["outcome"] = 100;
-				$output["no_compte"] = $compte["no_compte"];
+				$output["no_user_account"] = $user_account["no_user_account"];
 				
 			}
-			elseif ($usr_totp_code>0 && (TOTP::createFromSecret($compte["totp_secret"]))->verify($usr_totp_code)) {
-				unset($compte["totp_secret"]);
+			elseif ($usr_totp_code>0 && (TOTP::createFromSecret($user_account["totp_secret"]))->verify($usr_totp_code)) {
+				unset($user_account["totp_secret"]);
 				unset($_POST["code"]);
 				// AUTH SUCCESS
-				$output["outcome"] = sec_auth_succes($db, $compte);
+				$output["outcome"] = sec_auth_succes($db, $user_account);
 				$output["outcome"] = 101;
-				$output["no_compte"] = $compte["no_compte"];
+				$output["no_user_account"] = $user_account["no_user_account"];
 			}
 			else {
 				db_update_co_echoue($db, $_POST["email1"]);

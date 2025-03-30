@@ -35,7 +35,7 @@
 		<center>
 			<h1>mon<span class="gradiant_logo">cycle</span>.app</h1>
 			<div id="name">Mon compte</div>
-			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="api/logout" onclick='window.localStorage.clear()'><button type="button" id="mon_compte" class="nav_button rouge">🔑 Déconnexion</button></a>
+			<a href="/"><button type="button" class="nav_button">👈 Revenir aux cycles</button></a> <a href="api/logout" onclick='window.localStorage.clear()'><button type="button" id="mon_user_account" class="nav_button rouge">🔑 Déconnexion</button></a>
 			<p id="merci_don" style="display:none">🎖️ Merci pour votre don sur <a href="https://fr.tipeee.com/moncycleapp" target="_blank">Tipeee</a>.</p>
 			<p id="warning_demo" style="font-weight:bold; display:none">&#x1F6A8; Vous visualisez actuellement le compte de démonstration.<br /><br /><a style="color:#fbca0b" href='/register'><button type='button'>&#x1F680; créer votre compte</button></a></p>
 		</center>
@@ -107,7 +107,7 @@
 					<p><span class="totp_activation_option">option 3: </span>copiez-collez manuellement le secret directement dans l'application.</p>
 					<button id="totp_copy_secret" type="button">📎 COPIER</button> <span class="vert" id="totp_copy_secret_ok"></span>
 					<p>Après avoir réalisé l'une de ces trois options, entrez le code généré par l'application:</p>
-					<input type="number" name="tmp_code" class="input_compte_totp" placeholder="code TOTP" />
+					<input type="number" name="tmp_code" class="input_user_account_totp" placeholder="code TOTP" />
 					<input type="submit" id="i_submit_otp" value="🔐 activer" />
 				</form>
 			</div>
@@ -115,7 +115,7 @@
 				<p class="vert">✅ 🔐 Authentification multifacteur active.</p>
 				<form id="f_totp_desac" action="../api/totp?desactivation" method="post">
 					<p>Pour désactiver l'authentification multifacteur, entrez le code temporaire dans votre application:</p>
-					<input type="number" name="tmp_code" placeholder="code TOTP" class="input_compte_totp" />
+					<input type="number" name="tmp_code" placeholder="code TOTP" class="input_user_account_totp" />
 					<input type="submit" value="Désactiver" />
 				</form>
 			</div>
@@ -156,7 +156,7 @@
 			<h2 class="rouge">Zone de danger</h2>
 			<p class="rouge">En supprimant définitivement votre compte, toutes vos données seront effacées et irrécupérables. Cette action est irréversible mais vous avez la possibilité de télécharger toutes vos données avant la suppression.</p>
 			<br />
-			<form method="delete" action="api/suppr_compte" id="f_suppr_compte">
+			<form method="delete" action="api/suppr_user_account" id="f_suppr_user_account">
 				<label class="rouge" for="pw_before_deletion">Entrez votre mot de passe pour supprimer votre compte:</label><br />
 				<input class="rouge" name="pw_before_deletion" name="pw_before_deletion" type="password" placeholder="mot de passe" /><br />
 				<br />

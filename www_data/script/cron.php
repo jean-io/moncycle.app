@@ -40,12 +40,12 @@ $cycles = db_select_cycles_recent($db);
 
 foreach($cycles as $cyc) {
 	
-	$debut_cycle = db_select_cycle($db, $cyc["cycle_complet"], $cyc["no_compte"]);
+	$debut_cycle = db_select_cycle($db, $cyc["cycle_complet"], $cyc["no_user_account"]);
 	
 	if(!empty($debut_cycle)) {
 
 		$debut_cycle = $debut_cycle[0]["cycle"];
-		$cycle_complet = db_select_cycle_complet($db, $debut_cycle,  $cyc["cycle_complet"], $cyc["no_compte"]);
+		$cycle_complet = db_select_cycle_complet($db, $debut_cycle,  $cyc["cycle_complet"], $cyc["no_user_account"]);
 		$cycle_complet = doc_preparation_jours_pour_affichage($cycle_complet, $cyc["nfp_method"]);
 
 		$nb_j = count($cycle_complet);
@@ -90,9 +90,9 @@ foreach($cycles as $cyc) {
 
 // RELANCE COMPTES INACTIF
 
-$compte = db_select_compte_inactif($db);
+$user_account = db_select_user_account_inactif($db);
 
-foreach($compte as $com) {
+foreach($user_account as $com) {
 
 	$mail = mail_init();
 
@@ -106,32 +106,32 @@ foreach($compte as $com) {
 
 	$mail->send();
 
-	db_update_is_inactive($db, $com["no_compte"], 1);
+	db_update_is_inactive($db, $com["no_user_account"], 1);
 
 	echo "relance envoyée à {$com["email1"]} (et {$com["email2"]})";
 	echo PHP_EOL;
 }
 
-// SUPPR DES JETTONS EXPIRES
+// SUPPR DES TOKENS EXPIRES
 
-$ret = db_delete_vieux_jetton($db);
+$ret = db_delete_vieux_auth_token($db);
 echo $ret . " vieux jettons supprimés";
 echo PHP_EOL;
 
 // RESET DES COMPTEURS DE STAT
 
-db_update_reset_cle_valeur($db, "pub_visite_jour");
+db_update_reset_key_value($db, "pub_visite_jour");
 echo "stats du jour réinitialisées";
 
 $auj = getdate();
 
 if ($auj["wday"]==0) {
-	db_update_reset_cle_valeur($db, "pub_visite_hebdo");
+	db_update_reset_key_value($db, "pub_visite_hebdo");
 	echo ", stats de la semaine réinitialisées";
 }
 
 if ($auj["mday"]==1) {
-	db_update_reset_cle_valeur($db, "pub_visite_mensuel");
+	db_update_reset_key_value($db, "pub_visite_mensuel");
 	echo ", stats du mois réinitialisées";
 }
 

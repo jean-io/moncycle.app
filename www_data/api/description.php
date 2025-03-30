@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') parse_str(file_get_contents('php://
 
 $db = db_open();
 
-$compte = sec_auth_jetton($db);
-sec_exit_si_non_connecte($compte);
+$user_account = sec_auth_token($db);
+sec_exit_si_non_connecte($user_account);
 
 $ret = [];
 
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 			$db->exec("START TRANSACTION");
 
-			$raw_description = db_select_description_with_count($db, $compte["no_compte"]);
+			$raw_description = db_select_description_with_count($db, $user_account["no_user_account"]);
 
 			$old_description = [];
 			foreach ($raw_description as $desc) if ($desc["name"] == $desc_name) $old_description = $desc;
@@ -62,19 +62,19 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 						$ret["err"] = "Error : 'new_name' argument give a name that already exist.";
 					}
 					else {
-						db_update_description_name($db, $compte["no_compte"], $old_description["no_description"], $new_desc_name);
+						db_update_description_name($db, $user_account["no_user_account"], $old_description["no_description"], $new_desc_name);
 						$ret["renamed"] = "Description of observation " . $desc_name . " renamed to " . $new_desc_name;
 					}
 				}
 
 				// UPDATING TYPE
 				if ($old_description["type"] != $desc_type) {
-					db_update_description_type ($db, $compte["no_compte"], $old_description["no_description"], $desc_type);
+					db_update_description_type ($db, $user_account["no_user_account"], $old_description["no_description"], $desc_type);
 					$ret["type_updated"] = "Type of description updated from " . $old_description["type"] . " to " . $desc_type;
 				}
 			}
 			else {
-				$old_description["no_description"] = db_insert_description($db, $compte["no_compte"], $desc_name, $desc_type);
+				$old_description["no_description"] = db_insert_description($db, $user_account["no_user_account"], $desc_name, $desc_type);
 				$ret["ok"] = "Description of observation " . $desc_name . " added.";
 			}
 
@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 			$last_write_client_UTC = "";
 			if (isset($_POST["last_write_client_UTC"]) && date_validate_timestamp(trim($_POST['last_write_client_UTC']))) $last_write_client_UTC = trim($_POST['last_write_client_UTC']);
 			else $last_write_client_UTC = date('Y-m-d H:i:s');
-			db_update_description_client_timestamp ($db, $compte["no_compte"], $old_description["no_description"], $last_write_client_UTC);
+			db_update_description_client_timestamp ($db, $user_account["no_user_account"], $old_description["no_description"], $last_write_client_UTC);
 
 			$db->exec("COMMIT");
 
@@ -102,7 +102,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == "DELETE") {
 		$ret["err"] = "Error : missing DELETE variable 'name'.";
 	}
 	else {
-		$ret["nb_deleted"] = db_delete_descriptions($db, $_DELETE["name"], $compte["no_compte"]);
+		$ret["nb_deleted"] = db_delete_descriptions($db, $_DELETE["name"], $user_account["no_user_account"]);
 		$ret["deleted"] = "Deleted " . $ret["nb_deleted"] . " description with name " . $_DELETE["name"];
 	}
 
@@ -111,7 +111,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == "DELETE") {
 // HTTP GET method, getting all descriptions
 else {
 
-	$ret = $description = db_select_description_with_count($db, $compte["no_compte"]);
+	$ret = $description = db_select_description_with_count($db, $user_account["no_user_account"]);
 
 }
 

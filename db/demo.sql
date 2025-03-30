@@ -1,16 +1,16 @@
 SET NAMES utf8mb4;
 
 
-DELETE FROM `compte` WHERE `no_compte` = '2';
-DELETE FROM `compte` WHERE `no_compte` = '3';
+DELETE FROM `user_account` WHERE `no_user_account` = '2';
+DELETE FROM `user_account` WHERE `no_user_account` = '3';
 
 
-INSERT INTO `compte` (`no_compte`, `name`, `age`, `email1`, `password`, `user_enabled`, `nfp_method`) VALUES
+INSERT INTO `user_account` (`no_user_account`, `name`, `age`, `email1`, `password`, `user_enabled`, `nfp_method`) VALUES
 (2, 'Démo Billings', 1990, 'demo.bill@moncycle.app', '$2y$10$hTn9Xjg4wk/ovWEY8BWXau.Y1ODRoX03c2zlp6Rnmib1yUcVpp0sC', 1, 2),
 (3, 'Démo FertilityCare', 1990, 'demo.fc@moncycle.app', '$2y$10$hTn9Xjg4wk/ovWEY8BWXau.Y1ODRoX03c2zlp6Rnmib1yUcVpp0sC', 1, 3);
 
 
-INSERT INTO `description` (`no_description`, `no_compte`, `name`, `type`) VALUES
+INSERT INTO `description` (`no_description`, `no_user_account`, `name`, `type`) VALUES
 (1,	2,	'sec',	0),
 (2,	2,	'humide',	0),
 (3,	2,	'collant',	0),
@@ -19,7 +19,7 @@ INSERT INTO `description` (`no_description`, `no_compte`, `name`, `type`) VALUES
 (6,	2,	'blanc',	0);
 
 
-INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `day_not_observed`, `fc_score`, `fc_arrow`, `stamp`, `temperature`, `time_temp_taken`, `is_peak`, `counter_start`, `union_sex`, `cycle_1st_day`, `pregnancy`, `comment`) VALUES
+INSERT INTO `day_timeline` (`no_day`, `no_user_account`, `date_obs`, `day_not_observed`, `fc_score`, `fc_arrow`, `stamp`, `temperature`, `time_temp_taken`, `is_peak`, `counter_start`, `union_sex`, `cycle_1st_day`, `pregnancy`, `comment`) VALUES
 (0+50,	2,	CURDATE() + INTERVAL - (50-0) DAY,	NULL,	NULL,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	1,	NULL,	''),
 (1+50,	2,	CURDATE() + INTERVAL - (50-1) DAY,	NULL,	NULL,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
 (2+50,	2,	CURDATE() + INTERVAL - (50-2) DAY,	NULL,	NULL,	NULL,	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
@@ -72,7 +72,7 @@ INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `day_not_o
 (49+50,	2,	CURDATE() + INTERVAL - (50-49) DAY,	NULL,	'',	'',	'I',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'');
 
 
-INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `day_not_observed`, `fc_score`, `fc_arrow`, `stamp`, `temperature`, `time_temp_taken`, `is_peak`, `counter_start`, `union_sex`, `cycle_1st_day`, `pregnancy`, `comment`) VALUES
+INSERT INTO `day_timeline` (`no_day`, `no_user_account`, `date_obs`, `day_not_observed`, `fc_score`, `fc_arrow`, `stamp`, `temperature`, `time_temp_taken`, `is_peak`, `counter_start`, `union_sex`, `cycle_1st_day`, `pregnancy`, `comment`) VALUES
 (1,	3,	CURDATE() + INTERVAL - (50-1) DAY,	NULL,	'H AP',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	1,	NULL,	''),
 (2,	3,	CURDATE() + INTERVAL - (50-2) DAY,	NULL,	'M',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
 (3,	3,	CURDATE() + INTERVAL - (50-3) DAY,	NULL,	'MB',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	''),
@@ -124,7 +124,7 @@ INSERT INTO `observation` (`no_observation`, `no_compte`, `date_obs`, `day_not_o
 (49,	3,	CURDATE() + INTERVAL - (50-49) DAY,	NULL,	'VLB 0 AD',	'',	'.',	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	NULL,	'');
 
 
-INSERT INTO `link_observation_description` (`no_observation`, `no_description`) VALUES
+INSERT INTO `link_day_timeline_description` (`no_day`, `no_description`) VALUES
 (54,	1),
 (55,	1),
 (56,	1),

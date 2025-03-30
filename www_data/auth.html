@@ -100,7 +100,7 @@
 								5 : "Mauvais mot de passe ou compte inexistant."
 							};
 							if (ret.outcome >= 100) {
-								localStorage.auth = ret.no_compte;
+								localStorage.auth = ret.no_user_account;
 								window.location.replace('..');
 							}
 							else if (ret.outcome in return_codes) $("#message_err").html(return_codes[ret.outcome] + "<br />");

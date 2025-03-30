@@ -14,9 +14,9 @@ $(document).ready(function(){
 		$("#name").text(moncycle_app_usr.name);
 		document.title = "moncycle.app - compte " + moncycle_app_usr.name;
 		$("#i_name").val(moncycle_app_usr.name);
-		$("#tech_info_no").text(moncycle_app_usr.account_id);
+		$("#tech_info_no").text(moncycle_app_usr.no_user_account);
 		if(moncycle_app_usr.sponsor) $("#merci_don").show();
-		if(moncycle_app_usr.account_id == 2 || moncycle_app_usr.account_id == 3) $("#warning_demo").show();
+		if(moncycle_app_usr.no_user_account == 2 || moncycle_app_usr.no_user_account == 3) $("#warning_demo").show();
 		$("#tech_info_id").text(moncycle_app_usr.email1);
 		$("#i_email1").val(moncycle_app_usr.email1);
 		$("#i_email2").val(moncycle_app_usr.email2);
@@ -166,9 +166,9 @@ $(document).ready(function(){
 	});
 
 	// SUPPRESSION DU COMPTE
-	$("#f_suppr_compte").on("submit", function(event) {
+	$("#f_suppr_user_account").on("submit", function(event) {
 		event.preventDefault();
-		var form_data = $("#f_suppr_compte").serializeArray();
+		var form_data = $("#f_suppr_user_account").serializeArray();
 		if (!confirm(moncycle_app_usr.name + ', êtes-vous sur de vouloir supprimer votre compte ainsi que toutes vos données? Cette action est irréversible. 😟')) return;
 		$.ajax({type : 'DELETE', "url" : "../api/account", "data" : $.param(form_data)}).done(function(ret){
 			if (ret.suppr) {

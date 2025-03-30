@@ -49,7 +49,7 @@ elseif (!filter_var($reset_email, FILTER_VALIDATE_EMAIL)) {
 }
 
 // CHECK IF ACCOUNT IS EXISTING, IF YES SEND A NEW PASSWORD
-elseif (boolval(db_select_compte_existe($db,$reset_email)[0]["compte_existe"])) {
+elseif (boolval(db_select_user_account_existe($db,$reset_email)[0]["user_account_existe"])) {
     $pass_text = sec_password_aleatoire();
     $pass_hash = sec_hash($pass_text);
 

@@ -14,6 +14,6 @@ header("Content-Type: text/plain");
 
 $db = db_open();
 
-echo boolval(db_select_nb_compte($db)[0][0]) ? "oookkk" : "kkkooo";
+echo boolval(db_select_nb_user_account($db)[0][0]) ? "oookkk" : "kkkooo";
 echo PHP_EOL;
 

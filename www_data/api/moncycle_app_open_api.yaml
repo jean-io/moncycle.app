@@ -880,4 +880,4 @@ components:
       description: Token in an HTTP cookie
       type: apiKey
       in: cookie
-      name: MONCYCLEAPP_JETTON
+      name: MONCYCLEAPP_TOKEN

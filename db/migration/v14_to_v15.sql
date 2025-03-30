@@ -50,3 +50,53 @@ CHANGE `relance` `is_inactive` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `u
 ALTER TABLE `compte`
 CHANGE `methode` `nfp_method` smallint(5) unsigned NOT NULL DEFAULT '1' AFTER `name`;
 
+
+ALTER TABLE `jetton`
+CHANGE `no_jetton` `no_auth_token` mediumint(8) unsigned NOT NULL AUTO_INCREMENT FIRST,
+CHANGE `jetton_str` `auth_token_str` varchar(512) COLLATE 'utf8mb4_bin' NOT NULL AFTER `date_use`,
+RENAME TO `auth_token`;
+ALTER TABLE `auth_token`
+CHANGE `pays` `contry_code` varchar(2) COLLATE 'utf8mb4_bin' NULL AFTER `expire`;
+
+
+
+
+ALTER TABLE `compte`
+CHANGE `no_compte` `no_user_account` mediumint(8) unsigned NOT NULL AUTO_INCREMENT FIRST,
+RENAME TO `user_account`;
+
+ALTER TABLE auth_token
+DROP FOREIGN KEY `observation_ibfk_2`,
+CHANGE `no_compte` `no_user_account` mediumint(8) unsigned NULL AFTER `no_auth_token`,
+ADD CONSTRAINT `fk_auth_token_no_user_account` FOREIGN KEY (`no_user_account`) REFERENCES `user_account` (`no_user_account`) ON DELETE CASCADE;
+
+ALTER TABLE `description`
+DROP FOREIGN KEY `observation_ibfk_3`,
+CHANGE `no_compte` `no_user_account` mediumint(8) unsigned NULL AFTER `no_description`,
+ADD CONSTRAINT `fk_description_no_user_account` FOREIGN KEY (`no_user_account`) REFERENCES `user_account` (`no_user_account`) ON DELETE CASCADE;
+
+ALTER TABLE `observation`
+DROP FOREIGN KEY `observation_ibfk_1`,
+CHANGE `no_compte` `no_user_account` mediumint(8) unsigned NULL AFTER `no_observation`,
+ADD CONSTRAINT `fk_no_observation_no_user_account` FOREIGN KEY (`no_user_account`) REFERENCES `user_account` (`no_user_account`) ON DELETE CASCADE;
+
+
+
+ALTER TABLE `observation`
+CHANGE `no_observation` `no_day` mediumint(8) unsigned NOT NULL AUTO_INCREMENT FIRST,
+RENAME TO `day_timeline`;
+
+ALTER TABLE `link_observation_description`
+DROP FOREIGN KEY `observation_ibfk_4`,
+CHANGE `no_observation` `no_day` mediumint(8) unsigned NOT NULL FIRST,
+ADD CONSTRAINT `fk_link_day_timeline_description_no_day` FOREIGN KEY (`no_day`) REFERENCES `day_timeline` (`no_day`) ON DELETE CASCADE,
+RENAME TO `link_day_timeline_description`;
+
+ALTER TABLE `link_day_timeline_description`
+ADD CONSTRAINT `fk_link_day_timeline_description_no_description` FOREIGN KEY (`no_description`) REFERENCES `description` (`no_description`) ON DELETE CASCADE;
+
+
+ALTER TABLE `cle_valeur`
+CHANGE `cle` `key` varchar(255) COLLATE 'utf8mb4_bin' NOT NULL FIRST,
+CHANGE `valeur` `value` bigint(20) unsigned NULL AFTER `key`,
+RENAME TO `key_value`;

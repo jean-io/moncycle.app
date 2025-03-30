@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') parse_str(file_get_contents('php://
 
 $db = db_open();
 
-$compte = sec_auth_jetton($db);
-sec_exit_si_non_connecte($compte);
+$user_account = sec_auth_token($db);
+sec_exit_si_non_connecte($user_account);
 
 // LECTURE D'UNE OBSERVATION
 if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['date'])) {
@@ -39,17 +39,17 @@ if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['date'])) {
 
 		$ob_data = array();
 
-		$cycle = db_select_cycle($db, $date, $compte["no_compte"]);
+		$cycle = db_select_cycle($db, $date, $user_account["no_user_account"]);
 		if(isset($cycle[0])) {
 			$interval = date_diff(date_create($cycle[0]["cycle"]), date_create($date));
 			$ob_data["cycle"] = $cycle[0]["cycle"];
 			$ob_data["pos"] = intval($interval->format('%a'))+1;
 		}
 
-		$ob_db = db_select_observation($db, $date, $compte["no_compte"]);
+		$ob_db = db_select_day_timeline($db, $date, $user_account["no_user_account"]);
 		if(isset($ob_db[0])) {
 			$ob_data = array_merge($ob_data, $ob_db[0]);
-			$raw_description = db_select_all_description_for_observation($db, $compte["no_compte"], $ob_data["no_observation"]);
+			$raw_description = db_select_all_description_for_day_timeline($db, $user_account["no_user_account"], $ob_data["no_day"]);
 			$description = [];
 			foreach ($raw_description as $obj) array_push($description, $obj["name"]);
 			if (count($description)>0) $ob_data["sensation"] = implode(", ", $description);
@@ -75,9 +75,9 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 	$date_exploded = explode('-', $date);
 	if (checkdate($date_exploded[1], $date_exploded[2], $date_exploded[0])) {
 
-		if (isset($compte["is_inactive"]) && boolval($compte["is_inactive"])) {
-			db_update_is_inactive($db, $compte["no_compte"], 0);
-			$compte["is_inactive"] = 0;
+		if (isset($user_account["is_inactive"]) && boolval($user_account["is_inactive"])) {
+			db_update_is_inactive($db, $user_account["no_user_account"], 0);
+			$user_account["is_inactive"] = 0;
 		}
 
 		$date = trim($_POST['date']);
@@ -87,37 +87,37 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 
 			$db->exec("START TRANSACTION");
 	
-			$output = db_select_observation($db, $date, $compte["no_compte"]);
+			$output = db_select_day_timeline($db, $date, $user_account["no_user_account"]);
 	
-			$observation_no = null;
-			if(!isset($output[0])) $observation_no = db_insert_observation($db, $date, $compte["no_compte"]);
-			else $observation_no = $output[0]["no_observation"];
+			$day_timeline_no = null;
+			if(!isset($output[0])) $day_timeline_no = db_insert_day_timeline($db, $date, $user_account["no_user_account"]);
+			else $day_timeline_no = $output[0]["no_day"];
 			
-			$observation = [];
+			$day_timeline = [];
 			foreach ($_POST as $key => $p) {
 				if (!str_starts_with($key, "ob_") || $p=="") continue;
 				if ($key == "ob_extra") {
 					foreach (explode(",", $_POST["ob_extra"]) as $cp) {
-						array_push($observation, strtolower(trim($cp)));
+						array_push($day_timeline, strtolower(trim($cp)));
 					}
 				}
-				else array_push($observation, strtolower(trim($p)));
+				else array_push($day_timeline, strtolower(trim($p)));
 			}
 			
-			$old_description = db_select_all_description_for_observation($db, $compte["no_compte"], $observation_no);
+			$old_description = db_select_all_description_for_day_timeline($db, $user_account["no_user_account"], $day_timeline_no);
 			$raw_old_description = [];
 			$description_to_delete = [];
 			foreach ($old_description as $desc) {
-				if (!in_array($desc["name"], $observation)) array_push($description_to_delete, $desc["no_description"]);
+				if (!in_array($desc["name"], $day_timeline)) array_push($description_to_delete, $desc["no_description"]);
 				array_push($raw_old_description, $desc["name"]);
 			}
 			$raw_new_description = [];
-			foreach ($observation as $desc) {
+			foreach ($day_timeline as $desc) {
 				if (!in_array($desc, $raw_old_description)) array_push($raw_new_description, $desc);
 			}
 
-			// TODO : DELETE AND CLEAN observation_db
-			$observation_db = null;
+			// TODO : DELETE AND CLEAN day_timeline_db
+			$day_timeline_db = null;
 	
 			$temp = null;
 			$htemp = null;
@@ -137,18 +137,18 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 			if (isset($_POST["last_write_client_UTC"]) && date_validate_timestamp(trim($_POST['last_write_client_UTC']))) $last_write_client_UTC = trim($_POST['last_write_client_UTC']);
 			else $last_write_client_UTC = date('Y-m-d H:i:s');
 	
-			db_update_observation($db, $date, $compte["no_compte"], $last_write_client_UTC, $go, $_POST["fc_score"] ?? null, $_POST["fc_arrow"] ?? null, $observation_db, $temp, $htemp, $_POST["is_peak"] ?? null, $_POST["union_sex"] ?? null, $_POST["cycle_1st_day"] ?? null, $_POST["day_not_observed"] ?? null, $_POST["pregnancy"] ?? null, $_POST["comment"] ?? null, $counter_start);
+			db_update_day_timeline($db, $date, $user_account["no_user_account"], $last_write_client_UTC, $go, $_POST["fc_score"] ?? null, $_POST["fc_arrow"] ?? null, $day_timeline_db, $temp, $htemp, $_POST["is_peak"] ?? null, $_POST["union_sex"] ?? null, $_POST["cycle_1st_day"] ?? null, $_POST["day_not_observed"] ?? null, $_POST["pregnancy"] ?? null, $_POST["comment"] ?? null, $counter_start);
 			
-			foreach ($description_to_delete as $no_desc) db_delete_linked_descriptions ($db, $observation_no, $no_desc);
+			foreach ($description_to_delete as $no_desc) db_delete_linked_descriptions ($db, $day_timeline_no, $no_desc);
 
 			foreach ($raw_new_description as $desc) {
-				$db_description = db_select_description_from_name($db, $compte["no_compte"], $desc);
+				$db_description = db_select_description_from_name($db, $user_account["no_user_account"], $desc);
 				$description_no = null;
 				if (!isset($db_description) || !isset($db_description[0])) {
-					$description_no = db_insert_description($db, $compte["no_compte"], $desc, 0);
+					$description_no = db_insert_description($db, $user_account["no_user_account"], $desc, 0);
 				}
 				else $description_no = $db_description[0]["no_description"];
-				db_insert_link_description_observation($db, $observation_no, $description_no);
+				db_insert_link_description_day_timeline($db, $day_timeline_no, $description_no);
 			}
 
 			$db->exec("COMMIT");
@@ -172,7 +172,7 @@ elseif($_SERVER['REQUEST_METHOD'] == "DELETE" && isset($_DELETE['date']) && preg
 	$date = trim($_DELETE['date']);
 	$result["date"] = $date;
 
-	$result['nb_suppr'] = db_delete_observation($db, $compte["no_compte"], $date);
+	$result['nb_suppr'] = db_delete_day_timeline($db, $user_account["no_user_account"], $date);
 
 	$result["outcome"] = "ok";
 }

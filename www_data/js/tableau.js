@@ -48,7 +48,7 @@ moncycle_app = {
 	utilisateurs_beta : [5],
 	constante : {},
 	sensation : {},
-	observation : {},
+	day_timeline : {},
 	timeline_asc : true,
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
@@ -94,7 +94,7 @@ moncycle_app = {
 		$("#jour_form_bulk_but").click(moncycle_app.bulk_show_hide);
 		$("#jour_form #form_data input, #jour_form textarea").on("change", moncycle_app.submit_menu);
 		$("#form_fc").on("keyup", moncycle_app.fc_note2form);
-		$("#jour_form_suppr").click(moncycle_app.suppr_observation);
+		$("#jour_form_suppr").click(moncycle_app.suppr_day_timeline);
 		$("#but_mini_maxi").click(moncycle_app.mini_maxi_switch);
 		$("#go_baby").click(moncycle_app.go_blank_or_empty);
 		if (localStorage.mini_maxi == "mini") moncycle_app.mini_maxi = "maxi";
@@ -119,7 +119,7 @@ moncycle_app = {
 			return false;
 		})
 		window.addEventListener("storage", function () {
-			if (this.localStorage.auth != moncycle_app.constante.account_id) window.location.href = window.location.href;
+			if (this.localStorage.auth != moncycle_app.constante.no_user_account) window.location.href = window.location.href;
 			return false;
 		}, false);
 		moncycle_app.charger_actu();
@@ -176,7 +176,7 @@ moncycle_app = {
 			});
 		});	
 	},
-	loading_observation : {date_obs: "", pos: 0, chargement: true, temperature: NaN, cycle: ""},
+	loading_day_timeline : {date_obs: "", pos: 0, chargement: true, temperature: NaN, cycle: ""},
 	charger_cycle : function() {
 		if (moncycle_app.cycle_curseur >= moncycle_app.constante.all_cycles_1st_day.length) {
 			moncycle_app.form_nouveau_cycle();
@@ -216,7 +216,7 @@ moncycle_app = {
 		let dates_req = [];
 		let dates_data_holder = {};
 		let sotred_obs = {}
-		if (localStorage.observation) sotred_obs = JSON.parse(localStorage.observation);
+		if (localStorage.day_timeline) sotred_obs = JSON.parse(localStorage.day_timeline);
 		for (let pas = 0; pas < nb_jours; pas++) {
 			let date_obs = new Date(date_cycle);
 			date_obs.setDate(date_obs.getDate()+pas);
@@ -224,39 +224,39 @@ moncycle_app = {
 			let data = null;
 			if (sotred_obs[date_obs_str]) data = sotred_obs[date_obs_str];
 			else {
-				data = moncycle_app.loading_observation;
+				data = moncycle_app.loading_day_timeline;
 				data["date_obs"] = date_obs_str;
 				data["pos"] = pas+1;
 				data["cycle"] = date_cycle_str;
 			}
 			dates_data_holder[date_obs_str] = data;
-			moncycle_app.observation[date_obs_str] = data;
-			if (moncycle_app.timeline_asc) $(`#c-${date_cycle_str} .contenu`).prepend(moncycle_app.observation2timeline(data));
-			else $(`#c-${date_cycle_str} .contenu`).append(moncycle_app.observation2timeline(data));
-			$(`#rc-${date_cycle_str} .contenu`).append(moncycle_app.observation2recap(data));
+			moncycle_app.day_timeline[date_obs_str] = data;
+			if (moncycle_app.timeline_asc) $(`#c-${date_cycle_str} .contenu`).prepend(moncycle_app.day_timeline2timeline(data));
+			else $(`#c-${date_cycle_str} .contenu`).append(moncycle_app.day_timeline2timeline(data));
+			$(`#rc-${date_cycle_str} .contenu`).append(moncycle_app.day_timeline2recap(data));
 			dates_req.push(date_obs_str);
 		}
 		moncycle_app.graph_preparation_data(dates_data_holder);
-		while (dates_req.length>200) moncycle_app.charger_observation(dates_req.splice(0, 200).join(','));
-		moncycle_app.charger_observation(dates_req.join(','));
+		while (dates_req.length>200) moncycle_app.charger_day_timeline(dates_req.splice(0, 200).join(','));
+		moncycle_app.charger_day_timeline(dates_req.join(','));
 		if (moncycle_app.constante.nfp_method == 1 || moncycle_app.constante.nfp_method == 4) moncycle_app.cycle2graph(date_cycle_str);
 		if (form_nouv_cycle && !moncycle_app.timeline_asc) moncycle_app.form_nouveau_cycle(false);
 	},
-	charger_observation : function(o_date) {
+	charger_day_timeline : function(o_date) {
 		$.get("api/day", { date: o_date }).done(function(data) {
 			let sotred_obs = {};
-			if (localStorage.observation) sotred_obs = JSON.parse(localStorage.observation);
+			if (localStorage.day_timeline) sotred_obs = JSON.parse(localStorage.day_timeline);
 			$.each(data, function (o_date, o_data) {
-				moncycle_app.observation[o_date] = o_data;
+				moncycle_app.day_timeline[o_date] = o_data;
 				sotred_obs[o_date] = o_data;
-				$(`#o-${o_date}`).replaceWith(moncycle_app.observation2timeline(o_data));
-				$(`#ro-${o_date}`).replaceWith(moncycle_app.observation2recap(o_data));
+				$(`#o-${o_date}`).replaceWith(moncycle_app.day_timeline2timeline(o_data));
+				$(`#ro-${o_date}`).replaceWith(moncycle_app.day_timeline2recap(o_data));
 				if (o_data.is_peak && $.inArray(o_date, moncycle_app.sommets)<0) moncycle_app.sommets.push(o_date);
 				else if (!o_data.is_peak && $.inArray(o_date, moncycle_app.sommets)>=0) moncycle_app.sommets.splice($.inArray(o_date, moncycle_app.sommets), 1);
 				if (o_data.counter_start) moncycle_app.counter_starts[o_date] = o_data.counter_start;
 				else if (!o_data.counter_start && o_date in moncycle_app.counter_starts) delete moncycle_app.counter_starts[o_date];
 			});
-			localStorage.observation = JSON.stringify(sotred_obs);
+			localStorage.day_timeline = JSON.stringify(sotred_obs);
 			$(`.pas_${moncycle_app.constante.nfp_method_name}`).css("display", "none");
 			moncycle_app.trois_jours();
 			moncycle_app.graph_preparation_data(data);
@@ -305,7 +305,7 @@ moncycle_app = {
 				}
 				if (data.outcome == "ok"){
 					if (!prepend) {
-						localStorage.removeItem("observation");
+						localStorage.removeItem("day_timeline");
 						localStorage.removeItem("constante");
 						location.reload(false);
 						return;
@@ -469,23 +469,23 @@ moncycle_app = {
 			moncycle_app.graphs[id].update();
 		}
 	},
-	observation2recap : function(j) {
+	day_timeline2recap : function(j) {
 		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "ro-" + moncycle_app.date.str(o_date);
 		let o_class = "obs";
 		if (j.pregnancy) o_class += " o_gross";
-		let observation = $("<div>", {id: o_id, class: o_class, date: moncycle_app.date.str(o_date)});
+		let day_timeline = $("<div>", {id: o_id, class: o_class, date: moncycle_app.date.str(o_date)});
 		if (j.chargement) {
-			observation.append(`<span class='s'></span>`);
-			observation.append(`<span class='g g_loading'>${moncycle_app.text.chargement_emoji}</span>`);
-			observation.append(`<span class='c'></span>`);
+			day_timeline.append(`<span class='s'></span>`);
+			day_timeline.append(`<span class='g g_loading'>${moncycle_app.text.chargement_emoji}</span>`);
+			day_timeline.append(`<span class='c'></span>`);
 			if (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) {
-				observation.append(`<span class='fc'></span>`);
-				observation.append(`<span class='fc'></span>`);
+				day_timeline.append(`<span class='fc'></span>`);
+				day_timeline.append(`<span class='fc'></span>`);
 			}
-			return observation;
+			return day_timeline;
 		}
-		observation.click(moncycle_app.open_menu);
+		day_timeline.click(moncycle_app.open_menu);
 		let color = "vide";
 		let index_couleur = j.stamp;
 		let baby = (j.stamp == ":)");
@@ -524,53 +524,53 @@ moncycle_app = {
 			color = "jcpas";
 		}
 		if (car_du_milieu=="" && j.stamp=="") car_du_milieu = moncycle_app.text.a_renseigner_emoji;
-		observation.append(`<span class='s'>${j.is_peak ? moncycle_app.text.sommet_bill : ""}</span>`);
-		if (moncycle_app.constante.nfp_method==1 || moncycle_app.constante.nfp_method==2) observation.append(`<span class='n'></span>`);
-		observation.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
+		day_timeline.append(`<span class='s'>${j.is_peak ? moncycle_app.text.sommet_bill : ""}</span>`);
+		if (moncycle_app.constante.nfp_method==1 || moncycle_app.constante.nfp_method==2) day_timeline.append(`<span class='n'></span>`);
+		day_timeline.append(`<span class='g ${color}'>${car_du_milieu}</span>`);
 		if ((moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) && !j.pregnancy && !j.day_not_observed && j.fc_score){
 			recap_note = recap_note.replace('X1','').replace('X2','').replace('X3','');
 			let fc_glaire = recap_note.match(/\d+/);
 			if (fc_glaire) recap_note = recap_note.replace(fc_glaire[0], '');
-			observation.append(`<span class='fc'>${fc_glaire? fc_glaire[0] : ""}</span>`);
+			day_timeline.append(`<span class='fc'>${fc_glaire? fc_glaire[0] : ""}</span>`);
 			recap_note = recap_note.trim().replace(/\s+/g, '')
 			if (recap_note.length>2) recap_note='*';
-			observation.append(`<span class='fc'>${recap_note}</span>`);
+			day_timeline.append(`<span class='fc'>${recap_note}</span>`);
 		}
 		else if (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) {
-			observation.append(`<span class='fc'></span>`);
-			observation.append(`<span class='fc'></span>`);
+			day_timeline.append(`<span class='fc'></span>`);
+			day_timeline.append(`<span class='fc'></span>`);
 		}
-		observation.append(`<span class='c'>${car_du_bas}</span>`);
-		return observation;
+		day_timeline.append(`<span class='c'>${car_du_bas}</span>`);
+		return day_timeline;
 	},
-	observation2timeline : function(j) {
+	day_timeline2timeline : function(j) {
 		let o_date = moncycle_app.date.parse(j.date_obs);
 		let o_id = "o-" + moncycle_app.date.str(o_date);
 		let o_class = "day";
 		if (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) o_class += " o_fc";
 		else o_class += " o_bill";
 		if (j.pregnancy) o_class += " o_gross";
-		let observation = $("<div>", {id: o_id, class: o_class, date : moncycle_app.date.str(o_date)});
+		let day_timeline = $("<div>", {id: o_id, class: o_class, date : moncycle_app.date.str(o_date)});
 		let d_bold = o_date.getDay()==0 ? "bold" : "";
-		observation.append(`<span class='d ${d_bold}'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);
+		day_timeline.append(`<span class='d ${d_bold}'>${moncycle_app.text.semaine[o_date.getDay()][0]} ${o_date.getDate()} ${moncycle_app.text.mois[o_date.getMonth()]} </span>`);
 		let pos = $(`<span class='j'>${j.pos}</span>`);
-		observation.append(pos);
+		day_timeline.append(pos);
 		if (j.chargement) {
-			observation.append(`<span class='g g_loading'>${moncycle_app.text.chargement_emoji}</span>`);
-			observation.append(`<span class='l'>${moncycle_app.text.chargement}</span>`);
-			return observation;
+			day_timeline.append(`<span class='g g_loading'>${moncycle_app.text.chargement_emoji}</span>`);
+			day_timeline.append(`<span class='l'>${moncycle_app.text.chargement}</span>`);
+			return day_timeline;
 		}
-		observation.click(moncycle_app.open_menu);
+		day_timeline.click(moncycle_app.open_menu);
 		let tbd = true;
 		if (j.pregnancy) {
-			observation.append(`<span class='e'>${moncycle_app.text.pregnancy}</span>`);
-			observation.append(`<span class='s'></span>`);
-			observation.append(`<span class='n'></span>`);
+			day_timeline.append(`<span class='e'>${moncycle_app.text.pregnancy}</span>`);
+			day_timeline.append(`<span class='s'></span>`);
+			day_timeline.append(`<span class='n'></span>`);
 			tbd = false;
 		}
 		else {
 			if (j.day_not_observed) {
-				observation.append(`<span class='g jcpas'>${moncycle_app.text.je_sais_pas_emoji}</span>`);
+				day_timeline.append(`<span class='g jcpas'>${moncycle_app.text.je_sais_pas_emoji}</span>`);
 				pos.addClass("j_jcpas");
 				tbd = false;
 			}
@@ -585,12 +585,12 @@ moncycle_app = {
 					else {
 						contenu = moncycle_app.stamp[j.stamp][0];
 					}
-					observation.append(`<span class='g ${moncycle_app.stamp[color][1]}'>${contenu}</span>`);
+					day_timeline.append(`<span class='g ${moncycle_app.stamp[color][1]}'>${contenu}</span>`);
 					pos.addClass("j_" + moncycle_app.stamp[color][1]);
 					tbd = false;
 				}
 				let html_fc_score = moncycle_app.fc_note2html(j.fc_score || "");
-				observation.append(`<span class='fc pas_bill pas_bill_temp'>${html_fc_score}</span>`);
+				day_timeline.append(`<span class='fc pas_bill pas_bill_temp'>${html_fc_score}</span>`);
 				if ((moncycle_app.constante.nfp_method==1 || moncycle_app.constante.nfp_method==4) && j.temperature) {
 					let temp = parseFloat(j.temperature);
 					let color = "#4169e1";
@@ -599,39 +599,39 @@ moncycle_app = {
 						let r = parseInt((1-(37.5-temp))*115)+65;
 						color = `rgb(${r}, 105, 225)`;
 					}
-					observation.append(`<span class='t pas_bill pas_fc' style='background-color: ${color}'>${temp}</span>`);
+					day_timeline.append(`<span class='t pas_bill pas_fc' style='background-color: ${color}'>${temp}</span>`);
 					if (j.time_temp_taken) {
 						let h = j.time_temp_taken.substring(0,5).replace(':','h');
-						observation.append(`<span class='th bill pas_fc pas_bill' style='color: ${color}'> à ${h}</span>`);
+						day_timeline.append(`<span class='th bill pas_fc pas_bill' style='color: ${color}'> à ${h}</span>`);
 					}
 					tbd = false;
 				}
 				if ((moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4) && j.fc_score) tbd = false;
 			}
 			if (tbd) {
-				observation.append(`<span class='g ar'>${moncycle_app.text.a_renseigner_emoji}</span>`);
-				observation.append(`<span class='s'></span>`);
-				observation.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
+				day_timeline.append(`<span class='g ar'>${moncycle_app.text.a_renseigner_emoji}</span>`);
+				day_timeline.append(`<span class='s'></span>`);
+				day_timeline.append(`<span class='r'>${moncycle_app.text.a_renseigner}</span>`);
 				pos.addClass("j_ar");
-				return observation;
+				return day_timeline;
 			}
-			observation.append(`<span class='s'>${j.is_peak ? moncycle_app.text.sommet_bill : ""}</span>`);
-			observation.append(`<span class='n'></span>`);
+			day_timeline.append(`<span class='s'>${j.is_peak ? moncycle_app.text.sommet_bill : ""}</span>`);
+			day_timeline.append(`<span class='n'></span>`);
 			if (!j.day_not_observed) {
-				observation.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
-				if (moncycle_app.fleche[j.fc_arrow]) observation.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fc_arrow][1] || ""}</span>`);
+				day_timeline.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
+				if (moncycle_app.fleche[j.fc_arrow]) day_timeline.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fc_arrow][1] || ""}</span>`);
 			}
-			else observation.append(`<span class='p'>${moncycle_app.text.je_sais_pas}</span>`);
-			observation.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
+			else day_timeline.append(`<span class='p'>${moncycle_app.text.je_sais_pas}</span>`);
+			day_timeline.append(`<span class='u'>${j.union_sex ? moncycle_app.text.union : ""}</span>`);
 		}
 		if (j.comment) {
 			let comment = j.comment.trim();
 			while (comment.includes('\n')) {
 				comment = comment.replace('\n', "<br />");
 			}
-			observation.append(`<span class='c'>${comment}</span>`);
+			day_timeline.append(`<span class='c'>${comment}</span>`);
 		}
-		return observation;
+		return day_timeline;
 	},
 	go_blank_or_empty : function () {
 		if ($("#go_baby")[0].checked) $("#blank_or_empty").text("blanc");
@@ -644,7 +644,7 @@ moncycle_app = {
 		else o_date = moncycle_app.date.parse($(this).attr('date'));
 		date = moncycle_app.date.str(o_date);
 		moncycle_app.menu_opened_date = date;
-		let j = moncycle_app.observation[moncycle_app.menu_opened_date];
+		let j = moncycle_app.day_timeline[moncycle_app.menu_opened_date];
 		let stamp = j.stamp? j.stamp : "";
 		let titre = [moncycle_app.text.semaine[o_date.getDay()], o_date.getDate(), moncycle_app.text.mois_long[o_date.getMonth()], o_date.getFullYear()];
 		titre.push(`<span>J${j.pos}</span>`);
@@ -656,14 +656,14 @@ moncycle_app = {
 		let date_cursor = new Date(j.date_obs);
 		date_cursor.setDate(date_cursor.getDate()+1);
 		let str_date_cursor = moncycle_app.date.str(date_cursor);
-		if (moncycle_app.observation[str_date_cursor] && !moncycle_app.observation[str_date_cursor].cycle_1st_day) {
+		if (moncycle_app.day_timeline[str_date_cursor] && !moncycle_app.day_timeline[str_date_cursor].cycle_1st_day) {
 			$("#jour_form_next").attr("date", str_date_cursor);
 			$("#jour_form_next").show();
 		}
 		else $("#jour_form_next").hide();
 		date_cursor.setDate(date_cursor.getDate()-2);
 		str_date_cursor = moncycle_app.date.str(date_cursor);
-		if (j.pos-1 > 0 && moncycle_app.observation[str_date_cursor]) {
+		if (j.pos-1 > 0 && moncycle_app.day_timeline[str_date_cursor]) {
 			$("#jour_form_prev").attr("date", str_date_cursor);
 			$("#jour_form_prev").show();
 		}
@@ -748,7 +748,7 @@ moncycle_app = {
 		$("#jour_form").hide();
 		moncycle_app.menu_opened_date = null;
 		if (moncycle_app.page_a_recharger) {
-			localStorage.removeItem("observation");
+			localStorage.removeItem("day_timeline");
 			localStorage.removeItem("constante");
 			location.reload(false);
 		}
@@ -784,7 +784,7 @@ moncycle_app = {
 			}
 			if (data.outcome == "ok") {
 				$("#jour_form_saved").show();
-				moncycle_app.charger_observation(data.date);
+				moncycle_app.charger_day_timeline(data.date);
 			}
 		}).fail(function (ret) {
 			$("#jour_form_saving").hide();
@@ -803,37 +803,37 @@ moncycle_app = {
 		let menu_current_1st_day = $("#ev_cycle_1st_day").is(':checked');
 		let date_cursor = moncycle_app.date.parse(menu_current_date);
 		let j = 1;
-		while (j <= nb_of_days && moncycle_app.menu_opened_date!=moncycle_app.observation[menu_current_date]["cycle"]) {
+		while (j <= nb_of_days && moncycle_app.menu_opened_date!=moncycle_app.day_timeline[menu_current_date]["cycle"]) {
 			date_cursor.setDate(date_cursor.getDate()-1);
 			moncycle_app.menu_opened_date = moncycle_app.date.str(date_cursor);
-			if (moncycle_app.menu_opened_date==moncycle_app.observation[menu_current_date]["cycle"]) $("#ev_cycle_1st_day").prop('checked', true);
+			if (moncycle_app.menu_opened_date==moncycle_app.day_timeline[menu_current_date]["cycle"]) $("#ev_cycle_1st_day").prop('checked', true);
 			else $("#ev_cycle_1st_day").prop('checked', false);
-			let laoding_obs = moncycle_app.loading_observation;
+			let laoding_obs = moncycle_app.loading_day_timeline;
 			laoding_obs["date_obs"] = moncycle_app.menu_opened_date;
-			laoding_obs["pos"] = moncycle_app.observation[menu_current_date]["pos"]-j;
-			laoding_obs["cycle"] = moncycle_app.observation[menu_current_date]["cycle"];
-			$(`#o-${moncycle_app.menu_opened_date}`).replaceWith(moncycle_app.observation2timeline(laoding_obs));
-			$(`#ro-${moncycle_app.menu_opened_date}`).replaceWith(moncycle_app.observation2recap(laoding_obs));
+			laoding_obs["pos"] = moncycle_app.day_timeline[menu_current_date]["pos"]-j;
+			laoding_obs["cycle"] = moncycle_app.day_timeline[menu_current_date]["cycle"];
+			$(`#o-${moncycle_app.menu_opened_date}`).replaceWith(moncycle_app.day_timeline2timeline(laoding_obs));
+			$(`#ro-${moncycle_app.menu_opened_date}`).replaceWith(moncycle_app.day_timeline2recap(laoding_obs));
 			moncycle_app.submit_menu();
 			j += 1;
 		}
 		moncycle_app.menu_opened_date = menu_current_date;
 		if (menu_current_1st_day) $("#ev_cycle_1st_day").prop('checked', true);
 	},
-	suppr_observation : function () {
+	suppr_day_timeline : function () {
 		let date = moncycle_app.date.parse($("#form_date").val());
 		date.setHours(9);
 		let jour = [moncycle_app.text.semaine[date.getDay()], date.getDate(), moncycle_app.text.mois_long[date.getMonth()], date.getFullYear()].join(" ");
 		if (confirm(`Voulez-vous vraiment supprimer définitivement les données de la journée du ${jour}?`)) {
 			let date_id = moncycle_app.date.str(date);
-			if (moncycle_app.observation[date_id]["cycle_1st_day"] || moncycle_app.observation[date_id]["pregnancy"]) moncycle_app.page_a_recharger = true;
+			if (moncycle_app.day_timeline[date_id]["cycle_1st_day"] || moncycle_app.day_timeline[date_id]["pregnancy"]) moncycle_app.page_a_recharger = true;
 			$.ajax({type : 'DELETE', "url" : "api/day", "data" : `date=${date_id}`}).done(function(data){
 				if (data.err){
 					$("#form_err").val(data.err);
 					console.error(data.err);
 				}
 				if (data.outcome == "ok") {
-					moncycle_app.charger_observation(data.date);
+					moncycle_app.charger_day_timeline(data.date);
 					moncycle_app.close_menu();
 				}		
 			}).fail(function (ret) {

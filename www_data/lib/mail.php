@@ -26,7 +26,7 @@ function mail_init(){
 	return $mail;
 }
 
-function mail_body_creation_compte ($name, $mdp, $mail1) {
+function mail_body_creation_user_account ($name, $mdp, $mail1) {
 	$app_url_var = APP_URL;
 	return <<<HTML
 	<div style='font-family: sans-serif;'>Bonjour {$name},<br />

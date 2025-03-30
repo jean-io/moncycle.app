@@ -19,8 +19,8 @@ require_once "../vendor/autoload.php";
 $db = db_open();
 
 $result = [];
-$compte = sec_auth_jetton($db);
-sec_redirect_non_connecte($compte);
+$user_account = sec_auth_token($db);
+sec_redirect_non_connecte($user_account);
 
 
 // LECTURE D'UNE DATE DE DEBUT DE CYCLE
@@ -68,7 +68,7 @@ if ($_GET['type'] == "pdf" && isset($_GET['anonymous']) && !in_array($_GET['anon
 $pdf_anonymous = boolval(intval($_GET['anonymous'] ?? "0"));
 
 // RECUPERATION DU CYCLE
-$data = db_select_cycle_complet($db, $result["start_date"],$result["end_date"], $compte["no_compte"]);
+$data = db_select_cycle_complet($db, $result["start_date"],$result["end_date"], $user_account["no_user_account"]);
 
 // VERIFICATION SI IL Y A DE LA DONNEE
 if (!isset($data[0])) {
@@ -78,7 +78,7 @@ if (!isset($data[0])) {
 }
 
 // AJOUT DES JOURS MANQUANTS DU CYCLE
-$cycle = doc_preparation_jours_pour_affichage($data, $compte["nfp_method"]);
+$cycle = doc_preparation_jours_pour_affichage($data, $user_account["nfp_method"]);
 
 $filename_start_date = date_humain(new DateTime($result["start_date"]), '_');
 
@@ -88,15 +88,15 @@ if ($_GET['type'] == "csv") {
 	header("content-type:application/csv;charset=UTF-8");
 	header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.csv"');
 	$out = fopen('php://output', 'w');
-	doc_cycle_vers_csv ($out, $cycle, $compte["nfp_method"]);
+	doc_cycle_vers_csv ($out, $cycle, $user_account["nfp_method"]);
 	fclose($out);
 }
 elseif ($_GET['type'] == "pdf") {
 	header("content-type:application/pdf");
 	header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.pdf"');
 	$pdf = null;
-	if ($compte["nfp_method"] == 3 || $compte["nfp_method"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $compte["nfp_method"], $compte["name_compte"], $pdf_anonymous);
-	else $pdf = doc_cycle_bill_vers_pdf($cycle, $compte["nfp_method"], $compte["name_compte"], $pdf_anonymous);
+	if ($user_account["nfp_method"] == 3 || $user_account["nfp_method"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $user_account["nfp_method"], $user_account["name_user_account"], $pdf_anonymous);
+	else $pdf = doc_cycle_bill_vers_pdf($cycle, $user_account["nfp_method"], $user_account["name_user_account"], $pdf_anonymous);
 	$pdf->Output('I', 'moncycle_app_'. $filename_start_date . '.pdf');
 }
 

@@ -16,8 +16,8 @@ header('Content-Type: application/json');
 
 $db = db_open();
 
-$compte = sec_auth_jetton($db);
-sec_exit_si_non_connecte($compte);
+$user_account = sec_auth_token($db);
+sec_exit_si_non_connecte($user_account);
 
 $result = [];
 
@@ -27,8 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['fromTimestamp'])) {
 	$from_timestamp = trim($_GET['fromTimestamp']);
     
 	if (date_validate_timestamp($from_timestamp)) {
-		$result["observation"] = db_select_observations_modified($db, $from_timestamp, $compte["no_compte"]);
-		$result["description"] = db_select_description_with_count_modified ($db, $from_timestamp, $compte["no_compte"]);
+		$result["day_timeline"] = db_select_day_timelines_modified($db, $from_timestamp, $user_account["no_user_account"]);
+		$result["description"] = db_select_description_with_count_modified ($db, $from_timestamp, $user_account["no_user_account"]);
 	}
 	else {
 		$result["err"] = "fromTimestamp is not respecting YYYY-MM-DD hh:mm:ss or is not a valide date or time (it should be UTC).";
