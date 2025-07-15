@@ -7,8 +7,8 @@
 ** https://github.com/jean-io/moncycle.app
 */
 
-require_once "../config.php";
-require_once "../lib/db.php";
+require_once "../../config.php";
+require_once "../../lib/db.php";
 
 header("Content-Type: text/plain");
 
@@ -16,6 +16,8 @@ print("MONCYCLE.APP");
 print(PHP_EOL);
 
 print("DB migration script from v14 to v15.");
+print(PHP_EOL);
+print("IMPORTANT : SQL migration file should be run first!");
 print(PHP_EOL);
 
 print("-----");
@@ -29,26 +31,26 @@ try {
 
     $db->exec("START TRANSACTION");
 
-	$statement_select_obs  = $db->prepare("SELECT no_observation, no_compte, date_obs, sensation FROM observation");
-    $statement_select_desc = $db->prepare("SELECT * FROM description WHERE name LIKE :desc_name AND no_compte=:account_no LIMIT 1");
-    $statement_insert_desc = $db->prepare("INSERT INTO `description` (`no_compte`, `name`, `type`) VALUES (:no_compte, :name, 0)");
-    $statement_insert_link = $db->prepare("INSERT INTO `link_observation_description` (`no_observation`, `no_description`) VALUES (:observation_no, :description_no)");
+	$statement_select_obs  = $db->prepare("SELECT no_day, no_user_account, date_obs, sensation FROM day_timeline");
+    $statement_select_desc = $db->prepare("SELECT * FROM description WHERE name LIKE :desc_name AND no_user_account=:account_no LIMIT 1");
+    $statement_insert_desc = $db->prepare("INSERT INTO `description` (`no_user_account`, `name`, `type`) VALUES (:no_user_account, :name, 0)");
+    $statement_insert_link = $db->prepare("INSERT INTO `link_day_timeline_description` (`no_day`, `no_description`) VALUES (:observation_no, :description_no)");
 
 	$statement_select_obs->execute();
 
-	$observations = $statement_select_obs->fetchAll(PDO::FETCH_ASSOC);
+	$day_timeline = $statement_select_obs->fetchAll(PDO::FETCH_ASSOC);
 
     $cached_descriptions = [];
 
     // ITERATE ON ALL OBSERVATIONS
-    foreach ($observations as $obs) {
+    foreach ($day_timeline as $obs) {
 
-        print("> compte " . $obs["no_compte"]);
-        print("; obs " . $obs["no_observation"]);
+        print("> compte " . $obs["no_user_account"]);
+        print("; obs " . $obs["no_day"]);
         print(" " . $obs["date_obs"]);
         
-        if (!isset($cached_descriptions[$obs["no_compte"]])) {
-            $cached_descriptions[$obs["no_compte"]] = [];
+        if (!isset($cached_descriptions[$obs["no_user_account"]])) {
+            $cached_descriptions[$obs["no_user_account"]] = [];
         }
 
         if (isset($obs["sensation"]) && $obs["sensation"]!=null && !empty($obs["sensation"])) {
@@ -63,7 +65,7 @@ try {
                 print($sens);
                 
                 $statement_select_desc->bindValue(":desc_name", $sens, PDO::PARAM_STR);
-                $statement_select_desc->bindValue(":account_no", $obs["no_compte"], PDO::PARAM_INT);
+                $statement_select_desc->bindValue(":account_no", $obs["no_user_account"], PDO::PARAM_INT);
 
 	            $statement_select_desc->execute();
                 $description = $statement_select_desc->fetch(PDO::FETCH_ASSOC);
@@ -73,13 +75,13 @@ try {
                 try {
                     $no_desc = 0;
 
-                    if (isset($cached_descriptions[$obs["no_compte"]][$sens])) {
+                    if (isset($cached_descriptions[$obs["no_user_account"]][$sens])) {
                         print(" Cached: "); // DESC NO PRESENT IN CACHE
-                        $no_desc = $cached_descriptions[$obs["no_compte"]][$sens];
+                        $no_desc = $cached_descriptions[$obs["no_user_account"]][$sens];
                     }
                     elseif (!isset($description["no_description"]) || isset($description["no_description"])<0) {
                         print(" Inserting: "); // INSERTING A NEW DESC FOR THIS ACCOUNT
-                        $statement_insert_desc->bindValue(":no_compte", $obs["no_compte"], PDO::PARAM_INT);
+                        $statement_insert_desc->bindValue(":no_user_account", $obs["no_user_account"], PDO::PARAM_INT);
                         $statement_insert_desc->bindValue(":name", $sens, PDO::PARAM_STR);
                         $statement_insert_desc->execute();
                         $no_desc = $db->lastInsertId();
@@ -92,11 +94,11 @@ try {
                     print($no_desc); // ID OF DESCRIPTION
     
                     // CACHING DESCRIPTION NUMBER
-                    if (!isset($cached_descriptions[$obs["no_compte"]][$sens])) {
-                        $cached_descriptions[$obs["no_compte"]][$sens] = $no_desc;
+                    if (!isset($cached_descriptions[$obs["no_user_account"]][$sens])) {
+                        $cached_descriptions[$obs["no_user_account"]][$sens] = $no_desc;
                     }
 
-                    $statement_insert_link->bindValue(":observation_no", $obs["no_observation"], PDO::PARAM_INT);
+                    $statement_insert_link->bindValue(":observation_no", $obs["no_day"], PDO::PARAM_INT);
                     $statement_insert_link->bindValue(":description_no", $no_desc, PDO::PARAM_INT);
                     $statement_insert_link->execute();
                 } catch (PDOException $th) {

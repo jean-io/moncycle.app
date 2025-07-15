@@ -1,10 +1,21 @@
+CREATE TABLE `description` (
+  `no_description` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `no_compte` mediumint(8) unsigned DEFAULT NULL,
+  `name` varchar(256) NOT NULL,
+  `type` tinyint(1) unsigned NOT NULL DEFAULT 0,
+  `last_write_client_UTC` timestamp NULL DEFAULT NULL,
+  `last_write_db` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp(),
+  PRIMARY KEY (`no_description`),
+  UNIQUE KEY `unique_user_account_and_name` (`no_compte`,`name`),
+  KEY `no_user_account` (`no_compte`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
 ALTER TABLE `observation`
 CHANGE `dernier_modif` `last_write_db` timestamp NULL ON UPDATE CURRENT_TIMESTAMP AFTER `commentaire`;
 
 ALTER TABLE `observation`
 ADD `last_write_client_UTC` timestamp NULL AFTER `commentaire`;
 
--- TRANSLATION TO ENGLISH
 ALTER TABLE `compte`
 CHANGE `recherche` `research` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `donateur`;
 ALTER TABLE `compte`
@@ -58,9 +69,6 @@ RENAME TO `auth_token`;
 ALTER TABLE `auth_token`
 CHANGE `pays` `contry_code` varchar(2) COLLATE 'utf8mb4_bin' NULL AFTER `expire`;
 
-
-
-
 ALTER TABLE `compte`
 CHANGE `no_compte` `no_user_account` mediumint(8) unsigned NOT NULL AUTO_INCREMENT FIRST,
 RENAME TO `user_account`;
@@ -71,7 +79,6 @@ CHANGE `no_compte` `no_user_account` mediumint(8) unsigned NULL AFTER `no_auth_t
 ADD CONSTRAINT `fk_auth_token_no_user_account` FOREIGN KEY (`no_user_account`) REFERENCES `user_account` (`no_user_account`) ON DELETE CASCADE;
 
 ALTER TABLE `description`
-DROP FOREIGN KEY `observation_ibfk_3`,
 CHANGE `no_compte` `no_user_account` mediumint(8) unsigned NULL AFTER `no_description`,
 ADD CONSTRAINT `fk_description_no_user_account` FOREIGN KEY (`no_user_account`) REFERENCES `user_account` (`no_user_account`) ON DELETE CASCADE;
 
@@ -80,21 +87,20 @@ DROP FOREIGN KEY `observation_ibfk_1`,
 CHANGE `no_compte` `no_user_account` mediumint(8) unsigned NULL AFTER `no_observation`,
 ADD CONSTRAINT `fk_no_observation_no_user_account` FOREIGN KEY (`no_user_account`) REFERENCES `user_account` (`no_user_account`) ON DELETE CASCADE;
 
-
-
 ALTER TABLE `observation`
 CHANGE `no_observation` `no_day` mediumint(8) unsigned NOT NULL AUTO_INCREMENT FIRST,
 RENAME TO `day_timeline`;
 
-ALTER TABLE `link_observation_description`
-DROP FOREIGN KEY `observation_ibfk_4`,
-CHANGE `no_observation` `no_day` mediumint(8) unsigned NOT NULL FIRST,
-ADD CONSTRAINT `fk_link_day_timeline_description_no_day` FOREIGN KEY (`no_day`) REFERENCES `day_timeline` (`no_day`) ON DELETE CASCADE,
-RENAME TO `link_day_timeline_description`;
-
-ALTER TABLE `link_day_timeline_description`
-ADD CONSTRAINT `fk_link_day_timeline_description_no_description` FOREIGN KEY (`no_description`) REFERENCES `description` (`no_description`) ON DELETE CASCADE;
-
+CREATE TABLE `link_day_timeline_description` (
+  `no_day` mediumint(8) unsigned NOT NULL,
+  `no_description` mediumint(8) unsigned NOT NULL,
+  `last_write_db` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  KEY `no_day` (`no_day`),
+  KEY `no_description` (`no_description`),
+  UNIQUE KEY `unique_day_timeline_and_description` (`no_day`,`no_description`),
+  CONSTRAINT `day_timeline_ibfk_4` FOREIGN KEY (`no_day`) REFERENCES `day_timeline` (`no_day`) ON DELETE CASCADE,
+  CONSTRAINT `day_timeline_ibfk_5` FOREIGN KEY (`no_description`) REFERENCES `description` (`no_description`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 ALTER TABLE `cle_valeur`
 CHANGE `cle` `key` varchar(255) COLLATE 'utf8mb4_bin' NOT NULL FIRST,
