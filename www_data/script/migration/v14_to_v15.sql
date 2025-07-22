@@ -106,3 +106,7 @@ ALTER TABLE `cle_valeur`
 CHANGE `cle` `key` varchar(255) COLLATE 'utf8mb4_bin' NOT NULL FIRST,
 CHANGE `valeur` `value` bigint(20) unsigned NULL AFTER `key`,
 RENAME TO `key_value`;
+
+ALTER TABLE `user_account` CHANGE `decouvert` `register_comment` VARCHAR(255)  CHARACTER SET utf8mb4  BINARY  NULL  DEFAULT NULL;
+ALTER TABLE `day_timeline` CHANGE `gommette` `stamp` VARCHAR(3)  CHARACTER SET utf8mb4  BINARY  NOT NULL;
+
