@@ -31,10 +31,12 @@ try {
 
     $db->exec("START TRANSACTION");
 
-	$statement_select_obs  = $db->prepare("SELECT no_day, no_user_account, date_obs, sensation FROM day_timeline");
+	$statement_select_obs  = $db->prepare("SELECT no_day, no_user_account, date_obs, sensation, stamp FROM day_timeline");
     $statement_select_desc = $db->prepare("SELECT * FROM description WHERE name LIKE :desc_name AND no_user_account=:account_no LIMIT 1");
     $statement_insert_desc = $db->prepare("INSERT INTO `description` (`no_user_account`, `name`, `type`) VALUES (:no_user_account, :name, 0)");
     $statement_insert_link = $db->prepare("INSERT INTO `link_day_timeline_description` (`no_day`, `no_description`) VALUES (:observation_no, :description_no)");
+    $statement_remove_old_desc = $db->prepare("UPDATE `day_timeline` SET `sensation` = NULL WHERE `no_day` = :no_day");
+    $statement_migrate_stamp = $db->prepare("UPDATE `day_timeline` SET `stamp` = :new_stamp WHERE `no_day` = :no_day");
 
 	$statement_select_obs->execute();
 
@@ -45,12 +47,43 @@ try {
     // ITERATE ON ALL OBSERVATIONS
     foreach ($day_timeline as $obs) {
 
-        print("> compte " . $obs["no_user_account"]);
+        print("> account " . $obs["no_user_account"]);
         print("; obs " . $obs["no_day"]);
         print(" " . $obs["date_obs"]);
         
         if (!isset($cached_descriptions[$obs["no_user_account"]])) {
             $cached_descriptions[$obs["no_user_account"]] = [];
+        }
+
+        if (isset($obs["stamp"]) && !empty($obs["stamp"])) {
+            print(PHP_EOL);
+            print("      % stamp ");
+
+            $new_stamp = str_ireplace(":)", "BB", $obs["stamp"]);
+            $new_stamp = str_ireplace(".", "R", $new_stamp);
+            $new_stamp = str_ireplace("=", "Y", $new_stamp);
+            $new_stamp = str_ireplace("I", "G", $new_stamp);
+
+            print($obs["stamp"]);
+
+            if ($obs["stamp"] == $new_stamp) {
+                print(" !! ingnored");
+            }
+            else {
+                print(" -> ");
+                print($new_stamp);
+
+                try {
+                    $statement_migrate_stamp->bindValue(":no_day", $obs["no_day"], PDO::PARAM_INT);
+                    $statement_migrate_stamp->bindValue(":new_stamp", $new_stamp, PDO::PARAM_STR);
+                    $statement_migrate_stamp->execute();
+
+                    $statement_remove_old_desc->bindValue(":no_day", $obs["no_day"], PDO::PARAM_INT);
+                    $statement_remove_old_desc->execute();
+                } catch (PDOException $th) {
+                    print($th->getMessage());
+                }
+            }
         }
 
         if (isset($obs["sensation"]) && $obs["sensation"]!=null && !empty($obs["sensation"])) {
@@ -61,7 +94,7 @@ try {
             foreach ($sensations as $sens) {
                 $sens = trim($sens);
                 print(PHP_EOL);
-                print("      # ");
+                print("      # desc  ");
                 print($sens);
                 
                 $statement_select_desc->bindValue(":desc_name", $sens, PDO::PARAM_STR);
@@ -76,21 +109,22 @@ try {
                     $no_desc = 0;
 
                     if (isset($cached_descriptions[$obs["no_user_account"]][$sens])) {
-                        print(" Cached: "); // DESC NO PRESENT IN CACHE
+                        print(" cached "); // DESC NO PRESENT IN CACHE
                         $no_desc = $cached_descriptions[$obs["no_user_account"]][$sens];
                     }
                     elseif (!isset($description["no_description"]) || isset($description["no_description"])<0) {
-                        print(" Inserting: "); // INSERTING A NEW DESC FOR THIS ACCOUNT
+                        print(" inserting "); // INSERTING A NEW DESC FOR THIS ACCOUNT
                         $statement_insert_desc->bindValue(":no_user_account", $obs["no_user_account"], PDO::PARAM_INT);
                         $statement_insert_desc->bindValue(":name", $sens, PDO::PARAM_STR);
                         $statement_insert_desc->execute();
                         $no_desc = $db->lastInsertId();
                     }
                     else {
-                        print(" Existing: "); // THIS DESC IS EXISTING FOR THIS ACCOUNT
+                        print(" existing "); // THIS DESC IS EXISTING FOR THIS ACCOUNT
                         $no_desc = intval($description["no_description"]);
                     }
     
+                    print("obs id ");
                     print($no_desc); // ID OF DESCRIPTION
     
                     // CACHING DESCRIPTION NUMBER
@@ -107,9 +141,6 @@ try {
 
             }
 
-        }
-        else {
-            print(" - NA");
         }
 
         print(PHP_EOL);

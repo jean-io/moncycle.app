@@ -47,7 +47,7 @@ CHANGE `commentaire` `comment` varchar(256) COLLATE 'utf8mb4_bin' NULL AFTER `pr
 ALTER TABLE `compte`
 CHANGE `motdepasse` `password` varchar(255) COLLATE 'utf8mb4_bin' NOT NULL AFTER `email2`;
 ALTER TABLE `compte`
-CHANGE `totp_etat` `totp_state` tinyint(1) unsigned NOT NULL DEFAULT '0' AFTER `password`;
+CHANGE `totp_etat` `totp_state` tinyint(1) unsigned DEFAULT NULL AFTER `password`;
 ALTER TABLE `compte`
 CHANGE `nb_co_echoue` `nb_connection_attempts` smallint(5) unsigned NOT NULL DEFAULT '0' AFTER `totp_secret`;
 ALTER TABLE `compte`
