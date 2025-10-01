@@ -40,12 +40,10 @@ try {
 
 	$statement_select_obs->execute();
 
-	$day_timeline = $statement_select_obs->fetchAll(PDO::FETCH_ASSOC);
-
     $cached_descriptions = [];
 
     // ITERATE ON ALL OBSERVATIONS
-    foreach ($day_timeline as $obs) {
+    while ($obs = $statement_select_obs->fetch(PDO::FETCH_ASSOC)) {
 
         print("> account " . $obs["no_user_account"]);
         print("; obs " . $obs["no_day"]);
