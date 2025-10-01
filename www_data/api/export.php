@@ -82,21 +82,27 @@ $cycle = doc_preparation_jours_pour_affichage($data, $user_account["nfp_method"]
 
 $filename_start_date = date_humain(new DateTime($result["start_date"]), '_');
 
-if ($_GET['type'] == "csv") {
+try {
 
-	// ECRITURE DU CSV
-	header("content-type:application/csv;charset=UTF-8");
-	header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.csv"');
-	$out = fopen('php://output', 'w');
-	doc_cycle_vers_csv ($out, $cycle, $user_account["nfp_method"]);
-	fclose($out);
-}
-elseif ($_GET['type'] == "pdf") {
-	header("content-type:application/pdf");
-	header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.pdf"');
-	$pdf = null;
-	if ($user_account["nfp_method"] == 3 || $user_account["nfp_method"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $user_account["nfp_method"], $user_account["name_user_account"], $pdf_anonymous);
-	else $pdf = doc_cycle_bill_vers_pdf($cycle, $user_account["nfp_method"], $user_account["name_user_account"], $pdf_anonymous);
-	$pdf->Output('I', 'moncycle_app_'. $filename_start_date . '.pdf');
+	if ($_GET['type'] == "csv") {
+
+		// ECRITURE DU CSV
+		header("content-type:application/csv;charset=UTF-8");
+		header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.csv"');
+		$out = fopen('php://output', 'w');
+		doc_cycle_vers_csv ($out, $cycle, $user_account["nfp_method"]);
+		fclose($out);
+	}
+	elseif ($_GET['type'] == "pdf") {
+		$pdf = null;
+		if ($user_account["nfp_method"] == 3 || $user_account["nfp_method"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $user_account["nfp_method"], $user_account["name_user_account"], $pdf_anonymous);
+		else $pdf = doc_cycle_bill_vers_pdf($cycle, $user_account["nfp_method"], $user_account["name_user_account"], $pdf_anonymous);
+		header("content-type:application/pdf");
+		header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.pdf"');
+		$pdf->Output('I', 'moncycle_app_'. $filename_start_date . '.pdf');
+	}
+
+} catch (\Throwable $th) {
+	throw $th;
 }
 

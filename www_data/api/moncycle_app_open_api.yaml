@@ -778,18 +778,18 @@ components:
           type: string
           description: |
             Color stamp 
-            * . red
-            * I green
-            * = yellow
+            * R red
+            * G green
+            * Y yellow
           enum :
-            - "."
-            - "I"
-            - "="
+            - "R"
+            - "G"
+            - "Y"
         baby:
           type: string
           description: Baby on stamp
           enum :
-            - ":)"
+            - "BB"
         fc_score:
           type: string
           description: FertilityCare note for day

@@ -247,11 +247,11 @@ function doc_cycle_bill_vers_pdf ($cycle, $nfp_method, $name, $pdf_anonymous=fal
 			$pdf->SetFont('Courier','',10);
 			$pdf->SetTextColor(0,0,0);
 			if (isset($line["stamp"]) && !boolval($line["?"])) {
-				if(str_contains($line["stamp"], ".")) {
+				if(str_contains($line["stamp"], "R")) {
 					$pdf->SetFillColor(172,36,51);
 					$pdf->SetDrawColor(172,36,51);
 				}
-				elseif(str_contains($line["stamp"], "I")){
+				elseif(str_contains($line["stamp"], "G")){
 					$pdf->SetFillColor(30,130,76);
 					$pdf->SetDrawColor(30,130,76);
 				}
@@ -259,7 +259,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $nfp_method, $name, $pdf_anonymous=fal
 					$pdf->SetFillColor(220,220,220);
 					$pdf->SetDrawColor(220,220,220);
 				}
-				elseif(str_contains($line["stamp"], "=")) {
+				elseif(str_contains($line["stamp"], "Y")) {
 					$pdf->SetFillColor(251,202,11);
 					$pdf->SetDrawColor(251,202,11);
 				}
@@ -267,7 +267,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $nfp_method, $name, $pdf_anonymous=fal
 					$pdf->SetFillColor(255,255,255);
 					$pdf->SetDrawColor(255,255,255);
 				}
-				if ($line["stamp"] == ":)") {
+				if ($line["stamp"] == "BB") {
 					$pdf->SetTextColor(30, 130, 76);
 					$pdf->SetDrawColor(220,220,220);
 					$xx = $pdf->GetX();
@@ -276,7 +276,7 @@ function doc_cycle_bill_vers_pdf ($cycle, $nfp_method, $name, $pdf_anonymous=fal
 					$pdf->Image("../img/baby.png", $xx+0.25, $yy+0.25, 4.5, 4.5);
 					$pdf->SetTextColor(0,0,0);
 				}
-				elseif (str_contains($line["stamp"], ":)")) {
+				elseif (str_contains($line["stamp"], "BB")) {
 					$pdf->SetTextColor(255,255,255);
 					$xx = $pdf->GetX();
 					$yy = $pdf->GetY();
@@ -415,14 +415,14 @@ function doc_cycle_fc_vers_pdf($cycle, $nfp_method, $name, $pdf_anonymous=false)
 	$symbol_convert_table = [
 		"" => ["", 255, 255, 255],
 		"?" => ["???", 210, 210, 210],
-		'.' => ['R', 190, 0, 4],
-		'I' => ['V', 45, 102, 23],
-		'=' => ['J', 255, 255, 9],
-		':)' => ['BBB', 255, 255, 255],
-		'.:)' => ['BBR', 190, 0, 0],
-		'I:)' => ['BBV', 130, 187, 106],
-		'=:)' => ['BBJ', 255, 255, 9],
-		'G' => ['G', 255, 236, 238]
+		"R" => ['R', 190, 0, 4],
+		"G" => ['V', 45, 102, 23],
+		"Y" => ['J', 255, 255, 9],
+		"BB" => ['BBB', 255, 255, 255],
+		'RBB' => ['BBR', 190, 0, 0],
+		'GBB' => ['BBV', 130, 187, 106],
+		'YBB' => ['BBJ', 255, 255, 9],
+		'Gi' => ['G', 255, 236, 238] // TODO changer G pour grossesse (confondu avec Green)
 	];
 	
 	if ($pdf_anonymous) $name = doc_get_initials($name);
@@ -574,7 +574,7 @@ function doc_cycle_fc_vers_pdf($cycle, $nfp_method, $name, $pdf_anonymous=false)
 				}
 				
 				if (strlen($fc_tiers)>0) $fc_tiers .= ' ';
-				if (boolval($cycle[$obs_index]["unions"] ?? false)) $fc_tiers .= 'I';
+				if (boolval($cycle[$obs_index]["unions"] ?? false)) $fc_tiers .= "G";
 				
 				$pdf->SetDrawColor($cell_carac[1]/$color_coef,$cell_carac[2]/$color_coef,$cell_carac[3]/$color_coef);
 				

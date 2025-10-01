@@ -8,10 +8,10 @@
 
 moncycle_app = {
 	stamp : {
-		"."  : [".", "rouge"],
-		"I"  : ["I", "vert"],
-		"="  : ["=", "jaune"],
-		":)" : ["👶", "baby"],
+		"R"  : ["R", "rouge"],
+		"G"  : ["G", "vert"],
+		"Y"  : ["=", "jaune"],
+		"BB" : ["👶", "baby"],
 	},
 	fleche : {
 		"↓" : ["b", "⬇️"],
@@ -488,14 +488,14 @@ moncycle_app = {
 		day_timeline.click(moncycle_app.open_menu);
 		let color = "vide";
 		let index_couleur = j.stamp;
-		let baby = (j.stamp == ":)");
-		if (j.stamp && j.stamp.includes(':)') && j.stamp.length>2) {
-			color = moncycle_app.stamp[":)"][1];
-			index_couleur = index_couleur.replace(":)", "");
+		let baby = (j.stamp == "BB");
+		if (j.stamp && j.stamp.includes("BB") && j.stamp.length>2) {
+			color = moncycle_app.stamp["BB"][1];
+			index_couleur = index_couleur.replace("BB", "");
 			baby = true;
 		}
 		if (moncycle_app.stamp[index_couleur]) color = moncycle_app.stamp[index_couleur][1]; 
-		let car_du_milieu = baby ? moncycle_app.stamp[":)"][0] : "";
+		let car_du_milieu = baby ? moncycle_app.stamp["BB"][0] : "";
 		let car_du_bas = j.union_sex ? moncycle_app.text.union : "";
 		if (j.err && j.err.includes("no data")) car_du_milieu = moncycle_app.text.a_renseigner_emoji;
 		let recap_note = j.fc_score;
@@ -578,9 +578,9 @@ moncycle_app = {
 				if (j.stamp) {
 					let contenu = "o";
 					let color = j.stamp;
-					if (j.stamp.includes(':)') && j.stamp.length>2){
-						contenu = moncycle_app.stamp[":)"][0];
-						color = j.stamp.replace(":)", "");
+					if (j.stamp.includes("BB") && j.stamp.length>2){
+						contenu = moncycle_app.stamp["BB"][0];
+						color = j.stamp.replace("BB", "");
 					}
 					else {
 						contenu = moncycle_app.stamp[j.stamp][0];
@@ -679,9 +679,9 @@ moncycle_app = {
 			moncycle_app.fc_test_note();
 		}
 		if (j.fc_arrow && (moncycle_app.constante.nfp_method==3 || moncycle_app.constante.nfp_method==4)) $("#fc_f" + moncycle_app.fleche[j.fc_arrow][0]).prop('checked', true);
-		if (stamp.includes(":)") && stamp.length>2) {
-			$("#go_" + moncycle_app.stamp[":)"][1]).prop('checked', true);
-			stamp = stamp.replace(":)", "");
+		if (stamp.includes("BB") && stamp.length>2) {
+			$("#go_" + moncycle_app.stamp["BB"][1]).prop('checked', true);
+			stamp = stamp.replace("BB", "");
 		}
 		if (moncycle_app.stamp[stamp]) $("#go_" + moncycle_app.stamp[stamp][1]).prop('checked', true);
 		moncycle_app.go_blank_or_empty();
