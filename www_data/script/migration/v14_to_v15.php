@@ -17,7 +17,7 @@ print(PHP_EOL);
 
 print("DB migration script from v14 to v15.");
 print(PHP_EOL);
-print("IMPORTANT : SQL migration file should be run first!");
+print("IMPORTANT : this script runs the file v14_to_v15.sql, DO NOT RUN IT ASIDE!");
 print(PHP_EOL);
 
 print("-----");
@@ -30,6 +30,24 @@ $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 try {
 
     $db->exec("START TRANSACTION");
+
+    print("reading v14_to_v15.sql file ...");
+    print(PHP_EOL);
+
+    $v14_to_v15_shema_migration = file_get_contents("./v14_to_v15.sql");
+
+    print("migrating shema (executing v14_to_v15.sql) ...");
+    print(PHP_EOL);
+
+    $db->exec($v14_to_v15_shema_migration);
+
+    print("DONE !");
+    print(PHP_EOL);
+    print("-----");
+    print(PHP_EOL);
+    print(PHP_EOL);
+    print("migrating data ...");
+    print(PHP_EOL);
 
 	$statement_select_obs  = $db->prepare("SELECT no_day, no_user_account, date_obs, sensation, stamp FROM day_timeline");
     $statement_select_desc = $db->prepare("SELECT * FROM description WHERE name LIKE :desc_name AND no_user_account=:account_no LIMIT 1");

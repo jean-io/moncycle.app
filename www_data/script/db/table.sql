@@ -20,6 +20,7 @@ CREATE TABLE `user_account` (
   `inscription_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `last_password_change` timestamp NULL DEFAULT NULL,
   `register_comment` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `last_write_db` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp(),
   PRIMARY KEY (`no_user_account`),
   UNIQUE KEY `email1` (`email1`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -42,7 +43,7 @@ CREATE TABLE `day_timeline` (
   `pregnancy` tinyint(1) unsigned DEFAULT NULL,
   `comment` varchar(256) COLLATE utf8mb4_bin DEFAULT NULL,
   `last_write_client_UTC` timestamp NULL DEFAULT NULL,
-  `last_write_db` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `last_write_db` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp(),
   PRIMARY KEY (`no_day`),
   UNIQUE KEY `unique_user_account_and_date` (`no_user_account`,`date_obs`),
   KEY `no_user_account` (`no_user_account`),
@@ -60,6 +61,7 @@ CREATE TABLE `auth_token` (
   `date_use` timestamp NULL DEFAULT NULL,
   `auth_token_str` varchar(512) COLLATE utf8mb4_bin NOT NULL,
   `captcha` varchar(16) COLLATE utf8mb4_bin DEFAULT NULL,
+  `last_write_db` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp(),
   PRIMARY KEY (`no_auth_token`),
   UNIQUE KEY `auth_token_str` (`auth_token_str`),
   KEY `no_user_account` (`no_user_account`),
@@ -72,7 +74,7 @@ CREATE TABLE `description` (
   `name` varchar(256) COLLATE utf8mb4_bin NOT NULL,
   `type` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `last_write_client_UTC` timestamp NULL DEFAULT NULL,
-  `last_write_db` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `last_write_db` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp(),
   PRIMARY KEY (`no_description`),
   KEY `no_user_account` (`no_user_account`),
   UNIQUE KEY `unique_user_account_and_name` (`no_user_account`,`name`),
@@ -82,7 +84,7 @@ CREATE TABLE `description` (
 CREATE TABLE `link_day_timeline_description` (
   `no_day` mediumint(8) unsigned NOT NULL,
   `no_description` mediumint(8) unsigned NOT NULL,
-  `last_write_db` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `last_write_db` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp(),
   KEY `no_day` (`no_day`),
   KEY `no_description` (`no_description`),
   UNIQUE KEY `unique_day_timeline_and_description` (`no_day`,`no_description`),

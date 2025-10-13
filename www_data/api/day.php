@@ -10,6 +10,7 @@
 require_once "../config.php";
 require_once "../lib/db.php";
 require_once "../lib/date.php";
+require_once "../lib/data.php";
 require_once "../lib/sec.php";
 
 header('Content-Type: application/json');
@@ -50,10 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['date'])) {
 		if(isset($ob_db[0])) {
 			$ob_data = array_merge($ob_data, $ob_db[0]);
 			$raw_description = db_select_all_description_for_day_timeline($db, $user_account["no_user_account"], $ob_data["no_day"]);
-			$description = [];
-			foreach ($raw_description as $obj) array_push($description, $obj["name"]);
-			if (count($description)>0) $ob_data["sensation"] = implode(", ", $description);
-			else $ob_data["sensation"] = null;
+			$ob_data["sensation"] = data_convert_description($raw_description);
 		}
 		else {
 			$ob_data["err"] = "no data at this date";

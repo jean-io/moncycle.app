@@ -4,7 +4,7 @@ CREATE TABLE `description` (
   `name` varchar(256) NOT NULL,
   `type` tinyint(1) unsigned NOT NULL DEFAULT 0,
   `last_write_client_UTC` timestamp NULL DEFAULT NULL,
-  `last_write_db` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE current_timestamp(),
+  `last_write_db` TIMESTAMP  NOT NULL  DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`no_description`),
   UNIQUE KEY `unique_user_account_and_name` (`no_compte`,`name`),
   KEY `no_user_account` (`no_compte`)
@@ -94,7 +94,7 @@ RENAME TO `day_timeline`;
 CREATE TABLE `link_day_timeline_description` (
   `no_day` mediumint(8) unsigned NOT NULL,
   `no_description` mediumint(8) unsigned NOT NULL,
-  `last_write_db` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `last_write_db` TIMESTAMP  NOT NULL  DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP,
   KEY `no_day` (`no_day`),
   KEY `no_description` (`no_description`),
   UNIQUE KEY `unique_day_timeline_and_description` (`no_day`,`no_description`),
@@ -109,4 +109,7 @@ RENAME TO `key_value`;
 
 ALTER TABLE `user_account` CHANGE `decouvert` `register_comment` VARCHAR(255)  CHARACTER SET utf8mb4  BINARY  NULL  DEFAULT NULL;
 ALTER TABLE `day_timeline` CHANGE `gommette` `stamp` VARCHAR(3)  CHARACTER SET utf8mb4  BINARY  NOT NULL;
-
+ALTER TABLE `day_timeline` CHANGE `last_write_db` `last_write_db` TIMESTAMP NULL  DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE `description` CHANGE `last_write_db` `last_write_db` TIMESTAMP NULL  DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE `user_account` ADD `last_write_db` TIMESTAMP NULL  DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP;
+ALTER TABLE `auth_token` ADD `last_write_db` TIMESTAMP NULL  DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP;
