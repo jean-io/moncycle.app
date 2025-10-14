@@ -20,45 +20,56 @@ $result = [];
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') parse_str(file_get_contents('php://input'), $_DELETE);
 
 $db = db_open();
+$err = "";
 
 $user_account = sec_auth_token($db);
 sec_exit_si_non_connecte($user_account);
 
 // LECTURE D'UNE OBSERVATION
-if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['date'])) {
+if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
 	$dates_req = [];
-	if (preg_match("/^\s*\d{4}-\d{2}-\d{2}(\s*,\s*\d{4}-\d{2}-\d{2})*\s*$/", $_GET["date"])) {
+	$start_date = null;
+	$end_date = null;
+
+	if (isset($_GET["date"]) && preg_match("/^\s*\d{4}-\d{2}-\d{2}(\s*,\s*\d{4}-\d{2}-\d{2})*\s*$/", $_GET["date"])) {
 		$dates_req = explode(",", $_GET["date"]);
 	}
-	else {
-		$result["err"] = "dates aux mauvais format YYYY-MM-DD,YYYY-MM-DD,YYYY-MM-DD... ";
+	elseif (isset($_GET["date"])) $err .= "'date' in the wrong format. Correct format : YYYY-MM-DD,YYYY-MM-DD,YYYY-MM-DD... ";
+
+	if (isset($_GET["start_date"]) && preg_match("/^\s*\d{4}-\d{2}-\d{2}\s*$/", $_GET["start_date"])) {
+		$start_date = trim($_GET["start_date"]);
+	}
+	elseif (isset($_GET["start_date"])) $err .= "'start_date' in the wrong format. Correct format : YYYY-MM-DD ! ";
+
+	if (isset($_GET["end_date"]) && preg_match("/^\s*\d{4}-\d{2}-\d{2}\s*$/", $_GET["end_date"])) {
+		$end_date = trim($_GET["end_date"]);
+	}
+	elseif (isset($_GET["end_date"])) $err .= "'end_date' in the wrong format. Correct format : YYYY-MM-DD ! ";
+
+	if (($start_date || $end_date) && !($start_date && $end_date)) {
+		$err .= "'start_date' and 'end_date' should be used together";
 	}
 
-	foreach ($dates_req as $date) {
-		$date = trim($date);
+	if (empty($err)) {
 
-		$ob_data = array();
-
-		$cycle = db_select_cycle($db, $date, $user_account["no_user_account"]);
-		if(isset($cycle[0])) {
-			$interval = date_diff(date_create($cycle[0]["cycle"]), date_create($date));
-			$ob_data["cycle"] = $cycle[0]["cycle"];
-			$ob_data["pos"] = intval($interval->format('%a'))+1;
+		foreach ($dates_req as $date) {
+			$date = trim($date);
+			$result[$date] = data_construnct_day($db, $date, $user_account["no_user_account"]);
 		}
 
-		$ob_db = db_select_day_timeline($db, $date, $user_account["no_user_account"]);
-		if(isset($ob_db[0])) {
-			$ob_data = array_merge($ob_data, $ob_db[0]);
-			$raw_description = db_select_all_description_for_day_timeline($db, $user_account["no_user_account"], $ob_data["no_day"]);
-			$ob_data["sensation"] = data_convert_description($raw_description);
-		}
-		else {
-			$ob_data["err"] = "no data at this date";
-			$ob_data["date_obs"] = $date;
+		$all_days = array();
+		if ($start_date && $end_date) $all_days = db_select_day_timelines_frame ($db, $start_date, $end_date, $user_account["no_user_account"]);
+		elseif (empty($result)) $all_days = db_select_all_day_timeline($db, $user_account["no_user_account"]);
+			
+		$cycle_date = null;
+		for ($i = 0; $i < count($all_days); $i+=1) {
+			if ($all_days[$i]["cycle_1st_day"]) $cycle_date = $all_days[$i]["date_obs"];
+			$all_days[$i] = data_construnct_day($db, $all_days[$i]["date_obs"], $user_account["no_user_account"], $all_days[$i], $cycle_date);
+			$result[$all_days[$i]["date_obs"]] = $all_days[$i];
 		}
 
-		$result[$date] = $ob_data;
+
 
 	}
 
@@ -161,7 +172,7 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 
 	}
 	else {
-		$result["err"] = "date non valide";
+		$err = "date non valide";
 	}
 }
 
@@ -176,11 +187,11 @@ elseif($_SERVER['REQUEST_METHOD'] == "DELETE" && isset($_DELETE['date']) && preg
 }
 
 else {
-	$result["err"] = "date et action manquantes";
+	$err = "date and action missing";
 }
 
 $db = null;
 
-
-print(json_encode($result));
+if ($err) print(json_encode(array("err" => $err)));
+else print(json_encode($result));
 

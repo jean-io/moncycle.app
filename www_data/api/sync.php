@@ -31,8 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['fromTimestamp'])) {
 		$result["day_timeline"] = db_select_day_timelines_modified($db, $from_timestamp, $user_account["no_user_account"]);
 		$result["description"] = db_select_description_with_count_modified ($db, $from_timestamp, $user_account["no_user_account"]);
 		for ($i = 0; $i < count($result["day_timeline"]); $i+=1) {
-			$raw_description = db_select_all_description_for_day_timeline($db, $user_account["no_user_account"], $result["day_timeline"][$i]["no_day"]);
-			$result["day_timeline"][$i]["sensation"] = data_convert_description($raw_description);
+			$result["day_timeline"][$i] = data_construnct_day($db, $result["day_timeline"][$i]["date_obs"], $user_account["no_user_account"], $result["day_timeline"][$i]);
 		}
 	}
 	else {

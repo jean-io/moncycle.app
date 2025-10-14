@@ -162,7 +162,23 @@ try {
         print(PHP_EOL);
     }
 
+    print("DONE !");
+    print(PHP_EOL);
+    print("-----");
+    print(PHP_EOL);
+    print(PHP_EOL);
+    print("deleting old shema ...");
+    print(PHP_EOL);
+
+    $db->exec("ALTER TABLE `day_timeline` DROP `sensation`");
+
+    print("commiting DB changes ...");
+    print(PHP_EOL);  
+
     $db->exec("COMMIT");
+
+    print("DONE !");
+    print(PHP_EOL);
 
 } catch (\Throwable $th) {
     $db->exec("ROLLBACK");

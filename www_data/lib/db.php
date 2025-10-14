@@ -339,7 +339,7 @@ function db_delete_vieux_auth_token($db) {
 }
 
 function db_select_all_day_timeline($db, $no_user_account) {
-	static $sql = "select * from day_timeline where no_user_account = :no_user_account";
+	static $sql = "SELECT * FROM day_timeline WHERE no_user_account = :no_user_account ORDER BY date_obs ASC";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
@@ -364,6 +364,18 @@ function db_select_day_timelines_modified ($db, $modified_since, $no_user_accoun
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":modified_since", $modified_since, PDO::PARAM_STR);
+	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function db_select_day_timelines_frame ($db, $start_date, $end_date, $no_user_account) {
+	static $sql = "SELECT * FROM day_timeline WHERE date_obs >= :start_date AND date_obs <= :end_date AND no_user_account = :no_user_account ORDER BY date_obs ASC";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":start_date", $start_date, PDO::PARAM_STR);
+	$statement->bindValue(":end_date", $end_date, PDO::PARAM_STR);
 	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
 	$statement->execute();
 

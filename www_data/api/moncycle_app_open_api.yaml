@@ -515,16 +515,30 @@ paths:
     get:
       tags:
         - observations
-      summary: Reading of a daily observations
+      summary: Reading daily observations.
+      description: It either returns the specific dates requested (via the "date" parameter) or all dates within a specified range (using the "start_date" and "end_date" parameters). If no dates or parameters are specified, it returns all daily observations for that account.
       parameters:
         - name: date
           in: query
           description: Multiple dates (at least one) in the format YYYY-MM-DD, separated by commas
-          required: true
           schema:
             type: string
             format: date
             pattern: '^\s*\d{4}-\d{2}-\d{2}(\s*,\s*\d{4}-\d{2}-\d{2})*\s*$'
+        - name: start_date
+          in: query
+          description: One date in the format YYYY-MM-DD (should be used with 'end_date' param)
+          schema:
+            type: string
+            format: date
+            pattern: '/^\s*\d{4}-\d{2}-\d{2}\s*$/'
+        - name: end_date
+          in: query
+          description: One date in the format YYYY-MM-DD (should be used with 'start_date' param)
+          schema:
+            type: string
+            format: date
+            pattern: '/^\s*\d{4}-\d{2}-\d{2}\s*$/'
       responses:
         200:
           description: OK
@@ -593,7 +607,8 @@ paths:
     get:
       tags:
         - observations
-      summary: Reading of all descriptions existing in DB sorted by most used. Field 'use_count' is giving the number of how many time an observation is used.
+      summary: Reading of all descriptions existing in DB sorted by most used.
+      description: Field 'use_count' is giving the number of how many time an observation is used.
       responses:
         200:
           description: OK
@@ -608,7 +623,7 @@ paths:
     post:
       tags:
         - observations
-      summary: creating or updating descriptions
+      summary: Creating or updating descriptions.
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -653,7 +668,7 @@ paths:
     delete:
       tags:
         - observations
-      summary: deletion of a description
+      summary: Deletion of a description.
       requestBody:
         content:
           application/x-www-form-urlencoded:
