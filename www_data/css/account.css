@@ -61,3 +61,22 @@ form {
 .tech_info span {
 	font-weight: bold;
 }
+
+.f_edit_description .i_desc_name {
+	display: inline-block;
+	width: 45%;
+	height: 1.2em;
+}
+
+.f_edit_description .i_desc_type {
+	display: inline-block;
+	width: 35%;
+	box-sizing: content-box;
+	height: 1.2em;
+}
+
+.f_delete_description .i_desc_del {
+	box-sizing: content-box;
+	height: 1.2em;
+	padding: 5px;
+}

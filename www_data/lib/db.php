@@ -37,6 +37,29 @@ function db_select_pregnancys($db, $no_user_account) {
 	return $statement->fetchAll(PDO::FETCH_COLUMN);
 }
 
+function db_select_description_no_exist($db, $desc_no, $no_user_account) {
+	static $sql = "SELECT count(no_description)>0 AS description_existe FROM description WHERE no_description = :desc_no AND no_user_account = :no_user_account";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":desc_no", $desc_no, PDO::PARAM_INT);
+	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchColumn();
+}
+
+function db_select_description_name_exist($db, $desc_name, $no_user_account, $desc_no) {
+	static $sql = "SELECT count(no_description)>0 AS description_existe FROM description WHERE name LIKE :desc_name AND no_user_account = :no_user_account AND no_description != :desc_no";
+
+	static $statement = $db->prepare($sql);
+	$statement->bindValue(":desc_name", $desc_name, PDO::PARAM_STR);
+	$statement->bindValue(":desc_no", $desc_no, PDO::PARAM_INT);
+	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
+	$statement->execute();
+
+	return $statement->fetchColumn();
+}
+
 function db_select_description_with_count($db, $no_user_account) {
 	static $sql = "SELECT d.no_description, d.name, COUNT(od.no_day) AS use_count, d.no_user_account, d.name, d.type, d.last_write_client_UTC, d.last_write_db FROM description AS d LEFT JOIN link_day_timeline_description AS od ON od.no_description = d.no_description WHERE d.no_user_account = :no_user_account GROUP BY d.no_description ORDER BY use_count DESC";
 
@@ -102,49 +125,28 @@ function db_select_description_from_name($db, $no_user_account, $name) {
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function db_insert_description($db, $no_user_account, $name, $desc_type) {
-	static $sql = "INSERT INTO `description` (`no_user_account`, `name`, `type`) VALUES (:no_user_account, :name, :desc_type)";
+function db_insert_description($db, $no_user_account, $name, $desc_type, $last_write_client_UTC) {
+	static $sql = "INSERT INTO `description` (`no_user_account`, `name`, `type`, `last_write_client_UTC`) VALUES (:no_user_account, :name, :desc_type, :last_write_client_UTC)";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
 	$statement->bindValue(":desc_type", $desc_type, PDO::PARAM_INT);
 	$statement->bindValue(":name", $name, PDO::PARAM_STR);
+	$statement->bindValue(":last_write_client_UTC", $last_write_client_UTC, PDO::PARAM_STR);
 	$statement->execute();
 
 	return $db->lastInsertId();
 }
 
-function db_update_description_name ($db, $no_user_account, $no_description, $name) {
-	static $sql ="UPDATE description SET name = :name WHERE no_description = :no_description AND no_user_account = :no_user_account";
+function db_update_description_name_type ($db, $no_user_account, $no_description, $name, $type, $last_write_client_UTC) {
+	static $sql ="UPDATE description SET name = :name, type = :type, last_write_client_UTC = :last_write_client_UTC WHERE no_description = :no_description AND no_user_account = :no_user_account";
 
 	$statement = $db->prepare($sql);
 	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
 	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
 	$statement->bindValue(":name", $name, PDO::PARAM_STR);
-	$statement->execute();
-
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function db_update_description_client_timestamp ($db, $no_user_account, $no_description, $last_write_client_UTC) {
-	static $sql = "UPDATE description SET last_write_client_UTC = :last_write_client_UTC WHERE no_description = :no_description AND no_user_account = :no_user_account";
-
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
-	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
-	$statement->bindValue(":last_write_client_UTC", $last_write_client_UTC, PDO::PARAM_STR);
-	$statement->execute();
-
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function db_update_description_type ($db, $no_user_account, $no_description, $type) {
-	static $sql ="UPDATE description SET type = :type WHERE no_description = :no_description AND no_user_account = :no_user_account";
-
-	$statement = $db->prepare($sql);
-	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
-	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
 	$statement->bindValue(":type", $type, PDO::PARAM_INT);
+	$statement->bindValue(":last_write_client_UTC", $last_write_client_UTC, PDO::PARAM_STR);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);

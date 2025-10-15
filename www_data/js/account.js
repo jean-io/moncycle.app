@@ -41,6 +41,60 @@ $(document).ready(function(){
 			window.location.replace('/auth');
 		}
 	});
+
+
+	// TELECHARGEMENT DES DONNES DES UTILISATEUR
+	$.get("api/description", {}).done(function(data) {
+		$("#desc_froms_container").empty();
+		for (const description of data) {
+			let input_form = $(`<form 
+				class="f_edit_description" method="get" action="api/description" id="f_edit_description">
+				<input type="hidden" name="no_description" value="${description.no_description}" />
+				<input class="i_desc_name" type="text" name="name" value="${description.name}" />
+				<select class="i_desc_type" name="type">
+					<option ${description.type==2 ? 'selected' : '' } value="2">🧠 Sensations</option>
+					<option ${description.type==1 ? 'selected' : '' } value="1">👀 Observation</option>
+					<option ${description.type==0 ? 'selected' : '' } value="0" disabled>❓ à définir</option>
+				</select>`);
+			let input_del = $(`<form 
+				class="f_delete_description" method="delete" action="api/description" id="f_delete_description">
+				<input type="hidden" name="no_description" value="${description.no_description}" />
+				<input class="i_desc_del" type="submit" value="❌" />
+				</form>`);
+			$("#desc_froms_container").append(input_form);
+			$("#desc_froms_container").append(input_del);
+		}
+		let update_desc = function (e) {
+			e.stopPropagation();
+			let form_data = $(this).closest('form').serializeArray();
+			$.post("api/description", $.param(form_data)).done(function(ret){
+				console.log(ret);
+			}).fail(function(ret){
+				console.error(ret);
+			});
+		}
+		$(".f_edit_description .i_desc_type").on("change", update_desc);
+		$(".f_edit_description .i_desc_name").on("keyup", update_desc);
+		$(".f_delete_description").on("submit", function(event){
+			event.preventDefault();
+			let form_data = $(this).closest('form').serializeArray();
+			$.ajax({type : 'DELETE', "url" : "api/description", "data" : $.param(form_data)}).done(function(ret){
+				console.log(ret);
+				if (ret.nb_deleted) {
+
+				}
+			});
+		});
+		
+	}).fail(function (err) {
+		if (err.status == 401 || err.status == 403 || err.status == 407) {	
+			window.localStorage.clear();
+			window.location.replace('/auth');
+		}
+	});
+
+
+	// AFFICHAGE VERSION
 	$.get("api/version", {}).done(function(data) {
 		$("#tech_info_ver").text(data.version ?? "?");
 	}).fail(function (err) {
@@ -49,6 +103,7 @@ $(document).ready(function(){
 			window.location.replace('/auth');
 		}
 	});
+
 
 	// MISE A JOURS DES PARAMETTRE DU COMPTE
 	$(".auto_save").on("keyup change", function() {
@@ -70,6 +125,7 @@ $(document).ready(function(){
 			$("#net_stat").removeClass('rouge');
 		});
 	});
+
 
 	// CHANGEMENT DU MOT DE PASSE
 	$("#form_mdp_change").on("submit", function(event) {

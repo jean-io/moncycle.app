@@ -639,14 +639,14 @@ paths:
                     type of description
                     * 0 => undefined
                     * 1 => observation
-                    * 2 => sensation)
+                    * 2 => sensation
                   enum:
                     - 0
                     - 1
                     - 2
-                new_name:
-                  type: string
-                  description: to rename a description
+                no_description:
+                  type: integer
+                  description: ID number of description to rename
                 last_write_client_UTC:
                   type: string
                   description: client side UTC update timestamp, format should be YYYY-MM-DD HH:MM:SS. Will be set by server if not present.
