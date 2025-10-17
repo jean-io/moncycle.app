@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	elseif (!isset($_POST["name"]) || empty($_POST["name"]) || !isset($_POST["type"])) {
 		$ret["err"] = "Error : missing POST variable 'name' or 'type'.";
 	}
-	elseif (boolval(db_select_description_name_exist($db, $_POST["name"], $user_account["no_user_account"], $_POST["no_description"]))) {
-		$ret["err"] = "Error : this description 'name' already exist.";
+	elseif (boolval(db_select_description_name_exist($db, $_POST["name"], $user_account["no_user_account"], $_POST["no_description"] ?? 0))) {
+		$ret["err"] = "Error : this description 'name' already exist : " . $_POST["name"];
 	}
 	elseif (!ctype_digit($_POST["type"]) || !isset($description_types[intval($_POST["type"])])) {
 		$ret["err"] = "Error : 'type' argument is empty or contains an invalid number. Possibilities : 0 => undefined, 1 => observation, 2 => sensation.";
@@ -91,12 +91,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 // deletion of a description
 elseif ($_SERVER['REQUEST_METHOD'] == "DELETE") {
 
-	if (!isset($_DELETE["name"]) || empty($_DELETE["name"])) {
-		$ret["err"] = "Error : missing DELETE variable 'name'.";
+	if (isset($_DELETE["no_description"]) && !empty($_DELETE["no_description"]) && !filter_var($_DELETE["no_description"], FILTER_VALIDATE_INT)) {
+		$ret["err"] = "Error : DELETE variable 'no_description' should be an integer - it should match the description to delete.";
+	}
+	elseif (isset($_DELETE["no_description"]) && !empty($_DELETE["no_description"]) && !boolval(db_select_description_no_exist($db,$_DELETE["no_description"],$user_account["no_user_account"]))) {
+		$ret["err"] = "Error : DELETE variable 'no_description' does not match a known description.";
 	}
 	else {
-		$ret["nb_deleted"] = db_delete_descriptions($db, $_DELETE["name"], $user_account["no_user_account"]);
-		$ret["deleted"] = "Deleted " . $ret["nb_deleted"] . " description with name " . $_DELETE["name"];
+		$ret["nb_deleted"] = db_delete_descriptions($db, $_DELETE["no_description"], $user_account["no_user_account"]);
+		$ret["deleted"] = "Deleted " . $ret["nb_deleted"] . " description no " . $_DELETE["no_description"];
+		$ret["no_description"] = $_DELETE["no_description"];
 	}
 
 }

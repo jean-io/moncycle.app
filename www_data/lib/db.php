@@ -61,7 +61,7 @@ function db_select_description_name_exist($db, $desc_name, $no_user_account, $de
 }
 
 function db_select_description_with_count($db, $no_user_account) {
-	static $sql = "SELECT d.no_description, d.name, COUNT(od.no_day) AS use_count, d.no_user_account, d.name, d.type, d.last_write_client_UTC, d.last_write_db FROM description AS d LEFT JOIN link_day_timeline_description AS od ON od.no_description = d.no_description WHERE d.no_user_account = :no_user_account GROUP BY d.no_description ORDER BY use_count DESC";
+	static $sql = "SELECT d.no_description, d.name, COUNT(od.no_day) AS use_count, d.no_user_account, d.name, d.type, d.last_write_client_UTC, d.last_write_db FROM description AS d LEFT JOIN link_day_timeline_description AS od ON od.no_description = d.no_description WHERE d.no_user_account = :no_user_account GROUP BY d.no_description ORDER BY use_count DESC, d.name DESC";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
@@ -103,11 +103,11 @@ function db_delete_linked_descriptions ($db, $no_day, $no_description) {
 	return $statement->rowCount();
 }
 
-function db_delete_descriptions ($db, $name, $no_user_account) {
-	static $sql = "DELETE FROM description WHERE name = :name AND no_user_account = :no_user_account";
+function db_delete_descriptions ($db, $no_description, $no_user_account) {
+	static $sql = "DELETE FROM description WHERE no_description = :no_description AND no_user_account = :no_user_account";
 
 	static $statement = $db->prepare($sql);
-	$statement->bindValue(":name", $name, PDO::PARAM_STR);
+	$statement->bindValue(":no_description", $no_description, PDO::PARAM_INT);
 	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
 	$statement->execute();
 

@@ -665,6 +665,7 @@ paths:
         - HTTPcookie: []
         - HTTPtoken: []
 
+
     delete:
       tags:
         - observations
@@ -675,11 +676,11 @@ paths:
             schema:
               type: object
               properties:
-                name:
-                  type: string
-                  description: description to be deleted
+                no_description:
+                  type: integer
+                  description: ID number of description to delete
               required:
-                - name
+                - no_description
         required: true
       responses:
         200:

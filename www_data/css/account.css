@@ -62,20 +62,23 @@ form {
 	font-weight: bold;
 }
 
-.f_edit_description .i_desc_name {
+.f_edit_description .i_desc_name,
+#i_desc_name_new {
 	display: inline-block;
 	width: 45%;
 	height: 1.2em;
 }
 
-.f_edit_description .i_desc_type {
+.f_edit_description .i_desc_type,
+#i_desc_type_new {
 	display: inline-block;
 	width: 35%;
 	box-sizing: content-box;
 	height: 1.2em;
 }
 
-.f_delete_description .i_desc_del {
+.f_delete_description .i_desc_del,
+#i_desc_validate_new {
 	box-sizing: content-box;
 	height: 1.2em;
 	padding: 5px;

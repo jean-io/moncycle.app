@@ -43,10 +43,21 @@
 		<div class="contennu" id="timeline">
 
 
-			<h2>Sensations & observations <span class="net_stat" id="desc_net_stat"></span></h2>
-			<p>Créez et modifiez vos mots clé pour vos obsercation et vos sensations.</p>
-			<span id="desc_froms_container"><center>⏳</center></span>
-			<br /><br /><br /><br />
+			<div id="description_section">
+				<h2>Sensations & observations <span class="net_stat" id="desc_net_stat"></span></h2>
+				<p>Modifiez/supprimez vos mots clé pour vos obsercation et vos sensations.</p>
+				<span id="desc_froms_container"><center>⏳</center></span><br />
+				<p>Créez une description:</p>
+				<form method="post" action="api/description" id="f_new_description">
+					<input id="i_desc_name_new" type="text" name="name" />
+					<select id="i_desc_type_new" name="type">
+						<option value="2">🧠 Sensations</option>
+						<option value="1">👀 Observation</option>
+					</select>
+					<input id="i_desc_validate_new" type="submit" value="✅" />
+				</form>
+				<br /><br /><br /><br />
+			</div>
 
 			<h2>Exporter mes données</h2>
 			<p>Vous avez la possibilité d’exporter une partie de vos observations au format PDF. Cela permet d'avoir plusieurs cycles sur un même document. Comme demandé par la RGPD, vous avez aussi la possibilité d’exporter l’ensemble des données liées à votre compte. Cet export sera au format CSV.</p>

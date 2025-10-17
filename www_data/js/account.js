@@ -1,4 +1,5 @@
 var moncycle_app_usr = {};
+var description_list = [];
 
 const TOTP_STATE_NEVER_USED = 0;
 const TOTP_STATE_DISABLED = 1;
@@ -17,6 +18,7 @@ $(document).ready(function(){
 		$("#tech_info_no").text(moncycle_app_usr.no_user_account);
 		if(moncycle_app_usr.sponsor) $("#merci_don").show();
 		if(moncycle_app_usr.no_user_account == 2 || moncycle_app_usr.no_user_account == 3) $("#warning_demo").show();
+		if(moncycle_app_usr.nfp_method == 3 || moncycle_app_usr.nfp_method == 4) $("#description_section").hide();
 		$("#tech_info_id").text(moncycle_app_usr.email1);
 		$("#i_email1").val(moncycle_app_usr.email1);
 		$("#i_email2").val(moncycle_app_usr.email2);
@@ -43,33 +45,56 @@ $(document).ready(function(){
 	});
 
 
-	// TELECHARGEMENT DES DONNES DES UTILISATEUR
-	$.get("api/description", {}).done(function(data) {
+	// TELECHARGEMENT/MODIFICATION/CRATION/SUPPRESSION DES DESCRIPTIONS BILLINGS
+	let check_if_desc_exist = function(desc) {
+		for (let i = 0; i < description_list.length; i+=1) {
+			if (description_list[i].name == desc) return true;
+		}
+		return false;
+	}
+	let load_description = function(data) {
+		description_list = data;
 		$("#desc_froms_container").empty();
+		if (data.length == 0) {
+			$("#desc_froms_container").append("<i class='tech_info'>Vous n’avez aucune sensation ou observation renseignée dans l’application.</i>");
+			return
+		}
 		for (const description of data) {
 			let input_form = $(`<form 
-				class="f_edit_description" method="get" action="api/description" id="f_edit_description">
+				class="f_edit_description" method="get" action="api/description" id="f_edit_description_${description.no_description}">
 				<input type="hidden" name="no_description" value="${description.no_description}" />
 				<input class="i_desc_name" type="text" name="name" value="${description.name}" />
 				<select class="i_desc_type" name="type">
 					<option ${description.type==2 ? 'selected' : '' } value="2">🧠 Sensations</option>
 					<option ${description.type==1 ? 'selected' : '' } value="1">👀 Observation</option>
 					<option ${description.type==0 ? 'selected' : '' } value="0" disabled>❓ à définir</option>
-				</select>`);
+				</select></form>`);
 			let input_del = $(`<form 
-				class="f_delete_description" method="delete" action="api/description" id="f_delete_description">
+				class="f_delete_description" method="delete" action="api/description" id="f_delete_description_${description.no_description}">
 				<input type="hidden" name="no_description" value="${description.no_description}" />
-				<input class="i_desc_del" type="submit" value="❌" />
-				</form>`);
+				<input type="hidden" class="del_data_name" value="${description.name}" />
+				<input type="hidden" class="del_data_count" value="${description.use_count}" />
+				<input class="i_desc_del" type="submit" value="❌" /></form>`);
 			$("#desc_froms_container").append(input_form);
 			$("#desc_froms_container").append(input_del);
 		}
 		let update_desc = function (e) {
 			e.stopPropagation();
+			$("#desc_net_stat").html('⏳');
+			let name = $(this).closest('form').find(".i_desc_name").val();
+			if (check_if_desc_exist(name)) {
+				$("#desc_net_stat").html(' ❌&nbsp;description doublon');
+				return;
+			}
 			let form_data = $(this).closest('form').serializeArray();
 			$.post("api/description", $.param(form_data)).done(function(ret){
-				console.log(ret);
+				if (ret.err) {
+					console.error(ret.err);
+					$("#desc_net_stat").html('');
+				}
+				else $("#desc_net_stat").html(' ✅&nbsp;enregistré');
 			}).fail(function(ret){
+				$("#desc_net_stat").html('');
 				console.error(ret);
 			});
 		}
@@ -77,20 +102,56 @@ $(document).ready(function(){
 		$(".f_edit_description .i_desc_name").on("keyup", update_desc);
 		$(".f_delete_description").on("submit", function(event){
 			event.preventDefault();
-			let form_data = $(this).closest('form').serializeArray();
-			$.ajax({type : 'DELETE', "url" : "api/description", "data" : $.param(form_data)}).done(function(ret){
-				console.log(ret);
+			let html_form = $(this).closest('form');
+			let name = html_form.find(".del_data_name").val();
+			let count = parseInt(html_form.find(".del_data_count").val());
+			if (count>0 && !confirm(`Êtes-vous sûr de vouloir supprimer la description « ${name} » ?\n\nLes jours auxquels ${name} a été associé perdront cette information de manière irréversible. ${name} est actuellement associé à ${count} jours différents.`)) return;
+			$("#desc_net_stat").html('⏳');
+			$.ajax({type : 'DELETE', "url" : "api/description", "data" : $.param(html_form.serializeArray())}).done(function(ret){
+				$("#desc_net_stat").html('');
 				if (ret.nb_deleted) {
-
+					$(`#f_edit_description_${ret.no_description}`).remove();
+					$(`#f_delete_description_${ret.no_description}`).remove();
+					$("#desc_net_stat").html(' ✅&nbsp;supprimé');
 				}
+				if (ret.err) console.error(ret.err);
 			});
 		});
 		
-	}).fail(function (err) {
+	};
+	$.get("api/description", {}).done(load_description).fail(function (err) {
 		if (err.status == 401 || err.status == 403 || err.status == 407) {	
 			window.localStorage.clear();
 			window.location.replace('/auth');
 		}
+	});
+	$("#f_new_description").on("submit", function(event){
+		event.preventDefault();
+		if (check_if_desc_exist($("#i_desc_name_new").val())) {
+			$("#desc_net_stat").html(' ❌&nbsp;description doublon');
+			return;
+		}
+		$("#desc_net_stat").html('⏳');
+		let form_obj = $(this).closest('form');
+		$.post("api/description", $.param(form_obj.serializeArray())).done(function(ret){
+			if (ret.err) {
+				console.error(ret.err);
+				$("#desc_net_stat").html('');
+			}
+			else {
+				$("#desc_net_stat").html(' ✅&nbsp;enregistré');
+				form_obj[0].reset();
+				$.get("api/description", {}).done(load_description).fail(function (err) {
+					if (err.status == 401 || err.status == 403 || err.status == 407) {	
+						window.localStorage.clear();
+						window.location.replace('/auth');
+					}
+				});
+			}
+		}).fail(function(ret){
+			$("#desc_net_stat").html('');
+			console.error(ret);
+		});
 	});
 
 
