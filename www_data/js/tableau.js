@@ -47,24 +47,24 @@ moncycle_app = {
 	date_chargement: null,
 	utilisateurs_beta : [5],
 	constante : {},
-	sensation : {},
+	description : {},
 	day_timeline : {},
 	timeline_asc : true,
 	letsgo : function() {
 		console.log("moncycle.app - app de suivi de cycle pour les méthodes naturelles");
 		if (!localStorage.auth) window.location.replace('/auth');
 		moncycle_app.date_chargement = moncycle_app.date.str(moncycle_app.date.now());
-		if (localStorage.sensation != null) {
-			moncycle_app.sensation = JSON.parse(localStorage.sensation);
+		if (localStorage.description != null) {
+			moncycle_app.description = JSON.parse(localStorage.description);
 		}
 		if (localStorage.constante != null) {
 			moncycle_app.constante = JSON.parse(localStorage.constante);
 		}
 		$.get("api/description", {}).done(function(data) {
-			let transformed_data = {};
-			for (let i = 0; i < data.length; i++) transformed_data[data[i]["name"]] = data[i]["use_count"];
-			moncycle_app.sensation = transformed_data;
-			localStorage.sensation = JSON.stringify(transformed_data);
+			// let transformed_data = {};
+			// for (let i = 0; i < data.length; i++) transformed_data[data[i]["name"]] = data[i]["use_count"];
+			moncycle_app.description = data;
+			localStorage.description = JSON.stringify(data);
 		}).fail(moncycle_app.redirection_connexion);
 		$.get("api/key_infos", {}).done(function(data) {
 			moncycle_app.constante = data;
@@ -618,7 +618,9 @@ moncycle_app = {
 			day_timeline.append(`<span class='s'>${j.is_peak ? moncycle_app.text.sommet_bill : ""}</span>`);
 			day_timeline.append(`<span class='n'></span>`);
 			if (!j.day_not_observed) {
-				day_timeline.append(`<span class='o pas_fc pas_fc_temp'>${j.sensation || ""}</span>`);
+				let description_tbl = [];
+				for (const sdesc of j.description) description_tbl.push(sdesc.name);
+				day_timeline.append(`<span class='o pas_fc pas_fc_temp'>${description_tbl.join(', ')}</span>`);
 				if (moncycle_app.fleche[j.fc_arrow]) day_timeline.append(`<span class='fle pas_bill pas_bill_temp'>${moncycle_app.fleche[j.fc_arrow][1] || ""}</span>`);
 			}
 			else day_timeline.append(`<span class='p'>${moncycle_app.text.je_sais_pas}</span>`);
@@ -687,27 +689,17 @@ moncycle_app = {
 		moncycle_app.go_blank_or_empty();
 		$("#form_temp").val(j.temperature);
 		$("#form_time_temp_taken").val(j.time_temp_taken);
-		$("#vos_obs").empty();
-		let n = 0;
-		Object.entries(moncycle_app.sensation).sort((a,b) => b[1] - a[1]).forEach(function (o){
-			if (n<10) {
-				let ob_id = btoa(unescape(encodeURIComponent(o[0]))).replace(/[^A-Za-z0-9 -]/g, "");
-				let html = $(`<input type="checkbox" name="ob_${n}" id="ob_${ob_id}" value="${o[0]}" /><label for="ob_${ob_id}">${o[0]}</label><br />`);
-				html.on("keyup change", moncycle_app.submit_menu);
-				$("#vos_obs").append(html);
-			}
-			n += 1;	
-		});
-		let extra = []
-		if (j.sensation) j.sensation.split(',').forEach(ob => {
-			if (ob == moncycle_app.text.a_renseigner) return;
-			ob = ob.toLowerCase().trim();
-			let ob_id = btoa(unescape(encodeURIComponent(ob))).replace(/[^A-Za-z0-9 -]/g, "");
-			let obj = $(`#ob_${ob_id}`);
-			if(obj.length) obj.prop('checked', true);
-			else extra.push(ob);
-		});
-		if (extra.length) $("#ob_extra").val(extra.join(", "));
+		$("#menu_observation_container").empty();
+		$("#menu_sensation_container").empty();
+		let active_desc = [];
+		for (const adesc of j.description) active_desc.push(adesc.no_description);
+		for (const sdesc of moncycle_app.description) {
+			let active = active_desc.includes(sdesc.no_description);
+			let html_option = $(`<span id="s_desc_${sdesc.no_description}"><input type="checkbox" name="description[]" value="${sdesc.no_description}" id="i_desc_${sdesc.no_description}" class="i_desc" ${active ? 'checked' : ''} /><label for="i_desc_${sdesc.no_description}">${sdesc.name}</label><br /></span>`);
+			if (sdesc.type == 1) $("#menu_observation_container").append(html_option)
+			else if (sdesc.type == 2) $("#menu_sensation_container").append(html_option);
+		}
+		$(".i_desc").on("change", moncycle_app.submit_menu);
 		if (j.cycle_1st_day) {
 			$("#ev_cycle_1st_day").prop('checked', true);
 			$("#ev_cycle_1st_day").attr('initial', true);
@@ -762,13 +754,6 @@ moncycle_app = {
 		moncycle_app.fc_test_note();
 		if ($("#ev_counter_start_actif")[0].checked) $("#ev_hidden_counter_start").val($("#ev_counter_start_nb").val());
 		else $("#ev_hidden_counter_start").val(0);
-		$("#ob_extra").val().split(',').forEach(function(o) {
-			o = o.trim().toLowerCase();
-			if (!o) return;
-			if (!(o in moncycle_app.sensation)) moncycle_app.sensation[o] = 0;
-			moncycle_app.sensation[o] += 1;
-		});
-		localStorage.sensation = JSON.stringify(moncycle_app.sensation);
 		let d = $("#jour_form #form_data").serializeArray();
 		if (moncycle_app.menu_opened_date != null) {
 			let j = 0;

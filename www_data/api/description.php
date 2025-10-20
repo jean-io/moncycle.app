@@ -108,7 +108,7 @@ elseif ($_SERVER['REQUEST_METHOD'] == "DELETE") {
 // HTTP GET method, getting all descriptions
 else {
 
-	$ret = $description = db_select_description_with_count($db, $user_account["no_user_account"]);
+	$ret = db_select_description_with_count($db, $user_account["no_user_account"]);
 
 }
 

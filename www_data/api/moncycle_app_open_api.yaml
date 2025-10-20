@@ -822,9 +822,13 @@ components:
         time_temp_taken:
           type: string
           description: Timestamp of temperature measurement
-        ob_extra:
-          type: string
-          description: Description (sensations and visuals) on that day, separated by commas
+        no_description:
+            type: array
+            description: Description IDs that should be associated with that day.
+            items:
+              type: integer
+            style: form
+            explode: true
         union_sex:
           type: integer
           description: Sex union on that day (1 => at least one, 0 => none)

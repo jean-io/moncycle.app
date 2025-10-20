@@ -395,14 +395,13 @@ function db_insert_day_timeline ($db, $date, $no_user_account) {
 	return $db->lastInsertId();
 }
 
-function db_update_day_timeline ($db, $date, $no_user_account, $last_write_client_UTC, $stamp='', $fc_score=null, $fc_arrow=null, $sensation=null, $temp=null, $htemp=null, $is_peak=null, $union_sex=null, $cycle_1st_day=null, $day_not_observed=null, $pregnancy=null, $comment=null, $counter_start=null) {
-	static $sql = "UPDATE day_timeline SET stamp = :stamp, fc_score = :fc_score, fc_arrow = :fc_arrow, temperature = :temp, time_temp_taken = :htemp, sensation = :sensation, is_peak = :is_peak, union_sex = :union_sex, cycle_1st_day = :cycle_1st_day, day_not_observed = :day_not_observed, pregnancy = :pregnancy, comment = :comment, counter_start = :counter_start, last_write_client_UTC = :last_write_client_UTC WHERE date_obs = :date AND no_user_account = :no_user_account";
+function db_update_day_timeline ($db, $date, $no_user_account, $last_write_client_UTC, $stamp='', $fc_score=null, $fc_arrow=null, $temp=null, $htemp=null, $is_peak=null, $union_sex=null, $cycle_1st_day=null, $day_not_observed=null, $pregnancy=null, $comment=null, $counter_start=null) {
+	static $sql = "UPDATE day_timeline SET stamp = :stamp, fc_score = :fc_score, fc_arrow = :fc_arrow, temperature = :temp, time_temp_taken = :htemp, is_peak = :is_peak, union_sex = :union_sex, cycle_1st_day = :cycle_1st_day, day_not_observed = :day_not_observed, pregnancy = :pregnancy, comment = :comment, counter_start = :counter_start, last_write_client_UTC = :last_write_client_UTC WHERE date_obs = :date AND no_user_account = :no_user_account";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":stamp", $stamp, PDO::PARAM_STR);
 	$statement->bindValue(":fc_score", $fc_score, PDO::PARAM_STR);
 	$statement->bindValue(":fc_arrow", $fc_arrow, PDO::PARAM_STR);
-	$statement->bindValue(":sensation", $sensation, PDO::PARAM_STR);
 	$statement->bindValue(":temp", $temp, PDO::PARAM_STR);
 	$statement->bindValue(":htemp", $htemp, PDO::PARAM_STR);
 	$statement->bindValue(":is_peak", $is_peak, PDO::PARAM_INT);

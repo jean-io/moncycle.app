@@ -98,35 +98,9 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 	
 			$output = db_select_day_timeline($db, $date, $user_account["no_user_account"]);
 	
-			$day_timeline_no = null;
-			if(!isset($output[0])) $day_timeline_no = db_insert_day_timeline($db, $date, $user_account["no_user_account"]);
-			else $day_timeline_no = $output[0]["no_day"];
-			
-			$day_timeline = [];
-			foreach ($_POST as $key => $p) {
-				if (!str_starts_with($key, "ob_") || $p=="") continue;
-				if ($key == "ob_extra") {
-					foreach (explode(",", $_POST["ob_extra"]) as $cp) {
-						array_push($day_timeline, strtolower(trim($cp)));
-					}
-				}
-				else array_push($day_timeline, strtolower(trim($p)));
-			}
-			
-			$old_description = db_select_all_description_for_day_timeline($db, $user_account["no_user_account"], $day_timeline_no);
-			$raw_old_description = [];
-			$description_to_delete = [];
-			foreach ($old_description as $desc) {
-				if (!in_array($desc["name"], $day_timeline)) array_push($description_to_delete, $desc["no_description"]);
-				array_push($raw_old_description, $desc["name"]);
-			}
-			$raw_new_description = [];
-			foreach ($day_timeline as $desc) {
-				if (!in_array($desc, $raw_old_description)) array_push($raw_new_description, $desc);
-			}
-
-			// TODO : DELETE AND CLEAN day_timeline_db
-			$day_timeline_db = null;
+			$no_day = null;
+			if(!isset($output[0])) $no_day = db_insert_day_timeline($db, $date, $user_account["no_user_account"]);
+			else $no_day = $output[0]["no_day"];
 	
 			$temp = null;
 			$htemp = null;
@@ -146,19 +120,33 @@ elseif($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['date']) && preg_mat
 			if (isset($_POST["last_write_client_UTC"]) && date_validate_timestamp(trim($_POST['last_write_client_UTC']))) $last_write_client_UTC = trim($_POST['last_write_client_UTC']);
 			else $last_write_client_UTC = date('Y-m-d H:i:s');
 	
-			db_update_day_timeline($db, $date, $user_account["no_user_account"], $last_write_client_UTC, $go, $_POST["fc_score"] ?? null, $_POST["fc_arrow"] ?? null, $day_timeline_db, $temp, $htemp, $_POST["is_peak"] ?? null, $_POST["union_sex"] ?? null, $_POST["cycle_1st_day"] ?? null, $_POST["day_not_observed"] ?? null, $_POST["pregnancy"] ?? null, $_POST["comment"] ?? null, $counter_start);
+			db_update_day_timeline($db, $date, $user_account["no_user_account"], $last_write_client_UTC, $go, $_POST["fc_score"] ?? null, $_POST["fc_arrow"] ?? null, $temp, $htemp, $_POST["is_peak"] ?? null, $_POST["union_sex"] ?? null, $_POST["cycle_1st_day"] ?? null, $_POST["day_not_observed"] ?? null, $_POST["pregnancy"] ?? null, $_POST["comment"] ?? null, $counter_start);
 			
-			foreach ($description_to_delete as $no_desc) db_delete_linked_descriptions ($db, $day_timeline_no, $no_desc);
+			$all_raw_description = db_select_description_with_count($db, $user_account["no_user_account"]);
+			$all_description_no = array();
+			foreach ($all_raw_description as $rdesc) array_push($all_description_no, $rdesc["no_description"]);
 
-			foreach ($raw_new_description as $desc) {
-				$db_description = db_select_description_from_name($db, $user_account["no_user_account"], $desc);
-				$description_no = null;
-				if (!isset($db_description) || !isset($db_description[0])) {
-					$description_no = db_insert_description($db, $user_account["no_user_account"], $desc, 0);
+			$old_description = db_select_all_description_for_day_timeline($db, $user_account["no_user_account"], $no_day);
+			$old_description_no = array();
+			foreach ($old_description as $odesc) array_push($old_description_no, $odesc["no_description"]);
+			$to_delete_description_no = $old_description_no;
+
+			$new_description_no = array();
+			if (isset($_POST["no_description"]) && is_array($_POST["no_description"])) $new_description_no = $_POST["no_description"];
+		
+			for ($i=0; $i < count($new_description_no); $i+=1) { 
+				$int_ndesc = intval($new_description_no[$i]);
+				if (array_search($int_ndesc, $all_description_no) === false) unset($new_description_no[$i]);
+				else {
+					$to_delete_index = array_search($int_ndesc, $to_delete_description_no);
+					if ($to_delete_index !== false) unset($to_delete_description_no[$to_delete_index]);
+					$to_add_index = array_search($int_ndesc, $old_description_no);
+					if ($to_add_index !== false) unset($new_description_no[$to_add_index]);
 				}
-				else $description_no = $db_description[0]["no_description"];
-				db_insert_link_description_day_timeline($db, $day_timeline_no, $description_no);
 			}
+
+			foreach ($to_delete_description_no as $no_desc) db_delete_linked_descriptions ($db, $no_day, $no_desc);
+			foreach ($new_description_no as $no_desc) db_insert_link_description_day_timeline ($db, $no_day, $no_desc);
 
 			$db->exec("COMMIT");
 

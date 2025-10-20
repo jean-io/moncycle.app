@@ -46,9 +46,9 @@ $(document).ready(function(){
 
 
 	// TELECHARGEMENT/MODIFICATION/CRATION/SUPPRESSION DES DESCRIPTIONS BILLINGS
-	let check_if_desc_exist = function(desc) {
+	let check_if_desc_exist = function(desc, type) {
 		for (let i = 0; i < description_list.length; i+=1) {
-			if (description_list[i].name == desc) return true;
+			if (description_list[i].name == desc && description_list[i].type == type) return true;
 		}
 		return false;
 	}
@@ -82,7 +82,8 @@ $(document).ready(function(){
 			e.stopPropagation();
 			$("#desc_net_stat").html('⏳');
 			let name = $(this).closest('form').find(".i_desc_name").val();
-			if (check_if_desc_exist(name)) {
+			let type = $(this).closest('form').find(".i_desc_type").val();
+			if (check_if_desc_exist(name, type)) {
 				$("#desc_net_stat").html(' ❌&nbsp;description doublon');
 				return;
 			}
@@ -127,7 +128,7 @@ $(document).ready(function(){
 	});
 	$("#f_new_description").on("submit", function(event){
 		event.preventDefault();
-		if (check_if_desc_exist($("#i_desc_name_new").val())) {
+		if (check_if_desc_exist($("#i_desc_name_new").val(), $("#i_desc_type_new").val())) {
 			$("#desc_net_stat").html(' ❌&nbsp;description doublon');
 			return;
 		}

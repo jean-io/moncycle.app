@@ -628,6 +628,12 @@ h2 {
 	color: gray;
 }
 
+.sens_and_obs {
+	display: inline-block;
+	width: 48%;
+	vertical-align: top;
+}
+
 @media (min-width: 601px) {
 
 	.o_gross {
