@@ -12,6 +12,7 @@ require_once "../lib/date.php";
 require_once "../lib/db.php";
 require_once "../lib/doc.php";
 require_once "../lib/sec.php";
+require_once "../lib/nfp_file.php";
 
 require_once "../vendor/autoload.php";
 
@@ -51,7 +52,7 @@ if (new DateTime($result["start_date"]) >= new DateTime($result["end_date"])) {
 }
 
 // VERIFICATION DU FORMAT DE L'EXPORT
-$available_type = ["pdf", "csv"];
+$available_type = ["pdf", "csv", "nfp"];
 if (!isset($_GET['type']) || !in_array($_GET['type'], $available_type)) {
 	http_response_code(400);
 	print("ERREUR: le format de l'export doit être: ");
@@ -85,14 +86,13 @@ $filename_start_date = date_humain(new DateTime($result["start_date"]), '_');
 try {
 
 	if ($_GET['type'] == "csv") {
-
-		// ECRITURE DU CSV
 		header("content-type:application/csv;charset=UTF-8");
 		header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.csv"');
 		$out = fopen('php://output', 'w');
 		doc_cycle_vers_csv ($out, $cycle, $user_account["nfp_method"]);
 		fclose($out);
 	}
+
 	elseif ($_GET['type'] == "pdf") {
 		$pdf = null;
 		if ($user_account["nfp_method"] == 3 || $user_account["nfp_method"] == 4) $pdf = doc_cycle_fc_vers_pdf($cycle, $user_account["nfp_method"], $user_account["name_user_account"], $pdf_anonymous);
@@ -100,6 +100,20 @@ try {
 		header("content-type:application/pdf");
 		header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.pdf"');
 		$pdf->Output('I', 'moncycle_app_'. $filename_start_date . '.pdf');
+	}
+
+	elseif ($_GET['type'] == "nfp") {
+
+		$nfp_data = [
+			"version" => "1.0",
+			"source_app" => "moncycle.app",
+			"source_app_version" => "TODO",
+			"file_creation_timestamp" => date('Y-m-d H:i:s')
+		];
+		$nfp_data["cycles"] = nfp_file_billing_export($result["start_date"], $result["end_date"], $db, $user_account["no_user_account"]);
+
+		print(json_encode($nfp_data));
+
 	}
 
 } catch (\Throwable $th) {

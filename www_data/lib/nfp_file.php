@@ -44,26 +44,39 @@ function nfp_file_billing_day ($day, $db, $no_account) {
 
 function nfp_file_billing_export($start_date, $end_date, $db, $no_account){
 	
-	$cycle_start_date = db_select_cycle($db, $start_date, $no_account)[0]["cycle"] ?? null;
+	$cycle_start_date = db_select_cycle($db, $start_date, $no_account)[0]["cycle"] ?? $start_date;
 
 	$raw_days = db_select_day_timelines_frame ($db, $cycle_start_date, $end_date, $no_account);
+	$raw_days = array_column($raw_days, null, 'date_obs');
 
 	$nfp_data = array();
-	$nfp_data["cycles"] = array();
-	$nfp_data["cycles"][0] = array();
 
-	$nfp_data["cycles"][0]["method"] = "billings";
-	$nfp_data["cycles"][0]["cycleStartDate"] = $cycle_start_date;
-	$nfp_data["cycles"][0]["days"] = array();
+	$cycle_counter = 0;
+	$nfp_data[$cycle_counter] = array();
+	$nfp_data[$cycle_counter]["method"] = "billings";
+	$nfp_data[$cycle_counter]["cycleStartDate"] = $cycle_start_date;
+	$nfp_data[$cycle_counter]["days"] = array();
 
-	foreach ($raw_days as $day) {
-		$nfp_day = nfp_file_billing_day($day, $db, $no_account);
-		array_push($nfp_data["cycles"][0]["days"], $nfp_day);
+	$date_cursor = new DateTime($cycle_start_date);
+	$end_date_obj = new DateTime($end_date);
+	$today = new DateTime();
+	while ($date_cursor <= $end_date_obj && $date_cursor < $today) {
+		$date_cursor_txt = $date_cursor->format('Y-m-d');
+		if (isset($raw_days[$date_cursor_txt])) {
+			$nfp_day = nfp_file_billing_day($raw_days[$date_cursor_txt], $db, $no_account);
+			if ($raw_days[$date_cursor_txt]["cycle_1st_day"] && $date_cursor_txt != $cycle_start_date) {
+				$cycle_counter += 1;
+				$nfp_data[$cycle_counter] = array();
+				$nfp_data[$cycle_counter]["method"] = "billings";
+				$nfp_data[$cycle_counter]["cycleStartDate"] = $date_cursor_txt;
+				$nfp_data[$cycle_counter]["days"] = array();
+			}
+			array_push($nfp_data[$cycle_counter]["days"], $nfp_day);
+		}
+		else array_push($nfp_data[$cycle_counter]["days"], (object)[]);
+		$date_cursor->modify('+1 day');
 	}
 
 	return $nfp_data;
 }
 
-$db = db_open();
-
-print(json_encode(nfp_file_billing_export("2025-10-01", "2025-10-15", $db, 2)));

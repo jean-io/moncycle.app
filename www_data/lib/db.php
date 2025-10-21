@@ -443,7 +443,7 @@ function db_select_cycle_pregnancy($db, $date, $no_user_account) {
 }
 
 function db_select_cycle_complet($db, $date_start, $date_end, $no_user_account) {
-	static $sql = "SELECT date_obs, COALESCE(day_not_observed,'') as '?', COALESCE(fc_score,'') as fc_score, COALESCE(fc_arrow,'') as fc_arrow, stamp, COALESCE(temperature,'') as temperature, COALESCE(time_temp_taken,'') as time_temp_taken, COALESCE(sensation,'') as sensation, COALESCE(is_peak, '') as sommet, COALESCE(counter_start, '') as counter_start, COALESCE(union_sex, '') as 'unions', COALESCE(pregnancy, '') as 'pregnancy', comment, COALESCE(cycle_1st_day, 0) as 'cycle_1st_day' FROM day_timeline WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_user_account = :no_user_account ORDER BY date_obs ASC";
+	static $sql = "SELECT date_obs, COALESCE(day_not_observed,'') as '?', COALESCE(fc_score,'') as fc_score, COALESCE(fc_arrow,'') as fc_arrow, stamp, COALESCE(temperature,'') as temperature, COALESCE(time_temp_taken,'') as time_temp_taken, COALESCE(is_peak, '') as sommet, COALESCE(counter_start, '') as counter_start, COALESCE(union_sex, '') as 'unions', COALESCE(pregnancy, '') as 'pregnancy', comment, COALESCE(cycle_1st_day, 0) as 'cycle_1st_day' FROM day_timeline WHERE date_obs>=:date_start AND date_obs<=:date_end AND no_user_account = :no_user_account ORDER BY date_obs ASC";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":date_start", $date_start, PDO::PARAM_STR);
