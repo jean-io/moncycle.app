@@ -10,6 +10,7 @@
 require_once "../config.php";
 require_once "../lib/db.php";
 require_once "../lib/sec.php";
+require_once "../lib/date.php";
 
 header('Content-Type: application/json');
 
@@ -20,45 +21,63 @@ sec_exit_si_non_connecte($user_account);
 
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') parse_str(file_get_contents('php://input'), $_DELETE);
 
-$mise_a_jour = [];
+$data_update = [];
+$data_update["field_update"] = [];
 
-if (isset($_POST["name"])) {
-	db_update_user_account_param_str($db, "name", $_POST["name"], $user_account["no_user_account"]);
-	$mise_a_jour["name"] = $_POST["name"];
+$updated_account = $user_account;
+
+if (isset($_POST["name"]) && strlen($_POST["name"])>0) {
+	$updated_account["name"] = $_POST["name"];
+	array_push($data_update["field_update"], "name");
+}
+else {
+	$updated_account["name"] = $user_account["name_user_account"];
 }
 
 if (isset($_POST["email2"]) && (empty($_POST["email2"]) || filter_var($_POST["email2"], FILTER_VALIDATE_EMAIL))) {
-	db_update_user_account_param_str($db, "email2", $_POST["email2"], $user_account["no_user_account"]);
-	$mise_a_jour["email2"] = $_POST["email2"];
+	$updated_account["email2"] = $_POST["email2"];
+	array_push($data_update["field_update"], "email2");
 }
 
 if (isset($_POST["nfp_method"]) && !empty($_POST["nfp_method"])) {
 	$nfp_method = intval($_POST["nfp_method"]);
 	if ($nfp_method && $nfp_method >=1 && $nfp_method <= 4) {
-		db_update_user_account_param_int($db, "nfp_method", $nfp_method, $user_account["no_user_account"]);
-		$mise_a_jour["nfp_method"] = $nfp_method;
+		$updated_account["nfp_method"] = $nfp_method;
+		array_push($data_update["field_update"], "nfp_method");
 	}
 }
 
 if (isset($_POST["age"]) && !empty($_POST["age"])) {
 	$age = intval($_POST["age"]);
 	if ($age && $age >=1) {
-		db_update_user_account_param_int($db, "age", $age, $user_account["no_user_account"]);
-		$mise_a_jour["age"] = $age;
+		$updated_account["age"] = $age;
+		array_push($data_update["field_update"], "age");
 	}
 }
 
-if (isset($_POST["timeline_asc"])) {
-	$timeline_asc = boolval($_POST["timeline_asc"]);
-	$tet = db_update_user_account_param_int($db, "timeline_asc", $timeline_asc ? 1 : 0, $user_account["no_user_account"]);
-	$mise_a_jour["timeline_asc"] = $timeline_asc;
-	$mise_a_jour["test"] = $tet;
+if (isset($_POST["timeline_asc"]) && strlen($_POST["timeline_asc"])>0) {
+	$updated_account["timeline_asc"] = boolval($_POST["timeline_asc"]) ? 1 : 0;
+	array_push($data_update["field_update"], "timeline_asc");
 }
 
-if (isset($_POST["research"])) {
-	$research = boolval($_POST["research"]);
-	db_update_user_account_param_int($db, "research", $research ? 1 : 0, $user_account["no_user_account"]);
-	$mise_a_jour["research"] = $research;
+if (isset($_POST["research"]) && strlen($_POST["research"])>0) {
+	$updated_account["research"] = boolval($_POST["research"]) ? 1 : 0;
+	array_push($data_update["field_update"], "research");
+}
+
+if (isset($_POST["sponsor"]) && strlen(($_POST["sponsor"]))>0) {
+	$updated_account["sponsor"] = boolval($_POST["sponsor"]) ? 1 : 0;
+	array_push($data_update["field_update"], "sponsor");
+}
+
+if (isset($_POST["last_write_client_UTC"]) && !empty($_POST['last_write_client_UTC']) && date_validate_timestamp(trim($_POST['last_write_client_UTC']))) {
+	$updated_account["last_write_client_UTC"] = trim($_POST['last_write_client_UTC']);
+	array_push($data_update["field_update"], "last_write_client_UTC");
+}
+else $updated_account["last_write_client_UTC"] = date('Y-m-d H:i:s');
+
+if (!empty($data_update["field_update"])) {
+	db_update_user_account_param($db, $updated_account["name"], $updated_account["email2"], $updated_account["nfp_method"], $updated_account["age"], $updated_account["sponsor"], $updated_account["timeline_asc"], $updated_account["research"], $updated_account["last_write_client_UTC"], $user_account["no_user_account"]);
 }
 
 if (isset($_DELETE["pw_before_deletion"])) {
@@ -70,16 +89,16 @@ if (isset($_DELETE["pw_before_deletion"])) {
 			// SUPPRESSION DU COMPTE
 			db_delete_user_account($db, $user_account["no_user_account"]);
 			setcookie("MONCYCLEAPP_TOKEN", '', -1, '/');
-			$mise_a_jour = ["suppr" => true, "msg" => "user_account supprimé"];
+			$data_update = ["suppr" => true, "msg" => "user_account supprimé"];
 		}
 		else {
-			$mise_a_jour = ["suppr" => false, "msg" => "mauvais mot de passe"];
+			$data_update = ["suppr" => false, "msg" => "mauvais mot de passe"];
 		}
 	}
 	else {
-		$mise_a_jour = ["suppr" => false, "msg" => "mot de passe manquant"];
+		$data_update = ["suppr" => false, "msg" => "mot de passe manquant"];
 	}
 }
 
-echo json_encode($mise_a_jour);
+echo json_encode($data_update);
 

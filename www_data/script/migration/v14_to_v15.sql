@@ -113,3 +113,5 @@ ALTER TABLE `day_timeline` CHANGE `last_write_db` `last_write_db` TIMESTAMP NULL
 ALTER TABLE `description` CHANGE `last_write_db` `last_write_db` TIMESTAMP NULL  DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP;
 ALTER TABLE `user_account` ADD `last_write_db` TIMESTAMP NULL  DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP;
 ALTER TABLE `auth_token` ADD `last_write_db` TIMESTAMP NULL  DEFAULT CURRENT_TIMESTAMP  ON UPDATE CURRENT_TIMESTAMP;
+
+ALTER TABLE `user_account` ADD `last_write_client_UTC` timestamp NULL AFTER `register_comment`;

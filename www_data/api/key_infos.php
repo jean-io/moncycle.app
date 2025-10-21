@@ -38,6 +38,7 @@ echo json_encode([
 	"timeline_asc" => boolval($user_account["timeline_asc"]), 
 	"all_cycles_1st_day" => $cycles,
 	"all_pregnancy_dates" => $pregnancys,
-	"totp_state" => $user_account["totp_state"]
+	"totp_state" => $user_account["totp_state"],
+	"last_write_client_UTC" => $user_account["last_write_client_UTC"]
 ]);
 

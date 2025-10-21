@@ -229,29 +229,19 @@ function db_insert_user_account($db, $name, $nfp_method, $age, $mail, $mdp, $reg
 	return $db->lastInsertId();
 }
 
-function db_update_user_account_param_str($db, $param, $value, $no_user_account) {
-	$param_list = ["name", "email1", "email2", "password", "totp_secret", "last_auth_date", "inscription_date", "last_password_change", "register_comment"];
-	if (!in_array($param, $param_list, true)) return false;
-
-	static $sql = "UPDATE user_account SET " . $param . " = :cvalue WHERE no_user_account = :no_user_account";
+function db_update_user_account_param($db, $name, $email2, $nfp_method, $age, $sponsor, $timeline_asc, $research, $last_write_client_UTC, $no_user_account) {
+	static $sql = "UPDATE user_account SET `name` = :name, email2 = :email2, nfp_method = :nfp_method, age = :age, sponsor = :sponsor, timeline_asc = :timeline_asc, research = :research, last_write_client_UTC = :last_write_client_UTC WHERE no_user_account = :no_user_account";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
-	$statement->bindValue(":cvalue", $value, PDO::PARAM_STR);
-	$statement->execute();
-
-	return $statement->fetchAll(PDO::FETCH_ASSOC);
-}
-
-function db_update_user_account_param_int($db, $param, $value, $no_user_account) {
-	$param_list = ["nfp_method", "age", "nb_connection_attempts", "sponsor", "user_enabled", "is_inactive", "timeline_asc", "research"];
-	if (!in_array($param, $param_list, true)) return false;
-
-	static $sql = "UPDATE user_account SET " . $param . " = :cvalue WHERE no_user_account = :no_user_account";
-
-	static $statement = $db->prepare($sql);
-	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
-	$statement->bindValue(":cvalue", $value, PDO::PARAM_INT);
+	$statement->bindValue(":name", $name, PDO::PARAM_STR);
+	$statement->bindValue(":email2", $email2, PDO::PARAM_STR);
+	$statement->bindValue(":last_write_client_UTC", $last_write_client_UTC, PDO::PARAM_STR);
+	$statement->bindValue(":nfp_method", $nfp_method, PDO::PARAM_INT);
+	$statement->bindValue(":age", $age, PDO::PARAM_INT);
+	$statement->bindValue(":sponsor", $sponsor, PDO::PARAM_INT);
+	$statement->bindValue(":timeline_asc", $timeline_asc, PDO::PARAM_INT);
+	$statement->bindValue(":research", $research, PDO::PARAM_INT);
 	$statement->execute();
 
 	return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -617,7 +607,7 @@ function db_insert_auth_token($db, $no_user_account, $name, $contry_code, $auth_
 }
 
 function db_select_user_account_auth_token($db, $auth_token_str) {
-	static $sql = "SELECT J.no_user_account, J.no_auth_token, C.name AS name_user_account, J.contry_code, J.name AS name_auth_token, J.date_creation AS d_creation_auth_token, J.date_use AS d_use_auth_token, C.nfp_method, C.age, C.email1, C.email2, C.nb_connection_attempts, C.sponsor, C.user_enabled, C.is_inactive, C.last_auth_date, C.inscription_date, C.last_password_change, C.register_comment, C.totp_secret, C.totp_state, C.research, C.timeline_asc FROM `auth_token` AS J INNER JOIN `user_account` AS C ON J.no_user_account=C.no_user_account WHERE `auth_token_str` = :auth_token_str LIMIT 1";
+	static $sql = "SELECT J.no_user_account, J.no_auth_token, C.name AS name_user_account, J.contry_code, J.name AS name_auth_token, J.date_creation AS d_creation_auth_token, J.date_use AS d_use_auth_token, C.nfp_method, C.age, C.email1, C.email2, C.nb_connection_attempts, C.sponsor, C.user_enabled, C.is_inactive, C.last_auth_date, C.inscription_date, C.last_password_change, C.register_comment, C.totp_secret, C.totp_state, C.research, C.timeline_asc, C.last_write_client_UTC FROM `auth_token` AS J INNER JOIN `user_account` AS C ON J.no_user_account=C.no_user_account WHERE `auth_token_str` = :auth_token_str LIMIT 1";
 
 	static $statement = $db->prepare($sql);
 	$statement->bindValue(":auth_token_str", $auth_token_str, PDO::PARAM_STR);

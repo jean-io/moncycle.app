@@ -435,10 +435,28 @@ paths:
                     - 0
                 research:
                   type: integer
-                  description: Consent to contribute anonymously to research programs. 1 => yes, 0 => no
+                  description: |
+                    Consent to contribute anonymously to research programs.
+                    * 1 => yes
+                    * 0 => no
                   enum:
                     - 1
                     - 0
+                sponsor:
+                  type: integer
+                  description: |
+                    This person id donating.
+                    * 1 => yes
+                    * 0 => no
+                  enum:
+                    - 1
+                    - 0
+                last_write_client_UTC:
+                  type: string
+                  description: client side UTC update timestamp, format should be YYYY-MM-DD HH:MM:SS. Will be set by server if not present.
+                  format: string
+                  example: "2025-01-23 15:30:45"
+                  pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
         required: true
       responses:
         200:
@@ -531,14 +549,14 @@ paths:
           schema:
             type: string
             format: date
-            pattern: '/^\s*\d{4}-\d{2}-\d{2}\s*$/'
+            pattern: '^\s*\d{4}-\d{2}-\d{2}\s*$'
         - name: end_date
           in: query
           description: One date in the format YYYY-MM-DD (should be used with 'start_date' param)
           schema:
             type: string
             format: date
-            pattern: '/^\s*\d{4}-\d{2}-\d{2}\s*$/'
+            pattern: '^\s*\d{4}-\d{2}-\d{2}\s*$'
       responses:
         200:
           description: OK
