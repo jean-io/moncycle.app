@@ -55,57 +55,6 @@ function doc_preparation_jours_pour_affichage($data, $nfp_method){
 	return $cycle;
 }
 
-function doc_parse_fc_note ($str_fc_note) {
-	$fc_note = [
-		'10DL' => false,
-		'10SL' => false,
-		'10WL' => false,
-		'RAP' => false,
-		'LAP' => false, 
-		'X1' => false,
-		'X2' => false,
-		'X3' => false,
-		'AD' => false,
-		'AP' => false,
-		'VL' => false,
-		'VH' => false,
-		'2W' => false,
-		'10' => false,
-		'H' => false,
-		'M' => false,
-		'L' => false,
-		'Lsaignement' => false,
-		'B' => false,
-		'0' => false,
-		'2' => false,
-		'4' => false,
-		'6' => false,
-		'8' => false,
-		'C' => false,
-		'G' => false,
-		'K' => false,
-		'P' => false,
-		'Y' => false,
-		'R' => false
-	];
-	$str_fc_note = trim($str_fc_note);
-	if (strlen($str_fc_note)>0) {
-		$str_fc_note = strtoupper($str_fc_note);
-		if (str_starts_with($str_fc_note, 'L') && !str_starts_with($str_fc_note, 'LAP')) {
-			$fc_note['Lsaignement'] = true;
-			$str_fc_note = substr($str_fc_note, 1);
-		}
-		foreach ($fc_note as $note => $is_present) {
-			if (str_contains($str_fc_note, $note)) $fc_note[$note] = true;
-			$str_fc_note = str_ireplace($note, '', $str_fc_note);
-		}
-		$str_fc_note = trim($str_fc_note);
-	}
-	$fc_note['extra'] = strlen($str_fc_note)>0;
-	$fc_note['extra_str'] = $str_fc_note;
-	return $fc_note;
-}
-
 function doc_txt($txt) {
 	if (is_null($txt)) return '';
 	$encoding = mb_detect_encoding($txt, "auto");
@@ -548,7 +497,7 @@ function doc_cycle_fc_vers_pdf($cycle, $nfp_method, $name, $pdf_anonymous=false)
 				if (isset($cycle[$obs_index]["pregnancy"]) && $cycle[$obs_index]["pregnancy"]) $cell_carac =  $symbol_convert_table["G"];
 				$peak_text = "";
 				$date_exploded = explode('-', $cycle[$obs_index]["date_obs"] ?? "");
-				$fc_score = doc_parse_fc_note($cycle[$obs_index]["fc_score"] ?? "");
+				$fc_score = data_parse_fc_note($cycle[$obs_index]["fc_score"] ?? "");
 				
 				$fc_saignement = '';
 				foreach (['H', 'M', 'Lsaignement', 'VL', 'VH', 'B'] as $s) {

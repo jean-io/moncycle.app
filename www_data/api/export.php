@@ -12,6 +12,7 @@ require_once "../lib/date.php";
 require_once "../lib/db.php";
 require_once "../lib/doc.php";
 require_once "../lib/sec.php";
+require_once "../lib/data.php";
 require_once "../lib/nfp_file.php";
 
 require_once "../vendor/autoload.php";
@@ -110,7 +111,7 @@ try {
 			"source_app_version" => "TODO",
 			"file_creation_timestamp" => date('Y-m-d H:i:s')
 		];
-		$nfp_data["cycles"] = nfp_file_billing_export($result["start_date"], $result["end_date"], $db, $user_account["no_user_account"]);
+		$nfp_data["cycles"] = nfp_file_billing_export($result["start_date"], $result["end_date"], $db, $user_account);
 
 		print(json_encode($nfp_data));
 
