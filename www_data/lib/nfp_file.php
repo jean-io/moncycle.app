@@ -10,10 +10,6 @@
 require_once "../config.php";
 require_once "../lib/db.php";
 
-header('Content-Type: application/json');
-
-// TODO : missing booleanPregnancyDetected
-
 function nfp_file_billing_day ($day, $db, $no_account) {
 	$description = db_select_all_description_for_day_timeline($db, $no_account, $day["no_day"]);
 	$observation = array();
@@ -41,6 +37,7 @@ function nfp_file_billing_day ($day, $db, $no_account) {
 	if ($day["counter_start"]) $nfp_day["counterStart"] = $day["counter_start"];
 	if ($day["union_sex"]) $nfp_day["sexUnion"] = true;
 	if ($day["comment"]) $nfp_day["comment"] = $day["comment"];
+	if ($day["pregnancy"]) $nfp_day["booleanPregnancyDetected"] = true;
 	return $nfp_day;
 }
 
@@ -63,11 +60,7 @@ function nfp_file_fertility_care_day ($day, $db, $no_account) {
 			if (!array_key_exists("stampColor", $nfp_day)) $nfp_day["stampColor"] = "White";
 		}
 	}
-
 	$fc_note = data_parse_fc_note ($day["fc_score"]);
-
-	// $nfp_day["test"] = $fc_note;
-
 	$note_part = nfp_file_fertility_note_triage($fc_note, ["VH", "H", "M", "L", "VL", "BR"]);
 	if ($note_part != "") $nfp_day["codifiedBleedingObservation"] = $note_part;
 	$note_part = nfp_file_fertility_note_triage($fc_note, ["0","2","2W","4","6","8","10","10DL","10SL","10WL"]);
@@ -78,16 +71,19 @@ function nfp_file_fertility_care_day ($day, $db, $no_account) {
 	if ($note_part != "") $nfp_day["codifiedNumberObservations"] = $note_part;
 	$note_part = nfp_file_fertility_note_triage($fc_note, ["AP","RAP","LAP"]);
 	if ($note_part != "") $nfp_day["codifiedPainObservations"] = $note_part;
-
-	// $nfp_day["codifiedArrow"] = ""; // TODO
-	// $nfp_day["nonUsualBleeding"] = ""; // true|false TODO
-
+	if (isset($day["fc_arrow"])) {
+		if ($day["fc_arrow"] == "↑") $nfp_day["codifiedArrow"] = "Up";
+		elseif ($day["fc_arrow"] == "↓") $nfp_day["codifiedArrow"] = "Down";
+		elseif ($day["fc_arrow"] == "→") $nfp_day["codifiedArrow"] = "Right";
+	}
+	// $nfp_day["nonUsualBleeding"] = ""; // spotting : true|false
 	if ($day["day_not_observed"]) $nfp_day["mucusNotObserved"] = true;
 	if ($day["temperature"]) $nfp_day["temperature"] = $day["temperature"];
 	if ($day["time_temp_taken"]) $nfp_day["temperatureTime"] = $day["time_temp_taken"];
 	if ($day["is_peak"]) $nfp_day["isPeak"] = true;
 	if ($day["union_sex"]) $nfp_day["sexUnion"] = true;
 	if ($day["comment"]) $nfp_day["comment"] = $day["comment"];
+	if ($day["pregnancy"]) $nfp_day["booleanPregnancyDetected"] = true;
 	return $nfp_day;
 }
 
