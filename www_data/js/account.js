@@ -1,3 +1,11 @@
+/* moncycle.app
+**
+** licence Creative Commons CC BY-NC-SA
+**
+** https://www.moncycle.app
+** https://github.com/moncycle-app/backend-api-web-app
+*/
+
 var moncycle_app_usr = {};
 var description_list = [];
 

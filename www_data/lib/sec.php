@@ -4,7 +4,7 @@
 ** licence Creative Commons CC BY-NC-SA
 **
 ** https://www.moncycle.app
-** https://github.com/jean-io/moncycle.app
+** https://github.com/moncycle-app/backend-api-web-app
 */
 
 define("TOTP_STATE_NEVER_USED", 0);

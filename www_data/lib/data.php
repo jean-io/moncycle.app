@@ -4,7 +4,7 @@
 ** licence Creative Commons CC BY-NC-SA
 **
 ** https://www.moncycle.app
-** https://github.com/jean-io/moncycle.app
+** https://github.com/moncycle-app/backend-api-web-app
 */
 
 function data_construnct_day($db, $date, $no_user_account, $raw_day=null, $cycle=null, $pos=null) {
