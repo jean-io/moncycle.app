@@ -67,7 +67,15 @@ if ($_GET['type'] == "pdf" && isset($_GET['anonymous']) && !in_array($_GET['anon
 	print("ERREUR: 'anonymous' doit être 1 ou 0");
 	exit;
 }
-$pdf_anonymous = boolval(intval($_GET['anonymous'] ?? "0"));
+$pdf_anonymous = boolval($_GET['anonymous'] ?? "0");
+
+// VERIFY JSON_IN_PAGE PARAM
+if ($_GET['type'] == "nfp" && isset($_GET['json_in_page']) && !in_array($_GET['json_in_page'], ["1", "0"])) {
+	http_response_code(400);
+	print("ERREUR: 'json_in_page' doit être 1 ou 0");
+	exit;
+}
+$json_in_page = boolval($_GET['json_in_page'] ?? "0");
 
 // RECUPERATION DU CYCLE
 $data = db_select_cycle_complet($db, $result["start_date"],$result["end_date"], $user_account["no_user_account"]);
@@ -105,15 +113,20 @@ try {
 
 	elseif ($_GET['type'] == "nfp") {
 
+		$json_version = json_decode(file_get_contents("version.json"), true);
+
 		$nfp_data = [
 			"version" => "1.0",
 			"source_app" => "moncycle.app",
-			"source_app_version" => "TODO",
+			"source_app_version" => $json_version["version"],
 			"file_creation_timestamp" => date('Y-m-d H:i:s')
 		];
 		$nfp_data["cycles"] = nfp_file_billing_export($result["start_date"], $result["end_date"], $db, $user_account);
 
-		print(json_encode($nfp_data));
+		header('Content-Type: application/json');
+		if (!$json_in_page) header('Content-Disposition: attachment; filename="moncycle_app_'. $filename_start_date .'.nfp"');
+
+		print(json_encode($nfp_data, $json_in_page ? JSON_PRETTY_PRINT : 0));
 
 	}
 

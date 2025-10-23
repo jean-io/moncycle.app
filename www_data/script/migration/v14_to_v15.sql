@@ -8,7 +8,7 @@ CREATE TABLE `description` (
   PRIMARY KEY (`no_description`),
   UNIQUE KEY `unique_user_account_and_name` (`no_compte`,`name`),
   KEY `no_user_account` (`no_compte`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 ALTER TABLE `observation`
 CHANGE `dernier_modif` `last_write_db` timestamp NULL ON UPDATE CURRENT_TIMESTAMP AFTER `commentaire`;

@@ -61,7 +61,8 @@ function nfp_file_fertility_care_day ($day, $db, $no_account) {
 		}
 	}
 	$fc_note = data_parse_fc_note ($day["fc_score"]);
-	$note_part = nfp_file_fertility_note_triage($fc_note, ["VH", "H", "M", "L", "VL", "BR"]);
+	$note_part = nfp_file_fertility_note_triage($fc_note, ["VH", "H", "M", "VL", "BR"]);
+	if ($fc_note["Lsaignement"]) $note_part .= "L";
 	if ($note_part != "") $nfp_day["codifiedBleedingObservation"] = $note_part;
 	$note_part = nfp_file_fertility_note_triage($fc_note, ["0","2","2W","4","6","8","10","10DL","10SL","10WL"]);
 	if ($note_part != "") $nfp_day["codifiedMucusSensation"] = $note_part;

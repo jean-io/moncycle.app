@@ -278,9 +278,10 @@ $(document).ready(function(){
 		event.preventDefault();
 		var start_date = $("#i_start_date").val();
 		var end_date = $("#i_end_date").val();
+		var file_format = $("#i_file_format").val();
 		if (start_date == "" || end_date == "") $("#export_err").html("<br /><b>❌&nbsp;erreur:</b> dates vides.");
 		else if (new Date(start_date) >= new Date(end_date)) $("#export_err").html("<br /><b>❌&nbsp;erreur:</b> la 1ère date doit être antérieur à la 2ème.");
-		else window.location.replace(`api/export?type=pdf&start_date=${start_date}&end_date=${end_date}`);
+		else window.location.replace(`api/export?type=${file_format}&start_date=${start_date}&end_date=${end_date}`);
 	});
 
 	// SUPPRESSION DU COMPTE

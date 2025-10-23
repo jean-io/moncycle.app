@@ -60,13 +60,27 @@
 			</div>
 
 			<h2>Exporter mes données</h2>
-			<p>Vous avez la possibilité d’exporter une partie de vos observations au format PDF. Cela permet d'avoir plusieurs cycles sur un même document. Comme demandé par la RGPD, vous avez aussi la possibilité d’exporter l’ensemble des données liées à votre compte. Cet export sera au format CSV.</p>
+			<p>
+				Vous avez la possibilité d’exporter tout ou partie de vos observations dans le format de votre choix. Cela vous permet de regrouper plusieurs cycles dans un même fichier. Les formats disponibles sont :
+				<ul>
+					<li><b>NFP :</b> ce format vous permet d’exporter vos données afin de pouvoir les réimporter ultérieurement dans l’application. Il est également compatible avec d’autres applications si vous souhaitez migrer vos données.</li>
+					<li><b>PDF :</b> ce format facilite le partage visuel de vos cycles avec vos moniteurs, instructrices ou médecins.</li>
+					<li><b>CSV :</b> ce format vous permet d’importer vos cycles dans LibreOffice ou Microsoft Excel pour une analyse plus détaillée.</li>
+				</ul>
+				</p>
 			<br >
 			<form method="get" action="api/export" id="f_export_complexe">
-			Exporter du <input id="i_start_date" name="start_date" type="date" /> au <input id="i_end_date" name="end_date" type="date" />. <input type="submit" value="📄 Créer PDF" />
+			Exporter du <input id="i_start_date" name="start_date" type="date" /> au <input id="i_end_date" name="end_date" type="date" />.<br /><br />
+			Exporter au format <select id="i_file_format" style="width: auto" name="type">
+				<option value="nfp">NFP</option>
+				<option value="pdf">PDF</option>
+				<option value="csv">CSV</option>
+			</select><br /><br />
+			<input type="submit" value="🚀 Exporter" />
 			<span class="rouge" id="export_err"></span>
 			</form>
 			<br /><br />
+			Comme demandé par la RGPD, vous avez aussi la possibilité d’exporter l’ensemble des données liées à votre compte. Cet export sera au format CSV.</p>
 			<a href="api/all_of_my_data_plz"><input type="button" value="📦 Exporter l'ensemble des données brutes de mon compte" /></a>
 			<br /><br /><br /><br />
 	

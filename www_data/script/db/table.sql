@@ -20,6 +20,7 @@ CREATE TABLE `user_account` (
   `inscription_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `last_password_change` timestamp NULL DEFAULT NULL,
   `register_comment` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
+  `last_write_client_UTC` timestamp NULL DEFAULT NULL,
   `last_write_db` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE current_timestamp(),
   PRIMARY KEY (`no_user_account`),
   UNIQUE KEY `email1` (`email1`)
@@ -66,7 +67,7 @@ CREATE TABLE `auth_token` (
   UNIQUE KEY `auth_token_str` (`auth_token_str`),
   KEY `no_user_account` (`no_user_account`),
   CONSTRAINT `day_timeline_ibfk_2` FOREIGN KEY (`no_user_account`) REFERENCES `user_account` (`no_user_account`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE `description` (
   `no_description` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -79,7 +80,7 @@ CREATE TABLE `description` (
   KEY `no_user_account` (`no_user_account`),
   UNIQUE KEY `unique_user_account_and_name` (`no_user_account`,`name`),
   CONSTRAINT `day_timeline_ibfk_3` FOREIGN KEY (`no_user_account`) REFERENCES `user_account` (`no_user_account`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 CREATE TABLE `link_day_timeline_description` (
   `no_day` mediumint(8) unsigned NOT NULL,

@@ -740,8 +740,18 @@ paths:
     get:
       tags:
         - observations
-      summary: Export in CSV or PDF format of a cycle
+      summary: Export cycle data in NFP, CSV or PDF format
       parameters:
+        - name: type
+          in: query
+          description: File format to be returned
+          required: true
+          schema:
+            type: string
+            enum:
+              - nfp
+              - pdf
+              - csv
         - name: start_date
           in: query
           description: Date of first day to export in YYYY-MM-DD format
@@ -758,16 +768,16 @@ paths:
             type: string
             format: date
             pattern: '^\d{4}-\d{2}-\d{2}$'
-        - name: type
+        - name: json_in_page
           in: query
-          description: File format to be returned
-          required: true
+          description: 1 => return NFP data (JSON) directly in the current page, 0 => start a file download
+          required: false
           schema:
-            type: string
-            default: csv
+            type: integer
+            default: 0
             enum:
-              - pdf
-              - csv
+              - 1
+              - 0
         - name: anonymous
           in: query
           description: Make anonymous pdf export (0 => no, 1 => yes)
