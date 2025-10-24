@@ -797,6 +797,38 @@ paths:
         - HTTPcookie: []
         - HTTPtoken: []
 
+  /import:
+    post:
+      tags:
+        - observations
+      summary: Import NFP files (a JSON based file type)
+      description: Raw JSON string import from a NFP file.
+      parameters:
+        - name: overide
+          in: query
+          description: Overide existing data (0 => no, 1 => yes)
+          required: false
+          schema:
+            type: integer
+            default: 0
+            enum:
+              - 1
+              - 0
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: string
+              example: {"metadata": {"version": "1.2"}, "data": [{"id": 1, "value": 10}]}
+      responses:
+        200:
+          description: Successfully imported
+        400:
+          description: Import error
+        401:
+          description: Authentication required
+
 
 components:
   schemas:

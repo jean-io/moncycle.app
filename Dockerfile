@@ -17,6 +17,7 @@ ENV PHP_CACHE=1
 ENV COMPOSER_HOME=/var/lib/php/composer
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+# RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
 COPY ./server_conf/moncycleapp_apache.conf /etc/apache2/conf-enabled/

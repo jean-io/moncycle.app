@@ -116,7 +116,7 @@ try {
 		$json_version = json_decode(file_get_contents("version.json"), true);
 
 		$nfp_data = [
-			"version" => "1.0",
+			"schemaVersion" => "1.0",
 			"source_app" => "moncycle.app",
 			"source_app_version" => $json_version["version"],
 			"file_creation_timestamp" => date('Y-m-d H:i:s')

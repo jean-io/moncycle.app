@@ -6,10 +6,11 @@
 	"require": {
 		"phpmailer/phpmailer": "6.*",
 		"fpdf/fpdf" : "1.*",
-		"components/jquery" : "3.*",
+		"components/jquery" : "3.7.*",
 		"swagger-api/swagger-ui" : "5.*",
 		"spomky-labs/otphp" : "11.*",
 		"bacon/bacon-qr-code" : "2.*",
-		"gregwar/captcha": "1.*"
+		"gregwar/captcha": "1.*",
+		"justinrainbow/json-schema" : "6.*" 
 	}
 }
