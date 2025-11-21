@@ -310,17 +310,6 @@ function db_delete_auth_token($db, $no_auth_token, $no_user_account){
 	return $statement->rowCount();
 }
 
-function db_delete_day_timeline($db, $no_user_account, $date){
-	static $sql = "DELETE FROM day_timeline WHERE no_user_account = :no_user_account AND date_obs = :date";
-
-	static $statement = $db->prepare($sql);
-	$statement->bindValue(":no_user_account", $no_user_account, PDO::PARAM_INT);
-	$statement->bindValue(":date", $date, PDO::PARAM_STR);
-	$statement->execute();
-
-	return $statement->rowCount();
-}
-
 function db_delete_vieux_auth_token($db) {
 	static $sql = "DELETE FROM auth_token WHERE (date_creation < (CURDATE() + INTERVAL - 365 DAY) OR date_use < (CURDATE() + INTERVAL - 40 DAY)) AND expire>0";
 

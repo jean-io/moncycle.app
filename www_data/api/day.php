@@ -169,7 +169,11 @@ elseif($_SERVER['REQUEST_METHOD'] == "DELETE" && isset($_DELETE['date']) && preg
 	$date = trim($_DELETE['date']);
 	$result["date"] = $date;
 
-	$result['nb_suppr'] = db_delete_day_timeline($db, $user_account["no_user_account"], $date);
+	$last_write_client_UTC = "";
+	if (isset($_POST["last_write_client_UTC"]) && date_validate_timestamp(trim($_POST['last_write_client_UTC']))) $last_write_client_UTC = trim($_POST['last_write_client_UTC']);
+	else $last_write_client_UTC = date('Y-m-d H:i:s');
+	
+	db_update_day_timeline($db, $date, $user_account["no_user_account"], $last_write_client_UTC, '', null, null, null, null, null, null, null, null, null, null, null);
 
 	$result["outcome"] = "ok";
 }

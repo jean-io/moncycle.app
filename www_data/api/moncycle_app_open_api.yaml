@@ -608,6 +608,12 @@ paths:
                   description: Date of observation in the format YYYY-MM-DD
                   format: date
                   pattern: '^\d{4}-\d{2}-\d{2}$'
+                last_write_client_UTC:
+                  type: string
+                  description: client side UTC update timestamp, format should be YYYY-MM-DD HH:MM:SS. Will be set by server if not present.
+                  format: string
+                  example: "2025-01-23 15:30:45"
+                  pattern: '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
         required: true
       responses:
         200:
