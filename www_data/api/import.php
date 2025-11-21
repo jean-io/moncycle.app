@@ -47,7 +47,7 @@ else $overide = boolval($_GET['overide']);
 if (!$error) {
 	try {
 		$raw = file_get_contents('php://input');
-		$nfp_data = json_decode($raw, true, 512, JSON_THROW_ON_ERROR);
+		$nfp_data = json_decode($raw, false, 512, JSON_THROW_ON_ERROR);
 	} catch (JsonException $e) {
 		$error = 102;
 		$outcome["err_detail"] = $e->getMessage();
@@ -55,42 +55,94 @@ if (!$error) {
 }
 
 if (!$error) {
-	if (!isset($nfp_data["schemaVersion"]) || empty($nfp_data["schemaVersion"])) {
+	if (!isset($nfp_data->schemaVersion) || empty($nfp_data->schemaVersion)) {
 		$error = 103;
 	}
-	else if (!preg_match("/^\s*\d+\.\d+\s*$/", $nfp_data["schemaVersion"])) {
+	else if (!preg_match("/^\s*\d+\.\d+\s*$/", $nfp_data->schemaVersion)) {
 		$error = 104;
 	}
-	else if (version_compare(trim($nfp_data["schemaVersion"]), "1.0") != 0) {
+	else if (version_compare(trim($nfp_data->schemaVersion), "1.0") != 0) {
 		$error = 105;
-		$outcome["err_detail"] = $nfp_data["schemaVersion"] . " is not supported";
+		$outcome["err_detail"] = $nfp_data->schemaVersion . " is not supported";
 	}
 }
 
-$validator = new JsonSchema\Validator;
+// https://json-schema.org/draft/2020-12
+// https://www.jsonschemavalidator.net/
 
-$request = (object)[
-    'processRefund'=>"true",
-    'refundAmount'=>"17"
-];
+$data = $nfp_data;
 
-$outcome["test0"] = $validator->validate(
-    $request, (object) [
-        "type"=>"object",
-        "properties"=>(object)[
-            "processRefund"=>(object)[
-                "type"=>"boolean"
-            ],
-            "refundAmount"=>(object)[
-                "type"=>"number"
-            ]
-        ]
-    ],
-    Constraint::CHECK_MODE_COERCE_TYPES
-); // validates!
+$jsonSchemaAsString = <<<'JSON'
+{
+  "type": "object",
+  "properties": {
+	"schemaVersion" : {
+		"type": "string",
+		"pattern": "^[0-9]\\.[0-9]$",
+		"description":"Version of the schema the file refers to. See 'version' key for actual schema"
+	},
+	"source_app" : {
+		"type": "string",
+		"pattern": "^.+$"
+	},
+	"source_app_version" : {
+		"type": "string",
+		"pattern": "^.+$"
+	},
+	"file_creation_timestamp" : {
+		"type": "string",
+		"pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+	},
+	"cycles" : {
+		"type" : "array",
+		"items": {
+			"type": "object",
+			"properties": {
+				"method" : {
+					"type": "string",
+					"description":"Planification method used for this cycle. If exists, could be used for cycle validation using the _methodValidation fields",
+					"pattern" : "^\\s*(?i)(billings|fertilityCare|symptothermic_fr)\\s*$"
+				},
+				"cycleStartDate" : {
+					"type": "string",
+					"pattern" : "^\\d{4}-\\d{2}-\\d{2}$"
+				},
+				"days" : {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {}
+					}
+				}
+			},
+			"required": ["method", "cycleStartDate", "days"]
+		}
+	}
+	},
+	"required": ["schemaVersion","source_app", "source_app_version", "file_creation_timestamp", "cycles"]
+}
+JSON;
 
-$outcome["test1"] = is_bool($request->processRefund); // true
-$outcome["test2"] = is_int($request->refundAmount); // true
+$jsonSchema = json_decode($jsonSchemaAsString);
+if ($jsonSchema === null) {
+    echo "JSON schema decode error: " . json_last_error_msg();
+	die();
+}
+$schemaStorage = new SchemaStorage();
+$schemaStorage->addSchema('internal://mySchema', $jsonSchema);
+$validator = new Validator(new Factory($schemaStorage));
+
+$validator->validate($data, $jsonSchema);
+if ($validator->isValid()) {
+	$outcome["ok"] = "The supplied JSON validates against the schema.\n";
+}
+else {
+	$outcome["err_detail"] = "JSON does not validate.";
+	$outcome["err_list"] = [];
+	foreach ($validator->getErrors() as $err) {
+		array_push($outcome["err_list"], sprintf("[%s] %s", $err['property'], $err['message']));
+	}
+}
 
 header('Content-Type: application/json');
 
