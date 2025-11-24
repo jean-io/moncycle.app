@@ -14,6 +14,7 @@ require_once "../lib/db.php";
 require_once "../lib/sec.php";
 require_once "../lib/data.php";
 require_once "../lib/nfp_file.php";
+require_once "../lib/nfp_format.php";
 require_once "../lib/date.php";
 
 use JsonSchema\SchemaStorage;
@@ -36,6 +37,8 @@ $error_list = [
 	103 => "'schemaVersion' is missing of empty in NFP data",
 	104 => "'schemaVersion' does not contain a valid version number",
 	105 => "'schemaVersion' is not a supported version number",
+	120 => "JSON file structure is not a valid NFP input",
+	121 => "At least one day is not matching Billings NFP schema"
 ];
 
 $overide = false;
@@ -67,80 +70,37 @@ if (!$error) {
 	}
 }
 
-// https://json-schema.org/draft/2020-12
-// https://www.jsonschemavalidator.net/
-
-$data = $nfp_data;
-
-$jsonSchemaAsString = <<<'JSON'
-{
-  "type": "object",
-  "properties": {
-	"schemaVersion" : {
-		"type": "string",
-		"pattern": "^[0-9]\\.[0-9]$",
-		"description":"Version of the schema the file refers to. See 'version' key for actual schema"
-	},
-	"source_app" : {
-		"type": "string",
-		"pattern": "^.+$"
-	},
-	"source_app_version" : {
-		"type": "string",
-		"pattern": "^.+$"
-	},
-	"file_creation_timestamp" : {
-		"type": "string",
-		"pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
-	},
-	"cycles" : {
-		"type" : "array",
-		"items": {
-			"type": "object",
-			"properties": {
-				"method" : {
-					"type": "string",
-					"description":"Planification method used for this cycle. If exists, could be used for cycle validation using the _methodValidation fields",
-					"pattern" : "^\\s*(?i)(billings|fertilityCare|symptothermic_fr)\\s*$"
-				},
-				"cycleStartDate" : {
-					"type": "string",
-					"pattern" : "^\\d{4}-\\d{2}-\\d{2}$"
-				},
-				"days" : {
-					"type": "array",
-					"items": {
-						"type": "object",
-						"properties": {}
-					}
-				}
-			},
-			"required": ["method", "cycleStartDate", "days"]
+if (!$error) {
+	$jsonSchema = json_decode(NFP_MAIN_FILE_SCHEMA);
+	$schemaStorage = new SchemaStorage();
+	$schemaStorage->addSchema('internal://mySchema', $jsonSchema);
+	$validator = new Validator(new Factory($schemaStorage));
+	$validator->validate($nfp_data, $jsonSchema);
+	if (!$validator->isValid()) {
+		$error = 120;
+		$outcome["err_list"] = [];
+		foreach ($validator->getErrors() as $err) {
+			array_push($outcome["err_list"], sprintf("[%s] %s", $err['property'], $err['message']));
 		}
 	}
-	},
-	"required": ["schemaVersion","source_app", "source_app_version", "file_creation_timestamp", "cycles"]
 }
-JSON;
 
-$jsonSchema = json_decode($jsonSchemaAsString);
-if ($jsonSchema === null) {
-    echo "JSON schema decode error: " . json_last_error_msg();
-	die();
-}
-$schemaStorage = new SchemaStorage();
-$schemaStorage->addSchema('internal://mySchema', $jsonSchema);
-$validator = new Validator(new Factory($schemaStorage));
-
-$validator->validate($data, $jsonSchema);
-if ($validator->isValid()) {
-	$outcome["ok"] = "The supplied JSON validates against the schema.\n";
-}
-else {
-	$outcome["err_detail"] = "JSON does not validate.";
-	$outcome["err_list"] = [];
-	foreach ($validator->getErrors() as $err) {
-		array_push($outcome["err_list"], sprintf("[%s] %s", $err['property'], $err['message']));
+if (!$error) {
+	foreach ($nfp_data->cycles as $cycle_data) {
+		$jsonSchema = json_decode(NFP_BILLINGS_DAY_SCHEMA);
+		$schemaStorage = new SchemaStorage();
+		$schemaStorage->addSchema('internal://mySchema', $jsonSchema);
+		$validator = new Validator(new Factory($schemaStorage));
+		foreach ($cycle_data->days as $no => $day_data) {
+			$validator->validate($day_data, $jsonSchema);
+			if (!$validator->isValid()) {
+				$error = 121;
+				$outcome["err_list"] = [];
+				foreach ($validator->getErrors() as $err) {
+					array_push($outcome["err_list"], sprintf("[%s - %d][%s] %s", $cycle_data->cycleStartDate, $no, $err['property'], $err['message']));
+				}
+			}
+		}
 	}
 }
 

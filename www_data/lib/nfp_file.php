@@ -7,9 +7,6 @@
 ** https://github.com/moncycle-app/backend-api-web-app
 */
 
-require_once "../config.php";
-require_once "../lib/db.php";
-
 function nfp_file_billing_day ($day, $db, $no_account) {
 	$description = db_select_all_description_for_day_timeline($db, $no_account, $day["no_day"]);
 	$observation = array();
